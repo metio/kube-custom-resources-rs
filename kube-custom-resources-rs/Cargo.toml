@@ -1,10 +1,10 @@
 [package]
 name = "kube-custom-resources-rs"
-version = "1.2.3"
-description = "Kubernetes Gateway API bindings in Rust"
+version = "9999.99.99"
+description = "Kubernetes Custom Resource Bindings"
 authors = ["Sebastian Hoß <seb@xn--ho-hia.de>"]
 edition = "2021"
-license = "BSD-0"
+license = "0BSD"
 keywords = ["kubernetes", "custom-resources"]
 categories = ["api-bindings"]
 homepage = "https://github.com/metio/kube-custom-resources-rs/"

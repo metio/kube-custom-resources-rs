@@ -635,7 +635,7 @@ dependencies = [
 
 [[package]]
 name = "kube-custom-resources-rs"
-version = "1.2.3"
+version = "9999.99.99"
 dependencies = [
  "k8s-openapi",
  "kube",

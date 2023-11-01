@@ -1,0 +1,43 @@
+name: Check Upstream Options
+on:
+  schedule:
+    - cron: 53 15 * * FRI
+  workflow_dispatch:
+jobs:
+  upstream:
+    name: Check Upstream Options
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install kopium
+        run: cargo install kopium
+      - name: Verify kopium
+        run: kopium --version
+      - name: Fetch CRDs
+        run: cargo run --package crd-v1-fetcher
+      - name: Generate Code
+        run: generate.sh
+      - id: cpr
+        name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: Update upstream specifications to their latest version
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          title: Update upstream specifications to their latest version
+          labels: enhancement
+          assignees: sebhoss
+          draft: false
+          base: main
+          branch: update-specs
+          delete-branch: true
+      - id: automerge
+        name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        run: gh pr merge --rebase --auto "${{ steps.cpr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
