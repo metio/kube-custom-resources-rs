@@ -1,0 +1,66 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    api-approved.kubernetes.io: https://github.com/kubernetes-sigs/boskos/pull/105
+  name: dynamicresourcelifecycles.boskos.k8s.io
+spec:
+  group: boskos.k8s.io
+  names:
+    kind: DRLCObject
+    listKind: DRLCObjectList
+    plural: dynamicresourcelifecycles
+    singular: dynamicresourcelifecycle
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: The dynamic resource type.
+      jsonPath: .spec.config.type
+      name: Type
+      type: string
+    - description: The minimum count requested.
+      jsonPath: .spec.min-count
+      name: Min-Count
+      type: integer
+    - description: The maximum count requested.
+      jsonPath: .spec.max-count
+      name: Max-Count
+      type: integer
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: Defines the lifecycle of a dynamic resource. All Resource of a given type will be constructed using the same configuration
+        properties:
+          spec:
+            properties:
+              config:
+                description: Config information about how to create the object
+                properties:
+                  content:
+                    type: string
+                  type:
+                    description: The dynamic resource type
+                    type: string
+                type: object
+              lifespan:
+                description: Lifespan of a resource, time after which the resource should be reset
+                format: int64
+                type: integer
+              max-count:
+                description: Maxiumum number of resources expected. This maximum may be temporarily exceeded while resources are in the process of being deleted, though this is only expected when MaxCount is lowered.
+                format: int32
+                type: integer
+              min-count:
+                description: Minimum number of resources to be used as a buffer. Resources in the process of being deleted and cleaned up are included in this count.
+                format: int32
+                type: integer
+              needs:
+                description: Define the resource needs to create the object
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              state:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true

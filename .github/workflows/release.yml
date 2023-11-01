@@ -1,0 +1,59 @@
+name: Perform Release
+on:
+  schedule:
+    - cron: 53 4 * * SAT
+  workflow_dispatch:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: commits
+        name: Count Commits
+        run: echo "count=$(git rev-list --count HEAD --since='last week')" >> $GITHUB_OUTPUT
+      - id: release
+        name: Create Release Version
+        if: steps.commits.outputs.count > 0
+        run: echo "version=$(date +'%Y.%-m.%-d')" >> $GITHUB_OUTPUT
+      - name: Set up Rust
+        if: steps.commits.outputs.count > 0
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cargo Version
+        if: steps.commits.outputs.count > 0
+        run: sed -i -e 's/^version = .*/version = "${{ steps.release.outputs.version }}"/' kube-custom-resources-rs/Cargo.toml
+      - name: Publish to crates.io
+        if: steps.commits.outputs.count > 0
+        run: cargo publish --allow-dirty --token ${{ secrets.CRATES_IO_TOKEN }} --package kube-custom-resources-rs
+      - id: create_release
+        name: Create Release
+        if: steps.commits.outputs.count > 0
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.release.outputs.version }}
+          name: ${{ steps.release.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+      - id: mail
+        name: Send Mail
+        if: steps.commits.outputs.count > 0
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: ${{ github.event.repository.name }} version ${{ steps.release.outputs.version }} published
+          body: See ${{ steps.create_release.outputs.url }} for details.
+          to: ${{ secrets.MAIL_RECIPIENT }}
+          from: ${{ secrets.MAIL_SENDER }}
+      - id: matrix
+        name: Send Matrix Message
+        if: steps.commits.outputs.count > 0
+        uses: s3krit/matrix-message-action@v0.0.3
+        with:
+          room_id: ${{ secrets.MATRIX_ROOM_ID }}
+          access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
+          message: ${{ github.event.repository.name }} version [${{ steps.release.outputs.version }}](${{ steps.create_release.outputs.url }}) published
+          server: ${{ secrets.MATRIX_SERVER }}

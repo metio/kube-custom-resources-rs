@@ -1,0 +1,16 @@
+pub mod checkpoints;
+pub mod clusterclaims;
+pub mod clusterdeploymentcustomizations;
+pub mod clusterdeployments;
+pub mod clusterdeprovisions;
+pub mod clusterimagesets;
+pub mod clusterpools;
+pub mod clusterprovisions;
+pub mod clusterrelocates;
+pub mod clusterstates;
+pub mod dnszones;
+pub mod hiveconfigs;
+pub mod machinepoolnameleases;
+pub mod machinepools;
+pub mod selectorsyncidentityproviders;
+pub mod syncidentityproviders;

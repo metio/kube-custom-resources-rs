@@ -1,0 +1,11 @@
+pub mod dhcpoptions;
+pub mod elasticipaddresses;
+pub mod instances;
+pub mod internetgateways;
+pub mod natgateways;
+pub mod routetables;
+pub mod securitygroups;
+pub mod subnets;
+pub mod transitgateways;
+pub mod vpcendpoints;
+pub mod vpcs;

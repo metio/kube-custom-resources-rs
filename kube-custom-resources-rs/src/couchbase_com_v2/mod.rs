@@ -1,0 +1,16 @@
+pub mod couchbaseautoscalers;
+pub mod couchbasebackuprestores;
+pub mod couchbasebackups;
+pub mod couchbasebuckets;
+pub mod couchbaseclusters;
+pub mod couchbasecollectiongroups;
+pub mod couchbasecollections;
+pub mod couchbaseephemeralbuckets;
+pub mod couchbasegroups;
+pub mod couchbasememcachedbuckets;
+pub mod couchbasemigrationreplications;
+pub mod couchbasereplications;
+pub mod couchbaserolebindings;
+pub mod couchbasescopegroups;
+pub mod couchbasescopes;
+pub mod couchbaseusers;

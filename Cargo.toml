@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "crd-v1-fetcher",
+    "kube-custom-resources-rs",
+]
+resolver = "2"

@@ -1,0 +1,565 @@
+[package]
+name = "kube-custom-resources-rs"
+version = "1.2.3"
+description = "Kubernetes Gateway API bindings in Rust"
+authors = ["Sebastian Hoß <seb@xn--ho-hia.de>"]
+edition = "2021"
+license = "BSD-0"
+keywords = ["kubernetes", "custom-resources"]
+categories = ["api-bindings"]
+homepage = "https://github.com/metio/kube-custom-resources-rs/"
+repository = "https://github.com/metio/kube-custom-resources-rs"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kube = { version = "0.86.0", features = ["derive"] }
+k8s-openapi = { version = "0.20.0", features = ["latest"] }
+schemars = "0.8.15"
+serde = { version = "1.0.190", features = ["derive"] }
+serde_json = { version = "1.0.108" }
+
+[features]
+about_k8s_io_v1alpha1 = []
+acid_zalan_do_v1 = []
+acme_cert_manager_io_v1 = []
+addons_cluster_x_k8s_io_v1alpha4 = []
+addons_cluster_x_k8s_io_v1beta1 = []
+agent_k8s_elastic_co_v1alpha1 = []
+apicodegen_apimatic_io_v1beta1 = []
+apiextensions_crossplane_io_v1 = []
+apigatewayv2_services_k8s_aws_v1alpha1 = []
+apm_k8s_elastic_co_v1 = []
+apm_k8s_elastic_co_v1beta1 = []
+app_kiegroup_org_v1beta1 = []
+applicationautoscaling_services_k8s_aws_v1alpha1 = []
+app_lightbend_com_v1alpha1 = []
+appprotectdos_f5_com_v1beta1 = []
+appprotect_f5_com_v1beta1 = []
+app_redislabs_com_v1 = []
+app_redislabs_com_v1alpha1 = []
+apps_3scale_net_v1alpha1 = []
+apps_clusternet_io_v1alpha1 = []
+apps_gitlab_com_v1beta1 = []
+apps_kubedl_io_v1alpha1 = []
+apps_kubeedge_io_v1alpha1 = []
+apps_m88i_io_v1alpha1 = []
+apps_redhat_com_v1alpha1 = []
+aquasecurity_github_io_v1alpha1 = []
+argoproj_io_v1alpha1 = []
+argoproj_io_v1beta1 = []
+asdb_aerospike_com_v1 = []
+asdb_aerospike_com_v1beta1 = []
+autoscaling_k8s_io_v1 = []
+autoscaling_k8s_io_v1beta2 = []
+autoscaling_karmada_io_v1alpha1 = []
+batch_volcano_sh_v1alpha1 = []
+beat_k8s_elastic_co_v1beta1 = []
+binding_operators_coreos_com_v1alpha1 = []
+bitnami_com_v1alpha1 = []
+boskos_k8s_io_v1 = []
+bus_volcano_sh_v1alpha1 = []
+cache_kubedl_io_v1alpha1 = []
+caching_ibm_com_v1alpha1 = []
+camel_apache_org_v1 = []
+camel_apache_org_v1alpha1 = []
+capsule_clastix_io_v1alpha1 = []
+capsule_clastix_io_v1beta1 = []
+capsule_clastix_io_v1beta2 = []
+ceph_rook_io_v1 = []
+cert_manager_io_v1 = []
+chaos_mesh_org_v1alpha1 = []
+charts_flagsmith_com_v1alpha1 = []
+che_eclipse_org_v1alpha1 = []
+cilium_io_v2 = []
+cilium_io_v2alpha1 = []
+cloudformation_linki_space_v1alpha1 = []
+cluster_clusterpedia_io_v1alpha2 = []
+clusters_clusternet_io_v1beta1 = []
+cluster_x_k8s_io_v1alpha4 = []
+cluster_x_k8s_io_v1beta1 = []
+config_gatekeeper_sh_v1alpha1 = []
+config_grafana_com_v1 = []
+config_karmada_io_v1alpha1 = []
+config_koordinator_sh_v1alpha1 = []
+core_openfeature_dev_v1alpha1 = []
+core_openfeature_dev_v1alpha2 = []
+couchbase_com_v2 = []
+crd_projectcalico_org_v1 = []
+databases_schemahero_io_v1alpha4 = []
+data_fluid_io_v1alpha1 = []
+devices_kubeedge_io_v1alpha2 = []
+digitalis_io_v1 = []
+digitalis_io_v1beta1 = []
+dynamodb_services_k8s_aws_v1alpha1 = []
+ec2_services_k8s_aws_v1alpha1 = []
+ecr_services_k8s_aws_v1alpha1 = []
+eks_services_k8s_aws_v1alpha1 = []
+elasticache_services_k8s_aws_v1alpha1 = []
+elasticsearch_k8s_elastic_co_v1 = []
+elasticsearch_k8s_elastic_co_v1beta1 = []
+elbv2_k8s_aws_v1alpha1 = []
+elbv2_k8s_aws_v1beta1 = []
+emrcontainers_services_k8s_aws_v1alpha1 = []
+enterprise_gloo_solo_io_v1 = []
+enterprisesearch_k8s_elastic_co_v1 = []
+enterprisesearch_k8s_elastic_co_v1beta1 = []
+execution_furiko_io_v1alpha1 = []
+executor_testkube_io_v1 = []
+expansion_gatekeeper_sh_v1alpha1 = []
+expansion_gatekeeper_sh_v1beta1 = []
+extensions_istio_io_v1alpha1 = []
+externaldata_gatekeeper_sh_v1alpha1 = []
+externaldata_gatekeeper_sh_v1beta1 = []
+externaldns_k8s_io_v1alpha1 = []
+externaldns_nginx_org_v1 = []
+external_secrets_io_v1alpha1 = []
+external_secrets_io_v1beta1 = []
+flagger_app_v1beta1 = []
+flink_apache_org_v1beta1 = []
+flow_volcano_sh_v1alpha1 = []
+gateway_networking_k8s_io_v1 = []
+gateway_networking_k8s_io_v1alpha2 = []
+gateway_networking_k8s_io_v1beta1 = []
+gateway_nginx_org_v1alpha1 = []
+gateway_solo_io_v1 = []
+getambassador_io_v3alpha1 = []
+gloo_solo_io_v1 = []
+grafana_integreatly_org_v1beta1 = []
+graphql_gloo_solo_io_v1beta1 = []
+hazelcast_com_v1alpha1 = []
+helm_toolkit_fluxcd_io_v2beta1 = []
+hiveinternal_openshift_io_v1alpha1 = []
+hive_openshift_io_v1 = []
+hnc_x_k8s_io_v1alpha2 = []
+hyperfoil_io_v1alpha1 = []
+hyperfoil_io_v1alpha2 = []
+iam_services_k8s_aws_v1alpha1 = []
+ibmcloud_ibm_com_v1alpha1 = []
+image_toolkit_fluxcd_io_v1beta1 = []
+image_toolkit_fluxcd_io_v1beta2 = []
+imaging_ingestion_alvearie_org_v1alpha1 = []
+inference_kubedl_io_v1alpha1 = []
+infinispan_org_v2alpha1 = []
+infrastructure_cluster_x_k8s_io_v1alpha1 = []
+infrastructure_cluster_x_k8s_io_v1beta1 = []
+infrastructure_cluster_x_k8s_io_v1beta2 = []
+installation_mattermost_com_v1beta1 = []
+iot_eclipse_org_v1alpha1 = []
+ipam_cluster_x_k8s_io_v1alpha1 = []
+ipam_cluster_x_k8s_io_v1beta1 = []
+jaegertracing_io_v1 = []
+jobset_x_k8s_io_v1alpha2 = []
+jobsmanager_raczylo_com_v1beta1 = []
+k8gb_absa_oss_v1beta1 = []
+k8s_nginx_org_v1 = []
+k8s_nginx_org_v1alpha1 = []
+k8s_otterize_com_v1alpha2 = []
+k8s_otterize_com_v1alpha3 = []
+kafka_strimzi_io_v1alpha1 = []
+kafka_strimzi_io_v1beta1 = []
+kafka_strimzi_io_v1beta2 = []
+keda_sh_v1alpha1 = []
+keycloak_org_v1alpha1 = []
+kibana_k8s_elastic_co_v1 = []
+kibana_k8s_elastic_co_v1beta1 = []
+kms_services_k8s_aws_v1alpha1 = []
+kubean_io_v1alpha1 = []
+kubevious_io_v1alpha1 = []
+kueue_x_k8s_io_v1beta1 = []
+kuma_io_v1alpha1 = []
+kustomize_toolkit_fluxcd_io_v1 = []
+kustomize_toolkit_fluxcd_io_v1beta1 = []
+kustomize_toolkit_fluxcd_io_v1beta2 = []
+kyverno_io_v1 = []
+kyverno_io_v1alpha2 = []
+kyverno_io_v1beta1 = []
+kyverno_io_v2alpha1 = []
+kyverno_io_v2beta1 = []
+lambda_services_k8s_aws_v1alpha1 = []
+lerentis_uploadfilter24_eu_v1beta4 = []
+litmuschaos_io_v1alpha1 = []
+logging_banzaicloud_io_v1alpha1 = []
+logging_banzaicloud_io_v1beta1 = []
+logging_extensions_banzaicloud_io_v1alpha1 = []
+loki_grafana_com_v1 = []
+loki_grafana_com_v1beta1 = []
+longhorn_io_v1beta2 = []
+maps_k8s_elastic_co_v1alpha1 = []
+mariadb_mmontes_io_v1alpha1 = []
+mattermost_com_v1alpha1 = []
+metacontroller_k8s_io_v1alpha1 = []
+metal3_io_v1alpha1 = []
+minio_min_io_v2 = []
+mirrors_kts_studio_v1alpha1 = []
+mirrors_kts_studio_v1alpha2 = []
+model_kubedl_io_v1alpha1 = []
+monitoring_coreos_com_v1 = []
+monitoring_coreos_com_v1alpha1 = []
+monitoring_coreos_com_v1beta1 = []
+mq_services_k8s_aws_v1alpha1 = []
+multicluster_x_k8s_io_v1alpha1 = []
+mutations_gatekeeper_sh_v1 = []
+mutations_gatekeeper_sh_v1alpha1 = []
+mutations_gatekeeper_sh_v1beta1 = []
+networking_istio_io_v1alpha3 = []
+networking_istio_io_v1beta1 = []
+networking_karmada_io_v1alpha1 = []
+nfd_k8s_sigs_io_v1alpha1 = []
+nfd_kubernetes_io_v1 = []
+nfd_kubernetes_io_v1alpha1 = []
+nodeinfo_volcano_sh_v1alpha1 = []
+notebook_kubedl_io_v1alpha1 = []
+notification_toolkit_fluxcd_io_v1 = []
+notification_toolkit_fluxcd_io_v1beta1 = []
+notification_toolkit_fluxcd_io_v1beta2 = []
+objectbucket_io_v1alpha1 = []
+opensearchservice_services_k8s_aws_v1alpha1 = []
+opentelemetry_io_v1alpha1 = []
+operations_kubeedge_io_v1alpha1 = []
+operator_aquasec_com_v1alpha1 = []
+operator_cluster_x_k8s_io_v1alpha1 = []
+operator_cluster_x_k8s_io_v1alpha2 = []
+operator_cryostat_io_v1beta1 = []
+operator_open_cluster_management_io_v1 = []
+operator_tigera_io_v1 = []
+org_eclipse_che_v1 = []
+org_eclipse_che_v2 = []
+pkg_crossplane_io_v1 = []
+pkg_crossplane_io_v1alpha1 = []
+pkg_crossplane_io_v1beta1 = []
+policy_clusterpedia_io_v1alpha1 = []
+policy_karmada_io_v1alpha1 = []
+postgres_operator_crunchydata_com_v1beta1 = []
+prometheusservice_services_k8s_aws_v1alpha1 = []
+quay_redhat_com_v1 = []
+rds_services_k8s_aws_v1alpha1 = []
+redhatcop_redhat_io_v1alpha1 = []
+registry_apicur_io_v1 = []
+reliablesyncs_kubeedge_io_v1alpha1 = []
+resources_teleport_dev_v1 = []
+resources_teleport_dev_v2 = []
+resources_teleport_dev_v3 = []
+ripsaw_cloudbulldozer_io_v1alpha1 = []
+rocketmq_apache_org_v1alpha1 = []
+rules_kubeedge_io_v1 = []
+runtime_cluster_x_k8s_io_v1alpha1 = []
+s3_services_k8s_aws_v1alpha1 = []
+sagemaker_services_k8s_aws_v1alpha1 = []
+scheduling_koordinator_sh_v1alpha1 = []
+scheduling_sigs_k8s_io_v1alpha1 = []
+scheduling_volcano_sh_v1beta1 = []
+schemas_schemahero_io_v1alpha4 = []
+scylla_scylladb_com_v1 = []
+scylla_scylladb_com_v1alpha1 = []
+secretgenerator_mittwald_de_v1alpha1 = []
+secrets_crossplane_io_v1alpha1 = []
+secscan_quay_redhat_com_v1alpha1 = []
+security_istio_io_v1 = []
+security_istio_io_v1beta1 = []
+security_profiles_operator_x_k8s_io_v1alpha1 = []
+security_profiles_operator_x_k8s_io_v1alpha2 = []
+security_profiles_operator_x_k8s_io_v1beta1 = []
+sematext_com_v1 = []
+servicebinding_io_v1alpha3 = []
+servicebinding_io_v1beta1 = []
+services_k8s_aws_v1alpha1 = []
+serving_kubedl_io_v1alpha1 = []
+sfn_services_k8s_aws_v1alpha1 = []
+site_superedge_io_v1alpha1 = []
+slo_koordinator_sh_v1alpha1 = []
+source_toolkit_fluxcd_io_v1beta1 = []
+source_toolkit_fluxcd_io_v1beta2 = []
+sparkoperator_k8s_io_v1beta2 = []
+status_gatekeeper_sh_v1beta1 = []
+stunner_l7mp_io_v1alpha1 = []
+telemetry_istio_io_v1alpha1 = []
+templates_gatekeeper_sh_v1 = []
+templates_gatekeeper_sh_v1alpha1 = []
+templates_gatekeeper_sh_v1beta1 = []
+tests_testkube_io_v1 = []
+tests_testkube_io_v2 = []
+tests_testkube_io_v3 = []
+topology_node_k8s_io_v1alpha1 = []
+traefik_io_v1alpha1 = []
+training_kubedl_io_v1alpha1 = []
+virt_virtink_smartx_com_v1alpha1 = []
+wgpolicyk8s_io_v1alpha1 = []
+wgpolicyk8s_io_v1alpha2 = []
+wgpolicyk8s_io_v1beta1 = []
+wildfly_org_v1alpha1 = []
+work_karmada_io_v1alpha1 = []
+work_karmada_io_v1alpha2 = []
+all = [
+  "about_k8s_io_v1alpha1",
+  "acid_zalan_do_v1",
+  "acme_cert_manager_io_v1",
+  "addons_cluster_x_k8s_io_v1alpha4",
+  "addons_cluster_x_k8s_io_v1beta1",
+  "agent_k8s_elastic_co_v1alpha1",
+  "apicodegen_apimatic_io_v1beta1",
+  "apiextensions_crossplane_io_v1",
+  "apigatewayv2_services_k8s_aws_v1alpha1",
+  "apm_k8s_elastic_co_v1",
+  "apm_k8s_elastic_co_v1beta1",
+  "app_kiegroup_org_v1beta1",
+  "applicationautoscaling_services_k8s_aws_v1alpha1",
+  "app_lightbend_com_v1alpha1",
+  "appprotectdos_f5_com_v1beta1",
+  "appprotect_f5_com_v1beta1",
+  "app_redislabs_com_v1",
+  "app_redislabs_com_v1alpha1",
+  "apps_3scale_net_v1alpha1",
+  "apps_clusternet_io_v1alpha1",
+  "apps_gitlab_com_v1beta1",
+  "apps_kubedl_io_v1alpha1",
+  "apps_kubeedge_io_v1alpha1",
+  "apps_m88i_io_v1alpha1",
+  "apps_redhat_com_v1alpha1",
+  "aquasecurity_github_io_v1alpha1",
+  "argoproj_io_v1alpha1",
+  "argoproj_io_v1beta1",
+  "asdb_aerospike_com_v1",
+  "asdb_aerospike_com_v1beta1",
+  "autoscaling_k8s_io_v1",
+  "autoscaling_k8s_io_v1beta2",
+  "autoscaling_karmada_io_v1alpha1",
+  "batch_volcano_sh_v1alpha1",
+  "beat_k8s_elastic_co_v1beta1",
+  "binding_operators_coreos_com_v1alpha1",
+  "bitnami_com_v1alpha1",
+  "boskos_k8s_io_v1",
+  "bus_volcano_sh_v1alpha1",
+  "cache_kubedl_io_v1alpha1",
+  "caching_ibm_com_v1alpha1",
+  "camel_apache_org_v1",
+  "camel_apache_org_v1alpha1",
+  "capsule_clastix_io_v1alpha1",
+  "capsule_clastix_io_v1beta1",
+  "capsule_clastix_io_v1beta2",
+  "ceph_rook_io_v1",
+  "cert_manager_io_v1",
+  "chaos_mesh_org_v1alpha1",
+  "charts_flagsmith_com_v1alpha1",
+  "che_eclipse_org_v1alpha1",
+  "cilium_io_v2",
+  "cilium_io_v2alpha1",
+  "cloudformation_linki_space_v1alpha1",
+  "cluster_clusterpedia_io_v1alpha2",
+  "clusters_clusternet_io_v1beta1",
+  "cluster_x_k8s_io_v1alpha4",
+  "cluster_x_k8s_io_v1beta1",
+  "config_gatekeeper_sh_v1alpha1",
+  "config_grafana_com_v1",
+  "config_karmada_io_v1alpha1",
+  "config_koordinator_sh_v1alpha1",
+  "core_openfeature_dev_v1alpha1",
+  "core_openfeature_dev_v1alpha2",
+  "couchbase_com_v2",
+  "crd_projectcalico_org_v1",
+  "databases_schemahero_io_v1alpha4",
+  "data_fluid_io_v1alpha1",
+  "devices_kubeedge_io_v1alpha2",
+  "digitalis_io_v1",
+  "digitalis_io_v1beta1",
+  "dynamodb_services_k8s_aws_v1alpha1",
+  "ec2_services_k8s_aws_v1alpha1",
+  "ecr_services_k8s_aws_v1alpha1",
+  "eks_services_k8s_aws_v1alpha1",
+  "elasticache_services_k8s_aws_v1alpha1",
+  "elasticsearch_k8s_elastic_co_v1",
+  "elasticsearch_k8s_elastic_co_v1beta1",
+  "elbv2_k8s_aws_v1alpha1",
+  "elbv2_k8s_aws_v1beta1",
+  "emrcontainers_services_k8s_aws_v1alpha1",
+  "enterprise_gloo_solo_io_v1",
+  "enterprisesearch_k8s_elastic_co_v1",
+  "enterprisesearch_k8s_elastic_co_v1beta1",
+  "execution_furiko_io_v1alpha1",
+  "executor_testkube_io_v1",
+  "expansion_gatekeeper_sh_v1alpha1",
+  "expansion_gatekeeper_sh_v1beta1",
+  "extensions_istio_io_v1alpha1",
+  "externaldata_gatekeeper_sh_v1alpha1",
+  "externaldata_gatekeeper_sh_v1beta1",
+  "externaldns_k8s_io_v1alpha1",
+  "externaldns_nginx_org_v1",
+  "external_secrets_io_v1alpha1",
+  "external_secrets_io_v1beta1",
+  "flagger_app_v1beta1",
+  "flink_apache_org_v1beta1",
+  "flow_volcano_sh_v1alpha1",
+  "gateway_networking_k8s_io_v1",
+  "gateway_networking_k8s_io_v1alpha2",
+  "gateway_networking_k8s_io_v1beta1",
+  "gateway_nginx_org_v1alpha1",
+  "gateway_solo_io_v1",
+  "getambassador_io_v3alpha1",
+  "gloo_solo_io_v1",
+  "grafana_integreatly_org_v1beta1",
+  "graphql_gloo_solo_io_v1beta1",
+  "hazelcast_com_v1alpha1",
+  "helm_toolkit_fluxcd_io_v2beta1",
+  "hiveinternal_openshift_io_v1alpha1",
+  "hive_openshift_io_v1",
+  "hnc_x_k8s_io_v1alpha2",
+  "hyperfoil_io_v1alpha1",
+  "hyperfoil_io_v1alpha2",
+  "iam_services_k8s_aws_v1alpha1",
+  "ibmcloud_ibm_com_v1alpha1",
+  "image_toolkit_fluxcd_io_v1beta1",
+  "image_toolkit_fluxcd_io_v1beta2",
+  "imaging_ingestion_alvearie_org_v1alpha1",
+  "inference_kubedl_io_v1alpha1",
+  "infinispan_org_v2alpha1",
+  "infrastructure_cluster_x_k8s_io_v1alpha1",
+  "infrastructure_cluster_x_k8s_io_v1beta1",
+  "infrastructure_cluster_x_k8s_io_v1beta2",
+  "installation_mattermost_com_v1beta1",
+  "iot_eclipse_org_v1alpha1",
+  "ipam_cluster_x_k8s_io_v1alpha1",
+  "ipam_cluster_x_k8s_io_v1beta1",
+  "jaegertracing_io_v1",
+  "jobset_x_k8s_io_v1alpha2",
+  "jobsmanager_raczylo_com_v1beta1",
+  "k8gb_absa_oss_v1beta1",
+  "k8s_nginx_org_v1",
+  "k8s_nginx_org_v1alpha1",
+  "k8s_otterize_com_v1alpha2",
+  "k8s_otterize_com_v1alpha3",
+  "kafka_strimzi_io_v1alpha1",
+  "kafka_strimzi_io_v1beta1",
+  "kafka_strimzi_io_v1beta2",
+  "keda_sh_v1alpha1",
+  "keycloak_org_v1alpha1",
+  "kibana_k8s_elastic_co_v1",
+  "kibana_k8s_elastic_co_v1beta1",
+  "kms_services_k8s_aws_v1alpha1",
+  "kubean_io_v1alpha1",
+  "kubevious_io_v1alpha1",
+  "kueue_x_k8s_io_v1beta1",
+  "kuma_io_v1alpha1",
+  "kustomize_toolkit_fluxcd_io_v1",
+  "kustomize_toolkit_fluxcd_io_v1beta1",
+  "kustomize_toolkit_fluxcd_io_v1beta2",
+  "kyverno_io_v1",
+  "kyverno_io_v1alpha2",
+  "kyverno_io_v1beta1",
+  "kyverno_io_v2alpha1",
+  "kyverno_io_v2beta1",
+  "lambda_services_k8s_aws_v1alpha1",
+  "lerentis_uploadfilter24_eu_v1beta4",
+  "litmuschaos_io_v1alpha1",
+  "logging_banzaicloud_io_v1alpha1",
+  "logging_banzaicloud_io_v1beta1",
+  "logging_extensions_banzaicloud_io_v1alpha1",
+  "loki_grafana_com_v1",
+  "loki_grafana_com_v1beta1",
+  "longhorn_io_v1beta2",
+  "maps_k8s_elastic_co_v1alpha1",
+  "mariadb_mmontes_io_v1alpha1",
+  "mattermost_com_v1alpha1",
+  "metacontroller_k8s_io_v1alpha1",
+  "metal3_io_v1alpha1",
+  "minio_min_io_v2",
+  "mirrors_kts_studio_v1alpha1",
+  "mirrors_kts_studio_v1alpha2",
+  "model_kubedl_io_v1alpha1",
+  "monitoring_coreos_com_v1",
+  "monitoring_coreos_com_v1alpha1",
+  "monitoring_coreos_com_v1beta1",
+  "mq_services_k8s_aws_v1alpha1",
+  "multicluster_x_k8s_io_v1alpha1",
+  "mutations_gatekeeper_sh_v1",
+  "mutations_gatekeeper_sh_v1alpha1",
+  "mutations_gatekeeper_sh_v1beta1",
+  "networking_istio_io_v1alpha3",
+  "networking_istio_io_v1beta1",
+  "networking_karmada_io_v1alpha1",
+  "nfd_k8s_sigs_io_v1alpha1",
+  "nfd_kubernetes_io_v1",
+  "nfd_kubernetes_io_v1alpha1",
+  "nodeinfo_volcano_sh_v1alpha1",
+  "notebook_kubedl_io_v1alpha1",
+  "notification_toolkit_fluxcd_io_v1",
+  "notification_toolkit_fluxcd_io_v1beta1",
+  "notification_toolkit_fluxcd_io_v1beta2",
+  "objectbucket_io_v1alpha1",
+  "opensearchservice_services_k8s_aws_v1alpha1",
+  "opentelemetry_io_v1alpha1",
+  "operations_kubeedge_io_v1alpha1",
+  "operator_aquasec_com_v1alpha1",
+  "operator_cluster_x_k8s_io_v1alpha1",
+  "operator_cluster_x_k8s_io_v1alpha2",
+  "operator_cryostat_io_v1beta1",
+  "operator_open_cluster_management_io_v1",
+  "operator_tigera_io_v1",
+  "org_eclipse_che_v1",
+  "org_eclipse_che_v2",
+  "pkg_crossplane_io_v1",
+  "pkg_crossplane_io_v1alpha1",
+  "pkg_crossplane_io_v1beta1",
+  "policy_clusterpedia_io_v1alpha1",
+  "policy_karmada_io_v1alpha1",
+  "postgres_operator_crunchydata_com_v1beta1",
+  "prometheusservice_services_k8s_aws_v1alpha1",
+  "quay_redhat_com_v1",
+  "rds_services_k8s_aws_v1alpha1",
+  "redhatcop_redhat_io_v1alpha1",
+  "registry_apicur_io_v1",
+  "reliablesyncs_kubeedge_io_v1alpha1",
+  "resources_teleport_dev_v1",
+  "resources_teleport_dev_v2",
+  "resources_teleport_dev_v3",
+  "ripsaw_cloudbulldozer_io_v1alpha1",
+  "rocketmq_apache_org_v1alpha1",
+  "rules_kubeedge_io_v1",
+  "runtime_cluster_x_k8s_io_v1alpha1",
+  "s3_services_k8s_aws_v1alpha1",
+  "sagemaker_services_k8s_aws_v1alpha1",
+  "scheduling_koordinator_sh_v1alpha1",
+  "scheduling_sigs_k8s_io_v1alpha1",
+  "scheduling_volcano_sh_v1beta1",
+  "schemas_schemahero_io_v1alpha4",
+  "scylla_scylladb_com_v1",
+  "scylla_scylladb_com_v1alpha1",
+  "secretgenerator_mittwald_de_v1alpha1",
+  "secrets_crossplane_io_v1alpha1",
+  "secscan_quay_redhat_com_v1alpha1",
+  "security_istio_io_v1",
+  "security_istio_io_v1beta1",
+  "security_profiles_operator_x_k8s_io_v1alpha1",
+  "security_profiles_operator_x_k8s_io_v1alpha2",
+  "security_profiles_operator_x_k8s_io_v1beta1",
+  "sematext_com_v1",
+  "servicebinding_io_v1alpha3",
+  "servicebinding_io_v1beta1",
+  "services_k8s_aws_v1alpha1",
+  "serving_kubedl_io_v1alpha1",
+  "sfn_services_k8s_aws_v1alpha1",
+  "site_superedge_io_v1alpha1",
+  "slo_koordinator_sh_v1alpha1",
+  "source_toolkit_fluxcd_io_v1beta1",
+  "source_toolkit_fluxcd_io_v1beta2",
+  "sparkoperator_k8s_io_v1beta2",
+  "status_gatekeeper_sh_v1beta1",
+  "stunner_l7mp_io_v1alpha1",
+  "telemetry_istio_io_v1alpha1",
+  "templates_gatekeeper_sh_v1",
+  "templates_gatekeeper_sh_v1alpha1",
+  "templates_gatekeeper_sh_v1beta1",
+  "tests_testkube_io_v1",
+  "tests_testkube_io_v2",
+  "tests_testkube_io_v3",
+  "topology_node_k8s_io_v1alpha1",
+  "traefik_io_v1alpha1",
+  "training_kubedl_io_v1alpha1",
+  "virt_virtink_smartx_com_v1alpha1",
+  "wgpolicyk8s_io_v1alpha1",
+  "wgpolicyk8s_io_v1alpha2",
+  "wgpolicyk8s_io_v1beta1",
+  "wildfly_org_v1alpha1",
+  "work_karmada_io_v1alpha1",
+  "work_karmada_io_v1alpha2",
+]

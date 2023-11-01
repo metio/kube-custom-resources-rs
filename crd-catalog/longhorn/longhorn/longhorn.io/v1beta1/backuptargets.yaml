@@ -1,0 +1,83 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.7.0
+  labels:
+    app.kubernetes.io/instance: longhorn
+    app.kubernetes.io/name: longhorn
+    app.kubernetes.io/version: v1.6.0-dev
+    longhorn-manager: ''
+  name: backuptargets.longhorn.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: longhorn-conversion-webhook
+          namespace: longhorn-system
+          path: /v1/webhook/conversion
+          port: 9501
+      conversionReviewVersions:
+      - v1beta2
+      - v1beta1
+  group: longhorn.io
+  names:
+    kind: BackupTarget
+    listKind: BackupTargetList
+    plural: backuptargets
+    shortNames:
+    - lhbt
+    singular: backuptarget
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: The backup target URL
+      jsonPath: .spec.backupTargetURL
+      name: URL
+      type: string
+    - description: The backup target credential secret
+      jsonPath: .spec.credentialSecret
+      name: Credential
+      type: string
+    - description: The backup target poll interval
+      jsonPath: .spec.pollInterval
+      name: LastBackupAt
+      type: string
+    - description: Indicate whether the backup target is available or not
+      jsonPath: .status.available
+      name: Available
+      type: boolean
+    - description: The backup target last synced time
+      jsonPath: .status.lastSyncedAt
+      name: LastSyncedAt
+      type: string
+    name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: BackupTarget is where Longhorn stores backup target object.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            x-kubernetes-preserve-unknown-fields: true
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ''
+    plural: ''
+  conditions: []
+  storedVersions: []
