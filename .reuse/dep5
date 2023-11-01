@@ -1,0 +1,636 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: kube-custom-resources-rs
+Upstream-Contact: Sebastian Hoß <seb@hoß.de>
+Source: https://github.com/metio/kube-custom-resources-rs
+
+Files: .idea/*
+Copyright: The kube-custom-resources-rs Authors
+License: 0BSD
+
+Files: crd-catalog/3scale/apicast-operator/*
+Copyright: The 3scale/apicast-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/aerospike/aerospike-kubernetes-operator/*
+Copyright: The aerospike/aerospike-kubernetes-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/Alvearie/imaging-ingestion/*
+Copyright: The Alvearie/imaging-ingestion Authors
+License: Apache-2.0
+
+Files: crd-catalog/apache/camel-k/*
+Copyright: The apache/camel-k Authors
+License: Apache-2.0
+
+Files: crd-catalog/apache/flink-kubernetes-operator/*
+Copyright: The apache/flink-kubernetes-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/apache/rocketmq-operator/*
+Copyright: The apache/rocketmq-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/Apicurio/apicurio-registry-operator/*
+Copyright: The Apicurio/apicurio-registry-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/apimatic/apimatic-kubernetes-operator/*
+Copyright: The apimatic/apimatic-kubernetes-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/aquasecurity/aqua-operator/*
+Copyright: The aquasecurity/aqua-operator Authors
+License: LicenseRef-Aqua
+
+Files: crd-catalog/argoproj-labs/argocd-operator/*
+Copyright: The argoproj-labs/argocd-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/apigatewayv2-controller/*
+Copyright: The aws-controllers-k8s/apigatewayv2-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/applicationautoscaling-controller/*
+Copyright: The aws-controllers-k8s/applicationautoscaling-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/dynamodb-controller/*
+Copyright: The aws-controllers-k8s/dynamodb-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/ec2-controller/*
+Copyright: The aws-controllers-k8s/ec2-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/ecr-controller/*
+Copyright: The aws-controllers-k8s/ecr-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/eks-controller/*
+Copyright: The aws-controllers-k8s/eks-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/elasticache-controller/*
+Copyright: The aws-controllers-k8s/elasticache-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/emrcontainers-controller/*
+Copyright: The aws-controllers-k8s/emrcontainers-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/iam-controller/*
+Copyright: The aws-controllers-k8s/iam-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/kms-controller/*
+Copyright: The aws-controllers-k8s/kms-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/lambda-controller/*
+Copyright: The aws-controllers-k8s/lambda-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/mq-controller/*
+Copyright: The aws-controllers-k8s/mq-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/opensearchservice-controller/*
+Copyright: The aws-controllers-k8s/opensearchservice-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/prometheusservice-controller/*
+Copyright: The aws-controllers-k8s/prometheusservice-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/rds-controller/*
+Copyright: The aws-controllers-k8s/rds-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/s3-controller/*
+Copyright: The aws-controllers-k8s/s3-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/sagemaker-controller/*
+Copyright: The aws-controllers-k8s/sagemaker-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/aws-controllers-k8s/sfn-controlle/*
+Copyright: The aws-controllers-k8s/sfn-controlle Authors
+License: Apache-2.0
+
+Files: crd-catalog/bitnami-labs/sealed-secrets/*
+Copyright: The bitnami-labs/sealed-secrets Authors
+License: Apache-2.0
+
+Files: crd-catalog/carlosedp/lbconfig-operator/*
+Copyright: The carlosedp/lbconfig-operator Authors
+License: MIT
+
+Files: crd-catalog/cert-manager/cert-manager/*
+Copyright: The cert-manager/cert-manager Authors
+License: Apache-2.0
+
+Files: crd-catalog/chaos-mesh/chaos-mesh/*
+Copyright: The chaos-mesh/chaos-mesh Authors
+License: Apache-2.0
+
+Files: crd-catalog/che-incubator/kubernetes-image-puller-operator/*
+Copyright: The che-incubator/kubernetes-image-puller-operator Authors
+License: EPL-2.0
+
+Files: crd-catalog/cilium/cilium/*
+Copyright: The cilium/cilium Authors
+License: Apache-2.0
+
+Files: crd-catalog/clastix/capsule/*
+Copyright: The clastix/capsule Authors
+License: Apache-2.0
+
+Files: crd-catalog/cloud-bulldozer/benchmark-operator/*
+Copyright: The cloud-bulldozer/benchmark-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/clusternet/clusternet/*
+Copyright: The clusternet/clusternet Authors
+License: Apache-2.0
+
+Files: crd-catalog/clusterpedia-io/clusterpedia/*
+Copyright: The clusterpedia-io/clusterpedia Authors
+License: Apache-2.0
+
+Files: crd-catalog/composable-operator/composable/*
+Copyright: The composable-operator/composable Authors
+License: Apache-2.0
+
+Files: crd-catalog/couchbase-partners/helm-charts/*
+Copyright: The couchbase-partners/helm-charts Authors
+License: Apache-2.0
+
+Files: crd-catalog/crossplane/crossplane/*
+Copyright: The crossplane/crossplane Authors
+License: Apache-2.0
+
+Files: crd-catalog/CrunchyData/postgres-operator/*
+Copyright: The CrunchyData/postgres-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/cryostatio/cryostat-operator/*
+Copyright: The cryostatio/cryostat-operator Authors
+License: UPL-1.0
+
+Files: crd-catalog/ctron/ditto-operator/*
+Copyright: The ctron/ditto-operator Authors
+License: EPL-2.0
+
+Files: crd-catalog/ctron/hawkbit-operator/*
+Copyright: The ctron/hawkbit-operator Authors
+License: EPL-2.0
+
+Files: crd-catalog/dexidp/dex/*
+Copyright: The dexidp/dex Authors
+License: Apache-2.0
+
+Files: crd-catalog/digitalis-io/vals-operator/*
+Copyright: The digitalis-io/vals-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/dmesser/cockroachdb-operator/*
+Copyright: The dmesser/cockroachdb-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/eclipse-che/che-operator/*
+Copyright: The eclipse-che/che-operator Authors
+License: EPL-2.0
+
+Files: crd-catalog/elastic/cloud-on-k8s/*
+Copyright: The elastic/cloud-on-k8s Authors
+License: LicenseRef-Elastic
+
+Files: crd-catalog/emissary-ingress/emissary/*
+Copyright: The emissary-ingress/emissary Authors
+License: MIT
+
+Files: crd-catalog/external-secrets/external-secrets/*
+Copyright: The external-secrets/external-secrets Authors
+License: Apache-2.0
+
+Files: crd-catalog/Flagsmith/flagsmith-operator/*
+Copyright: The Flagsmith/flagsmith-operator Authors
+License: LicenseRef-Flagsmith
+
+Files: crd-catalog/fluid-cloudnative/fluid/*
+Copyright: The fluid-cloudnative/fluid Authors
+License: Apache-2.0
+
+Files: crd-catalog/fluxcd/flagger/*
+Copyright: The fluxcd/flagger Authors
+License: Apache-2.0
+
+Files: crd-catalog/fluxcd/helm-controller/*
+Copyright: The fluxcd/helm-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/fluxcd/image-automation-controller/*
+Copyright: The fluxcd/image-automation-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/fluxcd/image-reflector-controller/*
+Copyright: The fluxcd/image-reflector-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/fluxcd/kustomize-controller/*
+Copyright: The fluxcd/kustomize-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/fluxcd/notification-controller/*
+Copyright: The fluxcd/notification-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/fluxcd/source-controller/*
+Copyright: The fluxcd/source-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/fossul/fossul/*
+Copyright: The fossul/fossul Authors
+License: Apache-2.0
+
+Files: crd-catalog/furiko-io/furiko/*
+Copyright: The furiko-io/furiko Authors
+License: Apache-2.0
+
+Files: crd-catalog/gitlab-org/cloud-native/gitlab-operator/*
+Copyright: The gitlab-org/cloud-native/gitlab-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/gitlab-org/gl-openshift/gitlab-runner-operator/*
+Copyright: The gitlab-org/gl-openshift/gitlab-runner-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/GoogleCloudPlatform/spark-on-k8s-operator/*
+Copyright: The GoogleCloudPlatform/spark-on-k8s-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/grafana-operator/grafana-operator/*
+Copyright: The grafana-operator/grafana-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/grafana/loki/*
+Copyright: The grafana/loki Authors
+License: AGPL-3.0-only
+
+Files: crd-catalog/gravitational/teleport/*
+Copyright: The gravitational/teleport Authors
+License: Apache-2.0
+
+Files: crd-catalog/hazelcast/hazelcast-platform-operator/*
+Copyright: The hazelcast/hazelcast-platform-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/Hyperfoil/horreum-operator/*
+Copyright: The Hyperfoil/horreum-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/Hyperfoil/hyperfoil-operator/*
+Copyright: The Hyperfoil/hyperfoil-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/IBM/varnish-operator/*
+Copyright: The IBM/varnish-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/infinispan/infinispan-operator/*
+Copyright: The infinispan/infinispan-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/istio/istio/*
+Copyright: The istio/istio Authors
+License: Apache-2.0
+
+Files: crd-catalog/jaegertracing/jaeger-operator/*
+Copyright: The jaegertracing/jaeger-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/k8gb-io/k8gb/*
+Copyright: The k8gb-io/k8gb Authors
+License: Apache-2.0
+
+Files: crd-catalog/karmada-io/karmada/*
+Copyright: The karmada-io/karmada Authors
+License: Apache-2.0
+
+Files: crd-catalog/kedacore/keda/*
+Copyright: The kedacore/keda Authors
+License: Apache-2.0
+
+Files: crd-catalog/keycloak/keycloak-operator/*
+Copyright: The keycloak/keycloak-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/kiali/kiali-operator/*
+Copyright: The kiali/kiali-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/kiegroup/kogito-operator/*
+Copyright: The kiegroup/kogito-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/knative/operator/*
+Copyright: The knative/operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/koordinator-sh/koordinator/*
+Copyright: The koordinator-sh/koordinator Authors
+License: Apache-2.0
+
+Files: crd-catalog/ktsstudio/mirrors/*
+Copyright: The ktsstudio/mirrors Authors
+License: Apache-2.0
+
+Files: crd-catalog/kube-logging/logging-operator/*
+Copyright: The kube-logging/logging-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubean-io/kubean/*
+Copyright: The kubean-io/kubean Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubedl-io/kubedl/*
+Copyright: The kubedl-io/kubedl Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubeedge/kubeedge/*
+Copyright: The kubeedge/kubeedge Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/about-api/*
+Copyright: The kubernetes-sigs/about-api Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/aws-load-balancer-controller/*
+Copyright: The kubernetes-sigs/aws-load-balancer-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/boskos/*
+Copyright: The kubernetes-sigs/boskos Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/cluster-api/*
+Copyright: The kubernetes-sigs/cluster-api Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/cluster-api-operator/*
+Copyright: The kubernetes-sigs/cluster-api-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/cluster-api-provider-ibmcloud/*
+Copyright: The kubernetes-sigs/cluster-api-provider-ibmcloud Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/cluster-api-provider-kubevirt/*
+Copyright: The kubernetes-sigs/cluster-api-provider-kubevirt Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/cluster-api-provider-vsphere/*
+Copyright: The kubernetes-sigs/cluster-api-provider-vsphere Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/gateway-api/*
+Copyright: The kubernetes-sigs/gateway-api Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/hierarchical-namespaces/*
+Copyright: The kubernetes-sigs/hierarchical-namespaces Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/jobset/*
+Copyright: The kubernetes-sigs/jobset Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/kueue/*
+Copyright: The kubernetes-sigs/kueue Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/network-policy-api/*
+Copyright: The kubernetes-sigs/network-policy-api Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/node-feature-discovery-operator/*
+Copyright: The kubernetes-sigs/node-feature-discovery-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/security-profiles-operator/*
+Copyright: The kubernetes-sigs/security-profiles-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/wg-policy-prototypes/*
+Copyright: The kubernetes-sigs/wg-policy-prototypes Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes-sigs/work-api/*
+Copyright: The kubernetes-sigs/work-api Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubernetes/autoscaler/*
+Copyright: The kubernetes/autoscaler Authors
+License: Apache-2.0
+
+Files: crd-catalog/kubeshop/testkube-operator/*
+Copyright: The kubeshop/testkube-operator Authors
+License: MIT
+
+Files: crd-catalog/kubevious/workload-operator/*
+Copyright: The kubevious/workload-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/kumahq/kuma/*
+Copyright: The kumahq/kuma Authors
+License: Apache-2.0
+
+Files: crd-catalog/kyverno/kyverno/*
+Copyright: The kyverno/kyverno Authors
+License: Apache-2.0
+
+Files: crd-catalog/l7mp/stunner/*
+Copyright: The l7mp/stunner Authors
+License: MIT
+
+Files: crd-catalog/Lerentis/bitwarden-crd-operator/*
+Copyright: The Lerentis/bitwarden-crd-operator Authors
+License: MIT
+
+Files: crd-catalog/lightbend/akka-cluster-operator/*
+Copyright: The lightbend/akka-cluster-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/linki/cloudformation-operator/*
+Copyright: The linki/cloudformation-operator Authors
+License: MIT
+
+Files: crd-catalog/litmuschaos/chaos-operator/*
+Copyright: The litmuschaos/chaos-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/longhorn/longhorn/*
+Copyright: The longhorn/longhorn Authors
+License: Apache-2.0
+
+Files: crd-catalog/lukaszraczylo/jobs-manager-operator/*
+Copyright: The lukaszraczylo/jobs-manager-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/m88i/nexus-operator/*
+Copyright: The m88i/nexus-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/mariadb-operator/mariadb-operator/*
+Copyright: The mariadb-operator/mariadb-operator Authors
+License: MIT
+
+Files: crd-catalog/mattermost/mattermost-operator/*
+Copyright: The mattermost/mattermost-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/metacontroller/metacontroller/*
+Copyright: The metacontroller/metacontroller Authors
+License: Apache-2.0
+
+Files: crd-catalog/metal3-io/baremetal-operator/*
+Copyright: The metal3-io/baremetal-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/microcks/microcks-ansible-operator/*
+Copyright: The microcks/microcks-ansible-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/minio/operator/*
+Copyright: The minio/operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/mittwald/kubernetes-secret-generator/*
+Copyright: The mittwald/kubernetes-secret-generator Authors
+License: Apache-2.0
+
+Files: crd-catalog/nginxinc/nginx-kubernetes-gateway/*
+Copyright: The nginxinc/nginx-kubernetes-gateway Authors
+License: Apache-2.0
+
+Files: crd-catalog/opdev/synapse-helm/*
+Copyright: The opdev/synapse-helm Authors
+License: Apache-2.0
+
+Files: crd-catalog/open-cluster-management-io/registration-operator/*
+Copyright: The open-cluster-management-io/registration-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/open-feature/open-feature-operator/*
+Copyright: The open-feature/open-feature-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/open-policy-agent/gatekeeper/*
+Copyright: The open-policy-agent/gatekeeper Authors
+License: Apache-2.0
+
+Files: crd-catalog/open-telemetry/opentelemetry-operator/*
+Copyright: The open-telemetry/opentelemetry-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/openshift/hive/*
+Copyright: The openshift/hive Authors
+License: Apache-2.0
+
+Files: crd-catalog/otterize/helm-charts/*
+Copyright: The otterize/helm-charts Authors
+License: Apache-2.0
+
+Files: crd-catalog/projectcalico/calico/*
+Copyright: The projectcalico/calico Authors
+License: Apache-2.0
+
+Files: crd-catalog/prometheus-operator/prometheus-operator/*
+Copyright: The prometheus-operator/prometheus-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/quay/container-security-operator/*
+Copyright: The quay/container-security-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/quay/quay-operator/*
+Copyright: The quay/quay-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/redhat-cop/namespace-configuration-operator/*
+Copyright: The redhat-cop/namespace-configuration-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/redhat-developer/service-binding-operator/*
+Copyright: The redhat-developer/service-binding-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/redhat-performance/cluster-impairment-operator/*
+Copyright: The redhat-performance/cluster-impairment-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/RedisLabs/redis-enterprise-k8s-docs/*
+Copyright: The RedisLabs/redis-enterprise-k8s-docs Authors
+License: Apache-2.0
+
+Files: crd-catalog/rook/rook/*
+Copyright: The rook/rook Authors
+License: Apache-2.0
+
+Files: crd-catalog/schemahero/schemahero/*
+Copyright: The schemahero/schemahero Authors
+License: Apache-2.0
+
+Files: crd-catalog/scylladb/scylla-operator/*
+Copyright: The scylladb/scylla-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/sematext/sematext-operator/*
+Copyright: The sematext/sematext-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/sigstore/sigstore-helm-operator/*
+Copyright: The sigstore/sigstore-helm-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/smartxworks/virtink/*
+Copyright: The smartxworks/virtink Authors
+License: Apache-2.0
+
+Files: crd-catalog/snyk/kubernetes-monitor/*
+Copyright: The snyk/kubernetes-monitor Authors
+License: Apache-2.0
+
+Files: crd-catalog/solo-io/gloo/*
+Copyright: The solo-io/gloo Authors
+License: MIT
+
+Files: crd-catalog/strimzi/strimzi-kafka-operator/*
+Copyright: The strimzi/strimzi-kafka-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/superedge/superedge/*
+Copyright: The superedge/superedge Authors
+License: Apache-2.0
+
+Files: crd-catalog/tektoncd/operator/*
+Copyright: The tektoncd/operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/traefik/traefik/*
+Copyright: The traefik/traefik Authors
+License: MIT
+
+Files: crd-catalog/volcano-sh/volcano/*
+Copyright: The volcano-sh/volcano Authors
+License: Apache-2.0
+
+Files: crd-catalog/wildfly/wildfly-operator/*
+Copyright: The wildfly/wildfly-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/zalando/postgres-operator/*
+Copyright: The zalando/postgres-operator Authors
+License: MIT

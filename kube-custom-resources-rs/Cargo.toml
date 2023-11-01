@@ -2,7 +2,7 @@
 name = "kube-custom-resources-rs"
 version = "9999.99.99"
 description = "Kubernetes Custom Resource Bindings"
-authors = ["Sebastian Hoß <seb@xn--ho-hia.de>"]
+authors = ["Sebastian Hoß <seb@hoß.de>"]
 edition = "2021"
 license = "0BSD"
 keywords = ["kubernetes", "custom-resources"]

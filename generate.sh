@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+
 ### Generate code with kopium
 for file in $(find ./crd-catalog -name '*.yaml' -type f); do
   crd=$(basename "${file%.*}")

@@ -1,7 +1,7 @@
 [package]
 name = "crd-v1-fetcher"
 version = "1.0.0"
-authors = ["Sebastian Hoß <seb@infra.run>"]
+authors = ["Sebastian Hoß <seb@hoß.de>"]
 edition = "2021"
 publish = false
 
