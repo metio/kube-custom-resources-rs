@@ -7,6 +7,14 @@ Files: .idea/*
 Copyright: The kube-custom-resources-rs Authors
 License: 0BSD
 
+Files: crd-v1-fetcher/*
+Copyright: The kube-custom-resources-rs Authors
+License: 0BSD
+
+Files: kube-custom-resources-rs/*
+Copyright: The kube-custom-resources-rs Authors
+License: 0BSD
+
 Files: crd-catalog/3scale/apicast-operator/*
 Copyright: The 3scale/apicast-operator Authors
 License: Apache-2.0
@@ -115,8 +123,8 @@ Files: crd-catalog/aws-controllers-k8s/sagemaker-controller/*
 Copyright: The aws-controllers-k8s/sagemaker-controller Authors
 License: Apache-2.0
 
-Files: crd-catalog/aws-controllers-k8s/sfn-controlle/*
-Copyright: The aws-controllers-k8s/sfn-controlle Authors
+Files: crd-catalog/aws-controllers-k8s/sfn-controller/*
+Copyright: The aws-controllers-k8s/sfn-controller Authors
 License: Apache-2.0
 
 Files: crd-catalog/bitnami-labs/sealed-secrets/*
@@ -509,6 +517,10 @@ License: Apache-2.0
 
 Files: crd-catalog/mittwald/kubernetes-secret-generator/*
 Copyright: The mittwald/kubernetes-secret-generator Authors
+License: Apache-2.0
+
+Files: crd-catalog/nginxinc/kubernetes-ingress/*
+Copyright: The nginxinc/kubernetes-ingress Authors
 License: Apache-2.0
 
 Files: crd-catalog/nginxinc/nginx-kubernetes-gateway/*

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
 [workspace]
 members = [
     "crd-v1-fetcher",
