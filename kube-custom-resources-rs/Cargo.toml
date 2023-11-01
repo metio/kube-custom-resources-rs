@@ -9,6 +9,7 @@ keywords = ["kubernetes", "custom-resources"]
 categories = ["api-bindings"]
 homepage = "https://github.com/metio/kube-custom-resources-rs/"
 repository = "https://github.com/metio/kube-custom-resources-rs"
+readme = "../README.md"
 
 [lib]
 path = "src/lib.rs"
