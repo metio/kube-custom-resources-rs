@@ -15,7 +15,7 @@ readme = "../README.md"
 path = "src/lib.rs"
 
 [dependencies]
-kube = { version = "0.86.0", features = ["derive"] }
+kube = { version = "0.87.1", features = ["derive"] }
 k8s-openapi = { version = "0.20.0", features = ["latest"] }
 schemars = "0.8.15"
 serde = { version = "1.0.190", features = ["derive"] }
