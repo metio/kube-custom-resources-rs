@@ -17,13 +17,12 @@ path = "src/lib.rs"
 [dependencies]
 kube = { version = "0.87.1", features = ["derive"] }
 k8s-openapi = { version = "0.20.0", features = ["latest"] }
-schemars = "0.8.15"
+schemars = { version = "0.8.15" }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = { version = "1.0.108" }
 
 [features]
 about_k8s_io_v1alpha1 = []
-acid_zalan_do_v1 = []
 acme_cert_manager_io_v1 = []
 addons_cluster_x_k8s_io_v1alpha4 = []
 addons_cluster_x_k8s_io_v1beta1 = []
@@ -46,7 +45,6 @@ apps_gitlab_com_v1beta1 = []
 apps_kubedl_io_v1alpha1 = []
 apps_kubeedge_io_v1alpha1 = []
 apps_m88i_io_v1alpha1 = []
-apps_redhat_com_v1alpha1 = []
 aquasecurity_github_io_v1alpha1 = []
 argoproj_io_v1alpha1 = []
 argoproj_io_v1beta1 = []
@@ -71,7 +69,6 @@ capsule_clastix_io_v1beta2 = []
 ceph_rook_io_v1 = []
 cert_manager_io_v1 = []
 chaos_mesh_org_v1alpha1 = []
-charts_flagsmith_com_v1alpha1 = []
 che_eclipse_org_v1alpha1 = []
 cilium_io_v2 = []
 cilium_io_v2alpha1 = []
@@ -103,14 +100,12 @@ elasticsearch_k8s_elastic_co_v1beta1 = []
 elbv2_k8s_aws_v1alpha1 = []
 elbv2_k8s_aws_v1beta1 = []
 emrcontainers_services_k8s_aws_v1alpha1 = []
-enterprise_gloo_solo_io_v1 = []
 enterprisesearch_k8s_elastic_co_v1 = []
 enterprisesearch_k8s_elastic_co_v1beta1 = []
 execution_furiko_io_v1alpha1 = []
 executor_testkube_io_v1 = []
 expansion_gatekeeper_sh_v1alpha1 = []
 expansion_gatekeeper_sh_v1beta1 = []
-extensions_istio_io_v1alpha1 = []
 externaldata_gatekeeper_sh_v1alpha1 = []
 externaldata_gatekeeper_sh_v1beta1 = []
 externaldns_k8s_io_v1alpha1 = []
@@ -124,11 +119,8 @@ gateway_networking_k8s_io_v1 = []
 gateway_networking_k8s_io_v1alpha2 = []
 gateway_networking_k8s_io_v1beta1 = []
 gateway_nginx_org_v1alpha1 = []
-gateway_solo_io_v1 = []
 getambassador_io_v3alpha1 = []
-gloo_solo_io_v1 = []
 grafana_integreatly_org_v1beta1 = []
-graphql_gloo_solo_io_v1beta1 = []
 hazelcast_com_v1alpha1 = []
 helm_toolkit_fluxcd_io_v2beta1 = []
 hiveinternal_openshift_io_v1alpha1 = []
@@ -152,7 +144,6 @@ ipam_cluster_x_k8s_io_v1alpha1 = []
 ipam_cluster_x_k8s_io_v1beta1 = []
 jaegertracing_io_v1 = []
 jobset_x_k8s_io_v1alpha2 = []
-jobsmanager_raczylo_com_v1beta1 = []
 k8gb_absa_oss_v1beta1 = []
 k8s_nginx_org_v1 = []
 k8s_nginx_org_v1alpha1 = []
@@ -173,7 +164,6 @@ kuma_io_v1alpha1 = []
 kustomize_toolkit_fluxcd_io_v1 = []
 kustomize_toolkit_fluxcd_io_v1beta1 = []
 kustomize_toolkit_fluxcd_io_v1beta2 = []
-kyverno_io_v1 = []
 kyverno_io_v1alpha2 = []
 kyverno_io_v1beta1 = []
 kyverno_io_v2alpha1 = []
@@ -204,8 +194,6 @@ multicluster_x_k8s_io_v1alpha1 = []
 mutations_gatekeeper_sh_v1 = []
 mutations_gatekeeper_sh_v1alpha1 = []
 mutations_gatekeeper_sh_v1beta1 = []
-networking_istio_io_v1alpha3 = []
-networking_istio_io_v1beta1 = []
 networking_karmada_io_v1alpha1 = []
 nfd_k8s_sigs_io_v1alpha1 = []
 nfd_kubernetes_io_v1 = []
@@ -215,7 +203,6 @@ notebook_kubedl_io_v1alpha1 = []
 notification_toolkit_fluxcd_io_v1 = []
 notification_toolkit_fluxcd_io_v1beta1 = []
 notification_toolkit_fluxcd_io_v1beta2 = []
-objectbucket_io_v1alpha1 = []
 opensearchservice_services_k8s_aws_v1alpha1 = []
 opentelemetry_io_v1alpha1 = []
 operations_kubeedge_io_v1alpha1 = []
@@ -242,7 +229,6 @@ reliablesyncs_kubeedge_io_v1alpha1 = []
 resources_teleport_dev_v1 = []
 resources_teleport_dev_v2 = []
 resources_teleport_dev_v3 = []
-ripsaw_cloudbulldozer_io_v1alpha1 = []
 rocketmq_apache_org_v1alpha1 = []
 rules_kubeedge_io_v1 = []
 runtime_cluster_x_k8s_io_v1alpha1 = []
@@ -257,12 +243,9 @@ scylla_scylladb_com_v1alpha1 = []
 secretgenerator_mittwald_de_v1alpha1 = []
 secrets_crossplane_io_v1alpha1 = []
 secscan_quay_redhat_com_v1alpha1 = []
-security_istio_io_v1 = []
-security_istio_io_v1beta1 = []
 security_profiles_operator_x_k8s_io_v1alpha1 = []
 security_profiles_operator_x_k8s_io_v1alpha2 = []
 security_profiles_operator_x_k8s_io_v1beta1 = []
-sematext_com_v1 = []
 servicebinding_io_v1alpha3 = []
 servicebinding_io_v1beta1 = []
 services_k8s_aws_v1alpha1 = []
@@ -275,7 +258,6 @@ source_toolkit_fluxcd_io_v1beta2 = []
 sparkoperator_k8s_io_v1beta2 = []
 status_gatekeeper_sh_v1beta1 = []
 stunner_l7mp_io_v1alpha1 = []
-telemetry_istio_io_v1alpha1 = []
 templates_gatekeeper_sh_v1 = []
 templates_gatekeeper_sh_v1alpha1 = []
 templates_gatekeeper_sh_v1beta1 = []
@@ -294,7 +276,6 @@ work_karmada_io_v1alpha1 = []
 work_karmada_io_v1alpha2 = []
 all = [
   "about_k8s_io_v1alpha1",
-  "acid_zalan_do_v1",
   "acme_cert_manager_io_v1",
   "addons_cluster_x_k8s_io_v1alpha4",
   "addons_cluster_x_k8s_io_v1beta1",
@@ -317,7 +298,6 @@ all = [
   "apps_kubedl_io_v1alpha1",
   "apps_kubeedge_io_v1alpha1",
   "apps_m88i_io_v1alpha1",
-  "apps_redhat_com_v1alpha1",
   "aquasecurity_github_io_v1alpha1",
   "argoproj_io_v1alpha1",
   "argoproj_io_v1beta1",
@@ -342,7 +322,6 @@ all = [
   "ceph_rook_io_v1",
   "cert_manager_io_v1",
   "chaos_mesh_org_v1alpha1",
-  "charts_flagsmith_com_v1alpha1",
   "che_eclipse_org_v1alpha1",
   "cilium_io_v2",
   "cilium_io_v2alpha1",
@@ -374,14 +353,12 @@ all = [
   "elbv2_k8s_aws_v1alpha1",
   "elbv2_k8s_aws_v1beta1",
   "emrcontainers_services_k8s_aws_v1alpha1",
-  "enterprise_gloo_solo_io_v1",
   "enterprisesearch_k8s_elastic_co_v1",
   "enterprisesearch_k8s_elastic_co_v1beta1",
   "execution_furiko_io_v1alpha1",
   "executor_testkube_io_v1",
   "expansion_gatekeeper_sh_v1alpha1",
   "expansion_gatekeeper_sh_v1beta1",
-  "extensions_istio_io_v1alpha1",
   "externaldata_gatekeeper_sh_v1alpha1",
   "externaldata_gatekeeper_sh_v1beta1",
   "externaldns_k8s_io_v1alpha1",
@@ -395,11 +372,8 @@ all = [
   "gateway_networking_k8s_io_v1alpha2",
   "gateway_networking_k8s_io_v1beta1",
   "gateway_nginx_org_v1alpha1",
-  "gateway_solo_io_v1",
   "getambassador_io_v3alpha1",
-  "gloo_solo_io_v1",
   "grafana_integreatly_org_v1beta1",
-  "graphql_gloo_solo_io_v1beta1",
   "hazelcast_com_v1alpha1",
   "helm_toolkit_fluxcd_io_v2beta1",
   "hiveinternal_openshift_io_v1alpha1",
@@ -423,7 +397,6 @@ all = [
   "ipam_cluster_x_k8s_io_v1beta1",
   "jaegertracing_io_v1",
   "jobset_x_k8s_io_v1alpha2",
-  "jobsmanager_raczylo_com_v1beta1",
   "k8gb_absa_oss_v1beta1",
   "k8s_nginx_org_v1",
   "k8s_nginx_org_v1alpha1",
@@ -444,7 +417,6 @@ all = [
   "kustomize_toolkit_fluxcd_io_v1",
   "kustomize_toolkit_fluxcd_io_v1beta1",
   "kustomize_toolkit_fluxcd_io_v1beta2",
-  "kyverno_io_v1",
   "kyverno_io_v1alpha2",
   "kyverno_io_v1beta1",
   "kyverno_io_v2alpha1",
@@ -475,8 +447,6 @@ all = [
   "mutations_gatekeeper_sh_v1",
   "mutations_gatekeeper_sh_v1alpha1",
   "mutations_gatekeeper_sh_v1beta1",
-  "networking_istio_io_v1alpha3",
-  "networking_istio_io_v1beta1",
   "networking_karmada_io_v1alpha1",
   "nfd_k8s_sigs_io_v1alpha1",
   "nfd_kubernetes_io_v1",
@@ -486,7 +456,6 @@ all = [
   "notification_toolkit_fluxcd_io_v1",
   "notification_toolkit_fluxcd_io_v1beta1",
   "notification_toolkit_fluxcd_io_v1beta2",
-  "objectbucket_io_v1alpha1",
   "opensearchservice_services_k8s_aws_v1alpha1",
   "opentelemetry_io_v1alpha1",
   "operations_kubeedge_io_v1alpha1",
@@ -513,7 +482,6 @@ all = [
   "resources_teleport_dev_v1",
   "resources_teleport_dev_v2",
   "resources_teleport_dev_v3",
-  "ripsaw_cloudbulldozer_io_v1alpha1",
   "rocketmq_apache_org_v1alpha1",
   "rules_kubeedge_io_v1",
   "runtime_cluster_x_k8s_io_v1alpha1",
@@ -528,12 +496,9 @@ all = [
   "secretgenerator_mittwald_de_v1alpha1",
   "secrets_crossplane_io_v1alpha1",
   "secscan_quay_redhat_com_v1alpha1",
-  "security_istio_io_v1",
-  "security_istio_io_v1beta1",
   "security_profiles_operator_x_k8s_io_v1alpha1",
   "security_profiles_operator_x_k8s_io_v1alpha2",
   "security_profiles_operator_x_k8s_io_v1beta1",
-  "sematext_com_v1",
   "servicebinding_io_v1alpha3",
   "servicebinding_io_v1beta1",
   "services_k8s_aws_v1alpha1",
@@ -546,7 +511,6 @@ all = [
   "sparkoperator_k8s_io_v1beta2",
   "status_gatekeeper_sh_v1beta1",
   "stunner_l7mp_io_v1alpha1",
-  "telemetry_istio_io_v1alpha1",
   "templates_gatekeeper_sh_v1",
   "templates_gatekeeper_sh_v1alpha1",
   "templates_gatekeeper_sh_v1beta1",

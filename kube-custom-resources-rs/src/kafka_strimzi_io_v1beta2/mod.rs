@@ -5,5 +5,4 @@ pub mod kafkausers;
 pub mod kafkamirrormakers;
 pub mod kafkabridges;
 pub mod kafkaconnectors;
-pub mod kafkamirrormaker2s;
 pub mod kafkarebalances;

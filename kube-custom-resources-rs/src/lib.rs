@@ -1,7 +1,5 @@
 #[cfg(feature = "about_k8s_io_v1alpha1")]
 pub mod about_k8s_io_v1alpha1;
-#[cfg(feature = "acid_zalan_do_v1")]
-pub mod acid_zalan_do_v1;
 #[cfg(feature = "acme_cert_manager_io_v1")]
 pub mod acme_cert_manager_io_v1;
 #[cfg(feature = "addons_cluster_x_k8s_io_v1alpha4")]
@@ -46,8 +44,6 @@ pub mod apps_kubedl_io_v1alpha1;
 pub mod apps_kubeedge_io_v1alpha1;
 #[cfg(feature = "apps_m88i_io_v1alpha1")]
 pub mod apps_m88i_io_v1alpha1;
-#[cfg(feature = "apps_redhat_com_v1alpha1")]
-pub mod apps_redhat_com_v1alpha1;
 #[cfg(feature = "aquasecurity_github_io_v1alpha1")]
 pub mod aquasecurity_github_io_v1alpha1;
 #[cfg(feature = "argoproj_io_v1alpha1")]
@@ -96,8 +92,6 @@ pub mod ceph_rook_io_v1;
 pub mod cert_manager_io_v1;
 #[cfg(feature = "chaos_mesh_org_v1alpha1")]
 pub mod chaos_mesh_org_v1alpha1;
-#[cfg(feature = "charts_flagsmith_com_v1alpha1")]
-pub mod charts_flagsmith_com_v1alpha1;
 #[cfg(feature = "che_eclipse_org_v1alpha1")]
 pub mod che_eclipse_org_v1alpha1;
 #[cfg(feature = "cilium_io_v2")]
@@ -160,8 +154,6 @@ pub mod elbv2_k8s_aws_v1alpha1;
 pub mod elbv2_k8s_aws_v1beta1;
 #[cfg(feature = "emrcontainers_services_k8s_aws_v1alpha1")]
 pub mod emrcontainers_services_k8s_aws_v1alpha1;
-#[cfg(feature = "enterprise_gloo_solo_io_v1")]
-pub mod enterprise_gloo_solo_io_v1;
 #[cfg(feature = "enterprisesearch_k8s_elastic_co_v1")]
 pub mod enterprisesearch_k8s_elastic_co_v1;
 #[cfg(feature = "enterprisesearch_k8s_elastic_co_v1beta1")]
@@ -174,8 +166,6 @@ pub mod executor_testkube_io_v1;
 pub mod expansion_gatekeeper_sh_v1alpha1;
 #[cfg(feature = "expansion_gatekeeper_sh_v1beta1")]
 pub mod expansion_gatekeeper_sh_v1beta1;
-#[cfg(feature = "extensions_istio_io_v1alpha1")]
-pub mod extensions_istio_io_v1alpha1;
 #[cfg(feature = "externaldata_gatekeeper_sh_v1alpha1")]
 pub mod externaldata_gatekeeper_sh_v1alpha1;
 #[cfg(feature = "externaldata_gatekeeper_sh_v1beta1")]
@@ -202,16 +192,10 @@ pub mod gateway_networking_k8s_io_v1alpha2;
 pub mod gateway_networking_k8s_io_v1beta1;
 #[cfg(feature = "gateway_nginx_org_v1alpha1")]
 pub mod gateway_nginx_org_v1alpha1;
-#[cfg(feature = "gateway_solo_io_v1")]
-pub mod gateway_solo_io_v1;
 #[cfg(feature = "getambassador_io_v3alpha1")]
 pub mod getambassador_io_v3alpha1;
-#[cfg(feature = "gloo_solo_io_v1")]
-pub mod gloo_solo_io_v1;
 #[cfg(feature = "grafana_integreatly_org_v1beta1")]
 pub mod grafana_integreatly_org_v1beta1;
-#[cfg(feature = "graphql_gloo_solo_io_v1beta1")]
-pub mod graphql_gloo_solo_io_v1beta1;
 #[cfg(feature = "hazelcast_com_v1alpha1")]
 pub mod hazelcast_com_v1alpha1;
 #[cfg(feature = "helm_toolkit_fluxcd_io_v2beta1")]
@@ -258,8 +242,6 @@ pub mod ipam_cluster_x_k8s_io_v1beta1;
 pub mod jaegertracing_io_v1;
 #[cfg(feature = "jobset_x_k8s_io_v1alpha2")]
 pub mod jobset_x_k8s_io_v1alpha2;
-#[cfg(feature = "jobsmanager_raczylo_com_v1beta1")]
-pub mod jobsmanager_raczylo_com_v1beta1;
 #[cfg(feature = "k8gb_absa_oss_v1beta1")]
 pub mod k8gb_absa_oss_v1beta1;
 #[cfg(feature = "k8s_nginx_org_v1")]
@@ -300,8 +282,6 @@ pub mod kustomize_toolkit_fluxcd_io_v1;
 pub mod kustomize_toolkit_fluxcd_io_v1beta1;
 #[cfg(feature = "kustomize_toolkit_fluxcd_io_v1beta2")]
 pub mod kustomize_toolkit_fluxcd_io_v1beta2;
-#[cfg(feature = "kyverno_io_v1")]
-pub mod kyverno_io_v1;
 #[cfg(feature = "kyverno_io_v1alpha2")]
 pub mod kyverno_io_v1alpha2;
 #[cfg(feature = "kyverno_io_v1beta1")]
@@ -362,10 +342,6 @@ pub mod mutations_gatekeeper_sh_v1;
 pub mod mutations_gatekeeper_sh_v1alpha1;
 #[cfg(feature = "mutations_gatekeeper_sh_v1beta1")]
 pub mod mutations_gatekeeper_sh_v1beta1;
-#[cfg(feature = "networking_istio_io_v1alpha3")]
-pub mod networking_istio_io_v1alpha3;
-#[cfg(feature = "networking_istio_io_v1beta1")]
-pub mod networking_istio_io_v1beta1;
 #[cfg(feature = "networking_karmada_io_v1alpha1")]
 pub mod networking_karmada_io_v1alpha1;
 #[cfg(feature = "nfd_k8s_sigs_io_v1alpha1")]
@@ -384,8 +360,6 @@ pub mod notification_toolkit_fluxcd_io_v1;
 pub mod notification_toolkit_fluxcd_io_v1beta1;
 #[cfg(feature = "notification_toolkit_fluxcd_io_v1beta2")]
 pub mod notification_toolkit_fluxcd_io_v1beta2;
-#[cfg(feature = "objectbucket_io_v1alpha1")]
-pub mod objectbucket_io_v1alpha1;
 #[cfg(feature = "opensearchservice_services_k8s_aws_v1alpha1")]
 pub mod opensearchservice_services_k8s_aws_v1alpha1;
 #[cfg(feature = "opentelemetry_io_v1alpha1")]
@@ -438,8 +412,6 @@ pub mod resources_teleport_dev_v1;
 pub mod resources_teleport_dev_v2;
 #[cfg(feature = "resources_teleport_dev_v3")]
 pub mod resources_teleport_dev_v3;
-#[cfg(feature = "ripsaw_cloudbulldozer_io_v1alpha1")]
-pub mod ripsaw_cloudbulldozer_io_v1alpha1;
 #[cfg(feature = "rocketmq_apache_org_v1alpha1")]
 pub mod rocketmq_apache_org_v1alpha1;
 #[cfg(feature = "rules_kubeedge_io_v1")]
@@ -468,18 +440,12 @@ pub mod secretgenerator_mittwald_de_v1alpha1;
 pub mod secrets_crossplane_io_v1alpha1;
 #[cfg(feature = "secscan_quay_redhat_com_v1alpha1")]
 pub mod secscan_quay_redhat_com_v1alpha1;
-#[cfg(feature = "security_istio_io_v1")]
-pub mod security_istio_io_v1;
-#[cfg(feature = "security_istio_io_v1beta1")]
-pub mod security_istio_io_v1beta1;
 #[cfg(feature = "security_profiles_operator_x_k8s_io_v1alpha1")]
 pub mod security_profiles_operator_x_k8s_io_v1alpha1;
 #[cfg(feature = "security_profiles_operator_x_k8s_io_v1alpha2")]
 pub mod security_profiles_operator_x_k8s_io_v1alpha2;
 #[cfg(feature = "security_profiles_operator_x_k8s_io_v1beta1")]
 pub mod security_profiles_operator_x_k8s_io_v1beta1;
-#[cfg(feature = "sematext_com_v1")]
-pub mod sematext_com_v1;
 #[cfg(feature = "servicebinding_io_v1alpha3")]
 pub mod servicebinding_io_v1alpha3;
 #[cfg(feature = "servicebinding_io_v1beta1")]
@@ -504,8 +470,6 @@ pub mod sparkoperator_k8s_io_v1beta2;
 pub mod status_gatekeeper_sh_v1beta1;
 #[cfg(feature = "stunner_l7mp_io_v1alpha1")]
 pub mod stunner_l7mp_io_v1alpha1;
-#[cfg(feature = "telemetry_istio_io_v1alpha1")]
-pub mod telemetry_istio_io_v1alpha1;
 #[cfg(feature = "templates_gatekeeper_sh_v1")]
 pub mod templates_gatekeeper_sh_v1;
 #[cfg(feature = "templates_gatekeeper_sh_v1alpha1")]
