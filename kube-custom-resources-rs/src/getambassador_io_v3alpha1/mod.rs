@@ -6,7 +6,6 @@ pub mod kubernetesendpointresolvers;
 pub mod kubernetesserviceresolvers;
 pub mod listeners;
 pub mod logservices;
-pub mod mappings;
 pub mod modules;
 pub mod ratelimitservices;
 pub mod tcpmappings;

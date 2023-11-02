@@ -15,7 +15,7 @@ for file in $(find ./crd-catalog -name '*.yaml' -type f); do
 
   mkdir --parents "./kube-custom-resources-rs/src/${module}"
 
-  if ! kopium --auto --filename "${file}" >"./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
+  if ! kopium --docs --filename "${file}" >"./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
     echo "error in ${file}"
   else
     echo "pub mod ${rust_crd};" >>"./kube-custom-resources-rs/src/${module}/mod.rs"
@@ -25,19 +25,30 @@ done
 
 ### Remove buggy resources
 BUGGY_RESOURCES=(
+  acid_zalan_do_v1/operatorconfigurations
   acid_zalan_do_v1/postgresqls
+  acid_zalan_do_v1/postgresteams
+  addons_cluster_x_k8s_io_v1alpha4/clusterresourcesetbindings
+  addons_cluster_x_k8s_io_v1beta1/clusterresourcesetbindings
   apiextensions_crossplane_io_v1/compositionrevisions
   apiextensions_crossplane_io_v1/compositions
   apiextensions_crossplane_io_v1beta1/compositionrevisions
+  apigatewayv2_services_k8s_aws_v1alpha1/integrations
   appprotect_f5_com_v1beta1/appolicies
   apps_clusternet_io_v1alpha1/manifests
+  apps_kubeedge_io_v1alpha1/edgeapplications
   apps_gitlab_com_v1beta2/runners
+  apps_redhat_com_v1alpha1/clusterimpairments
   aquasecurity_github_io_v1alpha1/clusterconfigauditreports
   aquasecurity_github_io_v1alpha1/configauditreports
   argoproj_io_v1alpha1/applicationsets
   autoscaling_k8s_elastic_co_v1alpha1/elasticsearchautoscalers
   camel_apache_org_v1/integrations
+  camel_apache_org_v1/integrationkits
+  camel_apache_org_v1/integrationplatforms
+  camel_apache_org_v1alpha1/kameletbindings
   ceph_rook_io_v1/cephclusters
+  charts_flagsmith_com_v1alpha1/flagsmiths
   charts_helm_k8s_io_v1alpha1/snykmonitors
   charts_opdev_io_v1alpha1/synapses
   charts_operatorhub_io_v1alpha1/cockroachdbs
@@ -60,11 +71,17 @@ BUGGY_RESOURCES=(
   dex_coreos_com_v1/passwords
   dex_coreos_com_v1/refreshtokens
   dex_coreos_com_v1/signingkeies
+  enterprise_gloo_solo_io_v1/authconfigs
+  extensions_istio_io_v1alpha1/wasmplugins
+  flagger_app_v1beta1/alertproviders
+  flagger_app_v1beta1/metrictemplates
   fossul_io_v1/backupconfigs
   fossul_io_v1/backups
   fossul_io_v1/backupschedules
   fossul_io_v1/fossuls
   fossul_io_v1/restores
+  gateway_solo_io_v1/gateways
+  gateway_solo_io_v1/httpgateways
   gateway_solo_io_v1/routeoptions
   gateway_solo_io_v1/routetables
   gateway_solo_io_v1/virtualhostoptions
@@ -94,13 +111,22 @@ BUGGY_RESOURCES=(
   getambassador_io_v2/tcpmappings
   getambassador_io_v2/tlscontexts
   getambassador_io_v2/tracingservices
+  getambassador_io_v3alpha1/mappings
+  gloo_solo_io_v1/proxies
+  gloo_solo_io_v1/settings
+  gloo_solo_io_v1/upstreams
+  gloo_solo_io_v1/upstreamgroups
   grafana_integreatly_org_v1beta1/grafanas
+  graphql_gloo_solo_io_v1beta1/graphqlapis
   helm_sigstore_dev_v1alpha1/rekors
   hive_openshift_io_v1/selectorsyncsets
   hive_openshift_io_v1/syncsets
   infinispan_org_v1/infinispans
   install_istio_io_v1alpha1/istiooperators
+  jobsmanager_raczylo_com_v1beta1/managedjobs
+  kafka_strimzi_io_v1beta2/kafkamirrormaker2s
   kiali_io_v1alpha1/kialis
+  kubean_io_v1alpha1/localartifactsets
   kuma_io_v1alpha1/circuitbreakers
   kuma_io_v1alpha1/dataplaneinsights
   kuma_io_v1alpha1/dataplanes
@@ -127,6 +153,11 @@ BUGGY_RESOURCES=(
   kuma_io_v1alpha1/zoneingressinsights
   kuma_io_v1alpha1/zoneinsights
   kuma_io_v1alpha1/zones
+  kyverno_io_v1/clusterpolicies
+  kyverno_io_v1/policies
+  kyverno_io_v2beta1/clusterpolicies
+  kyverno_io_v2beta1/policies
+  lambda_services_k8s_aws_v1alpha1/aliases
   lb_lbconfig_carlosedp_com_v1/externalloadbalancers
   litmuschaos_io_v1alpha1/chaosresults
   logging_banzaicloud_io_v1beta1/fluentbitagents
@@ -153,10 +184,29 @@ BUGGY_RESOURCES=(
   microcks_github_io_v1alpha1/microcksinstalls
   monitoring_coreos_com_v1/podmonitors
   monitoring_coreos_com_v1/probes
+  monitoring_coreos_com_v1/prometheuses
   monitoring_coreos_com_v1/servicemonitors
+  monitoring_coreos_com_v1alpha1/prometheusagents
+  monitoring_coreos_com_v1alpha1/scrapeconfigs
   multicluster_x_k8s_io_v1alpha1/works
+  networking_istio_io_v1alpha3/destinationrules
+  networking_istio_io_v1alpha3/envoyfilters
+  networking_istio_io_v1alpha3/gateways
+  networking_istio_io_v1alpha3/serviceentries
+  networking_istio_io_v1alpha3/sidecars
   networking_istio_io_v1alpha3/virtualservices
+  networking_istio_io_v1alpha3/workloadentries
+  networking_istio_io_v1alpha3/workloadgroups
+  networking_istio_io_v1beta1/destinationrules
+  networking_istio_io_v1beta1/gateways
+  networking_istio_io_v1beta1/proxyconfigs
+  networking_istio_io_v1beta1/serviceentries
+  networking_istio_io_v1beta1/sidecars
   networking_istio_io_v1beta1/virtualservices
+  networking_istio_io_v1beta1/workloadentries
+  networking_istio_io_v1beta1/workloadgroups
+  objectbucket_io_v1alpha1/objectbuckets
+  objectbucket_io_v1alpha1/objectbucketclaims
   operator_knative_dev_v1beta1/knativeeventings
   operator_knative_dev_v1beta1/knativeservings
   operator_tekton_dev_v1alpha1/tektonchains
@@ -165,13 +215,20 @@ BUGGY_RESOURCES=(
   operator_tekton_dev_v1alpha1/tektoninstallersets
   operator_tekton_dev_v1alpha1/tektonpipelines
   operator_tekton_dev_v1alpha1/tektontriggers
+  operator_tigera_io_v1/imagesets
   resources_teleport_dev_v2/teleportprovisiontokens
   resources_teleport_dev_v5/teleportroles
   resources_teleport_dev_v6/teleportroles
+  ripsaw_cloudbulldozer_io_v1alpha1/benchmarks
+  security_istio_io_v1/authorizationpolicies
   security_istio_io_v1/requestauthentications
+  security_istio_io_v1beta1/authorizationpolicies
+  security_istio_io_v1beta1/peerauthentications
   security_istio_io_v1beta1/requestauthentications
   security_profiles_operator_x_k8s_io_v1alpha2/selinuxprofiles
+  sematext_com_v1/sematextagents
   source_toolkit_fluxcd_io_v1/gitrepositories
+  telemetry_istio_io_v1alpha1/telemetries
   traefik_io_v1alpha1/middlewares
   work_karmada_io_v1alpha1/works
 )
