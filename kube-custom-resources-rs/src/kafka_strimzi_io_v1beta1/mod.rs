@@ -1,2 +1,2 @@
-pub mod kafkatopics;
 pub mod kafkausers;
+pub mod kafkatopics;

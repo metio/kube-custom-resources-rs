@@ -1,3 +1,3 @@
 pub mod clustersecretstores;
-pub mod externalsecrets;
 pub mod secretstores;
+pub mod externalsecrets;

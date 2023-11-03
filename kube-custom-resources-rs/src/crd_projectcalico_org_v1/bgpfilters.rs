@@ -30,6 +30,8 @@ pub struct BGPFilterExportV4 {
     pub action: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,6 +44,8 @@ pub struct BGPFilterExportV6 {
     pub action: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,6 +58,8 @@ pub struct BGPFilterImportV4 {
     pub action: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -66,6 +72,8 @@ pub struct BGPFilterImportV6 {
     pub action: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

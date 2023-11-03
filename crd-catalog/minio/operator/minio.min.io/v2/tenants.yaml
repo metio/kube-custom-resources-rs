@@ -2766,6 +2766,8 @@ spec:
                       additionalProperties:
                         type: string
                       type: object
+                    reclaimStorage:
+                      type: boolean
                     resources:
                       properties:
                         claims:

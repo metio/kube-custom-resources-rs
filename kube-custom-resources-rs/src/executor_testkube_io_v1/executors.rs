@@ -52,6 +52,9 @@ pub struct ExecutorSpec {
     /// URI for rest based executors
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
+    /// use data dir as working dir for executor
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDataDirAsWorkingDir")]
+    pub use_data_dir_as_working_dir: Option<bool>,
 }
 
 /// ExecutorSpec defines the desired state of Executor

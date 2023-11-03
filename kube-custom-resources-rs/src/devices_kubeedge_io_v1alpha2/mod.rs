@@ -1,2 +1,2 @@
-pub mod devices;
 pub mod devicemodels;
+pub mod devices;

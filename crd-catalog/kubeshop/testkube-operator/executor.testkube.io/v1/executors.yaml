@@ -114,6 +114,9 @@ spec:
               uri:
                 description: URI for rest based executors
                 type: string
+              useDataDirAsWorkingDir:
+                description: use data dir as working dir for executor
+                type: boolean
             type: object
           status:
             description: ExecutorStatus defines the observed state of Executor

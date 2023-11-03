@@ -98,7 +98,8 @@ pub struct ThanosRulerSpec {
     /// When a ThanosRuler deployment is paused, no actions except for deletion will be performed on the underlying objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// PodMetadata contains Labels and Annotations gets propagated to the thanos ruler pods.
+    /// PodMetadata configures labels and annotations which are propagated to the ThanosRuler pods. 
+    ///  The following items are reserved and cannot be overridden: * "app.kubernetes.io/name" label, set to "thanos-ruler". * "app.kubernetes.io/managed-by" label, set to "prometheus-operator". * "app.kubernetes.io/instance" label, set to the name of the ThanosRuler instance. * "thanos-ruler" label, set to the name of the ThanosRuler instance. * "kubectl.kubernetes.io/default-container" annotation, set to "thanos-ruler".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<ThanosRulerPodMetadata>,
     /// Port name used for the pods and governing service. Defaults to `web`.
@@ -2387,7 +2388,8 @@ pub struct ThanosRulerObjectStorageConfig {
     pub optional: Option<bool>,
 }
 
-/// PodMetadata contains Labels and Annotations gets propagated to the thanos ruler pods.
+/// PodMetadata configures labels and annotations which are propagated to the ThanosRuler pods. 
+///  The following items are reserved and cannot be overridden: * "app.kubernetes.io/name" label, set to "thanos-ruler". * "app.kubernetes.io/managed-by" label, set to "prometheus-operator". * "app.kubernetes.io/instance" label, set to the name of the ThanosRuler instance. * "thanos-ruler" label, set to the name of the ThanosRuler instance. * "kubectl.kubernetes.io/default-container" annotation, set to "thanos-ruler".
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ThanosRulerPodMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations

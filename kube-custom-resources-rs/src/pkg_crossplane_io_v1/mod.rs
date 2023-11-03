@@ -1,4 +1,4 @@
 pub mod configurationrevisions;
-pub mod configurations;
 pub mod providerrevisions;
+pub mod configurations;
 pub mod providers;

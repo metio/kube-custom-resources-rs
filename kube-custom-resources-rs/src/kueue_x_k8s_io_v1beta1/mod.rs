@@ -1,5 +1,5 @@
+pub mod workloads;
+pub mod resourceflavors;
+pub mod localqueues;
 pub mod admissionchecks;
 pub mod clusterqueues;
-pub mod localqueues;
-pub mod resourceflavors;
-pub mod workloads;

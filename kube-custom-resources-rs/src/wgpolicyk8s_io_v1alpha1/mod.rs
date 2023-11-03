@@ -1,2 +1,2 @@
-pub mod clusterpolicyreports;
 pub mod policyreports;
+pub mod clusterpolicyreports;

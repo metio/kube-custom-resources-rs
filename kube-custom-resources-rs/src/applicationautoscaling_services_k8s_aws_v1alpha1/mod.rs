@@ -1,2 +1,2 @@
-pub mod scalabletargets;
 pub mod scalingpolicies;
+pub mod scalabletargets;
