@@ -17,4 +17,4 @@ jobs:
       - name: Cache Dependencies
         uses: Swatinem/rust-cache@v2
       - name: Build all Packages and Features
-        run: cargo check --all-features --frozen --profile dev
+        run: cargo check --all-features --locked --profile dev
