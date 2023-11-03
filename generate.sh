@@ -269,14 +269,3 @@ for mld in ./kube-custom-resources-rs/src/*; do
   fi
 done
 
-
-### Add 'all' feature
-echo "all = [" >>./kube-custom-resources-rs/Cargo.toml
-for mld in ./kube-custom-resources-rs/src/*; do
-  module=$(basename "${mld}")
-
-  if [ -f "${mld}/mod.rs" ]; then
-    echo "  \"${module}\"," >>./kube-custom-resources-rs/Cargo.toml
-  fi
-done
-echo "]" >>./kube-custom-resources-rs/Cargo.toml
