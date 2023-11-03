@@ -1,14 +1,14 @@
 # SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 # SPDX-License-Identifier: 0BSD
 
-name: Check Upstream Options
+name: Update CRDs
 on:
   schedule:
     - cron: 53 15 * * FRI
   workflow_dispatch:
 jobs:
-  upstream:
-    name: Check Upstream Options
+  update:
+    name: Update CRDs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,7 +22,7 @@ jobs:
       - name: Fetch CRDs
         run: cargo run --package crd-v1-fetcher
       - name: Generate Code
-        run: generate.sh
+        run: ./generate.sh
       - id: cpr
         name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
