@@ -8,7 +8,7 @@ on:
   pull_request:
     branches: [ main ]
 jobs:
-  release:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,3 +18,5 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Build all Packages and Features
         run: cargo check --all-features --locked --profile dev
+        env:
+          CARGO_INCREMENTAL: 0

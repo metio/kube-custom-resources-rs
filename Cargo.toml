@@ -12,7 +12,6 @@ resolver = "2"
 # Disable settings to speeds up builds
 debug = false
 lto = "off"
-incremental = false
 strip = "none"
 debug-assertions = false
 overflow-checks = false
