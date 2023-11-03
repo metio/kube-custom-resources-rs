@@ -17,6 +17,6 @@ jobs:
       - name: Cache Dependencies
         uses: Swatinem/rust-cache@v2
       - name: Build all Packages and Features
-        run: cargo check --all-features --locked --profile dev
+        run: cargo check --all-features --locked
         env:
           CARGO_INCREMENTAL: 0
