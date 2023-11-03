@@ -17,5 +17,4 @@ jobs:
       - name: Build all Packages and Features
         run: cargo check --all-features --locked
         env:
-          CARGO_INCREMENTAL: "false"
           RUSTFLAGS: "-A warnings"
