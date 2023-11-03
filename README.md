@@ -13,7 +13,7 @@ Feel free to add your own CRD to the [catalog](./crd-v1-fetcher/src/catalog.rs)!
 
 ```toml
 [dependencies]
-kube-custom-resources-rs = { version = "<version>", features = ["all"] }
+kube-custom-resources-rs = { version = "<version>", features = ["<features>"] }
 ```
 
 Replace `<version>` with the latest available [release](https://crates.io/crates/kube-custom-resources-rs).
@@ -35,8 +35,6 @@ Since Cargo imposes certain rules on how features can be named, `.`, `-`, and `/
 [dependencies]
 kube-custom-resources-rs = { version = "<version>", features = ["cert_manager_io_v1"] }
 ```
-
-The `all` feature contains all available custom resources in this crate.
 
 ## Versioning
 
