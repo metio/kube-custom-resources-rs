@@ -20,3 +20,4 @@ jobs:
         run: cargo check --all-features --locked
         env:
           CARGO_INCREMENTAL: 0
+          RUSTFLAGS: "-A warnings"
