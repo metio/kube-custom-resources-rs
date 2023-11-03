@@ -2080,6 +2080,8 @@ pub struct TenantPools {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reclaimStorage")]
+    pub reclaim_storage: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TenantPoolsResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]

@@ -106,10 +106,18 @@ pub struct HazelcastSpec {
 /// Hazelcast Advanced Network configuration
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct HazelcastAdvancedNetwork {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientServerSocketEndpointConfig")]
+    pub client_server_socket_endpoint_config: Option<HazelcastAdvancedNetworkClientServerSocketEndpointConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberServerSocketEndpointConfig")]
     pub member_server_socket_endpoint_config: Option<HazelcastAdvancedNetworkMemberServerSocketEndpointConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wan: Option<Vec<HazelcastAdvancedNetworkWan>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct HazelcastAdvancedNetworkClientServerSocketEndpointConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interfaces: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

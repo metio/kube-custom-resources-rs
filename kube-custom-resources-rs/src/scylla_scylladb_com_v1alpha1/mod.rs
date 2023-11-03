@@ -1,2 +1,2 @@
-pub mod nodeconfigs;
 pub mod scyllaoperatorconfigs;
+pub mod nodeconfigs;

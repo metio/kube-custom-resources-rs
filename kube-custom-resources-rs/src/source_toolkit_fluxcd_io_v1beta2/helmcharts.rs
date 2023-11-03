@@ -89,11 +89,23 @@ pub enum HelmChartSourceRefKind {
 /// Verify contains the secret name containing the trusted public keys used to verify the signature and specifies which provider to use to check whether OCI image is authentic. This field is only supported when using HelmRepository source with spec.type 'oci'. Chart dependencies, which are not bundled in the umbrella chart artifact, are not verified.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct HelmChartVerify {
+    /// MatchOIDCIdentity specifies the identity matching criteria to use while verifying an OCI artifact which was signed using Cosign keyless signing. The artifact's identity is deemed to be verified if any of the specified matchers match against the identity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOIDCIdentity")]
+    pub match_oidc_identity: Option<Vec<HelmChartVerifyMatchOidcIdentity>>,
     /// Provider specifies the technology used to sign the OCI Artifact.
     pub provider: HelmChartVerifyProvider,
     /// SecretRef specifies the Kubernetes Secret containing the trusted public keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<HelmChartVerifySecretRef>,
+}
+
+/// OIDCIdentityMatch specifies options for verifying the certificate identity, i.e. the issuer and the subject of the certificate.
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct HelmChartVerifyMatchOidcIdentity {
+    /// Issuer specifies the regex pattern to match against to verify the OIDC issuer in the Fulcio certificate. The pattern must be a valid Go regular expression.
+    pub issuer: String,
+    /// Subject specifies the regex pattern to match against to verify the identity subject in the Fulcio certificate. The pattern must be a valid Go regular expression.
+    pub subject: String,
 }
 
 /// Verify contains the secret name containing the trusted public keys used to verify the signature and specifies which provider to use to check whether OCI image is authentic. This field is only supported when using HelmRepository source with spec.type 'oci'. Chart dependencies, which are not bundled in the umbrella chart artifact, are not verified.

@@ -100,7 +100,8 @@ pub struct AlertmanagerSpec {
     /// If set to true all actions on the underlying managed objects are not goint to be performed, except for delete actions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// PodMetadata configures Labels and Annotations which are propagated to the alertmanager pods.
+    /// PodMetadata configures labels and annotations which are propagated to the Alertmanager pods. 
+    ///  The following items are reserved and cannot be overridden: * "alertmanager" label, set to the name of the Alertmanager instance. * "app.kubernetes.io/instance" label, set to the name of the Alertmanager instance. * "app.kubernetes.io/managed-by" label, set to "prometheus-operator". * "app.kubernetes.io/name" label, set to "alertmanager". * "app.kubernetes.io/version" label, set to the Alertmanager version. * "kubectl.kubernetes.io/default-container" annotation, set to "alertmanager".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<AlertmanagerPodMetadata>,
     /// Port name used for the pods and governing service. Defaults to `web`.
@@ -2698,7 +2699,8 @@ pub enum AlertmanagerLogLevel {
     Error,
 }
 
-/// PodMetadata configures Labels and Annotations which are propagated to the alertmanager pods.
+/// PodMetadata configures labels and annotations which are propagated to the Alertmanager pods. 
+///  The following items are reserved and cannot be overridden: * "alertmanager" label, set to the name of the Alertmanager instance. * "app.kubernetes.io/instance" label, set to the name of the Alertmanager instance. * "app.kubernetes.io/managed-by" label, set to "prometheus-operator". * "app.kubernetes.io/name" label, set to "alertmanager". * "app.kubernetes.io/version" label, set to the Alertmanager version. * "kubectl.kubernetes.io/default-container" annotation, set to "alertmanager".
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct AlertmanagerPodMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations

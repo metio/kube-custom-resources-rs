@@ -1,4 +1,4 @@
-pub mod addons;
-pub mod clusters;
-pub mod fargateprofiles;
 pub mod nodegroups;
+pub mod clusters;
+pub mod addons;
+pub mod fargateprofiles;

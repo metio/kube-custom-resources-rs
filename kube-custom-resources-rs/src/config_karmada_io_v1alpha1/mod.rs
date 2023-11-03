@@ -1,2 +1,2 @@
-pub mod resourceinterpretercustomizations;
 pub mod resourceinterpreterwebhookconfigurations;
+pub mod resourceinterpretercustomizations;

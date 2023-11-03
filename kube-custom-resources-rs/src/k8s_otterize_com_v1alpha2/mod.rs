@@ -1,3 +1,3 @@
 pub mod clientintents;
-pub mod kafkaserverconfigs;
 pub mod protectedservices;
+pub mod kafkaserverconfigs;

@@ -1,9 +1,9 @@
 pub mod ingressroutes;
-pub mod ingressroutetcps;
-pub mod ingressrouteudps;
+pub mod tlsstores;
 pub mod middlewaretcps;
 pub mod serverstransports;
-pub mod serverstransporttcps;
-pub mod tlsoptions;
-pub mod tlsstores;
+pub mod ingressroutetcps;
 pub mod traefikservices;
+pub mod ingressrouteudps;
+pub mod tlsoptions;
+pub mod serverstransporttcps;

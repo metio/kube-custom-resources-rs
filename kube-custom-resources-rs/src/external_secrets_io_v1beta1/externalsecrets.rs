@@ -93,7 +93,8 @@ pub enum ExternalSecretDataRemoteRefMetadataPolicy {
 /// SourceRef allows you to override the source from which the value will pulled from.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ExternalSecretDataSourceRef {
-    /// GeneratorRef points to a generator custom resource in
+    /// GeneratorRef points to a generator custom resource. 
+    ///  Deprecated: The generatorRef is not implemented in .data[]. this will be removed with v1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatorRef")]
     pub generator_ref: Option<ExternalSecretDataSourceRefGeneratorRef>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
@@ -101,7 +102,8 @@ pub struct ExternalSecretDataSourceRef {
     pub store_ref: Option<ExternalSecretDataSourceRefStoreRef>,
 }
 
-/// GeneratorRef points to a generator custom resource in
+/// GeneratorRef points to a generator custom resource. 
+///  Deprecated: The generatorRef is not implemented in .data[]. this will be removed with v1.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ExternalSecretDataSourceRefGeneratorRef {
     /// Specify the apiVersion of the generator resource
@@ -259,7 +261,7 @@ pub struct ExternalSecretDataFromRewriteTransform {
 /// SourceRef points to a store or generator which contains secret values ready to use. Use this in combination with Extract or Find pull values out of a specific SecretStore. When sourceRef points to a generator Extract or Find is not supported. The generator returns a static map of values
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ExternalSecretDataFromSourceRef {
-    /// GeneratorRef points to a generator custom resource in
+    /// GeneratorRef points to a generator custom resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatorRef")]
     pub generator_ref: Option<ExternalSecretDataFromSourceRefGeneratorRef>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
@@ -267,7 +269,7 @@ pub struct ExternalSecretDataFromSourceRef {
     pub store_ref: Option<ExternalSecretDataFromSourceRefStoreRef>,
 }
 
-/// GeneratorRef points to a generator custom resource in
+/// GeneratorRef points to a generator custom resource.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ExternalSecretDataFromSourceRefGeneratorRef {
     /// Specify the apiVersion of the generator resource

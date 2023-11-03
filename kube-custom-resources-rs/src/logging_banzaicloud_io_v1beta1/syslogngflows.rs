@@ -23,6 +23,8 @@ pub struct SyslogNGFlowSpec {
     pub logging_ref: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<SyslogNGFlowMatch>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputMetrics")]
+    pub output_metrics: Option<Vec<SyslogNGFlowOutputMetrics>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -306,6 +308,16 @@ pub struct SyslogNGFlowMatchRegexp {
     pub r#type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct SyslogNGFlowOutputMetrics {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

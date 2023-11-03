@@ -124,7 +124,8 @@ pub enum ClusterExternalSecretExternalSecretSpecDataRemoteRefMetadataPolicy {
 /// SourceRef allows you to override the source from which the value will pulled from.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ClusterExternalSecretExternalSecretSpecDataSourceRef {
-    /// GeneratorRef points to a generator custom resource in
+    /// GeneratorRef points to a generator custom resource. 
+    ///  Deprecated: The generatorRef is not implemented in .data[]. this will be removed with v1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatorRef")]
     pub generator_ref: Option<ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRef>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
@@ -132,7 +133,8 @@ pub struct ClusterExternalSecretExternalSecretSpecDataSourceRef {
     pub store_ref: Option<ClusterExternalSecretExternalSecretSpecDataSourceRefStoreRef>,
 }
 
-/// GeneratorRef points to a generator custom resource in
+/// GeneratorRef points to a generator custom resource. 
+///  Deprecated: The generatorRef is not implemented in .data[]. this will be removed with v1.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRef {
     /// Specify the apiVersion of the generator resource
@@ -290,7 +292,7 @@ pub struct ClusterExternalSecretExternalSecretSpecDataFromRewriteTransform {
 /// SourceRef points to a store or generator which contains secret values ready to use. Use this in combination with Extract or Find pull values out of a specific SecretStore. When sourceRef points to a generator Extract or Find is not supported. The generator returns a static map of values
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRef {
-    /// GeneratorRef points to a generator custom resource in
+    /// GeneratorRef points to a generator custom resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatorRef")]
     pub generator_ref: Option<ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRef>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
@@ -298,7 +300,7 @@ pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRef {
     pub store_ref: Option<ClusterExternalSecretExternalSecretSpecDataFromSourceRefStoreRef>,
 }
 
-/// GeneratorRef points to a generator custom resource in
+/// GeneratorRef points to a generator custom resource.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRef {
     /// Specify the apiVersion of the generator resource

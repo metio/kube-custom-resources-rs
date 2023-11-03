@@ -1251,6 +1251,9 @@ pub struct ClusterSecretStoreProviderOracle {
     pub principal_type: Option<String>,
     /// Region is the region where vault is located.
     pub region: String,
+    /// ServiceAccountRef specified the service account that should be used when authenticating with WorkloadIdentity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
+    pub service_account_ref: Option<ClusterSecretStoreProviderOracleServiceAccountRef>,
     /// Vault is the vault's OCID of the specific vault where secret is located.
     pub vault: String,
 }
@@ -1299,6 +1302,19 @@ pub struct ClusterSecretStoreProviderOracleAuthSecretRefPrivatekey {
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// ServiceAccountRef specified the service account that should be used when authenticating with WorkloadIdentity.
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct ClusterSecretStoreProviderOracleServiceAccountRef {
+    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
+    /// The name of the ServiceAccount resource being referred to.
+    pub name: String,
     /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
