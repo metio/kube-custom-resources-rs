@@ -19,6 +19,10 @@ Files: crd-catalog/Alvearie/imaging-ingestion/*
 Copyright: The Alvearie/imaging-ingestion Authors
 License: Apache-2.0
 
+Files: crd-catalog/ansible/awx-operator/*
+Copyright: The ansible/awx-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/apache/camel-k/*
 Copyright: The apache/camel-k Authors
 License: Apache-2.0
