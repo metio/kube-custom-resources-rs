@@ -531,6 +531,8 @@ spec:
                         type: string
                       duration:
                         type: string
+                      issue-temp-cert:
+                        type: boolean
                       issuer:
                         type: string
                       issuer-group:
