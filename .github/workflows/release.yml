@@ -26,7 +26,15 @@ jobs:
         run: sed -i -e 's/^version = .*/version = "${{ steps.release.outputs.version }}"/' kube-custom-resources-rs/Cargo.toml
       - name: Publish to crates.io
         if: steps.commits.outputs.count > 0
-        run: cargo publish --allow-dirty --token ${{ secrets.CRATES_IO_TOKEN }} --package kube-custom-resources-rs --all-features --locked
+        run: >
+          cargo publish
+          --allow-dirty
+          --token ${{ secrets.CRATES_IO_TOKEN }}
+          --package kube-custom-resources-rs
+          --all-features
+          --locked
+          --jobs 1
+          --no-verify
         env:
           RUSTFLAGS: "-A warnings"
       - id: create_release
