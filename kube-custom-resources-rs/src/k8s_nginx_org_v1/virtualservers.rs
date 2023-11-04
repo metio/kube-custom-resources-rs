@@ -610,6 +610,8 @@ pub struct VirtualServerTlsCertManager {
     pub common_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issue-temp-cert")]
+    pub issue_temp_cert: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuer-group")]
