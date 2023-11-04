@@ -404,6 +404,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "change-metrics/monocle-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/change-metrics/monocle-operator/blob/master/config/crd/bases/monocle.monocle.change-metrics.io_monocles.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "chaos-mesh/chaos-mesh",
         license: APACHE_V2,
         urls: &[

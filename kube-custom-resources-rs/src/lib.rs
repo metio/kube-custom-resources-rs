@@ -352,6 +352,8 @@ pub mod monitoring_coreos_com_v1;
 pub mod monitoring_coreos_com_v1alpha1;
 #[cfg(feature = "monitoring_coreos_com_v1beta1")]
 pub mod monitoring_coreos_com_v1beta1;
+#[cfg(feature = "monocle_monocle_change_metrics_io_v1alpha1")]
+pub mod monocle_monocle_change_metrics_io_v1alpha1;
 #[cfg(feature = "mq_services_k8s_aws_v1alpha1")]
 pub mod mq_services_k8s_aws_v1alpha1;
 #[cfg(feature = "multicluster_x_k8s_io_v1alpha1")]
