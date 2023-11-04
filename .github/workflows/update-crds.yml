@@ -22,9 +22,11 @@ jobs:
       - name: Verify kopium
         run: kopium --version
       - name: Fetch CRDs
-        run: cargo run --package crd-v1-fetcher
+        run: cargo run --package code-generator --bin crd_v1_fetcher
+      - name: Update dep5
+        run: cargo run --package code-generator --bin dep5_generator
       - name: Generate Code
-        run: ./generate.sh
+        run: ./code-generator/generate.sh
       - id: cpr
         name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
