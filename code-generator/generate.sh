@@ -217,6 +217,18 @@ BUGGY_RESOURCES=(
   operator_tekton_dev_v1alpha1/tektonpipelines
   operator_tekton_dev_v1alpha1/tektontriggers
   operator_tigera_io_v1/imagesets
+  operator_victoriametrics_com_v1beta1/vmagents
+  operator_victoriametrics_com_v1beta1/vmalertmanagerconfigs
+  operator_victoriametrics_com_v1beta1/vmalertmanagers
+  operator_victoriametrics_com_v1beta1/vmalerts
+  operator_victoriametrics_com_v1beta1/vmauths
+  operator_victoriametrics_com_v1beta1/vmclusters
+  operator_victoriametrics_com_v1beta1/vmnodescrapes
+  operator_victoriametrics_com_v1beta1/vmpodscrapes
+  operator_victoriametrics_com_v1beta1/vmprobes
+  operator_victoriametrics_com_v1beta1/vmservicescrapes
+  operator_victoriametrics_com_v1beta1/vmsingles
+  operator_victoriametrics_com_v1beta1/vmstaticscrapes
   postgresql_cnpg_io_v1/clusters
   redhatcop_redhat_io_v1alpha1/patches
   repo_manager_pulpproject_org_v1beta2/pulps

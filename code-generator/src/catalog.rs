@@ -1822,6 +1822,26 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "VictoriaMetrics/operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmagents.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmalertmanagerconfigs.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmalertmanagers.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmalerts.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmauths.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmclusters.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmnodescrapes.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmpodscrapes.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmprobes.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmrules.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmservicescrapes.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmsingles.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmstaticscrapes.yaml",
+            "https://github.com/VictoriaMetrics/operator/blob/master/config/crd/bases/operator.victoriametrics.com_vmusers.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "volcano-sh/volcano",
         license: APACHE_V2,
         urls: &[

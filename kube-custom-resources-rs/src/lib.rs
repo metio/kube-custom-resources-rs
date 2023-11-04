@@ -408,6 +408,8 @@ pub mod operator_open_cluster_management_io_v1;
 pub mod operator_shipwright_io_v1alpha1;
 #[cfg(feature = "operator_tigera_io_v1")]
 pub mod operator_tigera_io_v1;
+#[cfg(feature = "operator_victoriametrics_com_v1beta1")]
+pub mod operator_victoriametrics_com_v1beta1;
 #[cfg(feature = "org_eclipse_che_v1")]
 pub mod org_eclipse_che_v1;
 #[cfg(feature = "org_eclipse_che_v2")]
