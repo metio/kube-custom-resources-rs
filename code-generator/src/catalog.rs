@@ -1244,6 +1244,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "LinuxSuRen/api-testing",
+        license: MIT,
+        urls: &[
+            "https://github.com/LinuxSuRen/api-testing/blob/master/operator/config/crd/bases/core.linuxsuren.github.com_atests.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "litmuschaos/chaos-operator",
         license: APACHE_V2,
         urls: &[

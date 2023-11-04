@@ -475,6 +475,10 @@ Files: crd-catalog/linki/cloudformation-operator/*
 Copyright: The linki/cloudformation-operator Authors
 License: MIT
 
+Files: crd-catalog/LinuxSuRen/api-testing/*
+Copyright: The LinuxSuRen/api-testing Authors
+License: MIT
+
 Files: crd-catalog/litmuschaos/chaos-operator/*
 Copyright: The litmuschaos/chaos-operator Authors
 License: Apache-2.0
