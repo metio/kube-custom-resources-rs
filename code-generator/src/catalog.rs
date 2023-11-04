@@ -30,6 +30,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "ansible/awx-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/ansible/awx-operator/blob/devel/config/crd/bases/awx.ansible.com_awxbackups.yaml",
+            "https://github.com/ansible/awx-operator/blob/devel/config/crd/bases/awx.ansible.com_awxrestores.yaml",
+            "https://github.com/ansible/awx-operator/blob/devel/config/crd/bases/awx.ansible.com_awxs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "apache/camel-k",
         license: APACHE_V2,
         urls: &[

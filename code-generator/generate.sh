@@ -41,6 +41,9 @@ BUGGY_RESOURCES=(
   aquasecurity_github_io_v1alpha1/configauditreports
   argoproj_io_v1alpha1/applicationsets
   autoscaling_k8s_elastic_co_v1alpha1/elasticsearchautoscalers
+  awx_ansible_com_v1beta1/awxbackups
+  awx_ansible_com_v1beta1/awxrestores
+  awx_ansible_com_v1beta1/awxs
   camel_apache_org_v1/integrations
   camel_apache_org_v1/integrationkits
   camel_apache_org_v1/integrationplatforms
