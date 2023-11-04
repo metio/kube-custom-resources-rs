@@ -25,15 +25,6 @@ schemars = { version = "0.8.15" }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = { version = "1.0.108" }
 
-[profile.dev]
-# Disable settings to speeds up builds
-debug = false
-lto = "off"
-incremental = false
-strip = "none"
-debug-assertions = false
-overflow-checks = false
-
 [features]
 about_k8s_io_v1alpha1 = []
 acme_cert_manager_io_v1 = []
