@@ -1472,6 +1472,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "netobserv/network-observability-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/netobserv/network-observability-operator/blob/main/config/crd/bases/flows.netobserv.io_flowcollectors.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "nginxinc/kubernetes-ingress",
         license: APACHE_V2,
         urls: &[
