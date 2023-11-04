@@ -60,6 +60,8 @@ pub mod autoscaling_k8s_io_v1;
 pub mod autoscaling_k8s_io_v1beta2;
 #[cfg(feature = "autoscaling_karmada_io_v1alpha1")]
 pub mod autoscaling_karmada_io_v1alpha1;
+#[cfg(feature = "b3scale_infra_run_v1")]
+pub mod b3scale_infra_run_v1;
 #[cfg(feature = "batch_volcano_sh_v1alpha1")]
 pub mod batch_volcano_sh_v1alpha1;
 #[cfg(feature = "beat_k8s_elastic_co_v1beta1")]
