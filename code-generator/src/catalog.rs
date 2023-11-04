@@ -549,6 +549,8 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "CrunchyData/postgres-operator",
         license: APACHE_V2,
         urls: &[
+            "https://github.com/CrunchyData/postgres-operator/blob/master/config/crd/bases/postgres-operator.crunchydata.com_pgadmins.yaml",
+            "https://github.com/CrunchyData/postgres-operator/blob/master/config/crd/bases/postgres-operator.crunchydata.com_pgupgrades.yaml",
             "https://github.com/CrunchyData/postgres-operator/blob/master/config/crd/bases/postgres-operator.crunchydata.com_postgresclusters.yaml",
         ],
     },
