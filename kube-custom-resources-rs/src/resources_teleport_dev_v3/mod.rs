@@ -1,2 +1,2 @@
-pub mod teleportoidcconnectors;
 pub mod teleportgithubconnectors;
+pub mod teleportoidcconnectors;

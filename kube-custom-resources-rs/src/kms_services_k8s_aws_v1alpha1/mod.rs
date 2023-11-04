@@ -1,3 +1,3 @@
-pub mod keys;
-pub mod grants;
 pub mod aliases;
+pub mod grants;
+pub mod keys;

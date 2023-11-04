@@ -1,2 +1,2 @@
-pub mod tenants;
 pub mod capsuleconfigurations;
+pub mod tenants;

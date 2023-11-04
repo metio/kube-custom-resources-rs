@@ -1,7 +1,7 @@
 pub mod dicomeventbridges;
-pub mod dimseproxies;
-pub mod dimseingestionservices;
-pub mod dicominstancebindings;
-pub mod dicomwebingestionservices;
 pub mod dicomeventdriveningestions;
+pub mod dicominstancebindings;
 pub mod dicomstudybindings;
+pub mod dicomwebingestionservices;
+pub mod dimseingestionservices;
+pub mod dimseproxies;

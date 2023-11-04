@@ -1,3 +1,3 @@
-pub mod gatewayconfigs;
 pub mod dataplanes;
+pub mod gatewayconfigs;
 pub mod staticservices;

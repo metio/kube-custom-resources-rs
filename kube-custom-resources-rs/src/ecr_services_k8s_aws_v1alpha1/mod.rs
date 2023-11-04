@@ -1,2 +1,2 @@
-pub mod repositories;
 pub mod pullthroughcacherules;
+pub mod repositories;

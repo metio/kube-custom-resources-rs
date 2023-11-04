@@ -1,2 +1,2 @@
-pub mod jobs;
 pub mod jobconfigs;
+pub mod jobs;

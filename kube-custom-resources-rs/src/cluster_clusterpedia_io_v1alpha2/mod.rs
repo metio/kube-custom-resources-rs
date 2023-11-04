@@ -1,2 +1,2 @@
-pub mod pediaclusters;
 pub mod clustersyncresources;
+pub mod pediaclusters;
