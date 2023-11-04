@@ -699,6 +699,10 @@ Files: crd-catalog/traefik/traefik/*
 Copyright: The traefik/traefik Authors
 License: MIT
 
+Files: crd-catalog/VictoriaMetrics/operator/*
+Copyright: The VictoriaMetrics/operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/volcano-sh/volcano/*
 Copyright: The volcano-sh/volcano Authors
 License: Apache-2.0
