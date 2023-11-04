@@ -11,6 +11,10 @@ homepage = "https://github.com/metio/kube-custom-resources-rs/"
 repository = "https://github.com/metio/kube-custom-resources-rs"
 readme = "../README.md"
 
+[package.metadata.docs.rs]
+# see https://docs.rs/about/metadata
+all-features = true
+
 [lib]
 path = "src/lib.rs"
 
