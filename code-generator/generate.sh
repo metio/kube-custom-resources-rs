@@ -5,7 +5,7 @@
 
 
 ### Generate code with kopium
-for file in $(find ./crd-catalog -name '*.yaml' -type f); do
+for file in $(find ./crd-catalog -name '*.yaml' -type f | LC_ALL=C sort --general-numeric-sort); do
   crd=$(basename "${file%.*}")
   version=$(basename "$(dirname "${file}")")
   group=$(basename "$(dirname "$(dirname "${file}")")")
@@ -17,8 +17,6 @@ for file in $(find ./crd-catalog -name '*.yaml' -type f); do
 
   if ! kopium --docs --filename "${file}" >"./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
     echo "error in ${file}"
-  else
-    echo "pub mod ${rust_crd};" >>"./kube-custom-resources-rs/src/${module}/mod.rs"
   fi
 done
 
@@ -240,7 +238,7 @@ done
 
 ### Generate mod.rs files
 find ./kube-custom-resources-rs/src -name mod.rs -type f -delete
-for file in $(find ./crd-catalog -name '*.yaml' -type f); do
+for file in $(find ./crd-catalog -name '*.yaml' -type f | LC_ALL=C sort --general-numeric-sort); do
   crd=$(basename "${file%.*}")
   version=$(basename "$(dirname "${file}")")
   group=$(basename "$(dirname "$(dirname "${file}")")")
@@ -259,7 +257,7 @@ sed -i '/\[features\]/,$d' ./kube-custom-resources-rs/Cargo.toml
 echo '[features]' >>./kube-custom-resources-rs/Cargo.toml
 rm --force ./kube-custom-resources-rs/src/lib.rs
 
-for mld in ./kube-custom-resources-rs/src/*; do
+for mld in $(find ./kube-custom-resources-rs/src -type d | LC_ALL=C sort --general-numeric-sort); do
   module=$(basename "${mld}")
 
   if [ -f "${mld}/mod.rs" ]; then

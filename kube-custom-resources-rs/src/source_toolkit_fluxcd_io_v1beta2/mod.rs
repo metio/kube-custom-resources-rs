@@ -1,5 +1,5 @@
-pub mod ocirepositories;
+pub mod buckets;
 pub mod gitrepositories;
 pub mod helmcharts;
-pub mod buckets;
 pub mod helmrepositories;
+pub mod ocirepositories;

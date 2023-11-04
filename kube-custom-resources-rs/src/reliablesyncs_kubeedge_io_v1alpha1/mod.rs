@@ -1,2 +1,2 @@
-pub mod objectsyncs;
 pub mod clusterobjectsyncs;
+pub mod objectsyncs;

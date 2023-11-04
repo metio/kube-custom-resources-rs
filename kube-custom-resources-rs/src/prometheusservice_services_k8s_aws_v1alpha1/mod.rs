@@ -1,3 +1,3 @@
-pub mod workspaces;
-pub mod rulegroupsnamespaces;
 pub mod alertmanagerdefinitions;
+pub mod rulegroupsnamespaces;
+pub mod workspaces;

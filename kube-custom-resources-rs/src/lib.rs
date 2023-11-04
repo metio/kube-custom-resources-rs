@@ -184,6 +184,8 @@ pub mod flagger_app_v1beta1;
 pub mod flink_apache_org_v1beta1;
 #[cfg(feature = "flow_volcano_sh_v1alpha1")]
 pub mod flow_volcano_sh_v1alpha1;
+#[cfg(feature = "flux_framework_org_v1alpha1")]
+pub mod flux_framework_org_v1alpha1;
 #[cfg(feature = "gateway_networking_k8s_io_v1")]
 pub mod gateway_networking_k8s_io_v1;
 #[cfg(feature = "gateway_networking_k8s_io_v1alpha2")]
@@ -398,6 +400,10 @@ pub mod postgres_operator_crunchydata_com_v1beta1;
 pub mod prometheusservice_services_k8s_aws_v1alpha1;
 #[cfg(feature = "quay_redhat_com_v1")]
 pub mod quay_redhat_com_v1;
+#[cfg(feature = "ray_io_v1")]
+pub mod ray_io_v1;
+#[cfg(feature = "ray_io_v1alpha1")]
+pub mod ray_io_v1alpha1;
 #[cfg(feature = "rds_services_k8s_aws_v1alpha1")]
 pub mod rds_services_k8s_aws_v1alpha1;
 #[cfg(feature = "redhatcop_redhat_io_v1alpha1")]

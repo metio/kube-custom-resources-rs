@@ -1,2 +1,2 @@
-pub mod rules;
 pub mod ruleendpoints;
+pub mod rules;
