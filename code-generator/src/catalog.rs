@@ -1475,6 +1475,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "pulp/pulp-operator",
+        license: GPL_V2_OR_LATER,
+        urls: &[
+            "https://github.com/pulp/pulp-operator/blob/main/config/crd/bases/repo-manager.pulpproject.org_pulpbackups.yaml",
+            "https://github.com/pulp/pulp-operator/blob/main/config/crd/bases/repo-manager.pulpproject.org_pulprestores.yaml",
+            "https://github.com/pulp/pulp-operator/blob/main/config/crd/bases/repo-manager.pulpproject.org_pulps.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "quay/container-security-operator",
         license: APACHE_V2,
         urls: &[
@@ -1709,4 +1718,5 @@ const AQUA: &'static str = "LicenseRef-Aqua";
 const FLAGSMITH: &'static str = "LicenseRef-Flagsmith";
 const EPL_V2: &'static str = "EPL-2.0";
 const AGPL_V3_ONLY: &'static str = "AGPL-3.0-only";
+const GPL_V2_OR_LATER: &'static str = "GPL-2.0-or-later";
 const UPL_V1: &'static str = "UPL-1.0";

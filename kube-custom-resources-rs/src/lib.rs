@@ -414,6 +414,8 @@ pub mod redhatcop_redhat_io_v1alpha1;
 pub mod registry_apicur_io_v1;
 #[cfg(feature = "reliablesyncs_kubeedge_io_v1alpha1")]
 pub mod reliablesyncs_kubeedge_io_v1alpha1;
+#[cfg(feature = "repo_manager_pulpproject_org_v1beta2")]
+pub mod repo_manager_pulpproject_org_v1beta2;
 #[cfg(feature = "resources_teleport_dev_v1")]
 pub mod resources_teleport_dev_v1;
 #[cfg(feature = "resources_teleport_dev_v2")]
