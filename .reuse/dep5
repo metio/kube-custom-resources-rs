@@ -171,6 +171,10 @@ Files: crd-catalog/cloud-bulldozer/benchmark-operator/*
 Copyright: The cloud-bulldozer/benchmark-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/cloudnative-pg/cloudnative-pg/*
+Copyright: The cloudnative-pg/cloudnative-pg Authors
+License: Apache-2.0
+
 Files: crd-catalog/clusternet/clusternet/*
 Copyright: The clusternet/clusternet Authors
 License: Apache-2.0

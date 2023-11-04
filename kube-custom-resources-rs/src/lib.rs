@@ -410,6 +410,8 @@ pub mod policy_clusterpedia_io_v1alpha1;
 pub mod policy_karmada_io_v1alpha1;
 #[cfg(feature = "postgres_operator_crunchydata_com_v1beta1")]
 pub mod postgres_operator_crunchydata_com_v1beta1;
+#[cfg(feature = "postgresql_cnpg_io_v1")]
+pub mod postgresql_cnpg_io_v1;
 #[cfg(feature = "prometheusservice_services_k8s_aws_v1alpha1")]
 pub mod prometheusservice_services_k8s_aws_v1alpha1;
 #[cfg(feature = "quay_redhat_com_v1")]

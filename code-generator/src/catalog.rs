@@ -478,6 +478,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "cloudnative-pg/cloudnative-pg",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/cloudnative-pg/cloudnative-pg/blob/main/config/crd/bases/postgresql.cnpg.io_backups.yaml",
+            "https://github.com/cloudnative-pg/cloudnative-pg/blob/main/config/crd/bases/postgresql.cnpg.io_clusters.yaml",
+            "https://github.com/cloudnative-pg/cloudnative-pg/blob/main/config/crd/bases/postgresql.cnpg.io_poolers.yaml",
+            "https://github.com/cloudnative-pg/cloudnative-pg/blob/main/config/crd/bases/postgresql.cnpg.io_scheduledbackups.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "clusternet/clusternet",
         license: APACHE_V2,
         urls: &[
