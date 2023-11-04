@@ -7,3 +7,12 @@ members = [
     "kube-custom-resources-rs",
 ]
 resolver = "2"
+
+[profile.dev]
+# Disable settings to speeds up builds
+debug = false
+lto = "off"
+incremental = false
+strip = "none"
+debug-assertions = false
+overflow-checks = false
