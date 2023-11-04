@@ -230,6 +230,7 @@ BUGGY_RESOURCES=(
   source_toolkit_fluxcd_io_v1/gitrepositories
   telemetry_istio_io_v1alpha1/telemetries
   traefik_io_v1alpha1/middlewares
+  trident_netapp_io_v1/tridentorchestrators
   work_karmada_io_v1alpha1/works
 )
 for resource in "${BUGGY_RESOURCES[@]}"; do

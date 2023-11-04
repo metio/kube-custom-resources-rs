@@ -1346,6 +1346,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "NetApp/trident",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/NetApp/trident/blob/master/deploy/crds/trident.netapp.io_tridentorchestrators_crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "nginxinc/kubernetes-ingress",
         license: APACHE_V2,
         urls: &[
