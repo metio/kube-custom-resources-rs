@@ -148,6 +148,8 @@ pub mod devices_kubeedge_io_v1alpha2;
 pub mod digitalis_io_v1;
 #[cfg(feature = "digitalis_io_v1beta1")]
 pub mod digitalis_io_v1beta1;
+#[cfg(feature = "druid_apache_org_v1alpha1")]
+pub mod druid_apache_org_v1alpha1;
 #[cfg(feature = "dynamodb_services_k8s_aws_v1alpha1")]
 pub mod dynamodb_services_k8s_aws_v1alpha1;
 #[cfg(feature = "ec2_services_k8s_aws_v1alpha1")]
