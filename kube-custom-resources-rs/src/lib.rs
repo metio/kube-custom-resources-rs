@@ -80,6 +80,8 @@ pub mod binding_operators_coreos_com_v1alpha1;
 pub mod bitnami_com_v1alpha1;
 #[cfg(feature = "boskos_k8s_io_v1")]
 pub mod boskos_k8s_io_v1;
+#[cfg(feature = "bpfd_dev_v1alpha1")]
+pub mod bpfd_dev_v1alpha1;
 #[cfg(feature = "bus_volcano_sh_v1alpha1")]
 pub mod bus_volcano_sh_v1alpha1;
 #[cfg(feature = "cache_kubedl_io_v1alpha1")]

@@ -373,6 +373,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "bpfd-dev/bpfd",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/bpfd-dev/bpfd/blob/main/bpfd-operator/config/crd/bases/bpfd.dev_bpfprograms.yaml",
+            "https://github.com/bpfd-dev/bpfd/blob/main/bpfd-operator/config/crd/bases/bpfd.dev_kprobeprograms.yaml",
+            "https://github.com/bpfd-dev/bpfd/blob/main/bpfd-operator/config/crd/bases/bpfd.dev_tcprograms.yaml",
+            "https://github.com/bpfd-dev/bpfd/blob/main/bpfd-operator/config/crd/bases/bpfd.dev_tracepointprograms.yaml",
+            "https://github.com/bpfd-dev/bpfd/blob/main/bpfd-operator/config/crd/bases/bpfd.dev_uprobeprograms.yaml",
+            "https://github.com/bpfd-dev/bpfd/blob/main/bpfd-operator/config/crd/bases/bpfd.dev_xdpprograms.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "carlosedp/lbconfig-operator",
         license: MIT,
         urls: &[

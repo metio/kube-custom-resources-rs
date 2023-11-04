@@ -139,6 +139,10 @@ Files: crd-catalog/bitnami-labs/sealed-secrets/*
 Copyright: The bitnami-labs/sealed-secrets Authors
 License: Apache-2.0
 
+Files: crd-catalog/bpfd-dev/bpfd/*
+Copyright: The bpfd-dev/bpfd Authors
+License: Apache-2.0
+
 Files: crd-catalog/carlosedp/lbconfig-operator/*
 Copyright: The carlosedp/lbconfig-operator Authors
 License: MIT
