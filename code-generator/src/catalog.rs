@@ -102,6 +102,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "atlasmap/atlasmap-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/atlasmap/atlasmap-operator/blob/main/config/crd/bases/atlasmap.io_atlasmaps.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/apigatewayv2-controller",
         license: APACHE_V2,
         urls: &[

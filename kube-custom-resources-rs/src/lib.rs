@@ -54,6 +54,8 @@ pub mod argoproj_io_v1beta1;
 pub mod asdb_aerospike_com_v1;
 #[cfg(feature = "asdb_aerospike_com_v1beta1")]
 pub mod asdb_aerospike_com_v1beta1;
+#[cfg(feature = "atlasmap_io_v1alpha1")]
+pub mod atlasmap_io_v1alpha1;
 #[cfg(feature = "autoscaling_k8s_io_v1")]
 pub mod autoscaling_k8s_io_v1;
 #[cfg(feature = "autoscaling_k8s_io_v1beta2")]
