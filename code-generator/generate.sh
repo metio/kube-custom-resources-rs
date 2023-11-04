@@ -217,6 +217,7 @@ BUGGY_RESOURCES=(
   operator_tekton_dev_v1alpha1/tektonpipelines
   operator_tekton_dev_v1alpha1/tektontriggers
   operator_tigera_io_v1/imagesets
+  postgresql_cnpg_io_v1/clusters
   redhatcop_redhat_io_v1alpha1/patches
   repo_manager_pulpproject_org_v1beta2/pulps
   resources_teleport_dev_v2/teleportprovisiontokens
