@@ -563,6 +563,10 @@ Files: crd-catalog/NetApp/trident/*
 Copyright: The NetApp/trident Authors
 License: Apache-2.0
 
+Files: crd-catalog/netobserv/network-observability-operator/*
+Copyright: The netobserv/network-observability-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/nginxinc/kubernetes-ingress/*
 Copyright: The nginxinc/kubernetes-ingress Authors
 License: Apache-2.0

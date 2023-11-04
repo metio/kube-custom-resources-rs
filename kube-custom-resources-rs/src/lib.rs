@@ -202,6 +202,12 @@ pub mod flagger_app_v1beta1;
 pub mod flink_apache_org_v1beta1;
 #[cfg(feature = "flow_volcano_sh_v1alpha1")]
 pub mod flow_volcano_sh_v1alpha1;
+#[cfg(feature = "flows_netobserv_io_v1alpha1")]
+pub mod flows_netobserv_io_v1alpha1;
+#[cfg(feature = "flows_netobserv_io_v1beta1")]
+pub mod flows_netobserv_io_v1beta1;
+#[cfg(feature = "flows_netobserv_io_v1beta2")]
+pub mod flows_netobserv_io_v1beta2;
 #[cfg(feature = "flux_framework_org_v1alpha1")]
 pub mod flux_framework_org_v1alpha1;
 #[cfg(feature = "gateway_networking_k8s_io_v1")]
