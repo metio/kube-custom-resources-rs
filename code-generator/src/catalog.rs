@@ -866,6 +866,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "ipfs-cluster/ipfs-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/ipfs-cluster/ipfs-operator/blob/main/config/crd/bases/cluster.ipfs.io_circuitrelays.yaml",
+            "https://github.com/ipfs-cluster/ipfs-operator/blob/main/config/crd/bases/cluster.ipfs.io_ipfsclusters.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "istio/istio",
         license: APACHE_V2,
         urls: &[

@@ -114,6 +114,8 @@ pub mod cilium_io_v2alpha1;
 pub mod cloudformation_linki_space_v1alpha1;
 #[cfg(feature = "cluster_clusterpedia_io_v1alpha2")]
 pub mod cluster_clusterpedia_io_v1alpha2;
+#[cfg(feature = "cluster_ipfs_io_v1alpha1")]
+pub mod cluster_ipfs_io_v1alpha1;
 #[cfg(feature = "cluster_x_k8s_io_v1alpha4")]
 pub mod cluster_x_k8s_io_v1alpha4;
 #[cfg(feature = "cluster_x_k8s_io_v1beta1")]
