@@ -295,6 +295,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "b3scale/b3scale-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/b3scale/b3scale-operator/blob/main/kubernetes/crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "bitnami-labs/sealed-secrets",
         license: APACHE_V2,
         urls: &[
