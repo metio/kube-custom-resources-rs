@@ -563,6 +563,10 @@ Files: crd-catalog/prometheus-operator/prometheus-operator/*
 Copyright: The prometheus-operator/prometheus-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/pulp/pulp-operator/*
+Copyright: The pulp/pulp-operator Authors
+License: GPL-2.0-or-later
+
 Files: crd-catalog/quay/container-security-operator/*
 Copyright: The quay/container-security-operator Authors
 License: Apache-2.0
