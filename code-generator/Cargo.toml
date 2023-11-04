@@ -1,5 +1,8 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
 [package]
-name = "crd-v1-fetcher"
+name = "code-generator"
 version = "1.0.0"
 authors = ["Sebastian Hoß <seb@hoß.de>"]
 edition = "2021"

@@ -3,15 +3,7 @@ Upstream-Name: kube-custom-resources-rs
 Upstream-Contact: Sebastian Hoß <seb@hoß.de>
 Source: https://github.com/metio/kube-custom-resources-rs
 
-Files: .idea/*
-Copyright: The kube-custom-resources-rs Authors
-License: 0BSD
-
-Files: crd-v1-fetcher/*
-Copyright: The kube-custom-resources-rs Authors
-License: 0BSD
-
-Files: kube-custom-resources-rs/*
+Files: kube-custom-resources-rs/src/*
 Copyright: The kube-custom-resources-rs Authors
 License: 0BSD
 
@@ -257,6 +249,10 @@ License: Apache-2.0
 
 Files: crd-catalog/fluxcd/source-controller/*
 Copyright: The fluxcd/source-controller Authors
+License: Apache-2.0
+
+Files: crd-catalog/flux-framework/flux-operator/*
+Copyright: The flux-framework/flux-operator Authors
 License: Apache-2.0
 
 Files: crd-catalog/fossul/fossul/*
@@ -571,8 +567,16 @@ Files: crd-catalog/quay/quay-operator/*
 Copyright: The quay/quay-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/ray-project/kuberay/*
+Copyright: The ray-project/kuberay Authors
+License: Apache-2.0
+
 Files: crd-catalog/redhat-cop/namespace-configuration-operator/*
 Copyright: The redhat-cop/namespace-configuration-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/redhat-cop/patch-operator/*
+Copyright: The redhat-cop/patch-operator Authors
 License: Apache-2.0
 
 Files: crd-catalog/redhat-developer/service-binding-operator/*

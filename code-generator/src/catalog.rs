@@ -1,4 +1,7 @@
-pub(crate) const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
+// SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+// SPDX-License-Identifier: 0BSD
+
+pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "3scale/apicast-operator",
         license: APACHE_V2,
@@ -348,7 +351,7 @@ pub(crate) const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     },
     UpstreamSource {
         project_name: "che-incubator/kubernetes-image-puller-operator",
-        license: APACHE_V2,
+        license: EPL_V2,
         urls: &[
             "https://github.com/che-incubator/kubernetes-image-puller-operator/blob/main/config/crd/bases/che.eclipse.org_kubernetesimagepullers.yaml",
         ],
@@ -622,6 +625,13 @@ pub(crate) const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/fluxcd/source-controller/blob/main/config/crd/bases/source.toolkit.fluxcd.io_helmcharts.yaml",
             "https://github.com/fluxcd/source-controller/blob/main/config/crd/bases/source.toolkit.fluxcd.io_helmrepositories.yaml",
             "https://github.com/fluxcd/source-controller/blob/main/config/crd/bases/source.toolkit.fluxcd.io_ocirepositories.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "flux-framework/flux-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/flux-framework/flux-operator/blob/main/config/crd/bases/flux-framework.org_miniclusters.yaml",
         ],
     },
     UpstreamSource {
@@ -1472,12 +1482,28 @@ pub(crate) const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "ray-project/kuberay",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/ray-project/kuberay/blob/master/ray-operator/config/crd/bases/ray.io_rayclusters.yaml",
+            "https://github.com/ray-project/kuberay/blob/master/ray-operator/config/crd/bases/ray.io_rayjobs.yaml",
+            "https://github.com/ray-project/kuberay/blob/master/ray-operator/config/crd/bases/ray.io_rayservices.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "redhat-cop/namespace-configuration-operator",
         license: APACHE_V2,
         urls: &[
             "https://github.com/redhat-cop/namespace-configuration-operator/blob/master/config/crd/bases/redhatcop.redhat.io_groupconfigs.yaml",
             "https://github.com/redhat-cop/namespace-configuration-operator/blob/master/config/crd/bases/redhatcop.redhat.io_namespaceconfigs.yaml",
             "https://github.com/redhat-cop/namespace-configuration-operator/blob/master/config/crd/bases/redhatcop.redhat.io_userconfigs.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "redhat-cop/patch-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/redhat-cop/patch-operator/blob/main/config/crd/bases/redhatcop.redhat.io_patches.yaml",
         ],
     },
     UpstreamSource {
@@ -1663,10 +1689,10 @@ pub(crate) const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     },
 ];
 
-pub(crate) struct UpstreamSource<'a> {
-    pub(crate) project_name: &'a str,
-    pub(crate) license: &'a str,
-    pub(crate) urls: &'a [&'a str],
+pub struct UpstreamSource<'a> {
+    pub project_name: &'a str,
+    pub license: &'a str,
+    pub urls: &'a [&'a str],
 }
 
 const APACHE_V2: &'static str = "Apache-2.0";

@@ -7,7 +7,7 @@ SPDX-License-Identifier: 0BSD
 
 This repository contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium) and updated weekly.
 
-Feel free to add your own CRD to the [catalog](./crd-v1-fetcher/src/catalog.rs)!
+Feel free to add your own CRD to the [catalog](code-generator/src/catalog.rs)!
 
 ## Installation
 

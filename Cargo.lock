@@ -112,6 +112,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "code-generator"
+version = "1.0.0"
+dependencies = [
+ "k8s-openapi",
+ "reqwest",
+ "serde_yaml",
+]
+
+[[package]]
 name = "core-foundation"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -126,15 +135,6 @@ name = "core-foundation-sys"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e496a50fda8aacccc86d7529e2c1e0892dbd0f898a6b5645b5561b89c3210efa"
-
-[[package]]
-name = "crd-v1-fetcher"
-version = "1.0.0"
-dependencies = [
- "k8s-openapi",
- "reqwest",
- "serde_yaml",
-]
 
 [[package]]
 name = "darling"
