@@ -14,10 +14,8 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Cache Dependencies
         uses: Swatinem/rust-cache@v2
-      - name: Check Fetcher
-        run: cargo check --package crd-v1-fetcher --locked
-        env:
-          RUSTFLAGS: "-A warnings"
+      - name: Check Code Generator
+        run: cargo check --package code-generator --locked
       - name: Check all CRDs
         run: |
           for mld in ./kube-custom-resources-rs/src/*; do
