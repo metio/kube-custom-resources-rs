@@ -50,7 +50,6 @@ The generated Rust code can be used as a [kube::Resource](https://docs.rs/kube/*
 let issuers: Api<Issuer> = Api::default_namespaced(client);
 let issuer = Issuer::new("example", IssuerSpec::default());
 println!("doc: {:?}", issuer);
-println!("crd: {:?}", serde_yaml::to_string(&Issuer::crd()));
 ```
 
 Take a look at the [kube-rs documentation](https://docs.rs/kube/) for more information.
