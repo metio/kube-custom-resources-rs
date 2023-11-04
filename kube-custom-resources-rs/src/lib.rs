@@ -118,6 +118,8 @@ pub mod config_grafana_com_v1;
 pub mod config_karmada_io_v1alpha1;
 #[cfg(feature = "config_koordinator_sh_v1alpha1")]
 pub mod config_koordinator_sh_v1alpha1;
+#[cfg(feature = "core_linuxsuren_github_com_v1alpha1")]
+pub mod core_linuxsuren_github_com_v1alpha1;
 #[cfg(feature = "core_openfeature_dev_v1alpha1")]
 pub mod core_openfeature_dev_v1alpha1;
 #[cfg(feature = "core_openfeature_dev_v1alpha2")]
