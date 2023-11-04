@@ -1723,6 +1723,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "shipwright-io/operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/shipwright-io/operator/blob/main/config/crd/bases/operator.shipwright.io_shipwrightbuilds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "sigstore/sigstore-helm-operator",
         license: APACHE_V2,
         urls: &[

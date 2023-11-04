@@ -663,6 +663,10 @@ Files: crd-catalog/sematext/sematext-operator/*
 Copyright: The sematext/sematext-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/shipwright-io/operator/*
+Copyright: The shipwright-io/operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/sigstore/sigstore-helm-operator/*
 Copyright: The sigstore/sigstore-helm-operator Authors
 License: Apache-2.0
