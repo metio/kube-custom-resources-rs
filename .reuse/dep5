@@ -211,6 +211,10 @@ Files: crd-catalog/ctron/hawkbit-operator/*
 Copyright: The ctron/hawkbit-operator Authors
 License: EPL-2.0
 
+Files: crd-catalog/devfile/registry-operator/*
+Copyright: The devfile/registry-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/dexidp/dex/*
 Copyright: The dexidp/dex Authors
 License: Apache-2.0

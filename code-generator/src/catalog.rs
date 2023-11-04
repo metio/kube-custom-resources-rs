@@ -576,6 +576,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "devfile/registry-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/devfile/registry-operator/blob/main/config/crd/bases/registry.devfile.io_clusterdevfileregistrieslists.yaml",
+            "https://github.com/devfile/registry-operator/blob/main/config/crd/bases/registry.devfile.io_devfileregistries.yaml",
+            "https://github.com/devfile/registry-operator/blob/main/config/crd/bases/registry.devfile.io_devfileregistrieslists.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "dexidp/dex",
         license: APACHE_V2,
         urls: &[

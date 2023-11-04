@@ -426,6 +426,8 @@ pub mod rds_services_k8s_aws_v1alpha1;
 pub mod redhatcop_redhat_io_v1alpha1;
 #[cfg(feature = "registry_apicur_io_v1")]
 pub mod registry_apicur_io_v1;
+#[cfg(feature = "registry_devfile_io_v1alpha1")]
+pub mod registry_devfile_io_v1alpha1;
 #[cfg(feature = "reliablesyncs_kubeedge_io_v1alpha1")]
 pub mod reliablesyncs_kubeedge_io_v1alpha1;
 #[cfg(feature = "repo_manager_pulpproject_org_v1beta2")]
