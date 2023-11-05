@@ -308,6 +308,8 @@ pub mod kustomize_toolkit_fluxcd_io_v1;
 pub mod kustomize_toolkit_fluxcd_io_v1beta1;
 #[cfg(feature = "kustomize_toolkit_fluxcd_io_v1beta2")]
 pub mod kustomize_toolkit_fluxcd_io_v1beta2;
+#[cfg(feature = "kyverno_io_v1")]
+pub mod kyverno_io_v1;
 #[cfg(feature = "kyverno_io_v1alpha2")]
 pub mod kyverno_io_v1alpha2;
 #[cfg(feature = "kyverno_io_v1beta1")]
