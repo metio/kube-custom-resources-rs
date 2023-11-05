@@ -13,6 +13,8 @@ jobs:
       - id: checkout
         name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-tags: "true"
       - id: last_release
         name: Fetch last release info
         run: echo "tag=$(gh release view --json tagName --jq '.tagName')" >> $GITHUB_OUTPUT
