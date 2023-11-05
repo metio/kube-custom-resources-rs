@@ -260,17 +260,14 @@ for file in $(find ./crd-catalog -name '*.yaml' -type f | LC_ALL=C sort --genera
 done
 
 
-### Adjust Cargo.toml and src/lib.rs
+### Adjust Cargo.toml
 sed -i '/\[features\]/,$d' ./kube-custom-resources-rs/Cargo.toml
 echo '[features]' >>./kube-custom-resources-rs/Cargo.toml
-rm --force ./kube-custom-resources-rs/src/lib.rs
 
 for mld in $(find ./kube-custom-resources-rs/src -type d | LC_ALL=C sort --general-numeric-sort); do
   module=$(basename "${mld}")
 
   if [ -f "${mld}/mod.rs" ]; then
-    echo "#[cfg(feature = \"${module}\")]" >> ./kube-custom-resources-rs/src/lib.rs
-    echo "pub mod ${module};" >> ./kube-custom-resources-rs/src/lib.rs
     echo "${module} = []" >>./kube-custom-resources-rs/Cargo.toml
   fi
 done

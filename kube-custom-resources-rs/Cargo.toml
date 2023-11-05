@@ -14,10 +14,6 @@ homepage = "https://github.com/metio/kube-custom-resources-rs/"
 repository = "https://github.com/metio/kube-custom-resources-rs"
 readme = "../README.md"
 
-[package.metadata.docs.rs]
-# see https://docs.rs/about/metadata
-all-features = true
-
 [dependencies]
 kube = { version = "0.87.1", features = ["derive"] }
 k8s-openapi = { version = "0.20.0", features = ["latest"] }
