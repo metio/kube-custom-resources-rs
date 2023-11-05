@@ -25,6 +25,8 @@ jobs:
         run: cargo run --package code-generator --bin crd_v1_fetcher
       - name: Update dep5
         run: cargo run --package code-generator --bin dep5_generator
+      - name: Fixup YAML
+        run: find ./crd-catalog -name 'fixup.sh' -type f -exec {} \;
       - name: Generate Code
         run: ./code-generator/generate.sh
       - id: cpr
