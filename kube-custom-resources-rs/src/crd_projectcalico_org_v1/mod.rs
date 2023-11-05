@@ -9,6 +9,7 @@ pub mod hostendpoints;
 pub mod ipamblocks;
 pub mod ipamconfigs;
 pub mod ipamhandles;
+pub mod ippools;
 pub mod ipreservations;
 pub mod kubecontrollersconfigurations;
 pub mod networksets;

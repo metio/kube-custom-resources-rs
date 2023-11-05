@@ -23,9 +23,9 @@ done
 
 ### Remove buggy resources
 BUGGY_RESOURCES=(
-  acid_zalan_do_v1/operatorconfigurations
-  acid_zalan_do_v1/postgresqls
-  acid_zalan_do_v1/postgresteams
+  acid_zalan_do_v1/operatorconfigurations # has no spec field
+  acid_zalan_do_v1/postgresqls # has problems with the status field
+  acid_zalan_do_v1/postgresteams # has problem with the status field
   addons_cluster_x_k8s_io_v1alpha4/clusterresourcesetbindings
   addons_cluster_x_k8s_io_v1beta1/clusterresourcesetbindings
   apiextensions_crossplane_io_v1/compositionrevisions
@@ -58,10 +58,9 @@ BUGGY_RESOURCES=(
   cilium_io_v2/ciliumidentities
   cilium_io_v2/ciliumlocalredirectpolicies
   core_strimzi_io_v1beta2/strimzipodsets
-  crd_projectcalico_org_v1/felixconfigurations
-  crd_projectcalico_org_v1/globalnetworkpolicies
-  crd_projectcalico_org_v1/ippools
-  crd_projectcalico_org_v1/networkpolicies
+  crd_projectcalico_org_v1/felixconfigurations # kopium: Error: unsupported recursive array type "" for kubeNodePortRanges
+  crd_projectcalico_org_v1/globalnetworkpolicies # kopium: Error: unsupported recursive array type "" for notPorts
+  crd_projectcalico_org_v1/networkpolicies # kopium: Error: unsupported recursive array type "" for notPorts
   dex_coreos_com_v1/authcodes
   dex_coreos_com_v1/authrequests
   dex_coreos_com_v1/connectors
@@ -154,10 +153,6 @@ BUGGY_RESOURCES=(
   kuma_io_v1alpha1/zoneingressinsights
   kuma_io_v1alpha1/zoneinsights
   kuma_io_v1alpha1/zones
-  kyverno_io_v1/clusterpolicies
-  kyverno_io_v1/policies
-  kyverno_io_v2beta1/clusterpolicies
-  kyverno_io_v2beta1/policies
   lambda_services_k8s_aws_v1alpha1/aliases
   lb_lbconfig_carlosedp_com_v1/externalloadbalancers
   litmuschaos_io_v1alpha1/chaosresults
@@ -183,12 +178,6 @@ BUGGY_RESOURCES=(
   longhorn_io_v1beta2/settings
   metal3_io_v1alpha1/baremetalhosts
   microcks_github_io_v1alpha1/microcksinstalls
-  monitoring_coreos_com_v1/podmonitors
-  monitoring_coreos_com_v1/probes
-  monitoring_coreos_com_v1/prometheuses
-  monitoring_coreos_com_v1/servicemonitors
-  monitoring_coreos_com_v1alpha1/prometheusagents
-  monitoring_coreos_com_v1alpha1/scrapeconfigs
   multicluster_x_k8s_io_v1alpha1/works
   networking_istio_io_v1alpha3/destinationrules
   networking_istio_io_v1alpha3/envoyfilters
