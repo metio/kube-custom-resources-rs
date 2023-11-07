@@ -40,7 +40,7 @@ kube-custom-resources-rs = { version = "<version>", features = ["cert_manager_io
 
 This crate uses a calendar based versioning scheme because resources in Kubernetes are versioned themselves.
 
-Updates to all CRDs are fetched on friday and released a day later on saturday if any changes were detected.
+Updates to all CRDs are fetched on [friday](https://github.com/metio/kube-custom-resources-rs/blob/main/.github/workflows/update-crds.yml) and released a day later on [saturday](https://github.com/metio/kube-custom-resources-rs/blob/main/.github/workflows/release.yml) if any changes were detected.
 
 ## Usage
 
