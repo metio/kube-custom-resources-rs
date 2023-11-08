@@ -323,6 +323,10 @@ Files: crd-catalog/gravitational/teleport/*
 Copyright: The gravitational/teleport Authors
 License: Apache-2.0
 
+Files: crd-catalog/hashicorp/terraform-cloud-operator/*
+Copyright: The hashicorp/terraform-cloud-operator Authors
+License: MPL-2.0
+
 Files: crd-catalog/hazelcast/hazelcast-platform-operator/*
 Copyright: The hazelcast/hazelcast-platform-operator Authors
 License: Apache-2.0

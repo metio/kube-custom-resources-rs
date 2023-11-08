@@ -829,6 +829,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "hashicorp/terraform-cloud-operator",
+        license: MPL_V2,
+        urls: &[
+            "https://github.com/hashicorp/terraform-cloud-operator/blob/main/config/crd/bases/app.terraform.io_agentpools.yaml",
+            "https://github.com/hashicorp/terraform-cloud-operator/blob/main/config/crd/bases/app.terraform.io_modules.yaml",
+            "https://github.com/hashicorp/terraform-cloud-operator/blob/main/config/crd/bases/app.terraform.io_workspaces.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "hazelcast/hazelcast-platform-operator",
         license: APACHE_V2,
         urls: &[
@@ -1887,3 +1896,4 @@ const EPL_V2: &'static str = "EPL-2.0";
 const AGPL_V3_ONLY: &'static str = "AGPL-3.0-only";
 const GPL_V2_OR_LATER: &'static str = "GPL-2.0-or-later";
 const UPL_V1: &'static str = "UPL-1.0";
+const MPL_V2: &'static str = "MPL-2.0";
