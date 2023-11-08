@@ -115,6 +115,15 @@ kinds:
 - `RedisEnterpriseDatabase`
 - `RedisEnterpriseRemoteCluster`
 
+## app_terraform_io_v1alpha2
+
+apiVersion: `app.terraform.io/v1alpha2`
+
+kinds:
+- `AgentPool`
+- `Module`
+- `Workspace`
+
 ## applicationautoscaling_services_k8s_aws_v1alpha1
 
 apiVersion: `applicationautoscaling.services.k8s.aws/v1alpha1`
@@ -2539,6 +2548,8 @@ pub mod app_lightbend_com_v1alpha1;
 pub mod app_redislabs_com_v1;
 #[cfg(feature = "app_redislabs_com_v1alpha1")]
 pub mod app_redislabs_com_v1alpha1;
+#[cfg(feature = "app_terraform_io_v1alpha2")]
+pub mod app_terraform_io_v1alpha2;
 #[cfg(feature = "applicationautoscaling_services_k8s_aws_v1alpha1")]
 pub mod applicationautoscaling_services_k8s_aws_v1alpha1;
 #[cfg(feature = "appprotect_f5_com_v1beta1")]
