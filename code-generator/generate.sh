@@ -3,9 +3,15 @@
 # SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 # SPDX-License-Identifier: 0BSD
 
+FILTER="${1:-}"
 
 ### Generate code with kopium
 for file in $(find ./crd-catalog -name '*.yaml' -type f | LC_ALL=C sort --general-numeric-sort); do
+  if [ -n "${FILTER}" ]; then
+    if ! echo -n "${file}" | grep --quiet "${FILTER}"; then
+      continue
+    fi
+  fi
   crd=$(basename "${file%.*}")
   version=$(basename "$(dirname "${file}")")
   group=$(basename "$(dirname "$(dirname "${file}")")")
@@ -239,14 +245,31 @@ BUGGY_RESOURCES=(
   work_karmada_io_v1alpha1/works
 )
 for resource in "${BUGGY_RESOURCES[@]}"; do
-  echo "removing ${resource}"
   rm --force "./kube-custom-resources-rs/src/${resource}.rs"
 done
 
 
 ### Generate mod.rs files
-find ./kube-custom-resources-rs/src -name mod.rs -type f -delete
 for file in $(find ./crd-catalog -name '*.yaml' -type f | LC_ALL=C sort --general-numeric-sort); do
+  if [ -n "${FILTER}" ]; then
+    if ! echo -n "${file}" | grep --quiet "${FILTER}"; then
+      continue
+    fi
+  fi
+  crd=$(basename "${file%.*}")
+  version=$(basename "$(dirname "${file}")")
+  group=$(basename "$(dirname "$(dirname "${file}")")")
+  rust_group=$(echo "${group}" | sed -e 's/\./_/g' -e 's/-/_/g')
+  module="${rust_group}_${version}"
+
+  rm --force "./kube-custom-resources-rs/src/${module}/mod.rs"
+done
+for file in $(find ./crd-catalog -name '*.yaml' -type f | LC_ALL=C sort --general-numeric-sort); do
+  if [ -n "${FILTER}" ]; then
+    if ! echo -n "${file}" | grep --quiet "${FILTER}"; then
+      continue
+    fi
+  fi
   crd=$(basename "${file%.*}")
   version=$(basename "$(dirname "${file}")")
   group=$(basename "$(dirname "$(dirname "${file}")")")
@@ -255,7 +278,7 @@ for file in $(find ./crd-catalog -name '*.yaml' -type f | LC_ALL=C sort --genera
   module="${rust_group}_${version}"
 
   if [ -f "./kube-custom-resources-rs/src/${module}/${rust_crd}.rs" ]; then
-    echo "pub mod ${rust_crd};" >>"./kube-custom-resources-rs/src/${module}/mod.rs"
+    echo "pub mod ${rust_crd};" >> "./kube-custom-resources-rs/src/${module}/mod.rs"
   fi
 done
 
