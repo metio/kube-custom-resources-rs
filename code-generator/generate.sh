@@ -21,7 +21,7 @@ for file in $(find ./crd-catalog -name '*.yaml' -type f | LC_ALL=C sort --genera
 
   mkdir --parents "./kube-custom-resources-rs/src/${module}"
 
-  if ! kopium --docs --filename "${file}" >"./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
+  if ! kopium --derive Default --derive PartialEq --docs --filename "${file}" >"./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
     echo "error in ${file}"
   fi
 done
