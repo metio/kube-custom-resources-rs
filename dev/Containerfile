@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+FROM docker.io/mikefarah/yq:4.35.2 AS yq
+FROM docker.io/metio/devcontainers-rust:latest
+
+COPY --from=yq /usr/bin/yq /usr/bin/yq
+RUN cargo install kopium
