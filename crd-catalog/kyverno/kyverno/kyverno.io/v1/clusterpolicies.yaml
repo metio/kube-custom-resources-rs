@@ -729,6 +729,9 @@ spec:
                           synchronize:
                             description: Synchronize controls if generated resources should be kept in-sync with their source resource. If Synchronize is set to "true" changes to generated resources will be overwritten with resource data from Data or the resource specified in the Clone declaration. Optional. Defaults to "false" if not specified.
                             type: boolean
+                          uid:
+                            description: UID specifies the resource uid.
+                            type: string
                         type: object
                       imageExtractors:
                         additionalProperties:
@@ -1535,6 +1538,9 @@ spec:
                                 preconditions:
                                   description: 'Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/'
                                   x-kubernetes-preserve-unknown-fields: true
+                                uid:
+                                  description: UID specifies the resource uid.
+                                  type: string
                               type: object
                             type: array
                         type: object
@@ -3352,6 +3358,9 @@ spec:
                               synchronize:
                                 description: Synchronize controls if generated resources should be kept in-sync with their source resource. If Synchronize is set to "true" changes to generated resources will be overwritten with resource data from Data or the resource specified in the Clone declaration. Optional. Defaults to "false" if not specified.
                                 type: boolean
+                              uid:
+                                description: UID specifies the resource uid.
+                                type: string
                             type: object
                           imageExtractors:
                             additionalProperties:
@@ -4158,6 +4167,9 @@ spec:
                                     preconditions:
                                       description: 'Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/'
                                       x-kubernetes-preserve-unknown-fields: true
+                                    uid:
+                                      description: UID specifies the resource uid.
+                                      type: string
                                   type: object
                                 type: array
                             type: object

@@ -43,7 +43,7 @@ spec:
             description: TransportServerSpec is the spec of the TransportServer resource.
             properties:
               action:
-                description: Action defines an action.
+                description: TransportServerAction defines an action.
                 properties:
                   pass:
                     type: string
@@ -71,7 +71,7 @@ spec:
               streamSnippets:
                 type: string
               tls:
-                description: TLS defines TLS configuration for a TransportServer.
+                description: TransportServerTLS defines TransportServerTLS configuration for a TransportServer.
                 properties:
                   secret:
                     type: string
@@ -94,12 +94,12 @@ spec:
                 type: object
               upstreams:
                 items:
-                  description: Upstream defines an upstream.
+                  description: TransportServerUpstream defines an upstream.
                   properties:
                     failTimeout:
                       type: string
                     healthCheck:
-                      description: HealthCheck defines the parameters for active Upstream HealthChecks.
+                      description: TransportServerHealthCheck defines the parameters for active Upstream HealthChecks.
                       properties:
                         enable:
                           type: boolean
@@ -110,7 +110,7 @@ spec:
                         jitter:
                           type: string
                         match:
-                          description: Match defines the parameters of a custom health check.
+                          description: TransportServerMatch defines the parameters of a custom health check.
                           properties:
                             expect:
                               type: string
@@ -151,6 +151,6 @@ spec:
             type: object
         type: object
     served: true
-    storage: true
+    storage: false
     subresources:
       status: {}

@@ -686,6 +686,12 @@ spec:
                 items:
                   type: string
                 type: array
+              postgres_extra_volume_mounts:
+                description: Specify volume mounts to be added to Postgres container
+                type: string
+              postgres_extra_volumes:
+                description: Specify extra volumes to add to the application pod
+                type: string
               postgres_image:
                 description: Registry path to the PostgreSQL container to use
                 type: string
