@@ -21,16 +21,8 @@ jobs:
         run: cargo install kopium
       - name: Verify kopium
         run: kopium --version
-      - name: Fetch CRDs
-        run: cargo run --package code-generator --bin crd_v1_fetcher
-      - name: Update dep5
-        run: cargo run --package code-generator --bin dep5_generator
-      - name: Fixup YAML
-        run: find ./crd-catalog -name 'fixup.sh' -type f -exec {} \;
       - name: Generate Resources
         run: ./code-generator/generate.sh
-      - name: Generate lib.rs
-        run: cargo run --package code-generator --bin lib_rs_generator
       - id: cpr
         name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
