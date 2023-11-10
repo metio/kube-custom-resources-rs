@@ -1286,7 +1286,9 @@ kinds:
 apiVersion: `k8s.nginx.org/v1`
 
 kinds:
+- `GlobalConfiguration`
 - `Policy`
+- `TransportServer`
 - `VirtualServerRoute`
 - `VirtualServer`
 

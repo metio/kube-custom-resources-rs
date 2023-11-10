@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.8.0
+    controller-gen.kubebuilder.io/version: v0.13.0
   name: quayregistries.quay.redhat.com
 spec:
   group: quay.redhat.com
@@ -100,6 +100,7 @@ spec:
                                               type: object
                                             type: array
                                         type: object
+                                        x-kubernetes-map-type: atomic
                                       weight:
                                         description: Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
                                         format: int32
@@ -160,10 +161,12 @@ spec:
                                               type: object
                                             type: array
                                         type: object
+                                        x-kubernetes-map-type: atomic
                                       type: array
                                   required:
                                   - nodeSelectorTerms
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                             podAffinity:
                               description: Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
@@ -206,8 +209,9 @@ spec:
                                                 description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                 type: object
                                             type: object
+                                            x-kubernetes-map-type: atomic
                                           namespaceSelector:
-                                            description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+                                            description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
                                             properties:
                                               matchExpressions:
                                                 description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -236,8 +240,9 @@ spec:
                                                 description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                 type: object
                                             type: object
+                                            x-kubernetes-map-type: atomic
                                           namespaces:
-                                            description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+                                            description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
                                             items:
                                               type: string
                                             type: array
@@ -291,8 +296,9 @@ spec:
                                             description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                             type: object
                                         type: object
+                                        x-kubernetes-map-type: atomic
                                       namespaceSelector:
-                                        description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+                                        description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
                                         properties:
                                           matchExpressions:
                                             description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -321,8 +327,9 @@ spec:
                                             description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                             type: object
                                         type: object
+                                        x-kubernetes-map-type: atomic
                                       namespaces:
-                                        description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+                                        description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
                                         items:
                                           type: string
                                         type: array
@@ -375,8 +382,9 @@ spec:
                                                 description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                 type: object
                                             type: object
+                                            x-kubernetes-map-type: atomic
                                           namespaceSelector:
-                                            description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+                                            description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
                                             properties:
                                               matchExpressions:
                                                 description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -405,8 +413,9 @@ spec:
                                                 description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                 type: object
                                             type: object
+                                            x-kubernetes-map-type: atomic
                                           namespaces:
-                                            description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+                                            description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
                                             items:
                                               type: string
                                             type: array
@@ -460,8 +469,9 @@ spec:
                                             description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                             type: object
                                         type: object
+                                        x-kubernetes-map-type: atomic
                                       namespaceSelector:
-                                        description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+                                        description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
                                         properties:
                                           matchExpressions:
                                             description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -490,8 +500,9 @@ spec:
                                             description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                             type: object
                                         type: object
+                                        x-kubernetes-map-type: atomic
                                       namespaces:
-                                        description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+                                        description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
                                         items:
                                           type: string
                                         type: array
@@ -536,6 +547,7 @@ spec:
                                     required:
                                     - key
                                     type: object
+                                    x-kubernetes-map-type: atomic
                                   fieldRef:
                                     description: 'Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels[''<KEY>'']`, `metadata.annotations[''<KEY>'']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.'
                                     properties:
@@ -548,6 +560,7 @@ spec:
                                     required:
                                     - fieldPath
                                     type: object
+                                    x-kubernetes-map-type: atomic
                                   resourceFieldRef:
                                     description: 'Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.'
                                     properties:
@@ -567,6 +580,7 @@ spec:
                                     required:
                                     - resource
                                     type: object
+                                    x-kubernetes-map-type: atomic
                                   secretKeyRef:
                                     description: Selects a key of a secret in the pod's namespace
                                     properties:
@@ -582,6 +596,7 @@ spec:
                                     required:
                                     - key
                                     type: object
+                                    x-kubernetes-map-type: atomic
                                 type: object
                             required:
                             - name
@@ -655,9 +670,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ''
-    plural: ''
-  conditions: []
-  storedVersions: []

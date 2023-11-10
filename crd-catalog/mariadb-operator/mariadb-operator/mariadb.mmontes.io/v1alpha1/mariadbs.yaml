@@ -4126,6 +4126,8 @@ spec:
                 type: object
               primaryService:
                 properties:
+                  allocateLoadBalancerNodePorts:
+                    type: boolean
                   annotations:
                     additionalProperties:
                       type: string
@@ -4409,6 +4411,8 @@ spec:
                 type: object
               secondaryService:
                 properties:
+                  allocateLoadBalancerNodePorts:
+                    type: boolean
                   annotations:
                     additionalProperties:
                       type: string
@@ -4522,6 +4526,8 @@ spec:
                 type: object
               service:
                 properties:
+                  allocateLoadBalancerNodePorts:
+                    type: boolean
                   annotations:
                     additionalProperties:
                       type: string

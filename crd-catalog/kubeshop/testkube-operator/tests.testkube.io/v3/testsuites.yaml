@@ -34,6 +34,18 @@ spec:
                 items:
                   description: TestSuiteBatchStep is set of steps run in parallel
                   properties:
+                    downloadArtifacts:
+                      description: options to download artifacts from previous steps
+                      properties:
+                        allPreviousSteps:
+                          type: boolean
+                        previousStepNumbers:
+                          description: previous step numbers starting from 1
+                          items:
+                            format: int32
+                            type: integer
+                          type: array
+                      type: object
                     execute:
                       items:
                         description: TestSuiteStepSpec for particular type will have config for possible step types
@@ -58,6 +70,18 @@ spec:
                 items:
                   description: TestSuiteBatchStep is set of steps run in parallel
                   properties:
+                    downloadArtifacts:
+                      description: options to download artifacts from previous steps
+                      properties:
+                        allPreviousSteps:
+                          type: boolean
+                        previousStepNumbers:
+                          description: previous step numbers starting from 1
+                          items:
+                            format: int32
+                            type: integer
+                          type: array
+                      type: object
                     execute:
                       items:
                         description: TestSuiteStepSpec for particular type will have config for possible step types
@@ -228,6 +252,18 @@ spec:
                 items:
                   description: TestSuiteBatchStep is set of steps run in parallel
                   properties:
+                    downloadArtifacts:
+                      description: options to download artifacts from previous steps
+                      properties:
+                        allPreviousSteps:
+                          type: boolean
+                        previousStepNumbers:
+                          description: previous step numbers starting from 1
+                          items:
+                            format: int32
+                            type: integer
+                          type: array
+                      type: object
                     execute:
                       items:
                         description: TestSuiteStepSpec for particular type will have config for possible step types
