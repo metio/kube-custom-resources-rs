@@ -459,6 +459,10 @@ Files: crd-catalog/kubernetes-sigs/kueue/*
 Copyright: The kubernetes-sigs/kueue Authors
 License: Apache-2.0
 
+Files: crd-catalog/kubernetes-sigs/mcs-api/*
+Copyright: The kubernetes-sigs/mcs-api Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubernetes-sigs/network-policy-api/*
 Copyright: The kubernetes-sigs/network-policy-api Authors
 License: Apache-2.0

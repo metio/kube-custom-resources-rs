@@ -920,8 +920,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/karmada-io/karmada/blob/master/charts/karmada/_crds/bases/autoscaling/autoscaling.karmada.io_federatedhpas.yaml",
             "https://github.com/karmada-io/karmada/blob/master/charts/karmada/_crds/bases/config/config.karmada.io_resourceinterpretercustomizations.yaml",
             "https://github.com/karmada-io/karmada/blob/master/charts/karmada/_crds/bases/config/config.karmada.io_resourceinterpreterwebhookconfigurations.yaml",
-            "https://github.com/karmada-io/karmada/blob/master/charts/karmada/_crds/bases/multicluster/multicluster.x-k8s.io_serviceexports.yaml",
-            "https://github.com/karmada-io/karmada/blob/master/charts/karmada/_crds/bases/multicluster/multicluster.x-k8s.io_serviceimports.yaml",
             "https://github.com/karmada-io/karmada/blob/master/charts/karmada/_crds/bases/networking/networking.karmada.io_multiclusteringresses.yaml",
             "https://github.com/karmada-io/karmada/blob/master/charts/karmada/_crds/bases/networking/networking.karmada.io_multiclusterservices.yaml",
             "https://github.com/karmada-io/karmada/blob/master/charts/karmada/_crds/bases/policy/policy.karmada.io_clusteroverridepolicies.yaml",
@@ -1195,6 +1193,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_localqueues.yaml",
             "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_resourceflavors.yaml",
             "https://github.com/kubernetes-sigs/kueue/blob/main/config/components/crd/bases/kueue.x-k8s.io_workloads.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "kubernetes-sigs/mcs-api",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubernetes-sigs/mcs-api/blob/master/config/crd/multicluster.x-k8s.io_serviceexports.yaml",
+            "https://github.com/kubernetes-sigs/mcs-api/blob/master/config/crd/multicluster.x-k8s.io_serviceimports.yaml",
         ],
     },
     UpstreamSource {
