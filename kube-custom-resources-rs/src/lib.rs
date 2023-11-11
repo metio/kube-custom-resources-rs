@@ -1236,6 +1236,14 @@ apiVersion: `installation.mattermost.com/v1beta1`
 kinds:
 - `Mattermost`
 
+## integration_rock8s_com_v1beta1
+
+apiVersion: `integration.rock8s.com/v1beta1`
+
+kinds:
+- `Plug`
+- `Socket`
+
 ## iot_eclipse_org_v1alpha1
 
 apiVersion: `iot.eclipse.org/v1alpha1`
@@ -2815,6 +2823,8 @@ pub mod infrastructure_cluster_x_k8s_io_v1beta1;
 pub mod infrastructure_cluster_x_k8s_io_v1beta2;
 #[cfg(feature = "installation_mattermost_com_v1beta1")]
 pub mod installation_mattermost_com_v1beta1;
+#[cfg(feature = "integration_rock8s_com_v1beta1")]
+pub mod integration_rock8s_com_v1beta1;
 #[cfg(feature = "iot_eclipse_org_v1alpha1")]
 pub mod iot_eclipse_org_v1alpha1;
 #[cfg(feature = "ipam_cluster_x_k8s_io_v1alpha1")]
