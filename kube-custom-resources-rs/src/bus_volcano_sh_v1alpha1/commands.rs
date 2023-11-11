@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/volcano-sh/volcano/bus.volcano.sh/v1alpha1/commands.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.2
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 
 /// TargetObject defines the target object of this command.
