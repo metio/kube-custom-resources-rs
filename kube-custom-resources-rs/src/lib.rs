@@ -1735,6 +1735,28 @@ apiVersion: `mq.services.k8s.aws/v1alpha1`
 kinds:
 - `Broker`
 
+## multicluster_crd_antrea_io_v1alpha1
+
+apiVersion: `multicluster.crd.antrea.io/v1alpha1`
+
+kinds:
+- `ClusterInfoImport`
+- `ClusterSet`
+- `Gateway`
+- `LabelIdentity`
+- `MemberClusterAnnounce`
+- `MultiClusterConfig`
+- `ResourceExport`
+- `ResourceImport`
+
+## multicluster_crd_antrea_io_v1alpha2
+
+apiVersion: `multicluster.crd.antrea.io/v1alpha2`
+
+kinds:
+- `ClusterClaim`
+- `ClusterSet`
+
 ## multicluster_x_k8s_io_v1alpha1
 
 apiVersion: `multicluster.x-k8s.io/v1alpha1`
@@ -2899,6 +2921,10 @@ pub mod monitoring_coreos_com_v1beta1;
 pub mod monocle_monocle_change_metrics_io_v1alpha1;
 #[cfg(feature = "mq_services_k8s_aws_v1alpha1")]
 pub mod mq_services_k8s_aws_v1alpha1;
+#[cfg(feature = "multicluster_crd_antrea_io_v1alpha1")]
+pub mod multicluster_crd_antrea_io_v1alpha1;
+#[cfg(feature = "multicluster_crd_antrea_io_v1alpha2")]
+pub mod multicluster_crd_antrea_io_v1alpha2;
 #[cfg(feature = "multicluster_x_k8s_io_v1alpha1")]
 pub mod multicluster_x_k8s_io_v1alpha1;
 #[cfg(feature = "mutations_gatekeeper_sh_v1")]

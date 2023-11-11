@@ -39,6 +39,21 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "antrea-io/antrea",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_clusterclaims.yaml",
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_clusterinfoimports.yaml",
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_clustersets.yaml",
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_gateways.yaml",
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_labelidentities.yaml",
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_memberclusterannounces.yaml",
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_multiclusterconfigs.yaml",
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_resourceexports.yaml",
+            "https://github.com/antrea-io/antrea/blob/main/multicluster/config/crd/bases/multicluster.crd.antrea.io_resourceimports.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "apache/camel-k",
         license: APACHE_V2,
         urls: &[
