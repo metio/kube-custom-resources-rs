@@ -27,4 +27,4 @@ jobs:
             fi
           done
         env:
-          RUSTFLAGS: "-A warnings"
+          RUSTFLAGS: "--deny warnings"

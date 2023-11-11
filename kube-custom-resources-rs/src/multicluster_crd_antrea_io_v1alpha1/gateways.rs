@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/antrea-io/antrea/multicluster.crd.antrea.io/v1alpha1/gateways.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.2
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 
 /// WireGuardInfo includes information of a WireGuard tunnel.
