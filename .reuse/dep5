@@ -695,6 +695,10 @@ Files: crd-catalog/strimzi/strimzi-kafka-operator/*
 Copyright: The strimzi/strimzi-kafka-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/submariner-io/submariner-operator/*
+Copyright: The submariner-io/submariner-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/superedge/superedge/*
 Copyright: The superedge/superedge Authors
 License: Apache-2.0

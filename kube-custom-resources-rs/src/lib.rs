@@ -2380,6 +2380,15 @@ kinds:
 - `GatewayConfig`
 - `StaticService`
 
+## submariner_io_v1alpha1
+
+apiVersion: `submariner.io/v1alpha1`
+
+kinds:
+- `Broker`
+- `ServiceDiscovery`
+- `Submariner`
+
 ## templates_gatekeeper_sh_v1
 
 apiVersion: `templates.gatekeeper.sh/v1`
@@ -3040,6 +3049,8 @@ pub mod sparkoperator_k8s_io_v1beta2;
 pub mod status_gatekeeper_sh_v1beta1;
 #[cfg(feature = "stunner_l7mp_io_v1alpha1")]
 pub mod stunner_l7mp_io_v1alpha1;
+#[cfg(feature = "submariner_io_v1alpha1")]
+pub mod submariner_io_v1alpha1;
 #[cfg(feature = "templates_gatekeeper_sh_v1")]
 pub mod templates_gatekeeper_sh_v1;
 #[cfg(feature = "templates_gatekeeper_sh_v1alpha1")]
