@@ -133,6 +133,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "authzed/spicedb-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/authzed/spicedb-operator/blob/main/config/crds/authzed.com_spicedbclusters.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/apigatewayv2-controller",
         license: APACHE_V2,
         urls: &[
