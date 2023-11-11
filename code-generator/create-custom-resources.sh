@@ -30,11 +30,11 @@ for file in ./crd-catalog/**/*.yaml; do
 
     if [ -f "${args}" ]; then
       if ! xargs --arg-file="${args}" --delimiter='\n' kopium --docs --filename="${file}" > "./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
-        echo "error in ${file}"
+        echo "  error in ${file}"
       fi
     else
       if ! kopium --docs --filename="${file}" --derive=Default --derive=PartialEq > "./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
-        echo "error in ${file}"
+        echo "  error in ${file}"
       fi
     fi
   fi
