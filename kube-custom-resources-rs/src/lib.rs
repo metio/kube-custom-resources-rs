@@ -177,6 +177,22 @@ apiVersion: `apps.gitlab.com/v1beta1`
 kinds:
 - `GitLab`
 
+## apps_kubeblocks_io_v1alpha1
+
+apiVersion: `apps.kubeblocks.io/v1alpha1`
+
+kinds:
+- `BackupPolicyTemplate`
+- `ClusterDefinition`
+- `Cluster`
+- `ClusterVersion`
+- `ComponentClassDefinition`
+- `ComponentResourceConstraint`
+- `ConfigConstraint`
+- `Configuration`
+- `OpsRequest`
+- `ServiceDescriptor`
+
 ## apps_kubedl_io_v1alpha1
 
 apiVersion: `apps.kubedl.io/v1alpha1`
@@ -724,6 +740,18 @@ apiVersion: `databases.schemahero.io/v1alpha4`
 kinds:
 - `Database`
 
+## dataprotection_kubeblocks_io_v1alpha1
+
+apiVersion: `dataprotection.kubeblocks.io/v1alpha1`
+
+kinds:
+- `ActionSet`
+- `BackupPolicy`
+- `BackupRepo`
+- `Backup`
+- `BackupSchedule`
+- `Restore`
+
 ## devices_kubeedge_io_v1alpha2
 
 apiVersion: `devices.kubeedge.io/v1alpha2`
@@ -889,6 +917,13 @@ apiVersion: `expansion.gatekeeper.sh/v1beta1`
 
 kinds:
 - `ExpansionTemplate`
+
+## extensions_kubeblocks_io_v1alpha1
+
+apiVersion: `extensions.kubeblocks.io/v1alpha1`
+
+kinds:
+- `Addon`
 
 ## external_secrets_io_v1alpha1
 
@@ -2408,6 +2443,13 @@ kinds:
 - `ExpansionTemplatePodStatus`
 - `MutatorPodStatus`
 
+## storage_kubeblocks_io_v1alpha1
+
+apiVersion: `storage.kubeblocks.io/v1alpha1`
+
+kinds:
+- `StorageProvider`
+
 ## stunner_l7mp_io_v1alpha1
 
 apiVersion: `stunner.l7mp.io/v1alpha1`
@@ -2566,6 +2608,13 @@ apiVersion: `work.karmada.io/v1alpha2`
 kinds:
 - `ClusterResourceBinding`
 - `ResourceBinding`
+
+## workloads_kubeblocks_io_v1alpha1
+
+apiVersion: `workloads.kubeblocks.io/v1alpha1`
+
+kinds:
+- `ReplicatedStateMachine`
  */
 
 #[cfg(feature = "about_k8s_io_v1alpha1")]
@@ -2610,6 +2659,8 @@ pub mod apps_3scale_net_v1alpha1;
 pub mod apps_clusternet_io_v1alpha1;
 #[cfg(feature = "apps_gitlab_com_v1beta1")]
 pub mod apps_gitlab_com_v1beta1;
+#[cfg(feature = "apps_kubeblocks_io_v1alpha1")]
+pub mod apps_kubeblocks_io_v1alpha1;
 #[cfg(feature = "apps_kubedl_io_v1alpha1")]
 pub mod apps_kubedl_io_v1alpha1;
 #[cfg(feature = "apps_kubeedge_io_v1alpha1")]
@@ -2718,6 +2769,8 @@ pub mod crd_projectcalico_org_v1;
 pub mod data_fluid_io_v1alpha1;
 #[cfg(feature = "databases_schemahero_io_v1alpha4")]
 pub mod databases_schemahero_io_v1alpha4;
+#[cfg(feature = "dataprotection_kubeblocks_io_v1alpha1")]
+pub mod dataprotection_kubeblocks_io_v1alpha1;
 #[cfg(feature = "devices_kubeedge_io_v1alpha2")]
 pub mod devices_kubeedge_io_v1alpha2;
 #[cfg(feature = "digitalis_io_v1")]
@@ -2758,6 +2811,8 @@ pub mod executor_testkube_io_v1;
 pub mod expansion_gatekeeper_sh_v1alpha1;
 #[cfg(feature = "expansion_gatekeeper_sh_v1beta1")]
 pub mod expansion_gatekeeper_sh_v1beta1;
+#[cfg(feature = "extensions_kubeblocks_io_v1alpha1")]
+pub mod extensions_kubeblocks_io_v1alpha1;
 #[cfg(feature = "external_secrets_io_v1alpha1")]
 pub mod external_secrets_io_v1alpha1;
 #[cfg(feature = "external_secrets_io_v1beta1")]
@@ -3092,6 +3147,8 @@ pub mod source_toolkit_fluxcd_io_v1beta2;
 pub mod sparkoperator_k8s_io_v1beta2;
 #[cfg(feature = "status_gatekeeper_sh_v1beta1")]
 pub mod status_gatekeeper_sh_v1beta1;
+#[cfg(feature = "storage_kubeblocks_io_v1alpha1")]
+pub mod storage_kubeblocks_io_v1alpha1;
 #[cfg(feature = "stunner_l7mp_io_v1alpha1")]
 pub mod stunner_l7mp_io_v1alpha1;
 #[cfg(feature = "submariner_io_v1alpha1")]
@@ -3128,3 +3185,5 @@ pub mod wildfly_org_v1alpha1;
 pub mod work_karmada_io_v1alpha1;
 #[cfg(feature = "work_karmada_io_v1alpha2")]
 pub mod work_karmada_io_v1alpha2;
+#[cfg(feature = "workloads_kubeblocks_io_v1alpha1")]
+pub mod workloads_kubeblocks_io_v1alpha1;

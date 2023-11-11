@@ -39,6 +39,10 @@ Files: crd-catalog/apache/rocketmq-operator/*
 Copyright: The apache/rocketmq-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/apecloud/kubeblocks/*
+Copyright: The apecloud/kubeblocks Authors
+License: AGPL-3.0-or-later
+
 Files: crd-catalog/Apicurio/apicurio-registry-operator/*
 Copyright: The Apicurio/apicurio-registry-operator Authors
 License: Apache-2.0
