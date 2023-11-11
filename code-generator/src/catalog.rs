@@ -1725,6 +1725,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "reddec/keycloak-ext-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/reddec/keycloak-ext-operator/blob/master/config/crd/bases/keycloak.k8s.reddec.net_keycloakclients.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "redhat-cop/namespace-configuration-operator",
         license: APACHE_V2,
         urls: &[
