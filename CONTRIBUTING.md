@@ -42,7 +42,7 @@ The `<project_name>` argument is the same value you added to the catalog in step
 $ ./code-generator/generate.sh prometheus-operator/prometheus-operator
 ```
 
-If not `<project_name>` argument was given, code for all CRDs in the catalog will be generated.
+If no `<project_name>` argument was given, code for all CRDs in the catalog will be generated.
 
 ### 3. Check output 
 
