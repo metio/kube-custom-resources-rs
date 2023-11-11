@@ -1331,6 +1331,14 @@ apiVersion: `k8gb.absa.oss/v1beta1`
 kinds:
 - `Gslb`
 
+## k8s_keycloak_org_v2alpha1
+
+apiVersion: `k8s.keycloak.org/v2alpha1`
+
+kinds:
+- `KeycloakRealmImport`
+- `Keycloak`
+
 ## k8s_nginx_org_v1
 
 apiVersion: `k8s.nginx.org/v1`
@@ -2901,6 +2909,8 @@ pub mod jaegertracing_io_v1;
 pub mod jobset_x_k8s_io_v1alpha2;
 #[cfg(feature = "k8gb_absa_oss_v1beta1")]
 pub mod k8gb_absa_oss_v1beta1;
+#[cfg(feature = "k8s_keycloak_org_v2alpha1")]
+pub mod k8s_keycloak_org_v2alpha1;
 #[cfg(feature = "k8s_nginx_org_v1")]
 pub mod k8s_nginx_org_v1;
 #[cfg(feature = "k8s_nginx_org_v1alpha1")]

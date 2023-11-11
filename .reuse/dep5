@@ -387,6 +387,10 @@ Files: crd-catalog/kedacore/keda/*
 Copyright: The kedacore/keda Authors
 License: Apache-2.0
 
+Files: crd-catalog/keycloak/keycloak-k8s-resources/*
+Copyright: The keycloak/keycloak-k8s-resources Authors
+License: Apache-2.0
+
 Files: crd-catalog/keycloak/keycloak-operator/*
 Copyright: The keycloak/keycloak-operator Authors
 License: Apache-2.0

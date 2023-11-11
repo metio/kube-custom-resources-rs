@@ -998,6 +998,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "keycloak/keycloak-k8s-resources",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/keycloak/keycloak-k8s-resources/blob/main/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml",
+            "https://github.com/keycloak/keycloak-k8s-resources/blob/main/kubernetes/keycloaks.k8s.keycloak.org-v1.yml",
+        ],
+    },
+    UpstreamSource {
         project_name: "keycloak/keycloak-operator",
         license: APACHE_V2,
         urls: &[
