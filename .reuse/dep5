@@ -23,6 +23,10 @@ Files: crd-catalog/ansible/awx-operator/*
 Copyright: The ansible/awx-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/antrea-io/antrea/*
+Copyright: The antrea-io/antrea Authors
+License: Apache-2.0
+
 Files: crd-catalog/apache/camel-k/*
 Copyright: The apache/camel-k Authors
 License: Apache-2.0
