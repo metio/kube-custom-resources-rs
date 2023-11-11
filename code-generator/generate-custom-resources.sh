@@ -26,6 +26,8 @@ for file in ./crd-catalog/**/*.yaml; do
     rust_group=$(echo "${group}" | sed -e 's/\./_/g' -e 's/-/_/g')
     module="${rust_group}_${version}"
 
+    mkdir --parents "./kube-custom-resources-rs/src/${module}"
+
     if [ -f "${args}" ]; then
       if ! xargs --arg-file="${args}" --delimiter='\n' kopium --docs --filename="${file}" > "./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
         echo "error in ${file}"
