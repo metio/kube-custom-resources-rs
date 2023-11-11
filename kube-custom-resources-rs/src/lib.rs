@@ -1417,6 +1417,13 @@ kinds:
 - `ScaledObject`
 - `TriggerAuthentication`
 
+## keycloak_k8s_reddec_net_v1alpha1
+
+apiVersion: `keycloak.k8s.reddec.net/v1alpha1`
+
+kinds:
+- `KeycloakClient`
+
 ## keycloak_org_v1alpha1
 
 apiVersion: `keycloak.org/v1alpha1`
@@ -2927,6 +2934,8 @@ pub mod kafka_strimzi_io_v1beta1;
 pub mod kafka_strimzi_io_v1beta2;
 #[cfg(feature = "keda_sh_v1alpha1")]
 pub mod keda_sh_v1alpha1;
+#[cfg(feature = "keycloak_k8s_reddec_net_v1alpha1")]
+pub mod keycloak_k8s_reddec_net_v1alpha1;
 #[cfg(feature = "keycloak_org_v1alpha1")]
 pub mod keycloak_org_v1alpha1;
 #[cfg(feature = "kibana_k8s_elastic_co_v1")]
