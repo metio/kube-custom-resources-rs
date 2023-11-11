@@ -243,6 +243,13 @@ apiVersion: `atlasmap.io/v1alpha1`
 kinds:
 - `AtlasMap`
 
+## authzed_com_v1alpha1
+
+apiVersion: `authzed.com/v1alpha1`
+
+kinds:
+- `SpiceDBCluster`
+
 ## autoscaling_k8s_io_v1
 
 apiVersion: `autoscaling.k8s.io/v1`
@@ -2621,6 +2628,8 @@ pub mod asdb_aerospike_com_v1;
 pub mod asdb_aerospike_com_v1beta1;
 #[cfg(feature = "atlasmap_io_v1alpha1")]
 pub mod atlasmap_io_v1alpha1;
+#[cfg(feature = "authzed_com_v1alpha1")]
+pub mod authzed_com_v1alpha1;
 #[cfg(feature = "autoscaling_k8s_io_v1")]
 pub mod autoscaling_k8s_io_v1;
 #[cfg(feature = "autoscaling_k8s_io_v1beta2")]
