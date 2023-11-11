@@ -1801,6 +1801,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "submariner-io/submariner-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/submariner-io/submariner-operator/blob/devel/config/crd/bases/submariner.io_brokers.yaml",
+            "https://github.com/submariner-io/submariner-operator/blob/devel/config/crd/bases/submariner.io_servicediscoveries.yaml",
+            "https://github.com/submariner-io/submariner-operator/blob/devel/config/crd/bases/submariner.io_submariners.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "superedge/superedge",
         license: APACHE_V2,
         urls: &[
