@@ -23,7 +23,7 @@ jobs:
           for module in $(git diff --name-only origin/main -- ./kube-custom-resources-rs/src | grep --invert-match lib.rs | xargs --no-run-if-empty -I{} dirname {} | sort --unique | xargs --no-run-if-empty -I{} basename {}); do
             if [ -f "./kube-custom-resources-rs/src/${module}/mod.rs" ]; then
               echo "testing ${module}"
-              cargo check --package kube-custom-resources-rs --features "${module}" --locked
+              cargo check --lib --package kube-custom-resources-rs --features "${module}" --locked
             fi
           done
         env:

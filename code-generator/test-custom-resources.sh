@@ -8,6 +8,6 @@ for mld in ./kube-custom-resources-rs/src/*; do
   if [ -f "${mld}/mod.rs" ]; then
     module=$(basename "${mld}")
     echo "testing ${module}"
-    cargo check --package kube-custom-resources-rs --features "${module}" --locked
+    cargo check --lib --package kube-custom-resources-rs --features "${module}" --locked
   fi
 done
