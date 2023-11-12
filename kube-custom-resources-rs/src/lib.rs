@@ -1969,6 +1969,13 @@ kinds:
 - `AquaScanner`
 - `AquaServer`
 
+## operator_authorino_kuadrant_io_v1beta1
+
+apiVersion: `operator.authorino.kuadrant.io/v1beta1`
+
+kinds:
+- `Authorino`
+
 ## operator_cluster_x_k8s_io_v1alpha1
 
 apiVersion: `operator.cluster.x-k8s.io/v1alpha1`
@@ -3061,6 +3068,8 @@ pub mod opentelemetry_io_v1alpha1;
 pub mod operations_kubeedge_io_v1alpha1;
 #[cfg(feature = "operator_aquasec_com_v1alpha1")]
 pub mod operator_aquasec_com_v1alpha1;
+#[cfg(feature = "operator_authorino_kuadrant_io_v1beta1")]
+pub mod operator_authorino_kuadrant_io_v1beta1;
 #[cfg(feature = "operator_cluster_x_k8s_io_v1alpha1")]
 pub mod operator_cluster_x_k8s_io_v1alpha1;
 #[cfg(feature = "operator_cluster_x_k8s_io_v1alpha2")]
