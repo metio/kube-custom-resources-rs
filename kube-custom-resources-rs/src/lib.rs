@@ -93,6 +93,17 @@ kinds:
 - `Stage`
 - `VPCLink`
 
+## apisix_apache_org_v2
+
+apiVersion: `apisix.apache.org/v2`
+
+kinds:
+- `ApisixGlobalRule`
+- `ApisixPluginConfig`
+- `ApisixRoute`
+- `ApisixTls`
+- `ApisixUpstream`
+
 ## apm_k8s_elastic_co_v1
 
 apiVersion: `apm.k8s.elastic.co/v1`
@@ -2752,6 +2763,8 @@ pub mod apicodegen_apimatic_io_v1beta1;
 pub mod apiextensions_crossplane_io_v1;
 #[cfg(feature = "apigatewayv2_services_k8s_aws_v1alpha1")]
 pub mod apigatewayv2_services_k8s_aws_v1alpha1;
+#[cfg(feature = "apisix_apache_org_v2")]
+pub mod apisix_apache_org_v2;
 #[cfg(feature = "apm_k8s_elastic_co_v1")]
 pub mod apm_k8s_elastic_co_v1;
 #[cfg(feature = "apm_k8s_elastic_co_v1beta1")]
