@@ -1051,6 +1051,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kiegroup/kogito-serverless-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kiegroup/kogito-serverless-operator/blob/main/config/crd/bases/sonataflow.org_sonataflowbuilds.yaml",
+            "https://github.com/kiegroup/kogito-serverless-operator/blob/main/config/crd/bases/sonataflow.org_sonataflowplatforms.yaml",
+            "https://github.com/kiegroup/kogito-serverless-operator/blob/main/config/crd/bases/sonataflow.org_sonataflows.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "knative/operator",
         license: APACHE_V2,
         urls: &[

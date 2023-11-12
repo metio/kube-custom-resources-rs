@@ -411,6 +411,10 @@ Files: crd-catalog/kiegroup/kogito-operator/*
 Copyright: The kiegroup/kogito-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/kiegroup/kogito-serverless-operator/*
+Copyright: The kiegroup/kogito-serverless-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/knative/operator/*
 Copyright: The knative/operator Authors
 License: Apache-2.0

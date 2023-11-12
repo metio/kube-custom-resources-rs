@@ -2447,6 +2447,14 @@ kinds:
 - `NodeMetric`
 - `NodeSLO`
 
+## sonataflow_org_v1alpha08
+
+apiVersion: `sonataflow.org/v1alpha08`
+
+kinds:
+- `SonataFlowBuild`
+- `SonataFlowPlatform`
+
 ## source_toolkit_fluxcd_io_v1beta1
 
 apiVersion: `source.toolkit.fluxcd.io/v1beta1`
@@ -3208,6 +3216,8 @@ pub mod sfn_services_k8s_aws_v1alpha1;
 pub mod site_superedge_io_v1alpha1;
 #[cfg(feature = "slo_koordinator_sh_v1alpha1")]
 pub mod slo_koordinator_sh_v1alpha1;
+#[cfg(feature = "sonataflow_org_v1alpha08")]
+pub mod sonataflow_org_v1alpha08;
 #[cfg(feature = "source_toolkit_fluxcd_io_v1beta1")]
 pub mod source_toolkit_fluxcd_io_v1beta1;
 #[cfg(feature = "source_toolkit_fluxcd_io_v1beta2")]
