@@ -849,6 +849,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "gp42/aws-auth-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/gp42/aws-auth-operator/blob/main/config/crd/bases/auth.ops42.org_awsauthconfigs.yaml",
+            "https://github.com/gp42/aws-auth-operator/blob/main/config/crd/bases/auth.ops42.org_awsauthsyncconfigs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "grafana-operator/grafana-operator",
         license: APACHE_V2,
         urls: &[
