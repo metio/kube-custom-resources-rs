@@ -727,6 +727,10 @@ Files: crd-catalog/snyk/kubernetes-monitor/*
 Copyright: The snyk/kubernetes-monitor Authors
 License: Apache-2.0
 
+Files: crd-catalog/SolaceProducts/pubsubplus-kubernetes-quickstart/*
+Copyright: The SolaceProducts/pubsubplus-kubernetes-quickstart Authors
+License: Apache-2.0
+
 Files: crd-catalog/solo-io/gloo/*
 Copyright: The solo-io/gloo Authors
 License: MIT
