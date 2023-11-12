@@ -2501,6 +2501,13 @@ apiVersion: `storage.kubeblocks.io/v1alpha1`
 kinds:
 - `StorageProvider`
 
+## sts_min_io_v1alpha1
+
+apiVersion: `sts.min.io/v1alpha1`
+
+kinds:
+- `PolicyBinding`
+
 ## stunner_l7mp_io_v1alpha1
 
 apiVersion: `stunner.l7mp.io/v1alpha1`
@@ -3228,6 +3235,8 @@ pub mod sparkoperator_k8s_io_v1beta2;
 pub mod status_gatekeeper_sh_v1beta1;
 #[cfg(feature = "storage_kubeblocks_io_v1alpha1")]
 pub mod storage_kubeblocks_io_v1alpha1;
+#[cfg(feature = "sts_min_io_v1alpha1")]
+pub mod sts_min_io_v1alpha1;
 #[cfg(feature = "stunner_l7mp_io_v1alpha1")]
 pub mod stunner_l7mp_io_v1alpha1;
 #[cfg(feature = "submariner_io_v1alpha1")]
