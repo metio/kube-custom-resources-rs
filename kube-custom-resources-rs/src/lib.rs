@@ -1607,6 +1607,13 @@ kinds:
 - `BitwardenTemplate`
 - `RegistryCredential`
 
+## limitador_kuadrant_io_v1alpha1
+
+apiVersion: `limitador.kuadrant.io/v1alpha1`
+
+kinds:
+- `Limitador`
+
 ## litmuschaos_io_v1alpha1
 
 apiVersion: `litmuschaos.io/v1alpha1`
@@ -3033,6 +3040,8 @@ pub mod kyverno_io_v2beta1;
 pub mod lambda_services_k8s_aws_v1alpha1;
 #[cfg(feature = "lerentis_uploadfilter24_eu_v1beta4")]
 pub mod lerentis_uploadfilter24_eu_v1beta4;
+#[cfg(feature = "limitador_kuadrant_io_v1alpha1")]
+pub mod limitador_kuadrant_io_v1alpha1;
 #[cfg(feature = "litmuschaos_io_v1alpha1")]
 pub mod litmuschaos_io_v1alpha1;
 #[cfg(feature = "logging_extensions_banzaicloud_io_v1alpha1")]
