@@ -2038,6 +2038,7 @@ apiVersion: `operator.open-cluster-management.io/v1`
 
 kinds:
 - `ClusterManager`
+- `ClusterManager`
 - `Klusterlet`
 
 ## operator_shipwright_io_v1alpha1

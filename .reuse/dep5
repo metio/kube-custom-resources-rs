@@ -631,6 +631,10 @@ Files: crd-catalog/opdev/synapse-helm/*
 Copyright: The opdev/synapse-helm Authors
 License: Apache-2.0
 
+Files: crd-catalog/open-cluster-management-io/ocm/*
+Copyright: The open-cluster-management-io/ocm Authors
+License: Apache-2.0
+
 Files: crd-catalog/open-cluster-management-io/registration-operator/*
 Copyright: The open-cluster-management-io/registration-operator Authors
 License: Apache-2.0
