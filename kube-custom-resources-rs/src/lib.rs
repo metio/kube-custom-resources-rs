@@ -1873,6 +1873,13 @@ kinds:
 - `AssignMetadata`
 - `ModifySet`
 
+## nativestor_alauda_io_v1
+
+apiVersion: `nativestor.alauda.io/v1`
+
+kinds:
+- `RawDevice`
+
 ## networking_karmada_io_v1alpha1
 
 apiVersion: `networking.karmada.io/v1alpha1`
@@ -2562,6 +2569,20 @@ apiVersion: `topology.node.k8s.io/v1alpha1`
 kinds:
 - `NodeResourceTopology`
 
+## topolvm_cybozu_com_v1
+
+apiVersion: `topolvm.cybozu.com/v1`
+
+kinds:
+- `LogicalVolume`
+
+## topolvm_cybozu_com_v2
+
+apiVersion: `topolvm.cybozu.com/v2`
+
+kinds:
+- `TopolvmCluster`
+
 ## traefik_io_v1alpha1
 
 apiVersion: `traefik.io/v1alpha1`
@@ -3051,6 +3072,8 @@ pub mod mutations_gatekeeper_sh_v1;
 pub mod mutations_gatekeeper_sh_v1alpha1;
 #[cfg(feature = "mutations_gatekeeper_sh_v1beta1")]
 pub mod mutations_gatekeeper_sh_v1beta1;
+#[cfg(feature = "nativestor_alauda_io_v1")]
+pub mod nativestor_alauda_io_v1;
 #[cfg(feature = "networking_karmada_io_v1alpha1")]
 pub mod networking_karmada_io_v1alpha1;
 #[cfg(feature = "nfd_k8s_sigs_io_v1alpha1")]
@@ -3213,6 +3236,10 @@ pub mod tests_testkube_io_v2;
 pub mod tests_testkube_io_v3;
 #[cfg(feature = "topology_node_k8s_io_v1alpha1")]
 pub mod topology_node_k8s_io_v1alpha1;
+#[cfg(feature = "topolvm_cybozu_com_v1")]
+pub mod topolvm_cybozu_com_v1;
+#[cfg(feature = "topolvm_cybozu_com_v2")]
+pub mod topolvm_cybozu_com_v2;
 #[cfg(feature = "traefik_io_v1alpha1")]
 pub mod traefik_io_v1alpha1;
 #[cfg(feature = "training_kubedl_io_v1alpha1")]

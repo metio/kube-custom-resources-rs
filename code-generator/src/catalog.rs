@@ -17,6 +17,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "alauda/nativestor",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/alauda/nativestor/blob/main/config/crd/bases/nativestor.alauda.io_rawdevices.yaml",
+            "https://github.com/alauda/nativestor/blob/main/config/crd/bases/topolvm.cybozu.com_logicalvolumes.yaml",
+            "https://github.com/alauda/nativestor/blob/main/config/crd/bases/topolvm.cybozu.com_topolvmclusters.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "Alvearie/imaging-ingestion",
         license: APACHE_V2,
         urls: &[
