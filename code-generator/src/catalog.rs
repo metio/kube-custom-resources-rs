@@ -1071,6 +1071,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "Kuadrant/authorino-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/Kuadrant/authorino-operator/blob/main/config/crd/bases/operator.authorino.kuadrant.io_authorinos.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kube-logging/logging-operator",
         license: APACHE_V2,
         urls: &[
