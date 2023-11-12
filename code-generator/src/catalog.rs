@@ -1870,6 +1870,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "SolaceProducts/pubsubplus-kubernetes-quickstart",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/SolaceProducts/pubsubplus-kubernetes-quickstart/blob/main/config/crd/bases/pubsubplus.solace.com_pubsubpluseventbrokers.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "solo-io/gloo",
         license: MIT,
         urls: &[
