@@ -1564,6 +1564,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/minio/operator/blob/master/resources/base/crds/minio.min.io_tenants.yaml",
+            "https://github.com/minio/operator/blob/master/resources/base/crds/sts.min.io_policybindings.yaml",
         ],
     },
     UpstreamSource {
