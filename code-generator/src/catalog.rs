@@ -1167,6 +1167,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kubemod/kubemod",
+        license: KUBEMOD,
+        urls: &[
+            "https://github.com/kubemod/kubemod/blob/master/config/crd/bases/api.kubemod.io_modrules.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kubernetes-sigs/about-api",
         license: APACHE_V2,
         urls: &[
@@ -2038,3 +2045,4 @@ const AGPL_V3_OR_LATER: &'static str = "AGPL-3.0-or-later";
 const GPL_V2_OR_LATER: &'static str = "GPL-2.0-or-later";
 const UPL_V1: &'static str = "UPL-1.0";
 const MPL_V2: &'static str = "MPL-2.0";
+const KUBEMOD: &'static str = "LicenseRef-Kubemod";
