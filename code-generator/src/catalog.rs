@@ -1637,6 +1637,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "open-cluster-management-io/ocm",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/open-cluster-management-io/ocm/blob/main/deploy/cluster-manager/config/crds/0000_01_operator.open-cluster-management.io_clustermanagers.crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "open-cluster-management-io/registration-operator",
         license: APACHE_V2,
         urls: &[
