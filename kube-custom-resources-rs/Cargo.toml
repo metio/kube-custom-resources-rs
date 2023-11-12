@@ -24,6 +24,8 @@ serde_json = { version = "1.0.108" }
 [features]
 about_k8s_io_v1alpha1 = []
 acme_cert_manager_io_v1 = []
+actions_github_com_v1alpha1 = []
+actions_summerwind_dev_v1alpha1 = []
 addons_cluster_x_k8s_io_v1alpha4 = []
 addons_cluster_x_k8s_io_v1beta1 = []
 agent_k8s_elastic_co_v1alpha1 = []

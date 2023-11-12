@@ -10,6 +10,21 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "actions/actions-runner-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.github.com_autoscalinglisteners.yaml",
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.github.com_autoscalingrunnersets.yaml",
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.github.com_ephemeralrunners.yaml",
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.github.com_ephemeralrunnersets.yaml",
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.summerwind.dev_horizontalrunnerautoscalers.yaml",
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.summerwind.dev_runnerdeployments.yaml",
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.summerwind.dev_runnerreplicasets.yaml",
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.summerwind.dev_runners.yaml",
+            "https://github.com/actions/actions-runner-controller/blob/master/config/crd/bases/actions.summerwind.dev_runnersets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aerospike/aerospike-kubernetes-operator",
         license: APACHE_V2,
         urls: &[
