@@ -542,6 +542,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "CleverCloud/clever-operator",
+        license: MIT,
+        urls: &[
+            "https://github.com/CleverCloud/clever-operator/blob/main/deployments/kubernetes/helm/templates/custom-resource-definition.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "cloud-bulldozer/benchmark-operator",
         license: APACHE_V2,
         urls: &[
