@@ -63,6 +63,19 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "apache/apisix-ingress-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/apache/apisix-ingress-controller/blob/master/samples/deploy/crd/v1/ApisixClusterConfig.yaml",
+            "https://github.com/apache/apisix-ingress-controller/blob/master/samples/deploy/crd/v1/ApisixConsumer.yaml",
+            "https://github.com/apache/apisix-ingress-controller/blob/master/samples/deploy/crd/v1/ApisixGlobalRule.yaml",
+            "https://github.com/apache/apisix-ingress-controller/blob/master/samples/deploy/crd/v1/ApisixPluginConfig.yaml",
+            "https://github.com/apache/apisix-ingress-controller/blob/master/samples/deploy/crd/v1/ApisixRoute.yaml",
+            "https://github.com/apache/apisix-ingress-controller/blob/master/samples/deploy/crd/v1/ApisixTls.yaml",
+            "https://github.com/apache/apisix-ingress-controller/blob/master/samples/deploy/crd/v1/ApisixUpstream.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "apache/camel-k",
         license: APACHE_V2,
         urls: &[
