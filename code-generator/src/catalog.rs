@@ -1931,6 +1931,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "validatedpatterns/patterns-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/validatedpatterns/patterns-operator/blob/main/config/crd/bases/gitops.hybrid-cloud-patterns.io_patterns.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "VictoriaMetrics/operator",
         license: APACHE_V2,
         urls: &[
