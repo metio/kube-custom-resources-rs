@@ -36,6 +36,8 @@ Since Cargo imposes certain rules on how features can be named, `.`, `-`, and `/
 kube-custom-resources-rs = { version = "<version>", features = ["cert_manager_io_v1"] }
 ```
 
+Take a look at the [docs](https://docs.rs/kube-custom-resources-rs/latest/kube_custom_resources_rs/) to see all available features and the GVKs they contain.
+
 ## Versioning
 
 This crate uses a calendar based versioning scheme because resources in Kubernetes are versioned themselves.
