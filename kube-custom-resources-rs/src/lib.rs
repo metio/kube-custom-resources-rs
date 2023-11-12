@@ -569,6 +569,13 @@ kinds:
 - `WorkflowNode`
 - `Workflow`
 
+## chaosblade_io_v1alpha1
+
+apiVersion: `chaosblade.io/v1alpha1`
+
+kinds:
+- `ChaosBlade`
+
 ## che_eclipse_org_v1alpha1
 
 apiVersion: `che.eclipse.org/v1alpha1`
@@ -2843,6 +2850,8 @@ pub mod ceph_rook_io_v1;
 pub mod cert_manager_io_v1;
 #[cfg(feature = "chaos_mesh_org_v1alpha1")]
 pub mod chaos_mesh_org_v1alpha1;
+#[cfg(feature = "chaosblade_io_v1alpha1")]
+pub mod chaosblade_io_v1alpha1;
 #[cfg(feature = "che_eclipse_org_v1alpha1")]
 pub mod che_eclipse_org_v1alpha1;
 #[cfg(feature = "cilium_io_v2")]

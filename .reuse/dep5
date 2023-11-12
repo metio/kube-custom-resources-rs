@@ -171,6 +171,10 @@ Files: crd-catalog/change-metrics/monocle-operator/*
 Copyright: The change-metrics/monocle-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/chaosblade-io/chaosblade-operator/*
+Copyright: The chaosblade-io/chaosblade-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/chaos-mesh/chaos-mesh/*
 Copyright: The chaos-mesh/chaos-mesh Authors
 License: Apache-2.0

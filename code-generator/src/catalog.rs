@@ -467,6 +467,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "chaosblade-io/chaosblade-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/chaosblade-io/chaosblade-operator/blob/master/deploy/crds/chaosblade.io_chaosblades_crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "chaos-mesh/chaos-mesh",
         license: APACHE_V2,
         urls: &[
