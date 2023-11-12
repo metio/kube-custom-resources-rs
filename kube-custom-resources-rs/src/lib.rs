@@ -41,6 +41,25 @@ apiVersion: `agent.k8s.elastic.co/v1alpha1`
 kinds:
 - `Agent`
 
+## api_clever_cloud_com_v1
+
+apiVersion: `api.clever-cloud.com/v1`
+
+kinds:
+- `ConfigProvider`
+- `ElasticSearch`
+- `MongoDb`
+- `MySql`
+- `PostgreSql`
+- `Redis`
+
+## api_clever_cloud_com_v1beta1
+
+apiVersion: `api.clever-cloud.com/v1beta1`
+
+kinds:
+- `Pulsar`
+
 ## api_kubemod_io_v1beta1
 
 apiVersion: `api.kubemod.io/v1beta1`
@@ -2714,6 +2733,10 @@ pub mod addons_cluster_x_k8s_io_v1alpha4;
 pub mod addons_cluster_x_k8s_io_v1beta1;
 #[cfg(feature = "agent_k8s_elastic_co_v1alpha1")]
 pub mod agent_k8s_elastic_co_v1alpha1;
+#[cfg(feature = "api_clever_cloud_com_v1")]
+pub mod api_clever_cloud_com_v1;
+#[cfg(feature = "api_clever_cloud_com_v1beta1")]
+pub mod api_clever_cloud_com_v1beta1;
 #[cfg(feature = "api_kubemod_io_v1beta1")]
 pub mod api_kubemod_io_v1beta1;
 #[cfg(feature = "apicodegen_apimatic_io_v1beta1")]
