@@ -431,6 +431,10 @@ Files: crd-catalog/Kuadrant/authorino-operator/*
 Copyright: The Kuadrant/authorino-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/Kuadrant/limitador-operator/*
+Copyright: The Kuadrant/limitador-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/kube-logging/logging-operator/*
 Copyright: The kube-logging/logging-operator Authors
 License: Apache-2.0
