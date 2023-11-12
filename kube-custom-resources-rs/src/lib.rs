@@ -1086,6 +1086,13 @@ kinds:
 - `TLSContext`
 - `TracingService`
 
+## gitops_hybrid_cloud_patterns_io_v1alpha1
+
+apiVersion: `gitops.hybrid-cloud-patterns.io/v1alpha1`
+
+kinds:
+- `Pattern`
+
 ## grafana_integreatly_org_v1beta1
 
 apiVersion: `grafana.integreatly.org/v1beta1`
@@ -2880,6 +2887,8 @@ pub mod gateway_networking_k8s_io_v1beta1;
 pub mod gateway_nginx_org_v1alpha1;
 #[cfg(feature = "getambassador_io_v3alpha1")]
 pub mod getambassador_io_v3alpha1;
+#[cfg(feature = "gitops_hybrid_cloud_patterns_io_v1alpha1")]
+pub mod gitops_hybrid_cloud_patterns_io_v1alpha1;
 #[cfg(feature = "grafana_integreatly_org_v1beta1")]
 pub mod grafana_integreatly_org_v1beta1;
 #[cfg(feature = "hazelcast_com_v1alpha1")]
