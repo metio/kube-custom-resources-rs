@@ -259,6 +259,13 @@ apiVersion: `atlasmap.io/v1alpha1`
 kinds:
 - `AtlasMap`
 
+## auth_ops42_org_v1alpha1
+
+apiVersion: `auth.ops42.org/v1alpha1`
+
+kinds:
+- `AwsAuthSyncConfig`
+
 ## authzed_com_v1alpha1
 
 apiVersion: `authzed.com/v1alpha1`
@@ -2694,6 +2701,8 @@ pub mod asdb_aerospike_com_v1;
 pub mod asdb_aerospike_com_v1beta1;
 #[cfg(feature = "atlasmap_io_v1alpha1")]
 pub mod atlasmap_io_v1alpha1;
+#[cfg(feature = "auth_ops42_org_v1alpha1")]
+pub mod auth_ops42_org_v1alpha1;
 #[cfg(feature = "authzed_com_v1alpha1")]
 pub mod authzed_com_v1alpha1;
 #[cfg(feature = "autoscaling_k8s_io_v1")]
