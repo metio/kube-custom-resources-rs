@@ -764,6 +764,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "emqx/emqx-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/emqx/emqx-operator/blob/main/config/crd/bases/apps.emqx.io_emqxbrokers.yaml",
+            "https://github.com/emqx/emqx-operator/blob/main/config/crd/bases/apps.emqx.io_emqxenterprises.yaml",
+            "https://github.com/emqx/emqx-operator/blob/main/config/crd/bases/apps.emqx.io_emqxes.yaml",
+            "https://github.com/emqx/emqx-operator/blob/main/config/crd/bases/apps.emqx.io_emqxplugins.yaml",
+            "https://github.com/emqx/emqx-operator/blob/main/config/crd/bases/apps.emqx.io_rebalances.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "external-secrets/external-secrets",
         license: APACHE_V2,
         urls: &[

@@ -283,6 +283,10 @@ Files: crd-catalog/emissary-ingress/emissary/*
 Copyright: The emissary-ingress/emissary Authors
 License: MIT
 
+Files: crd-catalog/emqx/emqx-operator/*
+Copyright: The emqx/emqx-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/external-secrets/external-secrets/*
 Copyright: The external-secrets/external-secrets Authors
 License: Apache-2.0

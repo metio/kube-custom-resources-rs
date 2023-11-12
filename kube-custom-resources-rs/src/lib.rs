@@ -227,6 +227,39 @@ kinds:
 - `Localization`
 - `Subscription`
 
+## apps_emqx_io_v1beta3
+
+apiVersion: `apps.emqx.io/v1beta3`
+
+kinds:
+- `EmqxBroker`
+- `EmqxEnterprise`
+- `EmqxPlugin`
+
+## apps_emqx_io_v1beta4
+
+apiVersion: `apps.emqx.io/v1beta4`
+
+kinds:
+- `EmqxBroker`
+- `EmqxEnterprise`
+- `Rebalance`
+
+## apps_emqx_io_v2alpha1
+
+apiVersion: `apps.emqx.io/v2alpha1`
+
+kinds:
+- `EMQX`
+
+## apps_emqx_io_v2beta1
+
+apiVersion: `apps.emqx.io/v2beta1`
+
+kinds:
+- `EMQX`
+- `Rebalance`
+
 ## apps_gitlab_com_v1beta1
 
 apiVersion: `apps.gitlab.com/v1beta1`
@@ -2813,6 +2846,14 @@ pub mod appprotectdos_f5_com_v1beta1;
 pub mod apps_3scale_net_v1alpha1;
 #[cfg(feature = "apps_clusternet_io_v1alpha1")]
 pub mod apps_clusternet_io_v1alpha1;
+#[cfg(feature = "apps_emqx_io_v1beta3")]
+pub mod apps_emqx_io_v1beta3;
+#[cfg(feature = "apps_emqx_io_v1beta4")]
+pub mod apps_emqx_io_v1beta4;
+#[cfg(feature = "apps_emqx_io_v2alpha1")]
+pub mod apps_emqx_io_v2alpha1;
+#[cfg(feature = "apps_emqx_io_v2beta1")]
+pub mod apps_emqx_io_v2beta1;
 #[cfg(feature = "apps_gitlab_com_v1beta1")]
 pub mod apps_gitlab_com_v1beta1;
 #[cfg(feature = "apps_kubeblocks_io_v1alpha1")]
