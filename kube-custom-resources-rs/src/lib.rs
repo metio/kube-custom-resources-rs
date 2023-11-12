@@ -20,6 +20,26 @@ kinds:
 - `Challenge`
 - `Order`
 
+## actions_github_com_v1alpha1
+
+apiVersion: `actions.github.com/v1alpha1`
+
+kinds:
+- `AutoscalingListener`
+- `AutoscalingRunnerSet`
+- `EphemeralRunnerSet`
+
+## actions_summerwind_dev_v1alpha1
+
+apiVersion: `actions.summerwind.dev/v1alpha1`
+
+kinds:
+- `HorizontalRunnerAutoscaler`
+- `RunnerDeployment`
+- `RunnerReplicaSet`
+- `Runner`
+- `RunnerSet`
+
 ## addons_cluster_x_k8s_io_v1alpha4
 
 apiVersion: `addons.cluster.x-k8s.io/v1alpha4`
@@ -2745,6 +2765,10 @@ kinds:
 pub mod about_k8s_io_v1alpha1;
 #[cfg(feature = "acme_cert_manager_io_v1")]
 pub mod acme_cert_manager_io_v1;
+#[cfg(feature = "actions_github_com_v1alpha1")]
+pub mod actions_github_com_v1alpha1;
+#[cfg(feature = "actions_summerwind_dev_v1alpha1")]
+pub mod actions_summerwind_dev_v1alpha1;
 #[cfg(feature = "addons_cluster_x_k8s_io_v1alpha4")]
 pub mod addons_cluster_x_k8s_io_v1alpha4;
 #[cfg(feature = "addons_cluster_x_k8s_io_v1beta1")]
