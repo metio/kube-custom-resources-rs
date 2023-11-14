@@ -1797,6 +1797,24 @@ kinds:
 - `VolumeAttachment`
 - `Volume`
 
+## machineconfiguration_openshift_io_v1
+
+apiVersion: `machineconfiguration.openshift.io/v1`
+
+kinds:
+- `ContainerRuntimeConfig`
+- `ControllerConfig`
+- `KubeletConfig`
+- `MachineConfigPool`
+- `MachineConfig`
+
+## machineconfiguration_openshift_io_v1alpha1
+
+apiVersion: `machineconfiguration.openshift.io/v1alpha1`
+
+kinds:
+- `MachineConfigNode`
+
 ## maps_k8s_elastic_co_v1alpha1
 
 apiVersion: `maps.k8s.elastic.co/v1alpha1`
@@ -3196,6 +3214,10 @@ pub mod loki_grafana_com_v1;
 pub mod loki_grafana_com_v1beta1;
 #[cfg(feature = "longhorn_io_v1beta2")]
 pub mod longhorn_io_v1beta2;
+#[cfg(feature = "machineconfiguration_openshift_io_v1")]
+pub mod machineconfiguration_openshift_io_v1;
+#[cfg(feature = "machineconfiguration_openshift_io_v1alpha1")]
+pub mod machineconfiguration_openshift_io_v1alpha1;
 #[cfg(feature = "maps_k8s_elastic_co_v1alpha1")]
 pub mod maps_k8s_elastic_co_v1alpha1;
 #[cfg(feature = "mariadb_mmontes_io_v1alpha1")]
