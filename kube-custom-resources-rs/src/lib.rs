@@ -2465,6 +2465,19 @@ apiVersion: `secrets.crossplane.io/v1alpha1`
 kinds:
 - `StoreConfig`
 
+## secrets_hashicorp_com_v1beta1
+
+apiVersion: `secrets.hashicorp.com/v1beta1`
+
+kinds:
+- `HCPAuth`
+- `HCPVaultSecretsApp`
+- `VaultAuth`
+- `VaultConnection`
+- `VaultDynamicSecret`
+- `VaultPKISecret`
+- `VaultStaticSecret`
+
 ## secscan_quay_redhat_com_v1alpha1
 
 apiVersion: `secscan.quay.redhat.com/v1alpha1`
@@ -3337,6 +3350,8 @@ pub mod scylla_scylladb_com_v1alpha1;
 pub mod secretgenerator_mittwald_de_v1alpha1;
 #[cfg(feature = "secrets_crossplane_io_v1alpha1")]
 pub mod secrets_crossplane_io_v1alpha1;
+#[cfg(feature = "secrets_hashicorp_com_v1beta1")]
+pub mod secrets_hashicorp_com_v1beta1;
 #[cfg(feature = "secscan_quay_redhat_com_v1alpha1")]
 pub mod secscan_quay_redhat_com_v1alpha1;
 #[cfg(feature = "security_profiles_operator_x_k8s_io_v1alpha1")]
