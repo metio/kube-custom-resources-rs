@@ -2552,6 +2552,13 @@ kinds:
 - `NodeMetric`
 - `NodeSLO`
 
+## sloth_slok_dev_v1
+
+apiVersion: `sloth.slok.dev/v1`
+
+kinds:
+- `PrometheusServiceLevel`
+
 ## sonataflow_org_v1alpha08
 
 apiVersion: `sonataflow.org/v1alpha08`
@@ -3352,6 +3359,8 @@ pub mod sfn_services_k8s_aws_v1alpha1;
 pub mod site_superedge_io_v1alpha1;
 #[cfg(feature = "slo_koordinator_sh_v1alpha1")]
 pub mod slo_koordinator_sh_v1alpha1;
+#[cfg(feature = "sloth_slok_dev_v1")]
+pub mod sloth_slok_dev_v1;
 #[cfg(feature = "sonataflow_org_v1alpha08")]
 pub mod sonataflow_org_v1alpha08;
 #[cfg(feature = "source_toolkit_fluxcd_io_v1beta1")]

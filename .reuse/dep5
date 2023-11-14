@@ -751,6 +751,10 @@ Files: crd-catalog/sigstore/sigstore-helm-operator/*
 Copyright: The sigstore/sigstore-helm-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/slok/sloth/*
+Copyright: The slok/sloth Authors
+License: Apache-2.0
+
 Files: crd-catalog/smartxworks/virtink/*
 Copyright: The smartxworks/virtink Authors
 License: Apache-2.0
