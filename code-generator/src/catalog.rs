@@ -963,6 +963,19 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "hashicorp/vault-secrets-operator",
+        license: HASHICORP,
+        urls: &[
+            "https://github.com/hashicorp/vault-secrets-operator/blob/main/config/crd/bases/secrets.hashicorp.com_hcpauths.yaml",
+            "https://github.com/hashicorp/vault-secrets-operator/blob/main/config/crd/bases/secrets.hashicorp.com_hcpvaultsecretsapps.yaml",
+            "https://github.com/hashicorp/vault-secrets-operator/blob/main/config/crd/bases/secrets.hashicorp.com_vaultauths.yaml",
+            "https://github.com/hashicorp/vault-secrets-operator/blob/main/config/crd/bases/secrets.hashicorp.com_vaultconnections.yaml",
+            "https://github.com/hashicorp/vault-secrets-operator/blob/main/config/crd/bases/secrets.hashicorp.com_vaultdynamicsecrets.yaml",
+            "https://github.com/hashicorp/vault-secrets-operator/blob/main/config/crd/bases/secrets.hashicorp.com_vaultpkisecrets.yaml",
+            "https://github.com/hashicorp/vault-secrets-operator/blob/main/config/crd/bases/secrets.hashicorp.com_vaultstaticsecrets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "hazelcast/hazelcast-platform-operator",
         license: APACHE_V2,
         urls: &[
@@ -2113,3 +2126,4 @@ const GPL_V2_OR_LATER: &'static str = "GPL-2.0-or-later";
 const UPL_V1: &'static str = "UPL-1.0";
 const MPL_V2: &'static str = "MPL-2.0";
 const KUBEMOD: &'static str = "LicenseRef-Kubemod";
+const HASHICORP: &'static str = "LicenseRef-HashiCorp";
