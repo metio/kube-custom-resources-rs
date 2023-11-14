@@ -1930,6 +1930,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "slok/sloth",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/slok/sloth/blob/main/pkg/kubernetes/gen/crd/sloth.slok.dev_prometheusservicelevels.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "smartxworks/virtink",
         license: APACHE_V2,
         urls: &[
