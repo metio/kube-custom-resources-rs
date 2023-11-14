@@ -1751,6 +1751,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "openshift/api",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/openshift/api/blob/master/machineconfiguration/v1/0000_80_containerruntimeconfig.crd.yaml",
+            "https://github.com/openshift/api/blob/master/machineconfiguration/v1/0000_80_controllerconfig.crd.yaml",
+            "https://github.com/openshift/api/blob/master/machineconfiguration/v1/0000_80_kubeletconfig.crd.yaml",
+            "https://github.com/openshift/api/blob/master/machineconfiguration/v1/0000_80_machineconfig.crd.yaml",
+            "https://github.com/openshift/api/blob/master/machineconfiguration/v1/0000_80_machineconfigpool.crd.yaml",
+            "https://github.com/openshift/api/blob/master/machineconfiguration/v1alpha1/0000_80_machineconfignode-CustomNoUpgrade.crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "openshift/hive",
         license: APACHE_V2,
         urls: &[

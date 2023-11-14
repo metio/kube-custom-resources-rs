@@ -675,6 +675,10 @@ Files: crd-catalog/open-telemetry/opentelemetry-operator/*
 Copyright: The open-telemetry/opentelemetry-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/openshift/api/*
+Copyright: The openshift/api Authors
+License: Apache-2.0
+
 Files: crd-catalog/openshift/hive/*
 Copyright: The openshift/hive Authors
 License: Apache-2.0
