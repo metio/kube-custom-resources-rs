@@ -881,19 +881,9 @@ pub struct ScrapeConfigKubernetesSdConfigs {
 pub enum ScrapeConfigKubernetesSdConfigsRole {
     Node,
     Service,
-    #[serde(rename = "service")]
-    Service,
     Pod,
-    #[serde(rename = "pod")]
-    Pod,
-    Endpoints,
-    #[serde(rename = "endpoints")]
     Endpoints,
     EndpointSlice,
-    #[serde(rename = "endpointslice")]
-    Endpointslice,
-    Ingress,
-    #[serde(rename = "ingress")]
     Ingress,
 }
 
@@ -913,19 +903,9 @@ pub struct ScrapeConfigKubernetesSdConfigsSelectors {
 pub enum ScrapeConfigKubernetesSdConfigsSelectorsRole {
     Node,
     Service,
-    #[serde(rename = "service")]
-    Service,
     Pod,
-    #[serde(rename = "pod")]
-    Pod,
-    Endpoints,
-    #[serde(rename = "endpoints")]
     Endpoints,
     EndpointSlice,
-    #[serde(rename = "endpointslice")]
-    Endpointslice,
-    Ingress,
-    #[serde(rename = "ingress")]
     Ingress,
 }
 
