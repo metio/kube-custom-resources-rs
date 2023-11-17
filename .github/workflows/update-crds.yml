@@ -4,7 +4,7 @@
 name: Update CRDs
 on:
   schedule:
-    - cron: 53 15 * * FRI
+    - cron: 53 9 * * FRI
   workflow_dispatch:
 jobs:
   update:
