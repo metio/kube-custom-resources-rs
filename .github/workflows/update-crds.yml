@@ -41,6 +41,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           title: Update upstream specifications to their latest version
+          body: Automated changes by the [Update CRDs](https://github.com/metio/kube-custom-resources-rs/blob/main/.github/workflows/update-crds.yml) GitHub action
           labels: enhancement
           assignees: sebhoss
           draft: false
