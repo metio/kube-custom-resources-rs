@@ -33,7 +33,28 @@ yq --inplace "del(${properties}.remoteWrite.items.properties.writeRelabelConfigs
 
 yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.role.enum[] | select(. == \"node\"))" \
   "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.role.enum[] | select(. == \"service\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.role.enum[] | select(. == \"pod\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.role.enum[] | select(. == \"endpoints\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.role.enum[] | select(. == \"endpointslice\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.role.enum[] | select(. == \"ingress\"))" \
+  "${project}/scrapeconfigs.yaml"
+
 yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.selectors.items.properties.role.enum[] | select(. == \"node\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.selectors.items.properties.role.enum[] | select(. == \"service\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.selectors.items.properties.role.enum[] | select(. == \"pod\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.selectors.items.properties.role.enum[] | select(. == \"endpoints\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.selectors.items.properties.role.enum[] | select(. == \"endpointslice\"))" \
+  "${project}/scrapeconfigs.yaml"
+yq --inplace "del(${properties}.kubernetesSDConfigs.items.properties.selectors.items.properties.role.enum[] | select(. == \"ingress\"))" \
   "${project}/scrapeconfigs.yaml"
 
 yq --inplace "del(${properties}.metricRelabelings.items.properties.action.enum[] | select(. == \"replace\"))" \

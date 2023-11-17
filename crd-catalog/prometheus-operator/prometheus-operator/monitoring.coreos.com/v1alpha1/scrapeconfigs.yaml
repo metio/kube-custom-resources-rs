@@ -829,15 +829,10 @@ spec:
                         enum:
                           - Node
                           - Service
-                          - service
                           - Pod
-                          - pod
                           - Endpoints
-                          - endpoints
                           - EndpointSlice
-                          - endpointslice
                           - Ingress
-                          - ingress
                         type: string
                       selectors:
                         description: Selector to select objects.
@@ -853,15 +848,10 @@ spec:
                               enum:
                                 - Node
                                 - Service
-                                - service
                                 - Pod
-                                - pod
                                 - Endpoints
-                                - endpoints
                                 - EndpointSlice
-                                - endpointslice
                                 - Ingress
-                                - ingress
                               type: string
                           required:
                             - role
