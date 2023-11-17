@@ -15,6 +15,9 @@ pub struct ScrapeConfigSpec {
     /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigAuthorization>,
+    /// AzureSDConfigs defines a list of Azure service discovery configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureSDConfigs")]
+    pub azure_sd_configs: Option<Vec<ScrapeConfigAzureSdConfigs>>,
     /// BasicAuth information to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigBasicAuth>,
@@ -30,6 +33,9 @@ pub struct ScrapeConfigSpec {
     /// FileSDConfigs defines a list of file service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSDConfigs")]
     pub file_sd_configs: Option<Vec<ScrapeConfigFileSdConfigs>>,
+    /// GCESDConfigs defines a list of GCE service discovery configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gceSDConfigs")]
+    pub gce_sd_configs: Option<Vec<ScrapeConfigGceSdConfigs>>,
     /// HonorLabels chooses the metric's labels on collisions with target labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
@@ -116,18 +122,70 @@ pub struct ScrapeConfigAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
+/// AzureSDConfig allow retrieving scrape targets from Azure VMs. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigAzureSdConfigs {
+    /// # The authentication method, either OAuth or ManagedIdentity. See https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationMethod")]
+    pub authentication_method: Option<ScrapeConfigAzureSdConfigsAuthenticationMethod>,
+    /// Optional client ID. Only required with the OAuth authentication method.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
+    pub client_id: Option<String>,
+    /// Optional client secret. Only required with the OAuth authentication method.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
+    pub client_secret: Option<ScrapeConfigAzureSdConfigsClientSecret>,
+    /// The Azure environment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub environment: Option<String>,
+    /// The port to scrape metrics from. If using the public IP address, this must instead be specified in the relabeling rule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    /// RefreshInterval configures the refresh interval at which Prometheus will re-read the instance list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
+    pub refresh_interval: Option<String>,
+    /// Optional resource group name. Limits discovery to this resource group.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
+    pub resource_group: Option<String>,
+    /// The subscription ID. Always required.
+    #[serde(rename = "subscriptionID")]
+    pub subscription_id: String,
+    /// Optional tenant ID. Only required with the OAuth authentication method.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
+    pub tenant_id: Option<String>,
+}
+
+/// AzureSDConfig allow retrieving scrape targets from Azure VMs. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigAzureSdConfigsAuthenticationMethod {
+    OAuth,
+    ManagedIdentity,
+}
+
+/// Optional client secret. Only required with the OAuth authentication method.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigAzureSdConfigsClientSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// BasicAuth information to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -140,7 +198,7 @@ pub struct ScrapeConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -157,7 +215,7 @@ pub struct ScrapeConfigBasicAuthUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigs {
     /// Allow stale Consul results (see https://www.consul.io/api/features/consistency.html). Will reduce load on Consul. If unset, Prometheus uses its default value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
     pub allow_stale: Option<bool>,
     /// Authorization header configuration to authenticate against the Consul Server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -169,19 +227,19 @@ pub struct ScrapeConfigConsulSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datacenter: Option<String>,
     /// Whether to enable HTTP2. If unset, Prometheus uses its default value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects. If unset, Prometheus uses its default value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Namespaces are only supported in Consul Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Node metadata key/value pairs to filter nodes for a given service.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMeta")]
     pub node_meta: Option<BTreeMap<String, String>>,
     /// Optional OAuth 2.0 configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -190,16 +248,16 @@ pub struct ScrapeConfigConsulSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<String>,
     /// Specifies headers to send to proxies during CONNECT requests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigConsulSdConfigsProxyConnectHeader>>,
     /// Use proxy URL indicated by environment variables (HTTP_PROXY, https_proxy, HTTPs_PROXY, https_proxy, and no_proxy) If unset, Prometheus uses its default value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// Optional proxy URL.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// The time after which the provided names are refreshed. On large setup it might be a good idea to increase this value because the catalog will change all the time. If unset, Prometheus uses its default value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// HTTP Scheme default "http"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -210,7 +268,7 @@ pub struct ScrapeConfigConsulSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
     /// The string by which Consul tags are joined into the tag label. If unset, Prometheus uses its default value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// An optional list of tags used to filter nodes for a given service. Services must contain all tags in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -252,15 +310,15 @@ pub struct ScrapeConfigConsulSdConfigsAuthorizationCredentials {
 /// BasicAuth information to authenticate against the Consul Server. More info: https://prometheus.io/docs/operating/configuration/#endpoints
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigConsulSdConfigsBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigConsulSdConfigsBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -273,7 +331,7 @@ pub struct ScrapeConfigConsulSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -289,24 +347,24 @@ pub struct ScrapeConfigConsulSdConfigsBasicAuthUsername {
 /// Optional OAuth 2.0 configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ScrapeConfigConsulSdConfigsOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ScrapeConfigConsulSdConfigsOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -343,7 +401,7 @@ pub struct ScrapeConfigConsulSdConfigsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -596,6 +654,29 @@ pub struct ScrapeConfigFileSdConfigs {
     pub refresh_interval: Option<String>,
 }
 
+/// GCESDConfig configures scrape targets from GCP GCE instances. The private IP address is used by default, but may be changed to the public IP address with relabeling. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#gce_sd_config 
+///  The GCE service discovery will load the Google Cloud credentials from the file specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable. See https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform 
+///  A pre-requisite for using GCESDConfig is that a Secret containing valid Google Cloud credentials is mounted into the Prometheus or PrometheusAgent pod via the `.spec.secrets` field and that the GOOGLE_APPLICATION_CREDENTIALS environment variable is set to /etc/prometheus/secrets/<secret-name>/<credentials-filename.json>.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigGceSdConfigs {
+    /// Filter can be used optionally to filter the instance list by other criteria Syntax of this filter is described in the filter query parameter section: https://cloud.google.com/compute/docs/reference/latest/instances/list
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
+    /// The port to scrape metrics from. If using the public IP address, this must instead be specified in the relabeling rule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    /// The Google Cloud Project ID
+    pub project: String,
+    /// RefreshInterval configures the refresh interval at which Prometheus will re-read the instance list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
+    pub refresh_interval: Option<String>,
+    /// The tag separator is used to separate the tags on concatenation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
+    pub tag_separator: Option<String>,
+    /// The zone of the scrape targets. If you need multiple zones use multiple GCESDConfigs.
+    pub zone: String,
+}
+
 /// HTTPSDConfig defines a prometheus HTTP service discovery configuration See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#http_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigs {
@@ -644,15 +725,15 @@ pub struct ScrapeConfigHttpSdConfigsAuthorizationCredentials {
 /// BasicAuth information to authenticate against the target HTTP endpoint. More info: https://prometheus.io/docs/operating/configuration/#endpoints
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigsBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigHttpSdConfigsBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigHttpSdConfigsBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -665,7 +746,7 @@ pub struct ScrapeConfigHttpSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -799,6 +880,21 @@ pub struct ScrapeConfigKubernetesSdConfigs {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigKubernetesSdConfigsRole {
     Node,
+    Service,
+    #[serde(rename = "service")]
+    Service,
+    Pod,
+    #[serde(rename = "pod")]
+    Pod,
+    Endpoints,
+    #[serde(rename = "endpoints")]
+    Endpoints,
+    EndpointSlice,
+    #[serde(rename = "endpointslice")]
+    Endpointslice,
+    Ingress,
+    #[serde(rename = "ingress")]
+    Ingress,
 }
 
 /// K8SSelectorConfig is Kubernetes Selector Config
@@ -808,7 +904,7 @@ pub struct ScrapeConfigKubernetesSdConfigsSelectors {
     pub field: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
-    /// K8SRole is role of the service in Kubernetes. Currently the only supported role is "Node".
+    /// Role is role of the service in Kubernetes.
     pub role: ScrapeConfigKubernetesSdConfigsSelectorsRole,
 }
 
@@ -816,6 +912,21 @@ pub struct ScrapeConfigKubernetesSdConfigsSelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigKubernetesSdConfigsSelectorsRole {
     Node,
+    Service,
+    #[serde(rename = "service")]
+    Service,
+    Pod,
+    #[serde(rename = "pod")]
+    Pod,
+    Endpoints,
+    #[serde(rename = "endpoints")]
+    Endpoints,
+    EndpointSlice,
+    #[serde(rename = "endpointslice")]
+    Endpointslice,
+    Ingress,
+    #[serde(rename = "ingress")]
+    Ingress,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts, scraped samples and remote write samples. 

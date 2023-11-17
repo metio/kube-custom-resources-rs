@@ -4,6 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
 
 /// KeycloakClientSpec defines the desired state of KeycloakClient
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -12,8 +13,14 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "KeycloakClientStatus")]
 #[kube(schema = "disabled")]
 pub struct KeycloakClientSpec {
+    /// Annotations (optional) to add to the target secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Domain which will be used for redirect callback.
     pub domain: String,
+    /// Labels (optional) to add to the target secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Realm name.
     pub realm: String,
     /// Secret name where to store credentials. Optional, if not set - CRD name will be used. Contains: clientID, clientSecret, realm, discoveryURL, realmURL

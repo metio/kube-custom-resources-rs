@@ -161,6 +161,9 @@ pub struct PrometheusAgentSpec {
     /// When a Prometheus deployment is paused, no actions except for deletion will be performed on the underlying objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
+    /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet. The default behavior is all PVCs are retained. This is an alpha field from kubernetes 1.23 until 1.26 and a beta field from 1.26. It requires enabling the StatefulSetAutoDeletePVC feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimRetentionPolicy")]
+    pub persistent_volume_claim_retention_policy: Option<PrometheusAgentPersistentVolumeClaimRetentionPolicy>,
     /// PodMetadata configures labels and annotations which are propagated to the Prometheus pods. 
     ///  The following items are reserved and cannot be overridden: * "prometheus" label, set to the name of the Prometheus object. * "app.kubernetes.io/instance" label, set to the name of the Prometheus object. * "app.kubernetes.io/managed-by" label, set to "prometheus-operator". * "app.kubernetes.io/name" label, set to "prometheus". * "app.kubernetes.io/version" label, set to the Prometheus version. * "operator.prometheus.io/name" label, set to the name of the Prometheus object. * "operator.prometheus.io/shard" label, set to the shard number of the Prometheus object. * "kubectl.kubernetes.io/default-container" annotation, set to "prometheus".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
@@ -775,15 +778,15 @@ pub struct PrometheusAgentApiserverConfigAuthorizationCredentials {
 ///  Cannot be set at the same time as `authorization`, `bearerToken`, or `bearerTokenFile`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentApiserverConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<PrometheusAgentApiserverConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<PrometheusAgentApiserverConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentApiserverConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -796,7 +799,7 @@ pub struct PrometheusAgentApiserverConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentApiserverConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2582,6 +2585,17 @@ pub enum PrometheusAgentLogLevel {
     Error,
 }
 
+/// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet. The default behavior is all PVCs are retained. This is an alpha field from kubernetes 1.23 until 1.26 and a beta field from 1.26. It requires enabling the StatefulSetAutoDeletePVC feature gate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PrometheusAgentPersistentVolumeClaimRetentionPolicy {
+    /// WhenDeleted specifies what happens to PVCs created from StatefulSet VolumeClaimTemplates when the StatefulSet is deleted. The default policy of `Retain` causes PVCs to not be affected by StatefulSet deletion. The `Delete` policy causes those PVCs to be deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenDeleted")]
+    pub when_deleted: Option<String>,
+    /// WhenScaled specifies what happens to PVCs created from StatefulSet VolumeClaimTemplates when the StatefulSet is scaled down. The default policy of `Retain` causes PVCs to not be affected by a scaledown. The `Delete` policy causes the associated PVCs for any excess pods above the replica count to be deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
+    pub when_scaled: Option<String>,
+}
+
 /// PodMetadata configures labels and annotations which are propagated to the Prometheus pods. 
 ///  The following items are reserved and cannot be overridden: * "prometheus" label, set to the name of the Prometheus object. * "app.kubernetes.io/instance" label, set to the name of the Prometheus object. * "app.kubernetes.io/managed-by" label, set to "prometheus-operator". * "app.kubernetes.io/name" label, set to "prometheus". * "app.kubernetes.io/version" label, set to the Prometheus version. * "operator.prometheus.io/name" label, set to the name of the Prometheus object. * "operator.prometheus.io/shard" label, set to the shard number of the Prometheus object. * "kubectl.kubernetes.io/default-container" annotation, set to "prometheus".
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2803,9 +2817,13 @@ pub struct PrometheusAgentRemoteWriteAzureAd {
     /// The Azure Cloud. Options are 'AzurePublic', 'AzureChina', or 'AzureGovernment'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cloud: Option<PrometheusAgentRemoteWriteAzureAdCloud>,
-    /// ManagedIdentity defines the Azure User-assigned Managed identity.
-    #[serde(rename = "managedIdentity")]
-    pub managed_identity: PrometheusAgentRemoteWriteAzureAdManagedIdentity,
+    /// ManagedIdentity defines the Azure User-assigned Managed identity. Cannot be set at the same time as `oauth`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedIdentity")]
+    pub managed_identity: Option<PrometheusAgentRemoteWriteAzureAdManagedIdentity>,
+    /// OAuth defines the oauth config that is being used to authenticate. Cannot be set at the same time as `managedIdentity`. 
+    ///  It requires Prometheus >= v2.48.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth: Option<PrometheusAgentRemoteWriteAzureAdOauth>,
 }
 
 /// AzureAD for the URL. 
@@ -2818,7 +2836,7 @@ pub enum PrometheusAgentRemoteWriteAzureAdCloud {
     AzurePublic,
 }
 
-/// ManagedIdentity defines the Azure User-assigned Managed identity.
+/// ManagedIdentity defines the Azure User-assigned Managed identity. Cannot be set at the same time as `oauth`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentRemoteWriteAzureAdManagedIdentity {
     /// The client id
@@ -2826,19 +2844,47 @@ pub struct PrometheusAgentRemoteWriteAzureAdManagedIdentity {
     pub client_id: String,
 }
 
+/// OAuth defines the oauth config that is being used to authenticate. Cannot be set at the same time as `managedIdentity`. 
+///  It requires Prometheus >= v2.48.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PrometheusAgentRemoteWriteAzureAdOauth {
+    /// `clientID` is the clientId of the Azure Active Directory application that is being used to authenticate.
+    #[serde(rename = "clientId")]
+    pub client_id: String,
+    /// `clientSecret` specifies a key of a Secret containing the client secret of the Azure Active Directory application that is being used to authenticate.
+    #[serde(rename = "clientSecret")]
+    pub client_secret: PrometheusAgentRemoteWriteAzureAdOauthClientSecret,
+    /// `tenantID` is the tenant ID of the Azure Active Directory application that is being used to authenticate.
+    #[serde(rename = "tenantId")]
+    pub tenant_id: String,
+}
+
+/// `clientSecret` specifies a key of a Secret containing the client secret of the Azure Active Directory application that is being used to authenticate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PrometheusAgentRemoteWriteAzureAdOauthClientSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// BasicAuth configuration for the URL. 
 ///  Cannot be set at the same time as `sigv4`, `authorization`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentRemoteWriteBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<PrometheusAgentRemoteWriteBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<PrometheusAgentRemoteWriteBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentRemoteWriteBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2851,7 +2897,7 @@ pub struct PrometheusAgentRemoteWriteBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentRemoteWriteBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2880,24 +2926,24 @@ pub struct PrometheusAgentRemoteWriteMetadataConfig {
 ///  Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentRemoteWriteOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: PrometheusAgentRemoteWriteOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: PrometheusAgentRemoteWriteOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentRemoteWriteOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2934,7 +2980,7 @@ pub struct PrometheusAgentRemoteWriteOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentRemoteWriteOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.

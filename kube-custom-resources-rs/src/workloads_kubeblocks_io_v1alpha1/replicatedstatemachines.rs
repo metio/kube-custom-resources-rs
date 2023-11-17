@@ -451,16 +451,16 @@ pub enum ReplicatedStateMachineMemberUpdateStrategy {
 /// MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfiguration {
-    /// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image wil be used if not configured
+    /// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSyncAction")]
     pub log_sync_action: Option<ReplicatedStateMachineMembershipReconfigurationLogSyncAction>,
-    /// MemberJoinAction specifies how to add member previous none-nil action's Image wil be used if not configured
+    /// MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberJoinAction")]
     pub member_join_action: Option<ReplicatedStateMachineMembershipReconfigurationMemberJoinAction>,
-    /// MemberLeaveAction specifies how to remove member previous none-nil action's Image wil be used if not configured
+    /// MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberLeaveAction")]
     pub member_leave_action: Option<ReplicatedStateMachineMembershipReconfigurationMemberLeaveAction>,
-    /// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image wil be used if not configured
+    /// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteAction")]
     pub promote_action: Option<ReplicatedStateMachineMembershipReconfigurationPromoteAction>,
     /// SwitchoverAction specifies how to do switchover latest [BusyBox](https://busybox.net/) image will be used if Image not configured
@@ -468,7 +468,7 @@ pub struct ReplicatedStateMachineMembershipReconfiguration {
     pub switchover_action: Option<ReplicatedStateMachineMembershipReconfigurationSwitchoverAction>,
 }
 
-/// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image wil be used if not configured
+/// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationLogSyncAction {
     /// Command will be executed in Container to retrieve or process role info
@@ -478,7 +478,7 @@ pub struct ReplicatedStateMachineMembershipReconfigurationLogSyncAction {
     pub image: Option<String>,
 }
 
-/// MemberJoinAction specifies how to add member previous none-nil action's Image wil be used if not configured
+/// MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationMemberJoinAction {
     /// Command will be executed in Container to retrieve or process role info
@@ -488,7 +488,7 @@ pub struct ReplicatedStateMachineMembershipReconfigurationMemberJoinAction {
     pub image: Option<String>,
 }
 
-/// MemberLeaveAction specifies how to remove member previous none-nil action's Image wil be used if not configured
+/// MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationMemberLeaveAction {
     /// Command will be executed in Container to retrieve or process role info
@@ -498,7 +498,7 @@ pub struct ReplicatedStateMachineMembershipReconfigurationMemberLeaveAction {
     pub image: Option<String>,
 }
 
-/// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image wil be used if not configured
+/// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationPromoteAction {
     /// Command will be executed in Container to retrieve or process role info

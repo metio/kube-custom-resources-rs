@@ -251,8 +251,6 @@ pub struct RayServiceRayClusterConfigHeadGroupSpec {
     pub head_service: Option<RayServiceRayClusterConfigHeadGroupSpecHeadService>,
     #[serde(rename = "rayStartParams")]
     pub ray_start_params: BTreeMap<String, String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
     pub template: RayServiceRayClusterConfigHeadGroupSpecTemplate,

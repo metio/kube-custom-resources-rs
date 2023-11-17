@@ -32,9 +32,6 @@ pub struct BackupPolicyTemplateBackupPolicies {
     /// componentDefRef references componentDef defined in ClusterDefinition spec. Need to comply with IANA Service Naming rule.
     #[serde(rename = "componentDefRef")]
     pub component_def_ref: String,
-    /// retentionPeriod determines a duration up to which the backup should be kept. controller will remove all backups that are older than the RetentionPeriod. For example, RetentionPeriod of `30d` will keep only the backups of last 30 days. Sample duration format: - years: 	2y - months: 	6mo - days: 		30d - hours: 	12h - minutes: 	30m You can also combine the above durations. For example: 30d12h30m
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
-    pub retention_period: Option<String>,
     /// schedule policy for backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedules: Option<Vec<BackupPolicyTemplateBackupPoliciesSchedules>>,
@@ -248,6 +245,9 @@ pub struct BackupPolicyTemplateBackupPoliciesSchedules {
     /// enabled specifies whether the backup schedule is enabled or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// retentionPeriod determines a duration up to which the backup should be kept. controller will remove all backups that are older than the RetentionPeriod. For example, RetentionPeriod of `30d` will keep only the backups of last 30 days. Sample duration format: - years: 	2y - months: 	6mo - days: 		30d - hours: 	12h - minutes: 	30m You can also combine the above durations. For example: 30d12h30m
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
+    pub retention_period: Option<String>,
 }
 
 /// target instance for backup.

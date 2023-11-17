@@ -946,6 +946,8 @@ pub struct OutputAwsElasticsearchTemplateFileValueFromSecretKeyRef {
 pub struct OutputAzurestorage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto_create_container: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub azure_cloud: Option<String>,
     pub azure_container: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub azure_imds_api_version: Option<String>,

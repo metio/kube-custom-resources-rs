@@ -56,6 +56,9 @@ pub struct JindoRuntimeSpec {
     pub tieredstore: Option<JindoRuntimeTieredstore>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
+    /// Volumes is the list of Kubernetes volumes that can be mounted by the jindo runtime components and/or fuses.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volumes: Option<Vec<JindoRuntimeVolumes>>,
     /// The component spec of Jindo worker
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub worker: Option<JindoRuntimeWorker>,
@@ -209,6 +212,9 @@ pub struct JindoRuntimeMaster {
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<JindoRuntimeMasterTolerations>>,
+    /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the jindo runtime component's filesystem.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<JindoRuntimeMasterVolumeMounts>>,
 }
 
 /// PodMetadata defines labels and annotations that will be propagated to Jindo's pods
@@ -251,6 +257,28 @@ pub struct JindoRuntimeMasterTolerations {
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeMasterVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
 }
 
 /// JindoRuntimeSpec defines the desired state of JindoRuntime
@@ -1299,6 +1327,965 @@ pub enum JindoRuntimeTieredstoreLevelsVolumeType {
     EmptyDir,
 }
 
+/// Volume represents a named volume in a pod that may be accessed by any container in the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumes {
+    /// AWSElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<JindoRuntimeVolumesAwsElasticBlockStore>,
+    /// AzureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
+    pub azure_disk: Option<JindoRuntimeVolumesAzureDisk>,
+    /// AzureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
+    pub azure_file: Option<JindoRuntimeVolumesAzureFile>,
+    /// CephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephfs: Option<JindoRuntimeVolumesCephfs>,
+    /// Cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cinder: Option<JindoRuntimeVolumesCinder>,
+    /// ConfigMap represents a configMap that should populate this volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<JindoRuntimeVolumesConfigMap>,
+    /// CSI (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<JindoRuntimeVolumesCsi>,
+    /// DownwardAPI represents downward API about the pod that should populate this volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<JindoRuntimeVolumesDownwardApi>,
+    /// EmptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<JindoRuntimeVolumesEmptyDir>,
+    /// Ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
+    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
+    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
+    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
+    ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ephemeral: Option<JindoRuntimeVolumesEphemeral>,
+    /// FC represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fc: Option<JindoRuntimeVolumesFc>,
+    /// FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
+    pub flex_volume: Option<JindoRuntimeVolumesFlexVolume>,
+    /// Flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flocker: Option<JindoRuntimeVolumesFlocker>,
+    /// GCEPersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<JindoRuntimeVolumesGcePersistentDisk>,
+    /// GitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
+    pub git_repo: Option<JindoRuntimeVolumesGitRepo>,
+    /// Glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub glusterfs: Option<JindoRuntimeVolumesGlusterfs>,
+    /// HostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<JindoRuntimeVolumesHostPath>,
+    /// ISCSI represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub iscsi: Option<JindoRuntimeVolumesIscsi>,
+    /// Volume's name. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
+    /// NFS represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<JindoRuntimeVolumesNfs>,
+    /// PersistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<JindoRuntimeVolumesPersistentVolumeClaim>,
+    /// PhotonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<JindoRuntimeVolumesPhotonPersistentDisk>,
+    /// PortworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<JindoRuntimeVolumesPortworxVolume>,
+    /// Items for all in one resources secrets, configmaps, and downward API
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projected: Option<JindoRuntimeVolumesProjected>,
+    /// Quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quobyte: Option<JindoRuntimeVolumesQuobyte>,
+    /// RBD represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rbd: Option<JindoRuntimeVolumesRbd>,
+    /// ScaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
+    pub scale_io: Option<JindoRuntimeVolumesScaleIo>,
+    /// Secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<JindoRuntimeVolumesSecret>,
+    /// StorageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storageos: Option<JindoRuntimeVolumesStorageos>,
+    /// VsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<JindoRuntimeVolumesVsphereVolume>,
+}
+
+/// AWSElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesAwsElasticBlockStore {
+    /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// The partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    /// Specify "true" to force and set the ReadOnly property in VolumeMounts to "true". If omitted, the default is "false". More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// AzureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesAzureDisk {
+    /// Host Caching mode: None, Read Only, Read Write.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
+    pub caching_mode: Option<String>,
+    /// The Name of the data disk in the blob storage
+    #[serde(rename = "diskName")]
+    pub disk_name: String,
+    /// The URI the data disk in the blob storage
+    #[serde(rename = "diskURI")]
+    pub disk_uri: String,
+    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Expected values Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// AzureFile represents an Azure File Service mount on the host and bind mount to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesAzureFile {
+    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// the name of secret that contains Azure Storage Account Name and Key
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+    /// Share Name
+    #[serde(rename = "shareName")]
+    pub share_name: String,
+}
+
+/// CephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesCephfs {
+    /// Required: Monitors is a collection of Ceph monitors More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    pub monitors: Vec<String>,
+    /// Optional: Used as the mounted root, rather than the full Ceph tree, default is /
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
+    pub secret_file: Option<String>,
+    /// Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<JindoRuntimeVolumesCephfsSecretRef>,
+    /// Optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesCephfsSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesCinder {
+    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Optional: points to a secret object containing parameters used to connect to OpenStack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<JindoRuntimeVolumesCinderSecretRef>,
+    /// volume id used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// Optional: points to a secret object containing parameters used to connect to OpenStack.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesCinderSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ConfigMap represents a configMap that should populate this volume
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesConfigMap {
+    /// Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<JindoRuntimeVolumesConfigMapItems>>,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesConfigMapItems {
+    /// The key to project.
+    pub key: String,
+    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// CSI (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesCsi {
+    /// Driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
+    pub driver: String,
+    /// Filesystem type to mount. Ex. "ext4", "xfs", "ntfs". If not provided, the empty value is passed to the associated CSI driver which will determine the default filesystem to apply.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// NodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<JindoRuntimeVolumesCsiNodePublishSecretRef>,
+    /// Specifies a read-only configuration for the volume. Defaults to false (read/write).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// VolumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+/// NodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesCsiNodePublishSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// DownwardAPI represents downward API about the pod that should populate this volume
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesDownwardApi {
+    /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// Items is a list of downward API volume file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<JindoRuntimeVolumesDownwardApiItems>>,
+}
+
+/// DownwardAPIVolumeFile represents information to create the file containing the pod field
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesDownwardApiItems {
+    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<JindoRuntimeVolumesDownwardApiItemsFieldRef>,
+    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
+    pub path: String,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<JindoRuntimeVolumesDownwardApiItemsResourceFieldRef>,
+}
+
+/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesDownwardApiItemsFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesDownwardApiItemsResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// EmptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEmptyDir {
+    /// What type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    /// Total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<IntOrString>,
+}
+
+/// Ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
+///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
+///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
+///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
+///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeral {
+    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
+    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
+    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
+    ///  Required, must not be nil.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<JindoRuntimeVolumesEphemeralVolumeClaimTemplate>,
+}
+
+/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
+///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
+///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
+///  Required, must not be nil.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeralVolumeClaimTemplate {
+    /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<JindoRuntimeVolumesEphemeralVolumeClaimTemplateMetadata>,
+    /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+    pub spec: JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpec,
+}
+
+/// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeralVolumeClaimTemplateMetadata {
+}
+
+/// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
+    /// AccessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// This field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. If the AnyVolumeDataSource feature gate is enabled, this field will always have the same contents as the DataSourceRef field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    /// Specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any local object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the DataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, both fields (DataSource and DataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. There are two important differences between DataSource and DataSourceRef: * While DataSource only allows two specific types of objects, DataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While DataSource ignores disallowed values (dropping them), DataSourceRef preserves all values, and generates an error if a disallowed value is specified. (Alpha) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    /// Resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    /// A label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    /// Name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    /// VolumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// This field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. If the AnyVolumeDataSource feature gate is enabled, this field will always have the same contents as the DataSourceRef field.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSource {
+    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// Specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any local object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the DataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, both fields (DataSource and DataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. There are two important differences between DataSource and DataSourceRef: * While DataSource only allows two specific types of objects, DataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While DataSource ignores disallowed values (dropping them), DataSourceRef preserves all values, and generates an error if a disallowed value is specified. (Alpha) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// Resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecResources {
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// A label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// FC represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesFc {
+    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Optional: FC target lun number
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lun: Option<i32>,
+    /// Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Optional: FC target worldwide names (WWNs)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
+    pub target_ww_ns: Option<Vec<String>>,
+    /// Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wwids: Option<Vec<String>>,
+}
+
+/// FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesFlexVolume {
+    /// Driver is the name of the driver to use for this volume.
+    pub driver: String,
+    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Optional: Extra command options if any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, String>>,
+    /// Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Optional: SecretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<JindoRuntimeVolumesFlexVolumeSecretRef>,
+}
+
+/// Optional: SecretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesFlexVolumeSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesFlocker {
+    /// Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
+    pub dataset_name: Option<String>,
+    /// UUID of the dataset. This is unique identifier of a Flocker dataset
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
+    pub dataset_uuid: Option<String>,
+}
+
+/// GCEPersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesGcePersistentDisk {
+    /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// The partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty). More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    /// Unique name of the PD resource in GCE. Used to identify the disk in GCE. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(rename = "pdName")]
+    pub pd_name: String,
+    /// ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// GitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesGitRepo {
+    /// Target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub directory: Option<String>,
+    /// Repository URL
+    pub repository: String,
+    /// Commit hash for the specified revision.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub revision: Option<String>,
+}
+
+/// Glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesGlusterfs {
+    /// EndpointsName is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    pub endpoints: String,
+    /// Path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    pub path: String,
+    /// ReadOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// HostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesHostPath {
+    /// Path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    pub path: String,
+    /// Type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// ISCSI represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesIscsi {
+    /// whether support iSCSI Discovery CHAP authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
+    pub chap_auth_discovery: Option<bool>,
+    /// whether support iSCSI Session CHAP authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
+    pub chap_auth_session: Option<bool>,
+    /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
+    pub initiator_name: Option<String>,
+    /// Target iSCSI Qualified Name.
+    pub iqn: String,
+    /// iSCSI Interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
+    pub iscsi_interface: Option<String>,
+    /// iSCSI Target Lun number.
+    pub lun: i32,
+    /// iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub portals: Option<Vec<String>>,
+    /// ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// CHAP Secret for iSCSI target and initiator authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<JindoRuntimeVolumesIscsiSecretRef>,
+    /// iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    #[serde(rename = "targetPortal")]
+    pub target_portal: String,
+}
+
+/// CHAP Secret for iSCSI target and initiator authentication
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesIscsiSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// NFS represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesNfs {
+    /// Path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    pub path: String,
+    /// ReadOnly here will force the NFS export to be mounted with read-only permissions. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Server is the hostname or IP address of the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    pub server: String,
+}
+
+/// PersistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesPersistentVolumeClaim {
+    /// ClaimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    /// Will force the ReadOnly setting in VolumeMounts. Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// PhotonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesPhotonPersistentDisk {
+    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// ID that identifies Photon Controller persistent disk
+    #[serde(rename = "pdID")]
+    pub pd_id: String,
+}
+
+/// PortworxVolume represents a portworx volume attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesPortworxVolume {
+    /// FSType represents the filesystem type to mount Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// VolumeID uniquely identifies a Portworx volume
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// Items for all in one resources secrets, configmaps, and downward API
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjected {
+    /// Mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// list of volume projections
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sources: Option<Vec<JindoRuntimeVolumesProjectedSources>>,
+}
+
+/// Projection that may be projected along with other supported volume types
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSources {
+    /// information about the configMap data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<JindoRuntimeVolumesProjectedSourcesConfigMap>,
+    /// information about the downwardAPI data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<JindoRuntimeVolumesProjectedSourcesDownwardApi>,
+    /// information about the secret data to project
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<JindoRuntimeVolumesProjectedSourcesSecret>,
+    /// information about the serviceAccountToken data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<JindoRuntimeVolumesProjectedSourcesServiceAccountToken>,
+}
+
+/// information about the configMap data to project
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesConfigMap {
+    /// If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<JindoRuntimeVolumesProjectedSourcesConfigMapItems>>,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesConfigMapItems {
+    /// The key to project.
+    pub key: String,
+    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// information about the downwardAPI data to project
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesDownwardApi {
+    /// Items is a list of DownwardAPIVolume file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<JindoRuntimeVolumesProjectedSourcesDownwardApiItems>>,
+}
+
+/// DownwardAPIVolumeFile represents information to create the file containing the pod field
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesDownwardApiItems {
+    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<JindoRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
+    pub path: String,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<JindoRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+}
+
+/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// information about the secret data to project
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesSecret {
+    /// If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<JindoRuntimeVolumesProjectedSourcesSecretItems>>,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesSecretItems {
+    /// The key to project.
+    pub key: String,
+    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// information about the serviceAccountToken data to project
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesProjectedSourcesServiceAccountToken {
+    /// Audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// ExpirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
+    pub expiration_seconds: Option<i64>,
+    /// Path is the path relative to the mount point of the file to project the token into.
+    pub path: String,
+}
+
+/// Quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesQuobyte {
+    /// Group to map volume access to Default is no group
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// ReadOnly here will force the Quobyte volume to be mounted with read-only permissions. Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Registry represents a single or multiple Quobyte Registry services specified as a string as host:port pair (multiple entries are separated with commas) which acts as the central registry for volumes
+    pub registry: String,
+    /// Tenant owning the given Quobyte volume in the Backend Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tenant: Option<String>,
+    /// User to map volume access to Defaults to serivceaccount user
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+    /// Volume is a string that references an already created Quobyte volume by name.
+    pub volume: String,
+}
+
+/// RBD represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesRbd {
+    /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd TODO: how do we prevent errors in the filesystem from compromising the machine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// The rados image name. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    pub image: String,
+    /// Keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keyring: Option<String>,
+    /// A collection of Ceph monitors. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    pub monitors: Vec<String>,
+    /// The rados pool name. Default is rbd. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pool: Option<String>,
+    /// ReadOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// SecretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<JindoRuntimeVolumesRbdSecretRef>,
+    /// The rados user name. Default is admin. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// SecretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesRbdSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ScaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesScaleIo {
+    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Default is "xfs".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// The host address of the ScaleIO API Gateway.
+    pub gateway: String,
+    /// The name of the ScaleIO Protection Domain for the configured storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
+    pub protection_domain: Option<String>,
+    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// SecretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: JindoRuntimeVolumesScaleIoSecretRef,
+    /// Flag to enable/disable SSL communication with Gateway, default false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
+    pub ssl_enabled: Option<bool>,
+    /// Indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
+    pub storage_mode: Option<String>,
+    /// The ScaleIO Storage Pool associated with the protection domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
+    pub storage_pool: Option<String>,
+    /// The name of the storage system as configured in ScaleIO.
+    pub system: String,
+    /// The name of a volume already created in the ScaleIO system that is associated with this volume source.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// SecretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesScaleIoSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesSecret {
+    /// Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<JindoRuntimeVolumesSecretItems>>,
+    /// Specify whether the Secret or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesSecretItems {
+    /// The key to project.
+    pub key: String,
+    /// Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    pub path: String,
+}
+
+/// StorageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesStorageos {
+    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// SecretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<JindoRuntimeVolumesStorageosSecretRef>,
+    /// VolumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+    /// VolumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
+    pub volume_namespace: Option<String>,
+}
+
+/// SecretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesStorageosSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// VsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeVolumesVsphereVolume {
+    /// Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
+    pub storage_policy_id: Option<String>,
+    /// Storage Policy Based Management (SPBM) profile name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
+    pub storage_policy_name: Option<String>,
+    /// Path that identifies vSphere volume vmdk
+    #[serde(rename = "volumePath")]
+    pub volume_path: String,
+}
+
 /// The component spec of Jindo worker
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct JindoRuntimeWorker {
@@ -1331,6 +2318,9 @@ pub struct JindoRuntimeWorker {
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<JindoRuntimeWorkerTolerations>>,
+    /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the jindo runtime component's filesystem.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<JindoRuntimeWorkerVolumeMounts>>,
 }
 
 /// PodMetadata defines labels and annotations that will be propagated to Jindo's pods
@@ -1373,6 +2363,28 @@ pub struct JindoRuntimeWorkerTolerations {
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct JindoRuntimeWorkerVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
 }
 
 /// RuntimeStatus defines the observed state of Runtime

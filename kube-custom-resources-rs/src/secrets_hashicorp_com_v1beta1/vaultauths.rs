@@ -97,8 +97,8 @@ pub struct VaultAuthGcp {
     /// GKE cluster name. Defaults to the cluster-name returned from the operator pod's local metadata server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
-    /// GCP project id. Defaults to the project-id returned from the operator pod's local metadata server.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectId")]
+    /// GCP project ID. Defaults to the project-id returned from the operator pod's local metadata server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
     pub project_id: Option<String>,
     /// GCP Region of the GKE cluster's identity provider. Defaults to the region returned from the operator pod's local metadata server.
     #[serde(default, skip_serializing_if = "Option::is_none")]

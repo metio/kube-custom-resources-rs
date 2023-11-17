@@ -335,7 +335,8 @@ pub struct MeshLoadBalancingStrategyToDefaultLocalityAwarenessCrossZoneFailoverT
     /// Type defines how target zones will be picked from available zones
     #[serde(rename = "type")]
     pub r#type: MeshLoadBalancingStrategyToDefaultLocalityAwarenessCrossZoneFailoverToType,
-    pub zones: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zones: Option<Vec<String>>,
 }
 
 /// To defines to which zones the traffic should be load balanced
@@ -357,8 +358,8 @@ pub struct MeshLoadBalancingStrategyToDefaultLocalityAwarenessCrossZoneFailoverT
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshLoadBalancingStrategyToDefaultLocalityAwarenessLocalZone {
     /// AffinityTags list of tags for local zone load balancing.
-    #[serde(rename = "affinityTags")]
-    pub affinity_tags: Vec<MeshLoadBalancingStrategyToDefaultLocalityAwarenessLocalZoneAffinityTags>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "affinityTags")]
+    pub affinity_tags: Option<Vec<MeshLoadBalancingStrategyToDefaultLocalityAwarenessLocalZoneAffinityTags>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

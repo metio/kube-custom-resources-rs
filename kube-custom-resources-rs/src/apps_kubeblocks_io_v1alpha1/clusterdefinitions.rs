@@ -4684,16 +4684,16 @@ pub enum ClusterDefinitionComponentDefsRsmSpecMemberUpdateStrategy {
 /// MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfiguration {
-    /// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image wil be used if not configured
+    /// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSyncAction")]
     pub log_sync_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationLogSyncAction>,
-    /// MemberJoinAction specifies how to add member previous none-nil action's Image wil be used if not configured
+    /// MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberJoinAction")]
     pub member_join_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberJoinAction>,
-    /// MemberLeaveAction specifies how to remove member previous none-nil action's Image wil be used if not configured
+    /// MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberLeaveAction")]
     pub member_leave_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberLeaveAction>,
-    /// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image wil be used if not configured
+    /// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteAction")]
     pub promote_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationPromoteAction>,
     /// SwitchoverAction specifies how to do switchover latest [BusyBox](https://busybox.net/) image will be used if Image not configured
@@ -4701,7 +4701,7 @@ pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfiguration {
     pub switchover_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationSwitchoverAction>,
 }
 
-/// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image wil be used if not configured
+/// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationLogSyncAction {
     /// Command will be executed in Container to retrieve or process role info
@@ -4711,7 +4711,7 @@ pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationLogSync
     pub image: Option<String>,
 }
 
-/// MemberJoinAction specifies how to add member previous none-nil action's Image wil be used if not configured
+/// MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberJoinAction {
     /// Command will be executed in Container to retrieve or process role info
@@ -4721,7 +4721,7 @@ pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberJ
     pub image: Option<String>,
 }
 
-/// MemberLeaveAction specifies how to remove member previous none-nil action's Image wil be used if not configured
+/// MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberLeaveAction {
     /// Command will be executed in Container to retrieve or process role info
@@ -4731,7 +4731,7 @@ pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberL
     pub image: Option<String>,
 }
 
-/// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image wil be used if not configured
+/// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationPromoteAction {
     /// Command will be executed in Container to retrieve or process role info

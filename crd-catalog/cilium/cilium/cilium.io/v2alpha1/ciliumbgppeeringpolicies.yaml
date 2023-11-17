@@ -164,10 +164,11 @@ spec:
                                       type: object
                                   type: object
                                 selectorType:
-                                  description: 'SelectorType defines the object type on which the Selector applies: - For "PodCIDR" the Selector matches k8s CiliumNode resources (path attributes apply to routes announced for PodCIDRs of selected CiliumNodes. Only affects routes of cluster scope / Kubernetes IPAM CIDRs, not Multi-Pool IPAM CIDRs. - For "CiliumLoadBalancerIPPool" the Selector matches CiliumLoadBalancerIPPool custom resources (path attributes apply to routes announced for selected CiliumLoadBalancerIPPools).'
+                                  description: 'SelectorType defines the object type on which the Selector applies: - For "PodCIDR" the Selector matches k8s CiliumNode resources (path attributes apply to routes announced for PodCIDRs of selected CiliumNodes. Only affects routes of cluster scope / Kubernetes IPAM CIDRs, not Multi-Pool IPAM CIDRs. - For "CiliumLoadBalancerIPPool" the Selector matches CiliumLoadBalancerIPPool custom resources (path attributes apply to routes announced for selected CiliumLoadBalancerIPPools). - For "CiliumPodIPPool" the Selector matches CiliumPodIPPool custom resources (path attributes apply to routes announced for allocated CIDRs of selected CiliumPodIPPools).'
                                   enum:
                                   - PodCIDR
                                   - CiliumLoadBalancerIPPool
+                                  - CiliumPodIPPool
                                   type: string
                               required:
                               - selectorType

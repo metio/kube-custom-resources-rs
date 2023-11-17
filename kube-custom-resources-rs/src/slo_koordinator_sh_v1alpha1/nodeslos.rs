@@ -104,6 +104,9 @@ pub struct NodeSLOResourceQosStrategy {
     /// ResourceQOS for LSR pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lsrClass")]
     pub lsr_class: Option<NodeSLOResourceQosStrategyLsrClass>,
+    /// Policies of pod QoS.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policies: Option<NodeSLOResourceQosStrategyPolicies>,
     /// ResourceQOS for system pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemClass")]
     pub system_class: Option<NodeSLOResourceQosStrategySystemClass>,
@@ -169,12 +172,18 @@ pub struct NodeSLOResourceQosStrategyBeClassBlkioQosBlocksIoCfg {
 /// CPUQOSCfg stores node-level config of cpu qos
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyBeClassCpuQos {
+    /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods. NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
+    pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// group identity value for pods, default = 0
+    /// group identity value for pods, default = 0 NOTE: It takes effect if cpuPolicy = "groupIdentity".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
+    /// cpu.idle value for pods, default = 0. `1` means using SCHED_IDLE. CGroup Idle (introduced since mainline Linux 5.15): https://lore.kernel.org/lkml/162971078674.25758.15464079371945307825.tip-bot2@tip-bot2/#r NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedIdle")]
+    pub sched_idle: Option<i64>,
 }
 
 /// MemoryQOSCfg stores node-level config of memory qos
@@ -287,12 +296,18 @@ pub struct NodeSLOResourceQosStrategyCgroupRootBlkioQosBlocksIoCfg {
 /// CPUQOSCfg stores node-level config of cpu qos
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyCgroupRootCpuQos {
+    /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods. NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
+    pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// group identity value for pods, default = 0
+    /// group identity value for pods, default = 0 NOTE: It takes effect if cpuPolicy = "groupIdentity".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
+    /// cpu.idle value for pods, default = 0. `1` means using SCHED_IDLE. CGroup Idle (introduced since mainline Linux 5.15): https://lore.kernel.org/lkml/162971078674.25758.15464079371945307825.tip-bot2@tip-bot2/#r NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedIdle")]
+    pub sched_idle: Option<i64>,
 }
 
 /// MemoryQOSCfg stores node-level config of memory qos
@@ -405,12 +420,18 @@ pub struct NodeSLOResourceQosStrategyLsClassBlkioQosBlocksIoCfg {
 /// CPUQOSCfg stores node-level config of cpu qos
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyLsClassCpuQos {
+    /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods. NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
+    pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// group identity value for pods, default = 0
+    /// group identity value for pods, default = 0 NOTE: It takes effect if cpuPolicy = "groupIdentity".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
+    /// cpu.idle value for pods, default = 0. `1` means using SCHED_IDLE. CGroup Idle (introduced since mainline Linux 5.15): https://lore.kernel.org/lkml/162971078674.25758.15464079371945307825.tip-bot2@tip-bot2/#r NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedIdle")]
+    pub sched_idle: Option<i64>,
 }
 
 /// MemoryQOSCfg stores node-level config of memory qos
@@ -523,12 +544,18 @@ pub struct NodeSLOResourceQosStrategyLsrClassBlkioQosBlocksIoCfg {
 /// CPUQOSCfg stores node-level config of cpu qos
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyLsrClassCpuQos {
+    /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods. NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
+    pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// group identity value for pods, default = 0
+    /// group identity value for pods, default = 0 NOTE: It takes effect if cpuPolicy = "groupIdentity".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
+    /// cpu.idle value for pods, default = 0. `1` means using SCHED_IDLE. CGroup Idle (introduced since mainline Linux 5.15): https://lore.kernel.org/lkml/162971078674.25758.15464079371945307825.tip-bot2@tip-bot2/#r NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedIdle")]
+    pub sched_idle: Option<i64>,
 }
 
 /// MemoryQOSCfg stores node-level config of memory qos
@@ -579,6 +606,14 @@ pub struct NodeSLOResourceQosStrategyLsrClassResctrlQos {
     /// MBA percent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mbaPercent")]
     pub mba_percent: Option<i64>,
+}
+
+/// Policies of pod QoS.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeSLOResourceQosStrategyPolicies {
+    /// applied policy for the CPU QoS, default = "groupIdentity"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuPolicy")]
+    pub cpu_policy: Option<String>,
 }
 
 /// ResourceQOS for system pods
@@ -641,12 +676,18 @@ pub struct NodeSLOResourceQosStrategySystemClassBlkioQosBlocksIoCfg {
 /// CPUQOSCfg stores node-level config of cpu qos
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategySystemClassCpuQos {
+    /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods. NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
+    pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// group identity value for pods, default = 0
+    /// group identity value for pods, default = 0 NOTE: It takes effect if cpuPolicy = "groupIdentity".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
+    /// cpu.idle value for pods, default = 0. `1` means using SCHED_IDLE. CGroup Idle (introduced since mainline Linux 5.15): https://lore.kernel.org/lkml/162971078674.25758.15464079371945307825.tip-bot2@tip-bot2/#r NOTE: It takes effect if cpuPolicy = "coreSched".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedIdle")]
+    pub sched_idle: Option<i64>,
 }
 
 /// MemoryQOSCfg stores node-level config of memory qos

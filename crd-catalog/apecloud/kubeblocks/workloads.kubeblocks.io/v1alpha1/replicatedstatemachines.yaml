@@ -465,7 +465,7 @@ spec:
                 description: MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
                 properties:
                   logSyncAction:
-                    description: LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image wil be used if not configured
+                    description: LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
                     properties:
                       command:
                         description: Command will be executed in Container to retrieve or process role info
@@ -479,7 +479,7 @@ spec:
                     - command
                     type: object
                   memberJoinAction:
-                    description: MemberJoinAction specifies how to add member previous none-nil action's Image wil be used if not configured
+                    description: MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
                     properties:
                       command:
                         description: Command will be executed in Container to retrieve or process role info
@@ -493,7 +493,7 @@ spec:
                     - command
                     type: object
                   memberLeaveAction:
-                    description: MemberLeaveAction specifies how to remove member previous none-nil action's Image wil be used if not configured
+                    description: MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
                     properties:
                       command:
                         description: Command will be executed in Container to retrieve or process role info
@@ -507,7 +507,7 @@ spec:
                     - command
                     type: object
                   promoteAction:
-                    description: PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image wil be used if not configured
+                    description: PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
                     properties:
                       command:
                         description: Command will be executed in Container to retrieve or process role info

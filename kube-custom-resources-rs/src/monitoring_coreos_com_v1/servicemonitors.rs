@@ -13,125 +13,150 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct ServiceMonitorSpec {
-    /// Attaches node metadata to discovered targets. Requires Prometheus v2.37.0 and above.
+    /// `attachMetadata` defines additional metadata which is added to the discovered targets. 
+    ///  It requires Prometheus >= v2.37.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<ServiceMonitorAttachMetadata>,
-    /// A list of endpoints allowed as part of this ServiceMonitor.
-    pub endpoints: Vec<ServiceMonitorEndpoints>,
-    /// JobLabel selects the label from the associated Kubernetes service which will be used as the `job` label for all metrics. 
-    ///  For example: If in `ServiceMonitor.spec.jobLabel: foo` and in `Service.metadata.labels.foo: bar`, then the `job="bar"` label is added to all metrics. 
-    ///  If the value of this field is empty or if the label doesn't exist for the given Service, the `job` label of the metrics defaults to the name of the Kubernetes Service.
+    /// List of endpoints part of this ServiceMonitor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoints: Option<Vec<ServiceMonitorEndpoints>>,
+    /// `jobLabel` selects the label from the associated Kubernetes `Service` object which will be used as the `job` label for all metrics. 
+    ///  For example if `jobLabel` is set to `foo` and the Kubernetes `Service` object is labeled with `foo: bar`, then Prometheus adds the `job="bar"` label to all ingested metrics. 
+    ///  If the value of this field is empty or if the label doesn't exist for the given Service, the `job` label of the metrics defaults to the name of the associated Kubernetes `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobLabel")]
     pub job_label: Option<String>,
     /// Per-scrape limit on the number of targets dropped by relabeling that will be kept in memory. 0 means no limit. 
     ///  It requires Prometheus >= v2.47.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDroppedTargets")]
     pub keep_dropped_targets: Option<i64>,
-    /// Per-scrape limit on number of labels that will be accepted for a sample. Only valid in Prometheus versions 2.27.0 and newer.
+    /// Per-scrape limit on number of labels that will be accepted for a sample. 
+    ///  It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelLimit")]
     pub label_limit: Option<i64>,
-    /// Per-scrape limit on length of labels name that will be accepted for a sample. Only valid in Prometheus versions 2.27.0 and newer.
+    /// Per-scrape limit on length of labels name that will be accepted for a sample. 
+    ///  It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelNameLengthLimit")]
     pub label_name_length_limit: Option<i64>,
-    /// Per-scrape limit on length of labels value that will be accepted for a sample. Only valid in Prometheus versions 2.27.0 and newer.
+    /// Per-scrape limit on length of labels value that will be accepted for a sample. 
+    ///  It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
     pub label_value_length_limit: Option<i64>,
-    /// Selector to select which namespaces the Kubernetes Endpoints objects are discovered from.
+    /// Selector to select which namespaces the Kubernetes `Endpoints` objects are discovered from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ServiceMonitorNamespaceSelector>,
-    /// PodTargetLabels transfers labels on the Kubernetes `Pod` onto the created metrics.
+    /// `podTargetLabels` defines the labels which are transferred from the associated Kubernetes `Pod` object onto the ingested metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTargetLabels")]
     pub pod_target_labels: Option<Vec<String>>,
-    /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
+    /// `sampleLimit` defines a per-scrape limit on the number of scraped samples that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
-    /// Selector to select Endpoints objects.
+    /// Label selector to select the Kubernetes `Endpoints` objects.
     pub selector: ServiceMonitorSelector,
-    /// TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics.
+    /// `targetLabels` defines the labels which are transferred from the associated Kubernetes `Service` object onto the ingested metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabels")]
     pub target_labels: Option<Vec<String>>,
-    /// TargetLimit defines a limit on the number of scraped targets that will be accepted.
+    /// `targetLimit` defines a limit on the number of scraped targets that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLimit")]
     pub target_limit: Option<i64>,
 }
 
-/// Attaches node metadata to discovered targets. Requires Prometheus v2.37.0 and above.
+/// `attachMetadata` defines additional metadata which is added to the discovered targets. 
+///  It requires Prometheus >= v2.37.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorAttachMetadata {
-    /// When set to true, Prometheus must have permissions to get Nodes.
+    /// When set to true, Prometheus must have the `get` permission on the `Nodes` objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
 }
 
-/// Endpoint defines a scrapeable endpoint serving Prometheus metrics.
+/// Endpoint defines an endpoint serving Prometheus metrics to be scraped by Prometheus.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpoints {
-    /// Authorization section for this endpoint
+    /// `authorization` configures the Authorization header credentials to use when scraping the target. 
+    ///  Cannot be set at the same time as `basicAuth`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ServiceMonitorEndpointsAuthorization>,
-    /// BasicAuth allow an endpoint to authenticate over basic authentication More info: https://prometheus.io/docs/operating/configuration/#endpoints
+    /// `basicAuth` configures the Basic Authentication credentials to use when scraping the target. 
+    ///  Cannot be set at the same time as `authorization`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ServiceMonitorEndpointsBasicAuth>,
-    /// File to read bearer token for scraping targets.
+    /// File to read bearer token for scraping the target. 
+    ///  Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
-    /// Secret to mount to read bearer token for scraping targets. The secret needs to be in the same namespace as the service monitor and accessible by the Prometheus Operator.
+    /// `bearerTokenSecret` specifies a key of a Secret containing the bearer token for scraping targets. The secret needs to be in the same namespace as the ServiceMonitor object and readable by the Prometheus Operator. 
+    ///  Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<ServiceMonitorEndpointsBearerTokenSecret>,
-    /// Whether to enable HTTP2.
+    /// `enableHttp2` can be used to disable HTTP2 when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
     pub enable_http2: Option<bool>,
-    /// Drop pods that are not running. (Failed, Succeeded). Enabled by default. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase
+    /// When true, the pods which are not running (e.g. either in Failed or Succeeded state) are dropped during the target discovery. 
+    ///  If unset, the filtering is enabled. 
+    ///  More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRunning")]
     pub filter_running: Option<bool>,
-    /// FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.
+    /// `followRedirects` defines whether the scrape requests should follow HTTP 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// HonorLabels chooses the metric's labels on collisions with target labels.
+    /// When true, `honorLabels` preserves the metric's labels when they collide with the target's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
-    /// HonorTimestamps controls whether Prometheus respects the timestamps present in scraped data.
+    /// `honorTimestamps` controls whether Prometheus preserves the timestamps when exposed by the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
-    /// Interval at which metrics should be scraped If not specified Prometheus' global scrape interval is used.
+    /// Interval at which Prometheus scrapes the metrics from the target. 
+    ///  If empty, Prometheus uses the global scrape interval.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// MetricRelabelConfigs to apply to samples before ingestion.
+    /// `metricRelabelings` configures the relabeling rules to apply to the samples before ingestion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
     pub metric_relabelings: Option<Vec<ServiceMonitorEndpointsMetricRelabelings>>,
-    /// OAuth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
+    /// `oauth2` configures the OAuth2 settings to use when scraping the target. 
+    ///  It requires Prometheus >= 2.27.0. 
+    ///  Cannot be set at the same time as `authorization`, or `basicAuth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ServiceMonitorEndpointsOauth2>,
-    /// Optional HTTP URL parameters
+    /// params define optional HTTP URL parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
-    /// HTTP path to scrape for metrics. If empty, Prometheus uses the default value (e.g. `/metrics`).
+    /// HTTP path from which to scrape for metrics. 
+    ///  If empty, Prometheus uses the default value (e.g. `/metrics`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name of the service port this endpoint refers to. Mutually exclusive with targetPort.
+    /// Name of the Service port which this endpoint refers to. 
+    ///  It takes precedence over `targetPort`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
-    /// ProxyURL eg http://proxyserver:2195 Directs scrapes to proxy through this endpoint.
+    /// `proxyURL` configures the HTTP Proxy URL (e.g. "http://proxyserver:2195") to go through when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
-    /// RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. The original scrape job's name is available via the `__tmp_prometheus_job_name` label. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+    /// `relabelings` configures the relabeling rules to apply the target's metadata labels. 
+    ///  The Operator automatically adds relabelings for a few standard Kubernetes fields. 
+    ///  The original scrape job's name is available via the `__tmp_prometheus_job_name` label. 
+    ///  More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<ServiceMonitorEndpointsRelabelings>>,
-    /// HTTP scheme to use for scraping. `http` and `https` are the expected values unless you rewrite the `__scheme__` label via relabeling. If empty, Prometheus uses the default value `http`.
+    /// HTTP scheme to use for scraping. 
+    ///  `http` and `https` are the expected values unless you rewrite the `__scheme__` label via relabeling. 
+    ///  If empty, Prometheus uses the default value `http`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ServiceMonitorEndpointsScheme>,
-    /// Timeout after which the scrape is ended If not specified, the Prometheus global scrape timeout is used unless it is less than `Interval` in which the latter is used.
+    /// Timeout after which Prometheus considers the scrape to be failed. 
+    ///  If empty, Prometheus uses the global scrape timeout unless it is less than the target's scrape interval value in which the latter is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
-    /// Name or number of the target port of the Pod behind the Service, the port must be specified with container port property. Mutually exclusive with port.
+    /// Name or number of the target port of the `Pod` object behind the Service, the port must be specified with container port property. 
+    ///  Deprecated: use `port` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
-    /// TLS configuration to use when scraping the endpoint
+    /// TLS configuration to use when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<ServiceMonitorEndpointsTlsConfig>,
 }
 
-/// Authorization section for this endpoint
+/// `authorization` configures the Authorization header credentials to use when scraping the target. 
+///  Cannot be set at the same time as `basicAuth`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
@@ -157,18 +182,19 @@ pub struct ServiceMonitorEndpointsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// BasicAuth allow an endpoint to authenticate over basic authentication More info: https://prometheus.io/docs/operating/configuration/#endpoints
+/// `basicAuth` configures the Basic Authentication credentials to use when scraping the target. 
+///  Cannot be set at the same time as `authorization`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ServiceMonitorEndpointsBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ServiceMonitorEndpointsBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -181,7 +207,7 @@ pub struct ServiceMonitorEndpointsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -194,7 +220,8 @@ pub struct ServiceMonitorEndpointsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// Secret to mount to read bearer token for scraping targets. The secret needs to be in the same namespace as the service monitor and accessible by the Prometheus Operator.
+/// `bearerTokenSecret` specifies a key of a Secret containing the bearer token for scraping targets. The secret needs to be in the same namespace as the ServiceMonitor object and readable by the Prometheus Operator. 
+///  Deprecated: use `authorization` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -257,27 +284,29 @@ pub enum ServiceMonitorEndpointsMetricRelabelingsAction {
     DropEqual,
 }
 
-/// OAuth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
+/// `oauth2` configures the OAuth2 settings to use when scraping the target. 
+///  It requires Prometheus >= 2.27.0. 
+///  Cannot be set at the same time as `authorization`, or `basicAuth`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ServiceMonitorEndpointsOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ServiceMonitorEndpointsOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -314,7 +343,7 @@ pub struct ServiceMonitorEndpointsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -377,7 +406,7 @@ pub enum ServiceMonitorEndpointsRelabelingsAction {
     DropEqual,
 }
 
-/// Endpoint defines a scrapeable endpoint serving Prometheus metrics.
+/// Endpoint defines an endpoint serving Prometheus metrics to be scraped by Prometheus.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ServiceMonitorEndpointsScheme {
     #[serde(rename = "http")]
@@ -386,7 +415,7 @@ pub enum ServiceMonitorEndpointsScheme {
     Https,
 }
 
-/// TLS configuration to use when scraping the endpoint
+/// TLS configuration to use when scraping the target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsTlsConfig {
     /// Certificate authority used when verifying server certificates.
@@ -502,7 +531,7 @@ pub struct ServiceMonitorEndpointsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// Selector to select which namespaces the Kubernetes Endpoints objects are discovered from.
+/// Selector to select which namespaces the Kubernetes `Endpoints` objects are discovered from.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorNamespaceSelector {
     /// Boolean describing whether all namespaces are selected in contrast to a list restricting them.
@@ -513,7 +542,7 @@ pub struct ServiceMonitorNamespaceSelector {
     pub match_names: Option<Vec<String>>,
 }
 
-/// Selector to select Endpoints objects.
+/// Label selector to select the Kubernetes `Endpoints` objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

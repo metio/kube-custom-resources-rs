@@ -126,7 +126,7 @@ pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributes
     /// Selector selects a group of objects of the SelectorType resulting into routes that will be announced with the configured Attributes. If nil / not set, all objects of the SelectorType are selected.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSelector>,
-    /// SelectorType defines the object type on which the Selector applies: - For "PodCIDR" the Selector matches k8s CiliumNode resources (path attributes apply to routes announced for PodCIDRs of selected CiliumNodes. Only affects routes of cluster scope / Kubernetes IPAM CIDRs, not Multi-Pool IPAM CIDRs. - For "CiliumLoadBalancerIPPool" the Selector matches CiliumLoadBalancerIPPool custom resources (path attributes apply to routes announced for selected CiliumLoadBalancerIPPools).
+    /// SelectorType defines the object type on which the Selector applies: - For "PodCIDR" the Selector matches k8s CiliumNode resources (path attributes apply to routes announced for PodCIDRs of selected CiliumNodes. Only affects routes of cluster scope / Kubernetes IPAM CIDRs, not Multi-Pool IPAM CIDRs. - For "CiliumLoadBalancerIPPool" the Selector matches CiliumLoadBalancerIPPool custom resources (path attributes apply to routes announced for selected CiliumLoadBalancerIPPools). - For "CiliumPodIPPool" the Selector matches CiliumPodIPPool custom resources (path attributes apply to routes announced for allocated CIDRs of selected CiliumPodIPPools).
     #[serde(rename = "selectorType")]
     pub selector_type: CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSelectorType,
 }
@@ -181,6 +181,8 @@ pub enum CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSe
     PodCidr,
     #[serde(rename = "CiliumLoadBalancerIPPool")]
     CiliumLoadBalancerIpPool,
+    #[serde(rename = "CiliumPodIPPool")]
+    CiliumPodIpPool,
 }
 
 /// CiliumBGPFamily represents a AFI/SAFI address family pair.
