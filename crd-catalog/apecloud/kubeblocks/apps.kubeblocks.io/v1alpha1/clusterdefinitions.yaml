@@ -4888,7 +4888,7 @@ spec:
                           description: MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
                           properties:
                             logSyncAction:
-                              description: LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image wil be used if not configured
+                              description: LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
                               properties:
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
@@ -4902,7 +4902,7 @@ spec:
                               - command
                               type: object
                             memberJoinAction:
-                              description: MemberJoinAction specifies how to add member previous none-nil action's Image wil be used if not configured
+                              description: MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
                               properties:
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
@@ -4916,7 +4916,7 @@ spec:
                               - command
                               type: object
                             memberLeaveAction:
-                              description: MemberLeaveAction specifies how to remove member previous none-nil action's Image wil be used if not configured
+                              description: MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
                               properties:
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
@@ -4930,7 +4930,7 @@ spec:
                               - command
                               type: object
                             promoteAction:
-                              description: PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image wil be used if not configured
+                              description: PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
                               properties:
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
@@ -5648,7 +5648,7 @@ spec:
                           description: passwordConfig defines the pattern to generate password.
                           properties:
                             length:
-                              default: 10
+                              default: 16
                               description: length defines the length of password.
                               format: int32
                               maximum: 32.0
@@ -5659,17 +5659,17 @@ spec:
                               description: letterCase defines to use lower-cases, upper-cases or mixed-cases of letters.
                               type: string
                             numDigits:
-                              default: 2
+                              default: 4
                               description: numDigits defines number of digits.
                               format: int32
-                              maximum: 20.0
+                              maximum: 8.0
                               minimum: 0.0
                               type: integer
                             numSymbols:
-                              default: 0
+                              default: 4
                               description: numSymbols defines number of symbols.
                               format: int32
-                              maximum: 20.0
+                              maximum: 8.0
                               minimum: 0.0
                               type: integer
                           type: object

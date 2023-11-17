@@ -137,7 +137,7 @@ spec:
                     type: string
                   credentials:
                     description: Name of the secret containing the 'accesskey' and 'secretkey' used to access the object storage
-                    type: string.
+                    type: string
                   insecure:
                     description: Use insecure connections or HTTP.
                     type: boolean

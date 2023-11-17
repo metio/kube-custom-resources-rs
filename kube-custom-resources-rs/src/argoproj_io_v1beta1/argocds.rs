@@ -143,6 +143,9 @@ pub struct ArgoCDSpec {
 /// ArgoCDApplicationSet defines whether the Argo CD ApplicationSet controller should be installed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDApplicationSet {
+    /// Enabled is the flag to enable the Application Set Controller during ArgoCD installation. (optional, default `true`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
     /// Env lets you specify environment for applicationSet controller pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDApplicationSetEnv>>,
@@ -378,6 +381,9 @@ pub struct ArgoCDController {
     ///  Set this to a duration, e.g. 10m or 600s to control the synchronisation frequency.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appSync")]
     pub app_sync: Option<String>,
+    /// Enabled is the flag to enable the Application Controller during ArgoCD installation. (optional, default `true`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
     /// Env lets you specify environment for application controller pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDControllerEnv>>,
@@ -1021,9 +1027,15 @@ pub struct ArgoCDRedis {
     /// DisableTLSVerification defines whether redis server API should be accessed using strict TLS validation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTLSVerification")]
     pub disable_tls_verification: Option<bool>,
+    /// Enabled is the flag to enable Redis during ArgoCD installation. (optional, default `true`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
     /// Image is the Redis container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// Remote specifies the remote URL of the Redis container. (optional, by default, a local instance managed by the operator is used.)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remote: Option<String>,
     /// Resources defines the Compute Resources required by the container for Redis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCDRedisResources>,
@@ -1061,6 +1073,9 @@ pub struct ArgoCDRepo {
     /// AutoTLS specifies the method to use for automatic TLS configuration for the repo server The value specified here can currently be: - openshift - Use the OpenShift service CA to request TLS config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autotls: Option<String>,
+    /// Enabled is the flag to enable Repo Server during ArgoCD installation. (optional, default `true`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
     /// Env lets you specify environment for repo server pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDRepoEnv>>,
@@ -1085,6 +1100,9 @@ pub struct ArgoCDRepo {
     /// MountSAToken describes whether you would like to have the Repo server mount the service account token
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mountsatoken: Option<bool>,
+    /// Remote specifies the remote URL of the Repo Server container. (optional, by default, a local instance managed by the operator is used.)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remote: Option<String>,
     /// Replicas defines the number of replicas for argocd-repo-server. Value should be greater than or equal to 0. Default is nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -3838,6 +3856,9 @@ pub struct ArgoCDServer {
     /// Autoscale defines the autoscale options for the Argo CD Server component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscale: Option<ArgoCDServerAutoscale>,
+    /// Enabled is the flag to enable ArgoCD Server during ArgoCD installation. (optional, default `true`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
     /// Env lets you specify environment for API server pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDServerEnv>>,

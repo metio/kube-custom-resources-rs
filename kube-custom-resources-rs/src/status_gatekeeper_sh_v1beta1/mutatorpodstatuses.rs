@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/open-policy-agent/gatekeeper/status.gatekeeper.sh/v1beta1/mutatorpodstatuses.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.2
 
-
+use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
 /// MutatorPodStatusStatus defines the observed state of MutatorPodStatus.

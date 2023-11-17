@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/kubernetes-sigs/mcs-api/multicluster.x-k8s.io/v1alpha1/serviceexports.yaml --derive=PartialEq
 // kopium version: 0.16.2
 
-
+use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
 /// status describes the current state of an exported service. Service configuration comes from the Service that had the same name and namespace as this ServiceExport. Populated by the multi-cluster service implementation's controller.

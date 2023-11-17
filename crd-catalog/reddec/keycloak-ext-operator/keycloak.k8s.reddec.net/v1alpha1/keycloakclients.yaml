@@ -29,9 +29,19 @@ spec:
           spec:
             description: KeycloakClientSpec defines the desired state of KeycloakClient
             properties:
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Annotations (optional) to add to the target secret
+                type: object
               domain:
                 description: Domain which will be used for redirect callback.
                 type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Labels (optional) to add to the target secret
+                type: object
               realm:
                 description: Realm name.
                 type: string

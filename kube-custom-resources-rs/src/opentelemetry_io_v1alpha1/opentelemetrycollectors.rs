@@ -116,6 +116,9 @@ pub struct OpenTelemetryCollectorSpec {
     /// TopologySpreadConstraints embedded kubernetes pod configuration option, controls how pods are spread across your cluster among failure-domains such as regions, zones, nodes, and other user-defined top
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<OpenTelemetryCollectorTopologySpreadConstraints>>,
+    /// UpdateStrategy represents the strategy the operator will take replacing existing DaemonSet pods with new pods https://kubernetes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
+    pub update_strategy: Option<OpenTelemetryCollectorUpdateStrategy>,
     /// UpgradeStrategy represents how the operator will handle upgrades to the CR when a newer version of the operator is deployed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeStrategy")]
     pub upgrade_strategy: Option<OpenTelemetryCollectorUpgradeStrategy>,
@@ -3599,6 +3602,28 @@ pub struct OpenTelemetryCollectorTopologySpreadConstraintsLabelSelectorMatchExpr
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// UpdateStrategy represents the strategy the operator will take replacing existing DaemonSet pods with new pods https://kubernetes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorUpdateStrategy {
+    /// Rolling update config params. Present only if type = "RollingUpdate". --- TODO: Update this to follow our convention for oneOf, whatever we decide it to be. Same as Deployment `strategy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<OpenTelemetryCollectorUpdateStrategyRollingUpdate>,
+    /// Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Rolling update config params. Present only if type = "RollingUpdate". --- TODO: Update this to follow our convention for oneOf, whatever we decide it to be. Same as Deployment `strategy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorUpdateStrategyRollingUpdate {
+    /// The maximum number of nodes with an existing available DaemonSet pod that can have an updated DaemonSet pod during during an update.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
+    pub max_surge: Option<IntOrString>,
+    /// The maximum number of DaemonSet pods that can be unavailable during the update.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
 }
 
 /// OpenTelemetryCollectorSpec defines the desired state of OpenTelemetryCollector.

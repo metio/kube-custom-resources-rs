@@ -358,7 +358,7 @@ pub struct SecretStoreProviderAlibabaAuthSecretRefAccessKeySecretSecretRef {
 /// AWS configures this store to sync secrets using AWS Secret Manager provider
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAws {
-    /// AdditionalRoles is a chained list of Role ARNs which the SecretManager provider will sequentially assume before assuming Role
+    /// AdditionalRoles is a chained list of Role ARNs which the provider will sequentially assume before assuming the Role
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalRoles")]
     pub additional_roles: Option<Vec<String>>,
     /// Auth defines the information necessary to authenticate against AWS if not set aws sdk will infer credentials from your environment see: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials
@@ -369,15 +369,18 @@ pub struct SecretStoreProviderAws {
     pub external_id: Option<String>,
     /// AWS Region to be used for the provider
     pub region: String,
-    /// Role is a Role ARN which the SecretManager provider will assume
+    /// Role is a Role ARN which the provider will assume
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
+    /// SecretsManager defines how the provider behaves when interacting with AWS SecretsManager
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretsManager")]
+    pub secrets_manager: Option<SecretStoreProviderAwsSecretsManager>,
     /// Service defines which service should be used to fetch the secrets
     pub service: SecretStoreProviderAwsService,
     /// AWS STS assume role session tags
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTags")]
     pub session_tags: Option<Vec<SecretStoreProviderAwsSessionTags>>,
-    /// AWS STS assume role transitive session tags. Required when multiple rules are used with SecretStore
+    /// AWS STS assume role transitive session tags. Required when multiple rules are used with the provider
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitiveTagKeys")]
     pub transitive_tag_keys: Option<Vec<String>>,
 }
@@ -468,6 +471,17 @@ pub struct SecretStoreProviderAwsAuthSecretRefSessionTokenSecretRef {
     /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// SecretsManager defines how the provider behaves when interacting with AWS SecretsManager
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SecretStoreProviderAwsSecretsManager {
+    /// Specifies whether to delete the secret without any recovery window. You can't use both this parameter and RecoveryWindowInDays in the same call. If you don't use either, then by default Secrets Manager uses a 30 day recovery window. see: https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_DeleteSecret.html#SecretsManager-DeleteSecret-request-ForceDeleteWithoutRecovery
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceDeleteWithoutRecovery")]
+    pub force_delete_without_recovery: Option<bool>,
+    /// The number of days from 7 to 30 that Secrets Manager waits before permanently deleting the secret. You can't use both this parameter and ForceDeleteWithoutRecovery in the same call. If you don't use either, then by default Secrets Manager uses a 30 day recovery window. see: https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_DeleteSecret.html#SecretsManager-DeleteSecret-request-RecoveryWindowInDays
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoveryWindowInDays")]
+    pub recovery_window_in_days: Option<i64>,
 }
 
 /// AWS configures this store to sync secrets using AWS Secret Manager provider

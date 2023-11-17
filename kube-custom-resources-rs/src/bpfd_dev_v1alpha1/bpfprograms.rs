@@ -4,7 +4,6 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
-use std::collections::BTreeMap;
 
 /// BpfProgramSpec defines the desired state of BpfProgram
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -12,9 +11,6 @@ use std::collections::BTreeMap;
 #[kube(status = "BpfProgramStatus")]
 #[kube(schema = "disabled")]
 pub struct BpfProgramSpec {
-    /// Maps is a map with Keys: Map Names, and Values: Map Pin paths
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub maps: Option<BTreeMap<String, String>>,
     /// Type specifies the bpf program type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,

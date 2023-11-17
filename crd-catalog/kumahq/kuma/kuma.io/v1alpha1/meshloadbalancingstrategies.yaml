@@ -301,7 +301,6 @@ spec:
                                             type: array
                                         required:
                                         - type
-                                        - zones
                                         type: object
                                     required:
                                     - to
@@ -340,8 +339,6 @@ spec:
                                     - key
                                     type: object
                                   type: array
-                              required:
-                              - affinityTags
                               type: object
                           type: object
                       type: object

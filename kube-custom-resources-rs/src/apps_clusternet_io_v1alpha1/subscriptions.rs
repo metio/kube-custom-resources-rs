@@ -21,6 +21,12 @@ pub struct SubscriptionSpec {
     pub dividing_scheduling: Option<SubscriptionDividingScheduling>,
     /// Feeds
     pub feeds: Vec<SubscriptionFeeds>,
+    /// PreemptionPolicy is the Policy for preempting subscriptions with lower priority. One of Never, PreemptLowerPriority. Defaults to PreemptLowerPriority if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
+    pub preemption_policy: Option<SubscriptionPreemptionPolicy>,
+    /// The priority value. clusternet-scheduler use this field to find the priority of the subscription. The higher the value, the higher the priority.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i32>,
     /// If specified, the Subscription will be handled by specified scheduler. If not specified, the Subscription will be handled by default scheduler.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
@@ -212,6 +218,13 @@ pub struct SubscriptionFeeds {
     /// Namespace of the target resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// SubscriptionSpec defines the desired state of Subscription
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SubscriptionPreemptionPolicy {
+    PreemptLowerPriority,
+    PreemptNever,
 }
 
 /// SubscriptionSpec defines the desired state of Subscription

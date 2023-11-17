@@ -98,15 +98,15 @@ pub struct ProbeAuthorizationCredentials {
 /// BasicAuth allow an endpoint to authenticate over basic authentication. More info: https://prometheus.io/docs/operating/configuration/#endpoint
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ProbeBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ProbeBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -119,7 +119,7 @@ pub struct ProbeBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -198,24 +198,24 @@ pub enum ProbeMetricRelabelingsAction {
 /// OAuth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ProbeOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ProbeOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -252,7 +252,7 @@ pub struct ProbeOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.

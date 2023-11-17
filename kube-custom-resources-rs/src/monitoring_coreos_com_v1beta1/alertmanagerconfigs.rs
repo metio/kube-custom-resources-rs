@@ -227,15 +227,15 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCrede
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -248,7 +248,7 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthPassword 
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -273,24 +273,24 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret 
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -327,7 +327,7 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdSecr
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -703,15 +703,15 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCrede
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -724,7 +724,7 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthPassword 
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -749,24 +749,24 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret 
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -803,7 +803,7 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdSecr
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1056,15 +1056,15 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorizationCred
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1077,7 +1077,7 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthPassword
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1102,24 +1102,24 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBearerTokenSecret
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1156,7 +1156,7 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientIdSec
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1422,15 +1422,15 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorizationCre
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1443,7 +1443,7 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthPasswor
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1468,24 +1468,24 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBearerTokenSecre
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1522,7 +1522,7 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientIdSe
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1790,15 +1790,15 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorizationCred
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1811,7 +1811,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthPassword
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1836,24 +1836,24 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBearerTokenSecret
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1890,7 +1890,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientIdSec
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2187,15 +2187,15 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorizationCredent
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2208,7 +2208,7 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2233,24 +2233,24 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBearerTokenSecret {
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2287,7 +2287,7 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientIdSecret
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2497,15 +2497,15 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentia
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2518,7 +2518,7 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2543,24 +2543,24 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret {
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2597,7 +2597,7 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2862,15 +2862,15 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorizationCred
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2883,7 +2883,7 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthPassword
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -2908,24 +2908,24 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBearerTokenSecret
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2962,7 +2962,7 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientIdSec
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3199,15 +3199,15 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCre
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3220,7 +3220,7 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthPasswor
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3245,24 +3245,24 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecre
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -3299,7 +3299,7 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdSe
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3494,15 +3494,15 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredent
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3515,7 +3515,7 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3540,24 +3540,24 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret {
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -3594,7 +3594,7 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdSecret
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3789,15 +3789,15 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorizationCrede
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3810,7 +3810,7 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthPassword 
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3835,24 +3835,24 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBearerTokenSecret 
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -3889,7 +3889,7 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientIdSecr
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -4115,15 +4115,15 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCreden
 /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuth {
-    /// The secret in the service monitor namespace that contains the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthPassword>,
-    /// The secret in the service monitor namespace that contains the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// The secret in the service monitor namespace that contains the password for authentication.
+/// `password` specifies a key of a Secret containing the password for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -4136,7 +4136,7 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret in the service monitor namespace that contains the username for authentication.
+/// `username` specifies a key of a Secret containing the username for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -4161,24 +4161,24 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret {
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret,
-    /// Parameters to append to the token URL
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// OAuth2 scopes used for the token request
+    /// `scopes` defines the OAuth2 scopes used for the token request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// The URL to fetch the token from
+    /// `tokenURL` configures the URL to fetch the token from.
     #[serde(rename = "tokenUrl")]
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -4215,7 +4215,7 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdSecre
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.

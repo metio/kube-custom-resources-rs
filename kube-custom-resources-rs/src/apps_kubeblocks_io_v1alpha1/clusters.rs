@@ -23,15 +23,18 @@ pub struct ClusterSpec {
     /// cluster backup configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<ClusterBackup>,
-    /// Cluster referencing ClusterDefinition name. This is an immutable attribute.
-    #[serde(rename = "clusterDefinitionRef")]
-    pub cluster_definition_ref: String,
+    /// Cluster referencing ClusterDefinition name. This is an immutable attribute. If ClusterDefRef is not specified, ComponentDef must be specified for each Component in ComponentSpecs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDefinitionRef")]
+    pub cluster_definition_ref: Option<String>,
     /// Cluster referencing ClusterVersion name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionRef")]
     pub cluster_version_ref: Option<String>,
     /// List of componentSpecs you want to replace in ClusterDefinition and ClusterVersion. It will replace the field in ClusterDefinition's and ClusterVersion's component if type is matching.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSpecs")]
     pub component_specs: Option<Vec<ClusterComponentSpecs>>,
+    /// connectionCredentials defines the credentials used to access a cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredentials")]
+    pub connection_credentials: Option<Vec<ClusterConnectionCredentials>>,
     /// monitor specifies the configuration of monitor
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<ClusterMonitor>,
@@ -44,6 +47,9 @@ pub struct ClusterSpec {
     /// resources specifies the resources of the first componentSpec, if the resources of the first componentSpec is specified, this value will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterResources>,
+    /// services defines the services to access a cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub services: Option<Vec<ClusterServices>>,
     /// storage specifies the storage of the first componentSpec, if the storage of the first componentSpec is specified, this value will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<ClusterStorage>,
@@ -135,9 +141,12 @@ pub struct ClusterComponentSpecs {
     /// classDefRef references the class defined in ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
     pub class_def_ref: Option<ClusterComponentSpecsClassDefRef>,
+    /// componentDef references the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDef")]
+    pub component_def: Option<String>,
     /// componentDefRef references componentDef defined in ClusterDefinition spec. Need to comply with IANA Service Naming rule.
-    #[serde(rename = "componentDefRef")]
-    pub component_def_ref: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
+    pub component_def_ref: Option<String>,
     /// enabledLogs indicates which log file takes effect in the database cluster. element is the log type which is defined in cluster definition logConfig.name, and will set relative variables about this log type in database kernel.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
     pub enabled_logs: Option<Vec<String>>,
@@ -175,6 +184,9 @@ pub struct ClusterComponentSpecs {
     /// Component tolerations will override ClusterSpec.Tolerations if specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ClusterComponentSpecsTolerations>>,
+    /// updateStrategy defines the update strategy for the component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
+    pub update_strategy: Option<ClusterComponentSpecsUpdateStrategy>,
     /// userResourceRefs defines the user-defined volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userResourceRefs")]
     pub user_resource_refs: Option<ClusterComponentSpecsUserResourceRefs>,
@@ -346,6 +358,14 @@ pub struct ClusterComponentSpecsTolerations {
     pub value: Option<String>,
 }
 
+/// ClusterComponentSpec defines the cluster component spec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterComponentSpecsUpdateStrategy {
+    Serial,
+    BestEffortParallel,
+    Parallel,
+}
+
 /// userResourceRefs defines the user-defined volumes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsUserResourceRefs {
@@ -499,6 +519,24 @@ pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecResourcesClaims {
     pub name: String,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterConnectionCredentials {
+    /// AccountName specifies the name of account used to access the service. If specified, the account must be defined in @SystemAccounts. Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountName")]
+    pub account_name: Option<String>,
+    /// ComponentName specifies the name of component where the account defined. For cluster-level connection credential, this field is required. Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentName")]
+    pub component_name: Option<String>,
+    /// The name of the ConnectionCredential. Cannot be updated.
+    pub name: String,
+    /// PortName specifies the name of the port to access the service. If the service has multiple ports, a specific port must be specified to use here. Otherwise, the unique port of the service will be used. Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
+    pub port_name: Option<String>,
+    /// ServiceName specifies the name of service to use for accessing. Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+}
+
 /// monitor specifies the configuration of monitor
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterMonitor {
@@ -527,6 +565,129 @@ pub struct ClusterResources {
     /// memory resource needed, more info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterServices {
+    /// ComponentSelector extends the ServiceSpec.Selector by allowing you to specify a component as selectors for the service. For component-level services, a default component selector with the component name will be added automatically.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSelector")]
+    pub component_selector: Option<String>,
+    /// The name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
+    pub name: String,
+    /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
+    pub role_selector: Option<String>,
+    /// ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: - <CLUSTER_NAME>: for cluster-level services - <CLUSTER_NAME>-<COMPONENT_NAME>: for component-level services Only one default service name is allowed. Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+    /// Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ClusterServicesSpec>,
+}
+
+/// Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterServicesSpec {
+    /// allocateLoadBalancerNodePorts defines if NodePorts will be automatically allocated for services with type LoadBalancer.  Default is "true". It may be set to "false" if the cluster load-balancer does not rely on NodePorts.  If the caller requests specific NodePorts (by specifying a value), those requests will be respected, regardless of this field. This field may only be set for services with type LoadBalancer and will be cleared if the type is changed to any other type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
+    pub allocate_load_balancer_node_ports: Option<bool>,
+    /// clusterIP is the IP address of the service and is usually assigned randomly. If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail. This field may not be changed through updates unless the type field is also being changed to ExternalName (which requires this field to be blank) or the type field is being changed from ExternalName (in which case this field may optionally be specified, as describe above).  Valid values are "None", empty string (""), or a valid IP address. Setting this to "None" makes a "headless service" (no virtual IP), which is useful when direct endpoint connections are preferred and proxying is not required.  Only applies to types ClusterIP, NodePort, and LoadBalancer. If this field is specified when creating a Service of type ExternalName, creation will fail. This field will be wiped when updating a Service to type ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIP")]
+    pub cluster_ip: Option<String>,
+    /// ClusterIPs is a list of IP addresses assigned to this service, and are usually assigned randomly.  If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail. This field may not be changed through updates unless the type field is also being changed to ExternalName (which requires this field to be empty) or the type field is being changed from ExternalName (in which case this field may optionally be specified, as describe above).  Valid values are "None", empty string (""), or a valid IP address.  Setting this to "None" makes a "headless service" (no virtual IP), which is useful when direct endpoint connections are preferred and proxying is not required.  Only applies to types ClusterIP, NodePort, and LoadBalancer. If this field is specified when creating a Service of type ExternalName, creation will fail. This field will be wiped when updating a Service to type ExternalName.  If this field is not specified, it will be initialized from the clusterIP field.  If this field is specified, clients must ensure that clusterIPs[0] and clusterIP have the same value. 
+    ///  This field may hold a maximum of two entries (dual-stack IPs, in either order). These IPs must correspond to the values of the ipFamilies field. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIPs")]
+    pub cluster_i_ps: Option<Vec<String>>,
+    /// externalIPs is a list of IP addresses for which nodes in the cluster will also accept traffic for this service.  These IPs are not managed by Kubernetes.  The user is responsible for ensuring that traffic arrives at a node with this IP.  A common example is external load-balancers that are not part of the Kubernetes system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
+    pub external_i_ps: Option<Vec<String>>,
+    /// externalName is the external reference that discovery mechanisms will return as an alias for this service (e.g. a DNS CNAME record). No proxying will be involved.  Must be a lowercase RFC-1123 hostname (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
+    pub external_name: Option<String>,
+    /// externalTrafficPolicy describes how nodes distribute service traffic they receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs, and LoadBalancer IPs). If set to "Local", the proxy will configure the service in a way that assumes that external load balancers will take care of balancing the service traffic between nodes, and so each node will deliver traffic only to the node-local endpoints of the service, without masquerading the client source IP. (Traffic mistakenly sent to a node with no endpoints will be dropped.) The default value, "Cluster", uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features). Note that traffic sent to an External IP or LoadBalancer IP from within the cluster will always get "Cluster" semantics, but clients sending to a NodePort from within the cluster may need to take traffic policy into account when picking a node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
+    pub external_traffic_policy: Option<String>,
+    /// healthCheckNodePort specifies the healthcheck nodePort for the service. This only applies when type is set to LoadBalancer and externalTrafficPolicy is set to Local. If a value is specified, is in-range, and is not in use, it will be used.  If not specified, a value will be automatically allocated.  External systems (e.g. load-balancers) can use this port to determine if a given node holds endpoints for this service or not.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type). This field cannot be updated once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
+    pub health_check_node_port: Option<i32>,
+    /// InternalTrafficPolicy describes how nodes distribute service traffic they receive on the ClusterIP. If set to "Local", the proxy will assume that pods only want to talk to endpoints of the service on the same node as the pod, dropping the traffic if there are no local endpoints. The default value, "Cluster", uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
+    pub internal_traffic_policy: Option<String>,
+    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this service. This field is usually assigned automatically based on cluster configuration and the ipFamilyPolicy field. If this field is specified manually, the requested family is available in the cluster, and ipFamilyPolicy allows it, it will be used; otherwise creation of the service will fail. This field is conditionally mutable: it allows for adding or removing a secondary IP family, but it does not allow changing the primary IP family of the Service. Valid values are "IPv4" and "IPv6".  This field only applies to Services of types ClusterIP, NodePort, and LoadBalancer, and does apply to "headless" services. This field will be wiped when updating a Service to type ExternalName. 
+    ///  This field may hold a maximum of two entries (dual-stack families, in either order).  These families must correspond to the values of the clusterIPs field, if specified. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
+    pub ip_families: Option<Vec<String>>,
+    /// IPFamilyPolicy represents the dual-stack-ness requested or required by this Service. If there is no value provided, then this field will be set to SingleStack. Services can be "SingleStack" (a single IP family), "PreferDualStack" (two IP families on dual-stack configured clusters or a single IP family on single-stack clusters), or "RequireDualStack" (two IP families on dual-stack configured clusters, otherwise fail). The ipFamilies and clusterIPs fields depend on the value of this field. This field will be wiped when updating a service to type ExternalName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
+    pub ip_family_policy: Option<String>,
+    /// loadBalancerClass is the class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix, e.g. "internal-vip" or "example.com/internal-vip". Unprefixed names are reserved for end-users. This field can only be set when the Service type is 'LoadBalancer'. If not set, the default load balancer implementation is used, today this is typically done through the cloud provider integration, but should apply for any default implementation. If set, it is assumed that a load balancer implementation is watching for Services with a matching class. Any default load balancer implementation (e.g. cloud providers) should ignore Services that set this field. This field can only be set when creating or updating a Service to type 'LoadBalancer'. Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
+    pub load_balancer_class: Option<String>,
+    /// Only applies to Service Type: LoadBalancer. This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created. This field will be ignored if the cloud-provider does not support the feature. Deprecated: This field was under-specified and its meaning varies across implementations. Using it is non-portable and it may not support dual-stack. Users are encouraged to use implementation-specific annotations when available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
+    /// If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature." More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
+    pub load_balancer_source_ranges: Option<Vec<String>>,
+    /// The list of ports that are exposed by this service. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<ClusterServicesSpecPorts>>,
+    /// publishNotReadyAddresses indicates that any agent which deals with endpoints for this Service should disregard any indications of ready/not-ready. The primary use case for setting this field is for a StatefulSet's Headless Service to propagate SRV DNS records for its Pods for the purpose of peer discovery. The Kubernetes controllers that generate Endpoints and EndpointSlice resources for Services interpret this to mean that all endpoints are considered "ready" even if the Pods themselves are not. Agents which consume only Kubernetes generated endpoints through the Endpoints or EndpointSlice resources can safely assume this behavior.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
+    pub publish_not_ready_addresses: Option<bool>,
+    /// Route service traffic to pods with label keys and values matching this selector. If empty or not present, the service is assumed to have an external process managing its endpoints, which Kubernetes will not modify. Only applies to types ClusterIP, NodePort, and LoadBalancer. Ignored if type is ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<BTreeMap<String, String>>,
+    /// Supports "ClientIP" and "None". Used to maintain session affinity. Enable client IP based session affinity. Must be ClientIP or None. Defaults to None. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
+    pub session_affinity: Option<String>,
+    /// sessionAffinityConfig contains the configurations of session affinity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
+    pub session_affinity_config: Option<ClusterServicesSpecSessionAffinityConfig>,
+    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. "ExternalName" aliases this service to the specified externalName. Several other fields do not apply to ExternalName services. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// ServicePort contains information on service's port.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterServicesSpecPorts {
+    /// The application protocol for this port. This is used as a hint for implementations to offer richer behavior for protocols that they understand. This field follows standard Kubernetes label syntax. Valid values are either: 
+    ///  * Un-prefixed protocol names - reserved for IANA standard service names (as per RFC-6335 and https://www.iana.org/assignments/service-names). 
+    ///  * Kubernetes-defined prefixed names: * 'kubernetes.io/h2c' - HTTP/2 over cleartext as described in https://www.rfc-editor.org/rfc/rfc7540 * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455 * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455 
+    ///  * Other protocols should use implementation-defined prefixed names such as mycompany.com/my-custom-protocol.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
+    pub app_protocol: Option<String>,
+    /// The name of this port within the service. This must be a DNS_LABEL. All ports within a ServiceSpec must have unique names. When considering the endpoints for a Service, this must match the 'name' field in the EndpointPort. Optional if only one ServicePort is defined on this service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The port on each node on which this service is exposed when type is NodePort or LoadBalancer.  Usually assigned by the system. If a value is specified, in-range, and not in use it will be used, otherwise the operation will fail.  If not specified, a port will be allocated if this Service requires one.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type from NodePort to ClusterIP). More info: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
+    pub node_port: Option<i32>,
+    /// The port that will be exposed by this service.
+    pub port: i32,
+    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+    /// Number or name of the port to access on the pods targeted by the service. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME. If this is a string, it will be looked up as a named port in the target Pod's container ports. If this is not specified, the value of the 'port' field is used (an identity map). This field is ignored for services with clusterIP=None, and should be omitted or set equal to the 'port' field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
+    pub target_port: Option<IntOrString>,
+}
+
+/// sessionAffinityConfig contains the configurations of session affinity.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterServicesSpecSessionAffinityConfig {
+    /// clientIP contains the configurations of Client IP based session affinity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientIP")]
+    pub client_ip: Option<ClusterServicesSpecSessionAffinityConfigClientIp>,
+}
+
+/// clientIP contains the configurations of Client IP based session affinity.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterServicesSpecSessionAffinityConfigClientIp {
+    /// timeoutSeconds specifies the seconds of ClientIP type session sticky time. The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP". Default value is 10800(for 3 hours).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
 }
 
 /// storage specifies the storage of the first componentSpec, if the storage of the first componentSpec is specified, this value will be ignored.
