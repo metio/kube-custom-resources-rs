@@ -1569,6 +1569,13 @@ kinds:
 - `Grant`
 - `Key`
 
+## kube_green_com_v1alpha1
+
+apiVersion: `kube-green.com/v1alpha1`
+
+kinds:
+- `SleepInfo`
+
 ## kubean_io_v1alpha1
 
 apiVersion: `kubean.io/v1alpha1`
@@ -3170,6 +3177,8 @@ pub mod kibana_k8s_elastic_co_v1;
 pub mod kibana_k8s_elastic_co_v1beta1;
 #[cfg(feature = "kms_services_k8s_aws_v1alpha1")]
 pub mod kms_services_k8s_aws_v1alpha1;
+#[cfg(feature = "kube_green_com_v1alpha1")]
+pub mod kube_green_com_v1alpha1;
 #[cfg(feature = "kubean_io_v1alpha1")]
 pub mod kubean_io_v1alpha1;
 #[cfg(feature = "kubevious_io_v1alpha1")]

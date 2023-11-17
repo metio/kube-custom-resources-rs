@@ -1169,6 +1169,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kube-green/kube-green",
+        license: MIT,
+        urls: &[
+            "https://github.com/kube-green/kube-green/blob/main/config/crd/bases/kube-green.com_sleepinfos.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kube-logging/logging-operator",
         license: APACHE_V2,
         urls: &[
