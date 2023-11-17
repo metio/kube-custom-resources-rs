@@ -2,9 +2,9 @@
 // kopium command: kopium --docs --filename=./crd-catalog/metacontroller/metacontroller/metacontroller.k8s.io/v1alpha1/controllerrevisions.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.2
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
-use std::collections::BTreeMap;
+
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControllerRevisionChildren {

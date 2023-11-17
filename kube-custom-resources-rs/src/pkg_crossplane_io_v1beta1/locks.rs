@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/crossplane/crossplane/pkg.crossplane.io/v1beta1/locks.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.2
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 
 /// LockPackage is a package that is in the lock.
