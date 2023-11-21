@@ -4,7 +4,7 @@
 name: Perform Release
 on:
   schedule:
-    - cron: 53 4 * * SAT
+    - cron: 53 4 1 * *
   workflow_dispatch:
 jobs:
   release:

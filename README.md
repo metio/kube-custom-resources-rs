@@ -5,7 +5,7 @@ SPDX-License-Identifier: 0BSD
 
 # Kubernetes Custom Resource Bindings for Rust [![Chat](https://img.shields.io/badge/matrix-%23talk.metio:matrix.org-brightgreen.svg?style=social&label=Matrix)](https://matrix.to/#/#talk.metio:matrix.org)
 
-This repository contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium) and updated weekly.
+This repository contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) generated with [kopium](https://github.com/kube-rs/kopium)
 
 Feel free to add your own CRD to the [catalog](https://github.com/metio/kube-custom-resources-rs/blob/main/code-generator/src/catalog.rs)!
 
@@ -44,7 +44,7 @@ Take a look at the [docs](https://docs.rs/kube-custom-resources-rs/latest/kube_c
 
 This crate uses a calendar based versioning scheme because resources in Kubernetes are versioned themselves.
 
-Updates to all CRDs are fetched on [friday](https://github.com/metio/kube-custom-resources-rs/blob/main/.github/workflows/update-crds.yml) and released a day later on [saturday](https://github.com/metio/kube-custom-resources-rs/blob/main/.github/workflows/release.yml) if any changes were detected.
+Updates to all CRDs are fetched [automatically](https://github.com/metio/kube-custom-resources-rs/blob/main/.github/workflows/update-crds.yml) and released on the [first of each month](https://github.com/metio/kube-custom-resources-rs/blob/main/.github/workflows/release.yml) if any changes were detected.
 
 ## Usage
 
