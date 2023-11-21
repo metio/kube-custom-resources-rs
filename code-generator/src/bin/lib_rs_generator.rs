@@ -29,10 +29,11 @@ fn main() -> Result<()> {
     writeln!(buffer, "")?;
     writeln!(buffer, "# Available Features")?;
     writeln!(buffer, "")?;
-    writeln!(buffer, "Every group/version combination is its own feature in this crate. The available features are as follows:")?;
+    writeln!(buffer, "Every group has its own feature in this crate. The available features are as follows:")?;
+
+    let mut entries: HashMap<String, HashMap<String, Vec<CustomResourceDefinition>>> = HashMap::new();
 
     let yaml_files = format!("{}/**/*.yaml", crd_catalog);
-    let mut crds: HashMap<String, Vec<CustomResourceDefinition>> = HashMap::new();
     for entry in glob(&yaml_files).expect("Failed to read glob pattern") {
         match entry {
             Ok(path) => {
@@ -45,14 +46,16 @@ fn main() -> Result<()> {
                 let feature = group.replace(".", "_").replace("-", "_");
 
                 let resource_target = format!(
-                    "{}/{}_{}/{}.rs",
+                    "{}/{}/{}/{}.rs",
                     sources,
                     feature,
                     version,
                     crd.spec.names.plural.replace(".", "_").replace("-", "_")
                 );
                 if Path::new(&resource_target).exists() {
-                    crds.entry(format!("{}/{}", group, version))
+                    entries.entry(group.to_string())
+                        .or_insert_with(HashMap::new)
+                        .entry(version.to_string())
                         .or_insert_with(Vec::new)
                         .push(crd);
                 }
@@ -61,32 +64,31 @@ fn main() -> Result<()> {
         }
     }
 
-    for (api_version, kinds) in crds.iter().sorted_by_key(|x| x.0) {
-        let feature = api_version
+    for (group, versions) in entries.iter().sorted_by_key(|x| x.0) {
+        let feature = group
             .replace(".", "_")
-            .replace("-", "_")
-            .replace("/", "_");
-
+            .replace("-", "_");
         writeln!(buffer, "")?;
         writeln!(buffer, "## {}", feature)?;
-        writeln!(buffer, "")?;
-        writeln!(buffer, "apiVersion: `{}`", api_version)?;
-        writeln!(buffer, "")?;
-        writeln!(buffer, "kinds:")?;
 
-        for crd in kinds {
-            writeln!(buffer, "- `{}`", crd.spec.names.kind)?;
+        for (version, kinds) in versions.iter().sorted_by_key(|x| x.0) {
+            writeln!(buffer, "")?;
+            writeln!(buffer, "- apiVersion: `{}/{}`", group, version)?;
+            writeln!(buffer, "- kinds:")?;
+
+            for crd in kinds {
+                writeln!(buffer, "  - `{}`", crd.spec.names.kind)?;
+            }
         }
     }
+
     writeln!(buffer, " */")?;
     writeln!(buffer, "")?;
 
-    for (api_version, _) in crds.iter().sorted_by_key(|x| x.0) {
-        let feature = api_version
+    for (group, _) in entries.iter().sorted_by_key(|x| x.0) {
+        let feature = group
             .replace(".", "_")
-            .replace("-", "_")
-            .replace("/", "_");
-
+            .replace("-", "_");
         writeln!(buffer, "#[cfg(feature = \"{}\")]", feature)?;
         writeln!(buffer, "pub mod {};", feature)?;
     }

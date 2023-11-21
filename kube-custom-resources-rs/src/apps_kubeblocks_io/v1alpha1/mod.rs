@@ -1,0 +1,9 @@
+pub mod backuppolicytemplates;
+pub mod clusterdefinitions;
+pub mod clusters;
+pub mod clusterversions;
+pub mod componentclassdefinitions;
+pub mod configconstraints;
+pub mod configurations;
+pub mod opsrequests;
+pub mod servicedescriptors;
