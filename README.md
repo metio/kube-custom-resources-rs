@@ -20,7 +20,7 @@ Replace `<version>` with the latest available [release](https://crates.io/crates
 
 ### Features
 
-Each group/version of a Kubernetes custom resource has a corresponding Cargo feature in this crate. The group/version of a custom resource can be seen in the `apiVersion` field of a resource, e.g.:
+Each group of a Kubernetes custom resource has a corresponding Cargo feature in this crate. The group of a custom resource can be seen in the `apiVersion` field of a resource, e.g.:
 
 ```yaml
 apiVersion: cert-manager.io/v1
@@ -29,14 +29,16 @@ metadata:
   ...
 ```
 
-Since Cargo imposes certain rules on how features can be named, `.`, `-`, and `/` are all mapped to `_`. Therefore, the feature that contains the custom resource from the example above is called `cert_manager_io_v1` and can be enabled like this:
+In the above example, `cert-manager.io` is the group and `v1` is the version. Since Cargo imposes certain rules on how features can be named, `.`, `-`, and `/` are all mapped to `_`. Therefore, the feature that contains the custom resource from the example above is called `cert_manager_io` and can be enabled like this:
 
 ```toml
 [dependencies]
-kube-custom-resources-rs = { version = "<version>", features = ["cert_manager_io_v1"] }
+kube-custom-resources-rs = { version = "<version>", features = ["cert_manager_io"] }
 ```
 
-Take a look at the [docs](https://docs.rs/kube-custom-resources-rs/latest/kube_custom_resources_rs/) to see all available features and the GVKs they contain.
+Each version within a group has a corresponding module in that feature, e.g. there is a module called `v1` in the feature `cert_manager_io`.
+
+Take a look at the [docs](https://docs.rs/kube-custom-resources-rs/latest/kube_custom_resources_rs/) to see all available features and the group/version/kinds they contain.
 
 ## Versioning
 

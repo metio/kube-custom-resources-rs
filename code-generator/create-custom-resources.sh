@@ -22,18 +22,20 @@ for file in ./crd-catalog/**/*.yaml; do
     crd=$(basename "${path}")
     version=$(basename "$(dirname "${file}")")
     group=$(basename "$(dirname "$(dirname "${file}")")")
-    rust_crd=$(echo "${crd}" | sed -e 's/\./_/g' -e 's/-/_/g')
-    rust_group=$(echo "${group}" | sed -e 's/\./_/g' -e 's/-/_/g')
-    module="${rust_group}_${version}"
+    resource_filename=$(echo "${crd}" | sed -e 's/\./_/g' -e 's/-/_/g')
+    cargo_group=$(echo "${group}" | sed -e 's/\./_/g' -e 's/-/_/g')
+    cargo_feature="${cargo_group}"
+    feature_directory="./kube-custom-resources-rs/src/${cargo_feature}"
+    version_directory="${feature_directory}/${version}"
 
-    mkdir --parents "./kube-custom-resources-rs/src/${module}"
+    mkdir --parents "${feature_directory}/${version}"
 
     if [ -f "${args}" ]; then
-      if ! xargs --arg-file="${args}" --delimiter='\n' kopium --docs --filename="${file}" > "./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
+      if ! xargs --arg-file="${args}" --delimiter='\n' kopium --docs --filename="${file}" > "${version_directory}/${resource_filename}.rs"; then
         echo "  error in ${file}"
       fi
     else
-      if ! kopium --docs --filename="${file}" --derive=Default --derive=PartialEq > "./kube-custom-resources-rs/src/${module}/${rust_crd}.rs"; then
+      if ! kopium --docs --filename="${file}" --derive=Default --derive=PartialEq > "${version_directory}/${resource_filename}.rs"; then
         echo "  error in ${file}"
       fi
     fi
