@@ -4772,6 +4772,8 @@ pub struct OutputOpensearch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub emit_error_label_event: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<OutputOpensearchEndpoint>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exception_backup: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fail_on_detecting_os_version_retry_exceed: Option<bool>,
@@ -5136,6 +5138,307 @@ pub struct OutputOpensearchClientKeyPassValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputOpensearchClientKeyPassValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpoint {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access_key_id: Option<OutputOpensearchEndpointAccessKeyId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub assume_role_arn: Option<OutputOpensearchEndpointAssumeRoleArn>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub assume_role_session_name: Option<OutputOpensearchEndpointAssumeRoleSessionName>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub assume_role_web_identity_token_file: Option<OutputOpensearchEndpointAssumeRoleWebIdentityTokenFile>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ecs_container_credentials_relative_uri: Option<OutputOpensearchEndpointEcsContainerCredentialsRelativeUri>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret_access_key: Option<OutputOpensearchEndpointSecretAccessKey>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sts_credentials_region: Option<OutputOpensearchEndpointStsCredentialsRegion>,
+    pub url: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAccessKeyId {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputOpensearchEndpointAccessKeyIdMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOpensearchEndpointAccessKeyIdValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAccessKeyIdMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointAccessKeyIdMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAccessKeyIdMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAccessKeyIdValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointAccessKeyIdValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAccessKeyIdValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleArn {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputOpensearchEndpointAssumeRoleArnMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOpensearchEndpointAssumeRoleArnValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleArnMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointAssumeRoleArnMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleArnMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleArnValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointAssumeRoleArnValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleArnValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleSessionName {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputOpensearchEndpointAssumeRoleSessionNameMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOpensearchEndpointAssumeRoleSessionNameValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleSessionNameMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointAssumeRoleSessionNameMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleSessionNameMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleSessionNameValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointAssumeRoleSessionNameValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleSessionNameValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleWebIdentityTokenFile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputOpensearchEndpointAssumeRoleWebIdentityTokenFileMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOpensearchEndpointAssumeRoleWebIdentityTokenFileValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleWebIdentityTokenFileMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointAssumeRoleWebIdentityTokenFileMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleWebIdentityTokenFileMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleWebIdentityTokenFileValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointAssumeRoleWebIdentityTokenFileValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointAssumeRoleWebIdentityTokenFileValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointEcsContainerCredentialsRelativeUri {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointSecretAccessKey {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputOpensearchEndpointSecretAccessKeyMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOpensearchEndpointSecretAccessKeyValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointSecretAccessKeyMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointSecretAccessKeyMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointSecretAccessKeyMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointSecretAccessKeyValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointSecretAccessKeyValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointSecretAccessKeyValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointStsCredentialsRegion {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputOpensearchEndpointStsCredentialsRegionMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOpensearchEndpointStsCredentialsRegionValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointStsCredentialsRegionMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointStsCredentialsRegionMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointStsCredentialsRegionMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointStsCredentialsRegionValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOpensearchEndpointStsCredentialsRegionValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOpensearchEndpointStsCredentialsRegionValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

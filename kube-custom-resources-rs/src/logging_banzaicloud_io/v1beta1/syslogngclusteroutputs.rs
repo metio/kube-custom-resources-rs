@@ -176,6 +176,8 @@ pub struct SyslogNGClusterOutputElasticsearchTls {
     pub key_file: Option<SyslogNGClusterOutputElasticsearchTlsKeyFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peer_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_version: Option<SyslogNGClusterOutputElasticsearchTlsSslVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
@@ -340,6 +342,22 @@ pub struct SyslogNGClusterOutputElasticsearchTlsKeyFileValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGClusterOutputElasticsearchTlsSslVersion {
+    #[serde(rename = "sslv3")]
+    Sslv3,
+    #[serde(rename = "tlsv1")]
+    Tlsv1,
+    #[serde(rename = "tlsv1_0")]
+    Tlsv10,
+    #[serde(rename = "tlsv1_1")]
+    Tlsv11,
+    #[serde(rename = "tlsv1_2")]
+    Tlsv12,
+    #[serde(rename = "tlsv1_3")]
+    Tlsv13,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputFile {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -493,6 +511,8 @@ pub struct SyslogNGClusterOutputHttpTls {
     pub key_file: Option<SyslogNGClusterOutputHttpTlsKeyFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peer_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_version: Option<SyslogNGClusterOutputHttpTlsSslVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
@@ -657,6 +677,22 @@ pub struct SyslogNGClusterOutputHttpTlsKeyFileValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGClusterOutputHttpTlsSslVersion {
+    #[serde(rename = "sslv3")]
+    Sslv3,
+    #[serde(rename = "tlsv1")]
+    Tlsv1,
+    #[serde(rename = "tlsv1_0")]
+    Tlsv10,
+    #[serde(rename = "tlsv1_1")]
+    Tlsv11,
+    #[serde(rename = "tlsv1_2")]
+    Tlsv12,
+    #[serde(rename = "tlsv1_3")]
+    Tlsv13,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLoggly {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -722,6 +758,8 @@ pub struct SyslogNGClusterOutputLogglyTls {
     pub key_file: Option<SyslogNGClusterOutputLogglyTlsKeyFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peer_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_version: Option<SyslogNGClusterOutputLogglyTlsSslVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
@@ -884,6 +922,22 @@ pub struct SyslogNGClusterOutputLogglyTlsKeyFileValueFromSecretKeyRef {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGClusterOutputLogglyTlsSslVersion {
+    #[serde(rename = "sslv3")]
+    Sslv3,
+    #[serde(rename = "tlsv1")]
+    Tlsv1,
+    #[serde(rename = "tlsv1_0")]
+    Tlsv10,
+    #[serde(rename = "tlsv1_1")]
+    Tlsv11,
+    #[serde(rename = "tlsv1_2")]
+    Tlsv12,
+    #[serde(rename = "tlsv1_3")]
+    Tlsv13,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1122,6 +1176,8 @@ pub struct SyslogNGClusterOutputLokiAuthTls {
     pub key_file: Option<SyslogNGClusterOutputLokiAuthTlsKeyFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peer_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_version: Option<SyslogNGClusterOutputLokiAuthTlsSslVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
@@ -1284,6 +1340,22 @@ pub struct SyslogNGClusterOutputLokiAuthTlsKeyFileValueFromSecretKeyRef {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGClusterOutputLokiAuthTlsSslVersion {
+    #[serde(rename = "sslv3")]
+    Sslv3,
+    #[serde(rename = "tlsv1")]
+    Tlsv1,
+    #[serde(rename = "tlsv1_0")]
+    Tlsv10,
+    #[serde(rename = "tlsv1_1")]
+    Tlsv11,
+    #[serde(rename = "tlsv1_2")]
+    Tlsv12,
+    #[serde(rename = "tlsv1_3")]
+    Tlsv13,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1807,6 +1879,8 @@ pub struct SyslogNGClusterOutputSplunkHecEventTls {
     pub key_file: Option<SyslogNGClusterOutputSplunkHecEventTlsKeyFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peer_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_version: Option<SyslogNGClusterOutputSplunkHecEventTlsSslVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
@@ -1971,6 +2045,22 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsKeyFileValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGClusterOutputSplunkHecEventTlsSslVersion {
+    #[serde(rename = "sslv3")]
+    Sslv3,
+    #[serde(rename = "tlsv1")]
+    Tlsv1,
+    #[serde(rename = "tlsv1_0")]
+    Tlsv10,
+    #[serde(rename = "tlsv1_1")]
+    Tlsv11,
+    #[serde(rename = "tlsv1_2")]
+    Tlsv12,
+    #[serde(rename = "tlsv1_3")]
+    Tlsv13,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventToken {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
@@ -2109,6 +2199,8 @@ pub struct SyslogNGClusterOutputSumologicHttpTls {
     pub key_file: Option<SyslogNGClusterOutputSumologicHttpTlsKeyFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peer_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_version: Option<SyslogNGClusterOutputSumologicHttpTlsSslVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
@@ -2273,6 +2365,22 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsKeyFileValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGClusterOutputSumologicHttpTlsSslVersion {
+    #[serde(rename = "sslv3")]
+    Sslv3,
+    #[serde(rename = "tlsv1")]
+    Tlsv1,
+    #[serde(rename = "tlsv1_0")]
+    Tlsv10,
+    #[serde(rename = "tlsv1_1")]
+    Tlsv11,
+    #[serde(rename = "tlsv1_2")]
+    Tlsv12,
+    #[serde(rename = "tlsv1_3")]
+    Tlsv13,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpUrl {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
@@ -2361,6 +2469,8 @@ pub struct SyslogNGClusterOutputSumologicSyslogTls {
     pub key_file: Option<SyslogNGClusterOutputSumologicSyslogTlsKeyFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peer_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_version: Option<SyslogNGClusterOutputSumologicSyslogTlsSslVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
@@ -2525,6 +2635,22 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsKeyFileValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGClusterOutputSumologicSyslogTlsSslVersion {
+    #[serde(rename = "sslv3")]
+    Sslv3,
+    #[serde(rename = "tlsv1")]
+    Tlsv1,
+    #[serde(rename = "tlsv1_0")]
+    Tlsv10,
+    #[serde(rename = "tlsv1_1")]
+    Tlsv11,
+    #[serde(rename = "tlsv1_2")]
+    Tlsv12,
+    #[serde(rename = "tlsv1_3")]
+    Tlsv13,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslog {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2587,6 +2713,8 @@ pub struct SyslogNGClusterOutputSyslogTls {
     pub key_file: Option<SyslogNGClusterOutputSyslogTlsKeyFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peer_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_version: Option<SyslogNGClusterOutputSyslogTlsSslVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
@@ -2749,6 +2877,22 @@ pub struct SyslogNGClusterOutputSyslogTlsKeyFileValueFromSecretKeyRef {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGClusterOutputSyslogTlsSslVersion {
+    #[serde(rename = "sslv3")]
+    Sslv3,
+    #[serde(rename = "tlsv1")]
+    Tlsv1,
+    #[serde(rename = "tlsv1_0")]
+    Tlsv10,
+    #[serde(rename = "tlsv1_1")]
+    Tlsv11,
+    #[serde(rename = "tlsv1_2")]
+    Tlsv12,
+    #[serde(rename = "tlsv1_3")]
+    Tlsv13,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

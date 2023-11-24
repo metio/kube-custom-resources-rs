@@ -150,9 +150,16 @@ pub struct RayServiceRayClusterConfigAutoscalerOptionsEnvFromSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigAutoscalerOptionsResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigAutoscalerOptionsResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigAutoscalerOptionsResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -452,6 +459,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpec {
     pub host_network: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
     pub host_pid: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
@@ -474,12 +483,16 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpec {
     pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecReadinessGates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
+    pub resource_claims: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecResourceClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
+    pub scheduling_gates: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecSchedulingGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
@@ -809,8 +822,12 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainers {
     pub ports: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1148,11 +1165,26 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersReadines
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1347,8 +1379,12 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainer
     pub ports: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1688,11 +1724,26 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1883,8 +1934,12 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainers {
     pub ports: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -2222,11 +2277,26 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersRead
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2392,6 +2462,26 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecReadinessGates {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecResourceClaims {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecResourceClaimsSource>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecResourceClaimsSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
+    pub resource_claim_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
+    pub resource_claim_template_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecSchedulingGates {
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
@@ -2471,8 +2561,16 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecTolerations {
 pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecTopologySpreadConstraints {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
     #[serde(rename = "whenUnsatisfiable")]
@@ -2779,14 +2877,23 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesEphemeralVo
     pub api_group: Option<String>,
     pub kind: String,
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -3233,6 +3340,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpec {
     pub host_network: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
     pub host_pid: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
@@ -3255,12 +3364,16 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpec {
     pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecReadinessGates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
+    pub resource_claims: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecResourceClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
+    pub scheduling_gates: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecSchedulingGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
@@ -3590,8 +3703,12 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainers {
     pub ports: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -3929,11 +4046,26 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersReadi
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -4128,8 +4260,12 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContai
     pub ports: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -4469,11 +4605,26 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContai
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -4664,8 +4815,12 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainers 
     pub ports: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -5003,11 +5158,26 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersR
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -5173,6 +5343,26 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecReadinessGates 
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecResourceClaims {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecResourceClaimsSource>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecResourceClaimsSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
+    pub resource_claim_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
+    pub resource_claim_template_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecSchedulingGates {
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
@@ -5252,8 +5442,16 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecTolerations {
 pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecTopologySpreadConstraints {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
     #[serde(rename = "whenUnsatisfiable")]
@@ -5560,14 +5758,23 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesEphemera
     pub api_group: Option<String>,
     pub kind: String,
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6152,6 +6359,8 @@ pub struct RayServiceServeServiceStatusLoadBalancerIngressPorts {
 pub struct RayServiceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeServiceStatus")]
     pub active_service_status: Option<RayServiceStatusActiveServiceStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
+    pub last_update_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingServiceStatus")]
@@ -6176,8 +6385,6 @@ pub struct RayServiceStatusActiveServiceStatus {
 pub struct RayServiceStatusActiveServiceStatusApplicationStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthLastUpdateTime")]
     pub health_last_update_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
-    pub last_update_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serveDeploymentStatuses")]
@@ -6190,8 +6397,6 @@ pub struct RayServiceStatusActiveServiceStatusApplicationStatuses {
 pub struct RayServiceStatusActiveServiceStatusApplicationStatusesServeDeploymentStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthLastUpdateTime")]
     pub health_last_update_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
-    pub last_update_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6204,8 +6409,6 @@ pub struct RayServiceStatusActiveServiceStatusDashboardStatus {
     pub health_last_update_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isHealthy")]
     pub is_healthy: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
-    pub last_update_time: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6256,8 +6459,6 @@ pub struct RayServiceStatusPendingServiceStatus {
 pub struct RayServiceStatusPendingServiceStatusApplicationStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthLastUpdateTime")]
     pub health_last_update_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
-    pub last_update_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serveDeploymentStatuses")]
@@ -6270,8 +6471,6 @@ pub struct RayServiceStatusPendingServiceStatusApplicationStatuses {
 pub struct RayServiceStatusPendingServiceStatusApplicationStatusesServeDeploymentStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthLastUpdateTime")]
     pub health_last_update_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
-    pub last_update_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6284,8 +6483,6 @@ pub struct RayServiceStatusPendingServiceStatusDashboardStatus {
     pub health_last_update_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isHealthy")]
     pub is_healthy: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
-    pub last_update_time: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

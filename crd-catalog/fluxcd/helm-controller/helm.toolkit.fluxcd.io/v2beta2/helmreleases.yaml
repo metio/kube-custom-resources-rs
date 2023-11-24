@@ -25,7 +25,7 @@ spec:
     - jsonPath: .status.conditions[?(@.type=="Ready")].message
       name: Status
       type: string
-    name: v2beta1
+    name: v2beta2
     schema:
       openAPIV3Schema:
         description: HelmRelease is the Schema for the helmreleases API
@@ -63,9 +63,11 @@ spec:
                     properties:
                       chart:
                         description: The name or path the Helm chart is available at in the SourceRef.
+                        maxLength: 2048
+                        minLength: 1
                         type: string
                       interval:
-                        description: Interval at which to check the v1beta2.Source for updates. Defaults to 'HelmReleaseSpec.Interval'.
+                        description: Interval at which to check the v1.Source for updates. Defaults to 'HelmReleaseSpec.Interval'.
                         pattern: ^([0-9]+(\.[0-9]+)?(ms|s|m|h))+$
                         type: string
                       reconcileStrategy:
@@ -76,7 +78,7 @@ spec:
                         - Revision
                         type: string
                       sourceRef:
-                        description: The name and namespace of the v1beta2.Source the chart is available at.
+                        description: The name and namespace of the v1.Source the chart is available at.
                         properties:
                           apiVersion:
                             description: APIVersion of the referent.
@@ -160,7 +162,7 @@ spec:
                 description: Install holds the configuration for Helm install actions for this HelmRelease.
                 properties:
                   crds:
-                    description: "CRDs upgrade CRDs from the Helm Chart's crds directory according to the CRD upgrade policy provided here. Valid values are `Skip`, `Create` or `CreateReplace`. Default is `Create` and if omitted CRDs are installed but not updated. \n Skip: do neither install nor replace (update) any CRDs. \n Create: new CRDs are created, existing CRDs are neither updated nor deleted. \n CreateReplace: new CRDs are created, existing CRDs are updated (replaced) but not deleted. \n By default, CRDs are applied (installed) during Helm install action. With this option users can opt-in to CRD replace existing CRDs on Helm install actions, which is not (yet) natively supported by Helm. https://helm.sh/docs/chart_best_practices/custom_resource_definitions."
+                    description: "CRDs upgrade CRDs from the Helm Chart's crds directory according to the CRD upgrade policy provided here. Valid values are `Skip`, `Create` or `CreateReplace`. Default is `Create` and if omitted CRDs are installed but not updated. \n Skip: do neither install nor replace (update) any CRDs. \n Create: new CRDs are created, existing CRDs are neither updated nor deleted. \n CreateReplace: new CRDs are created, existing CRDs are updated (replaced) but not deleted. \n By default, CRDs are applied (installed) during Helm install action. With this option users can opt in to CRD replace existing CRDs on Helm install actions, which is not (yet) natively supported by Helm. https://helm.sh/docs/chart_best_practices/custom_resource_definitions."
                     enum:
                     - Skip
                     - Create
@@ -206,7 +208,7 @@ spec:
                     type: string
                 type: object
               interval:
-                description: Interval at which to reconcile the Helm release. This interval is approximate and may be subject to jitter to ensure efficient use of resources.
+                description: Interval at which to reconcile the Helm release.
                 pattern: ^([0-9]+(\.[0-9]+)?(ms|s|m|h))+$
                 type: string
               kubeConfig:
@@ -228,7 +230,7 @@ spec:
                 - secretRef
                 type: object
               maxHistory:
-                description: MaxHistory is the number of revisions saved by Helm for this HelmRelease. Use '0' for an unlimited number of revisions; defaults to '10'.
+                description: MaxHistory is the number of revisions saved by Helm for this HelmRelease. Use '0' for an unlimited number of revisions; defaults to '5'.
                 type: integer
               persistentClient:
                 description: "PersistentClient tells the controller to use a persistent Kubernetes client for this release. When enabled, the client will be reused for the duration of the reconciliation, instead of being created and destroyed for each (step of a) Helm action. \n This can improve performance, but may cause issues with some Helm charts that for example do create Custom Resource Definitions during installation outside Helm's CRD lifecycle hooks, which are then not observed to be available by e.g. post-install hooks. \n If not set, it defaults to true."
@@ -404,6 +406,8 @@ spec:
                 type: object
               serviceAccountName:
                 description: The name of the Kubernetes service account to impersonate when reconciling this HelmRelease.
+                maxLength: 253
+                minLength: 1
                 type: string
               storageNamespace:
                 description: StorageNamespace used for the Helm storage. Defaults to the namespace of the HelmRelease.
@@ -424,6 +428,23 @@ spec:
                   enable:
                     description: Enable enables Helm test actions for this HelmRelease after an Helm install or upgrade action has been performed.
                     type: boolean
+                  filters:
+                    description: Filters is a list of tests to run or exclude from running.
+                    items:
+                      description: Filter holds the configuration for individual Helm test filters.
+                      properties:
+                        exclude:
+                          description: Exclude specifies whether the named test should be excluded.
+                          type: boolean
+                        name:
+                          description: Name is the name of the test.
+                          maxLength: 253
+                          minLength: 1
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
                   ignoreFailures:
                     description: IgnoreFailures tells the controller to skip remediation when the Helm tests are run but fail. Can be overwritten for tests run after install or upgrade actions in 'Install.IgnoreTestFailures' and 'Upgrade.IgnoreTestFailures'.
                     type: boolean
@@ -544,7 +565,7 @@ spec:
                       pattern: ^([a-zA-Z0-9_\-.\\\/]|\[[0-9]{1,5}\])+$
                       type: string
                     valuesKey:
-                      description: ValuesKey is the data key where the values.yaml or a specific value can be found at. Defaults to 'values.yaml'. When set, must be a valid Data Key, consisting of alphanumeric characters, '-', '_' or '.'.
+                      description: ValuesKey is the data key where the values.yaml or a specific value can be found at. Defaults to 'values.yaml'.
                       maxLength: 253
                       pattern: ^[\-._a-zA-Z0-9]+$
                       type: string
@@ -614,7 +635,7 @@ spec:
                 description: HelmChart is the namespaced name of the HelmChart resource created by the controller for the HelmRelease.
                 type: string
               history:
-                description: "History holds the history of Helm releases performed for this HelmRelease up to the last successfully completed release. \n Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases."
+                description: History holds the history of Helm releases performed for this HelmRelease up to the last successfully completed release.
                 items:
                   description: Snapshot captures a point-in-time copy of the status information for a Helm release, as managed by the controller.
                   properties:
@@ -693,36 +714,41 @@ spec:
                 format: int64
                 type: integer
               lastAppliedRevision:
-                description: LastAppliedRevision is the revision of the last successfully applied source.
+                description: 'LastAppliedRevision is the revision of the last successfully applied source. Deprecated: the revision can now be found in the History.'
                 type: string
               lastAttemptedConfigDigest:
-                description: "LastAttemptedConfigDigest is the digest for the config (better known as \"values\") of the last reconciliation attempt. \n Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases."
+                description: LastAttemptedConfigDigest is the digest for the config (better known as "values") of the last reconciliation attempt.
                 type: string
               lastAttemptedGeneration:
-                description: "LastAttemptedGeneration is the last generation the controller attempted to reconcile. \n Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases."
+                description: LastAttemptedGeneration is the last generation the controller attempted to reconcile.
                 format: int64
                 type: integer
               lastAttemptedReleaseAction:
-                description: "LastAttemptedReleaseAction is the last release action performed for this HelmRelease. It is used to determine the active remediation strategy. \n Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases."
+                description: LastAttemptedReleaseAction is the last release action performed for this HelmRelease. It is used to determine the active remediation strategy.
+                enum:
+                - install
+                - upgrade
                 type: string
               lastAttemptedRevision:
-                description: LastAttemptedRevision is the revision of the last reconciliation attempt.
+                description: LastAttemptedRevision is the Source revision of the last reconciliation attempt.
                 type: string
               lastAttemptedValuesChecksum:
-                description: LastAttemptedValuesChecksum is the SHA1 checksum of the values of the last reconciliation attempt.
+                description: 'LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last reconciliation attempt. Deprecated: Use LastAttemptedConfigDigest instead.'
                 type: string
               lastHandledReconcileAt:
                 description: LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
                 type: string
               lastReleaseRevision:
-                description: LastReleaseRevision is the revision of the last successful Helm release.
+                description: 'LastReleaseRevision is the revision of the last successful Helm release. Deprecated: Use History instead.'
                 type: integer
               observedGeneration:
                 description: ObservedGeneration is the last observed generation.
                 format: int64
                 type: integer
               storageNamespace:
-                description: "StorageNamespace is the namespace of the Helm release storage for the current release. \n Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases."
+                description: StorageNamespace is the namespace of the Helm release storage for the current release.
+                maxLength: 63
+                minLength: 1
                 type: string
               upgradeFailures:
                 description: UpgradeFailures is the upgrade failure count against the latest desired state. It is reset after a successful reconciliation.
@@ -731,6 +757,6 @@ spec:
             type: object
         type: object
     served: true
-    storage: false
+    storage: true
     subresources:
       status: {}

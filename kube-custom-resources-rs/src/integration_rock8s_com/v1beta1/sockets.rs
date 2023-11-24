@@ -993,9 +993,14 @@ pub struct SocketResultVarsObjref {
     pub group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateName")]
+    pub template_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateNamespace")]
+    pub template_namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -1039,9 +1044,14 @@ pub struct SocketVarsObjref {
     pub group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateName")]
+    pub template_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateNamespace")]
+    pub template_namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

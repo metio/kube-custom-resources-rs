@@ -153,6 +153,10 @@ pub struct ServiceMonitorEndpoints {
     /// TLS configuration to use when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<ServiceMonitorEndpointsTlsConfig>,
+    /// `trackTimestampsStaleness` defines whether Prometheus tracks staleness of the metrics that have an explicit timestamp present in scraped data. 
+    ///  It requires Prometheus >= v2.48.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackTimestampsStaleness")]
+    pub track_timestamps_staleness: Option<bool>,
 }
 
 /// `authorization` configures the Authorization header credentials to use when scraping the target. 

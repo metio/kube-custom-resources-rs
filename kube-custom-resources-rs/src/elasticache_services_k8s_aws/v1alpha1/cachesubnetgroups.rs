@@ -24,11 +24,29 @@ pub struct CacheSubnetGroupSpec {
     #[serde(rename = "cacheSubnetGroupName")]
     pub cache_subnet_group_name: String,
     /// A list of VPC subnet IDs for the cache subnet group.
-    #[serde(rename = "subnetIDs")]
-    pub subnet_i_ds: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
+    pub subnet_i_ds: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRefs")]
+    pub subnet_refs: Option<Vec<CacheSubnetGroupSubnetRefs>>,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<CacheSubnetGroupTags>>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
+///  from: name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CacheSubnetGroupSubnetRefs {
+    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<CacheSubnetGroupSubnetRefsFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CacheSubnetGroupSubnetRefsFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// A tag that can be added to an ElastiCache cluster or replication group. Tags are composed of a Key/Value pair. You can use tags to categorize and track all your ElastiCache resources, with the exception of global replication group. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. A tag with a null Value is permitted.

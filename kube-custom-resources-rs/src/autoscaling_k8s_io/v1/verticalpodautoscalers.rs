@@ -17,7 +17,7 @@ pub struct VerticalPodAutoscalerSpec {
     /// Recommender responsible for generating recommendation for this object. List should be empty (then the default recommender will generate the recommendation) or contain exactly one recommender.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recommenders: Option<Vec<VerticalPodAutoscalerRecommenders>>,
-    /// Controls how the autoscaler computes recommended resources. The resource policy may be used to set constraints on the recommendations for individual containers. If not specified, the autoscaler computes recommended resources for all containers in the pod, without additional constraints.
+    /// Controls how the autoscaler computes recommended resources. The resource policy may be used to set constraints on the recommendations for individual containers. If any individual containers need to be excluded from getting the VPA recommendations, then it must be disabled explicitly by setting mode to "Off" under containerPolicies. If not specified, the autoscaler computes recommended resources for all containers in the pod, without additional constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePolicy")]
     pub resource_policy: Option<VerticalPodAutoscalerResourcePolicy>,
     /// TargetRef points to the controller managing the set of pods for the autoscaler to control - e.g. Deployment, StatefulSet. VerticalPodAutoscaler can be targeted at controller implementing scale subresource (the pod set is retrieved from the controller's ScaleStatus) or some well known controllers (e.g. for DaemonSet the pod set is read from the controller's spec). If VerticalPodAutoscaler cannot use specified target it will report ConfigUnsupported condition. Note that VerticalPodAutoscaler does not require full implementation of scale subresource - it will not use it to modify the replica count. The only thing retrieved is a label selector matching pods grouped by the target resource.
@@ -35,7 +35,7 @@ pub struct VerticalPodAutoscalerRecommenders {
     pub name: String,
 }
 
-/// Controls how the autoscaler computes recommended resources. The resource policy may be used to set constraints on the recommendations for individual containers. If not specified, the autoscaler computes recommended resources for all containers in the pod, without additional constraints.
+/// Controls how the autoscaler computes recommended resources. The resource policy may be used to set constraints on the recommendations for individual containers. If any individual containers need to be excluded from getting the VPA recommendations, then it must be disabled explicitly by setting mode to "Off" under containerPolicies. If not specified, the autoscaler computes recommended resources for all containers in the pod, without additional constraints.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VerticalPodAutoscalerResourcePolicy {
     /// Per-container resource policies.
@@ -113,7 +113,7 @@ pub struct VerticalPodAutoscalerUpdatePolicyEvictionRequirements {
     #[serde(rename = "changeRequirement")]
     pub change_requirement: VerticalPodAutoscalerUpdatePolicyEvictionRequirementsChangeRequirement,
     /// Resources is a list of one or more resources that the condition applies to. If more than one resource is given, the EvictionRequirement is fulfilled if at least one resource meets `changeRequirement`.
-    pub resource: Vec<String>,
+    pub resources: Vec<String>,
 }
 
 /// EvictionRequirement defines a single condition which needs to be true in order to evict a Pod

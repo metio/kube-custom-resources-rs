@@ -1268,7 +1268,7 @@ pub struct ClusterSecretStoreProviderOracle {
     pub encryption_key: Option<String>,
     /// The type of principal to use for authentication. If left blank, the Auth struct will determine the principal type. This optional field must be specified if using workload identity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "principalType")]
-    pub principal_type: Option<String>,
+    pub principal_type: Option<ClusterSecretStoreProviderOraclePrincipalType>,
     /// Region is the region where vault is located.
     pub region: String,
     /// ServiceAccountRef specified the service account that should be used when authenticating with WorkloadIdentity.
@@ -1325,6 +1325,16 @@ pub struct ClusterSecretStoreProviderOracleAuthSecretRefPrivatekey {
     /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Oracle configures this store to sync secrets using Oracle Vault provider
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterSecretStoreProviderOraclePrincipalType {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    UserPrincipal,
+    InstancePrincipal,
+    Workload,
 }
 
 /// ServiceAccountRef specified the service account that should be used when authenticating with WorkloadIdentity.

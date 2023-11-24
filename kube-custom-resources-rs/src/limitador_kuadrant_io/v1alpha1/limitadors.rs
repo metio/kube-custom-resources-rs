@@ -628,7 +628,7 @@ pub enum LimitadorTelemetry {
 /// LimitadorStatus defines the observed state of Limitador
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LimitadorStatus {
-    /// Represents the observations of a foo's current state. Known .status.conditions.type are: "Available"
+    /// Represents the observations of a foo's current state. Known .status.conditions.type are: "Ready"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<LimitadorStatusConditions>>,
     /// ObservedGeneration reflects the generation of the most recently observed spec.

@@ -1027,6 +1027,10 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `HelmRelease`
 
+- apiVersion: `helm.toolkit.fluxcd.io/v2beta2`
+- kinds:
+  - `HelmRelease`
+
 ## hive_openshift_io
 
 - apiVersion: `hive.openshift.io/v1`

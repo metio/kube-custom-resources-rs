@@ -100,8 +100,8 @@ spec:
                     description: The git reference when deploying the clustergroup helm chart directly from a git repo Defaults to 'main'. (Only used when developing the clustergroup helm chart)
                     type: string
                   clusterGroupChartVersion:
-                    default: 0.0.*
-                    description: Which chart version for the clustergroup helm chart Defaults to "0.0.*"
+                    default: 0.8.*
+                    description: Which chart version for the clustergroup helm chart Defaults to "0.8.*"
                     type: string
                   clusterGroupGitRepoUrl:
                     description: The url when deploying the clustergroup helm chart directly from a git repo Defaults to '' which means not used (Only used when developing the clustergroup helm chart)
