@@ -283,10 +283,43 @@ pub struct ApplicationOperationSyncSourceKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationOperationSyncSourceKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationOperationSyncSourceKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationOperationSyncSourceKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationOperationSyncSourceKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationOperationSyncSourceKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -507,10 +540,43 @@ pub struct ApplicationOperationSyncSourcesKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationOperationSyncSourcesKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationOperationSyncSourcesKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationOperationSyncSourcesKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationOperationSyncSourcesKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationOperationSyncSourcesKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -620,13 +686,13 @@ pub struct ApplicationSpec {
 /// Destination is a reference to the target Kubernetes server and namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationDestination {
-    /// Name is an alternate way of specifying the target cluster by its symbolic name
+    /// Name is an alternate way of specifying the target cluster by its symbolic name. This must be set if Server is not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace specifies the target namespace for the application's resources. The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Server specifies the URL of the target cluster and must be set to the Kubernetes control plane API
+    /// Server specifies the URL of the target cluster's Kubernetes control plane API. This must be set if Name is not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
 }
@@ -827,10 +893,43 @@ pub struct ApplicationSourceKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationSourceKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationSourceKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationSourceKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationSourceKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationSourceKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -1051,10 +1150,43 @@ pub struct ApplicationSourcesKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationSourcesKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationSourcesKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationSourcesKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationSourcesKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationSourcesKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -1433,10 +1565,43 @@ pub struct ApplicationStatusHistorySourceKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationStatusHistorySourceKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationStatusHistorySourceKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusHistorySourceKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationStatusHistorySourceKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusHistorySourceKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -1657,10 +1822,43 @@ pub struct ApplicationStatusHistorySourcesKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationStatusHistorySourcesKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationStatusHistorySourcesKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusHistorySourcesKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationStatusHistorySourcesKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusHistorySourcesKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -2010,10 +2208,43 @@ pub struct ApplicationStatusOperationStateOperationSyncSourceKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationStatusOperationStateOperationSyncSourceKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationStatusOperationStateOperationSyncSourceKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusOperationStateOperationSyncSourceKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationStatusOperationStateOperationSyncSourceKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusOperationStateOperationSyncSourceKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -2234,10 +2465,43 @@ pub struct ApplicationStatusOperationStateOperationSyncSourcesKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationStatusOperationStateOperationSyncSourcesKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationStatusOperationStateOperationSyncSourcesKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusOperationStateOperationSyncSourcesKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationStatusOperationStateOperationSyncSourcesKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusOperationStateOperationSyncSourcesKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -2546,10 +2810,43 @@ pub struct ApplicationStatusOperationStateSyncResultSourceKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationStatusOperationStateSyncResultSourceKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationStatusOperationStateSyncResultSourceKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusOperationStateSyncResultSourceKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationStatusOperationStateSyncResultSourceKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusOperationStateSyncResultSourceKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -2770,10 +3067,43 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationStatusOperationStateSyncResultSourcesKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationStatusOperationStateSyncResultSourcesKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusOperationStateSyncResultSourcesKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationStatusOperationStateSyncResultSourcesKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusOperationStateSyncResultSourcesKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -2907,13 +3237,13 @@ pub struct ApplicationStatusSyncComparedTo {
 /// Destination is a reference to the application's destination used for comparison
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusSyncComparedToDestination {
-    /// Name is an alternate way of specifying the target cluster by its symbolic name
+    /// Name is an alternate way of specifying the target cluster by its symbolic name. This must be set if Server is not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace specifies the target namespace for the application's resources. The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Server specifies the URL of the target cluster and must be set to the Kubernetes control plane API
+    /// Server specifies the URL of the target cluster's Kubernetes control plane API. This must be set if Name is not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
 }
@@ -3108,10 +3438,43 @@ pub struct ApplicationStatusSyncComparedToSourceKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationStatusSyncComparedToSourceKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationStatusSyncComparedToSourceKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSyncComparedToSourceKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationStatusSyncComparedToSourceKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSyncComparedToSourceKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -3332,10 +3695,43 @@ pub struct ApplicationStatusSyncComparedToSourcesKustomize {
     /// Namespace sets the namespace that Kustomize adds to all resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Patches is a list of Kustomize patches
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<ApplicationStatusSyncComparedToSourcesKustomizePatches>>,
     /// Replicas is a list of Kustomize Replicas override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<Vec<ApplicationStatusSyncComparedToSourcesKustomizeReplicas>>,
     /// Version controls which version of Kustomize to use for rendering manifests
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSyncComparedToSourcesKustomizePatches {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<ApplicationStatusSyncComparedToSourcesKustomizePatchesTarget>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSyncComparedToSourcesKustomizePatchesTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

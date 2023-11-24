@@ -70,13 +70,13 @@ pub struct AppProjectClusterResourceWhitelist {
 /// ApplicationDestination holds information about the application's destination
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppProjectDestinations {
-    /// Name is an alternate way of specifying the target cluster by its symbolic name
+    /// Name is an alternate way of specifying the target cluster by its symbolic name. This must be set if Server is not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namespace specifies the target namespace for the application's resources. The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Server specifies the URL of the target cluster and must be set to the Kubernetes control plane API
+    /// Server specifies the URL of the target cluster's Kubernetes control plane API. This must be set if Name is not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
 }

@@ -171,7 +171,8 @@ pub struct MachineConfigPoolStatusCertExpirys {
     /// bundle is the name of the bundle in which the subject certificate resides
     pub bundle: String,
     /// expiry is the date after which the certificate will no longer be valid
-    pub expiry: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expiry: Option<String>,
     /// subject is the subject of the certificate
     pub subject: String,
 }

@@ -359,6 +359,15 @@ pub struct ControllerConfigInfraSpecPlatformSpecAzure {
 /// BareMetal contains settings specific to the BareMetal platform.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ControllerConfigInfraSpecPlatformSpecBaremetal {
+    /// apiServerInternalIPs are the IP addresses to contact the Kubernetes API server that can be used by components inside the cluster, like kubelets using the infrastructure rather than Kubernetes networking. These are the IPs for a self-hosted load balancer in front of the API servers. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.apiServerInternalIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerInternalIPs")]
+    pub api_server_internal_i_ps: Option<Vec<String>>,
+    /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.ingressIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
+    pub ingress_i_ps: Option<Vec<String>>,
+    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes. Each network is provided in the CIDR format and should be IPv4 or IPv6, for example "10.0.0.0/8" or "fd00::/8".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
+    pub machine_networks: Option<Vec<String>>,
 }
 
 /// EquinixMetal contains settings specific to the Equinix Metal infrastructure provider.
@@ -392,12 +401,70 @@ pub struct ControllerConfigInfraSpecPlatformSpecKubevirt {
 /// Nutanix contains settings specific to the Nutanix infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ControllerConfigInfraSpecPlatformSpecNutanix {
+    /// failureDomains configures failure domains information for the Nutanix platform. When set, the failure domains defined here may be used to spread Machines across prism element clusters to improve fault tolerance of the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
+    pub failure_domains: Option<Vec<ControllerConfigInfraSpecPlatformSpecNutanixFailureDomains>>,
     /// prismCentral holds the endpoint address and port to access the Nutanix Prism Central. When a cluster-wide proxy is installed, by default, this endpoint will be accessed via the proxy. Should you wish for communication with this endpoint not to be proxied, please add the endpoint to the proxy spec.noProxy list.
     #[serde(rename = "prismCentral")]
     pub prism_central: ControllerConfigInfraSpecPlatformSpecNutanixPrismCentral,
     /// prismElements holds one or more endpoint address and port data to access the Nutanix Prism Elements (clusters) of the Nutanix Prism Central. Currently we only support one Prism Element (cluster) for an OpenShift cluster, where all the Nutanix resources (VMs, subnets, volumes, etc.) used in the OpenShift cluster are located. In the future, we may support Nutanix resources (VMs, etc.) spread over multiple Prism Elements (clusters) of the Prism Central.
     #[serde(rename = "prismElements")]
     pub prism_elements: Vec<ControllerConfigInfraSpecPlatformSpecNutanixPrismElements>,
+}
+
+/// NutanixFailureDomain configures failure domain information for the Nutanix platform.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ControllerConfigInfraSpecPlatformSpecNutanixFailureDomains {
+    /// cluster is to identify the cluster (the Prism Element under management of the Prism Central), in which the Machine's VM will be created. The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the prism_central API.
+    pub cluster: ControllerConfigInfraSpecPlatformSpecNutanixFailureDomainsCluster,
+    /// name defines the unique name of a failure domain. Name is required and must be at most 64 characters in length. It must consist of only lower case alphanumeric characters and hyphens (-). It must start and end with an alphanumeric character. This value is arbitrary and is used to identify the failure domain within the platform.
+    pub name: String,
+    /// subnets holds a list of identifiers (one or more) of the cluster's network subnets for the Machine's VM to connect to. The subnet identifiers (uuid or name) can be obtained from the Prism Central console or using the prism_central API.
+    pub subnets: Vec<ControllerConfigInfraSpecPlatformSpecNutanixFailureDomainsSubnets>,
+}
+
+/// cluster is to identify the cluster (the Prism Element under management of the Prism Central), in which the Machine's VM will be created. The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the prism_central API.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ControllerConfigInfraSpecPlatformSpecNutanixFailureDomainsCluster {
+    /// name is the resource name in the PC. It cannot be empty if the type is Name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// type is the identifier type to use for this resource.
+    #[serde(rename = "type")]
+    pub r#type: ControllerConfigInfraSpecPlatformSpecNutanixFailureDomainsClusterType,
+    /// uuid is the UUID of the resource in the PC. It cannot be empty if the type is UUID.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
+}
+
+/// cluster is to identify the cluster (the Prism Element under management of the Prism Central), in which the Machine's VM will be created. The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the prism_central API.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ControllerConfigInfraSpecPlatformSpecNutanixFailureDomainsClusterType {
+    #[serde(rename = "UUID")]
+    Uuid,
+    Name,
+}
+
+/// NutanixResourceIdentifier holds the identity of a Nutanix PC resource (cluster, image, subnet, etc.)
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ControllerConfigInfraSpecPlatformSpecNutanixFailureDomainsSubnets {
+    /// name is the resource name in the PC. It cannot be empty if the type is Name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// type is the identifier type to use for this resource.
+    #[serde(rename = "type")]
+    pub r#type: ControllerConfigInfraSpecPlatformSpecNutanixFailureDomainsSubnetsType,
+    /// uuid is the UUID of the resource in the PC. It cannot be empty if the type is UUID.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
+}
+
+/// NutanixResourceIdentifier holds the identity of a Nutanix PC resource (cluster, image, subnet, etc.)
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ControllerConfigInfraSpecPlatformSpecNutanixFailureDomainsSubnetsType {
+    #[serde(rename = "UUID")]
+    Uuid,
+    Name,
 }
 
 /// prismCentral holds the endpoint address and port to access the Nutanix Prism Central. When a cluster-wide proxy is installed, by default, this endpoint will be accessed via the proxy. Should you wish for communication with this endpoint not to be proxied, please add the endpoint to the proxy spec.noProxy list.
@@ -430,6 +497,15 @@ pub struct ControllerConfigInfraSpecPlatformSpecNutanixPrismElementsEndpoint {
 /// OpenStack contains settings specific to the OpenStack infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ControllerConfigInfraSpecPlatformSpecOpenstack {
+    /// apiServerInternalIPs are the IP addresses to contact the Kubernetes API server that can be used by components inside the cluster, like kubelets using the infrastructure rather than Kubernetes networking. These are the IPs for a self-hosted load balancer in front of the API servers. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.apiServerInternalIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerInternalIPs")]
+    pub api_server_internal_i_ps: Option<Vec<String>>,
+    /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.ingressIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
+    pub ingress_i_ps: Option<Vec<String>>,
+    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes. Each network is provided in the CIDR format and should be IPv4 or IPv6, for example "10.0.0.0/8" or "fd00::/8".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
+    pub machine_networks: Option<Vec<String>>,
 }
 
 /// Ovirt contains settings specific to the oVirt infrastructure provider.
@@ -485,9 +561,18 @@ pub enum ControllerConfigInfraSpecPlatformSpecType {
 /// VSphere contains settings specific to the VSphere infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ControllerConfigInfraSpecPlatformSpecVsphere {
+    /// apiServerInternalIPs are the IP addresses to contact the Kubernetes API server that can be used by components inside the cluster, like kubelets using the infrastructure rather than Kubernetes networking. These are the IPs for a self-hosted load balancer in front of the API servers. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.apiServerInternalIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerInternalIPs")]
+    pub api_server_internal_i_ps: Option<Vec<String>>,
     /// failureDomains contains the definition of region, zone and the vCenter topology. If this is omitted failure domains (regions and zones) will not be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<ControllerConfigInfraSpecPlatformSpecVsphereFailureDomains>>,
+    /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.ingressIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
+    pub ingress_i_ps: Option<Vec<String>>,
+    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes. Each network is provided in the CIDR format and should be IPv4 or IPv6, for example "10.0.0.0/8" or "fd00::/8".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
+    pub machine_networks: Option<Vec<String>>,
     /// nodeNetworking contains the definition of internal and external network constraints for assigning the node's networking. If this field is omitted, networking defaults to the legacy address selection behavior which is to only support a single address and return the first one found.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeNetworking")]
     pub node_networking: Option<ControllerConfigInfraSpecPlatformSpecVsphereNodeNetworking>,
@@ -831,6 +916,9 @@ pub struct ControllerConfigInfraStatusPlatformStatusBaremetal {
     /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IPs otherwise only one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
     pub ingress_i_ps: Option<Vec<String>>,
+    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
+    pub machine_networks: Option<Vec<String>>,
     /// nodeDNSIP is the IP address for the internal DNS used by the nodes. Unlike the one managed by the DNS operator, `NodeDNSIP` provides name resolution for the nodes themselves. There is no DNS-as-a-service for BareMetal deployments. In order to minimize necessary changes to the datacenter DNS, a DNS service is hosted as a static pod to serve those hostnames to the nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,
@@ -990,6 +1078,9 @@ pub struct ControllerConfigInfraStatusPlatformStatusOpenstack {
     /// loadBalancer defines how the load balancer used by the cluster is configured.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<ControllerConfigInfraStatusPlatformStatusOpenstackLoadBalancer>,
+    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
+    pub machine_networks: Option<Vec<String>>,
     /// nodeDNSIP is the IP address for the internal DNS used by the nodes. Unlike the one managed by the DNS operator, `NodeDNSIP` provides name resolution for the nodes themselves. There is no DNS-as-a-service for OpenStack deployments. In order to minimize necessary changes to the datacenter DNS, a DNS service is hosted as a static pod to serve those hostnames to the nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,
@@ -1109,6 +1200,9 @@ pub struct ControllerConfigInfraStatusPlatformStatusVsphere {
     /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IPs otherwise only one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
     pub ingress_i_ps: Option<Vec<String>>,
+    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
+    pub machine_networks: Option<Vec<String>>,
     /// nodeDNSIP is the IP address for the internal DNS used by the nodes. Unlike the one managed by the DNS operator, `NodeDNSIP` provides name resolution for the nodes themselves. There is no DNS-as-a-service for vSphere deployments. In order to minimize necessary changes to the datacenter DNS, a DNS service is hosted as a static pod to serve those hostnames to the nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,
@@ -1235,11 +1329,11 @@ pub struct ControllerConfigStatusControllerCertificates {
     #[serde(rename = "bundleFile")]
     pub bundle_file: String,
     /// notAfter is the upper boundary for validity
-    #[serde(rename = "notAfter")]
-    pub not_after: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
     /// notBefore is the lower boundary for validity
-    #[serde(rename = "notBefore")]
-    pub not_before: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
     /// signer is the  cert Issuer
     pub signer: String,
     /// subject is the cert subject

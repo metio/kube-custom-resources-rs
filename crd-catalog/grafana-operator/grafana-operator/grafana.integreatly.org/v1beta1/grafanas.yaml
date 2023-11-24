@@ -3628,6 +3628,11 @@ spec:
                         type: string
                     type: object
                 type: object
+              preferences:
+                properties:
+                  homeDashboardUid:
+                    type: string
+                type: object
               route:
                 properties:
                   metadata:

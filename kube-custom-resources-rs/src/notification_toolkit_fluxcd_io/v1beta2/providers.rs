@@ -81,6 +81,8 @@ pub enum ProviderType {
     Gitlab,
     #[serde(rename = "gitea")]
     Gitea,
+    #[serde(rename = "bitbucketserver")]
+    Bitbucketserver,
     #[serde(rename = "bitbucket")]
     Bitbucket,
     #[serde(rename = "azuredevops")]

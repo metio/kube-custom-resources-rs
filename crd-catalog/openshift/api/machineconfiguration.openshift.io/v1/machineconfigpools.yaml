@@ -218,7 +218,6 @@ spec:
                       type: string
                   required:
                   - bundle
-                  - expiry
                   - subject
                   type: object
                 type: array

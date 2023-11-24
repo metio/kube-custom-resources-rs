@@ -22,8 +22,12 @@ pub struct HelmRepositorySpec {
     ///  It takes precedence over the values specified in the Secret referred to by `.spec.secretRef`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<HelmRepositoryCertSecretRef>,
+    /// Insecure allows connecting to a non-TLS HTTP container registry. This field is only taken into account if the .spec.type field is set to 'oci'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<bool>,
     /// Interval at which the HelmRepository URL is checked for updates. This interval is approximate and may be subject to jitter to ensure efficient use of resources.
-    pub interval: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
     /// PassCredentials allows the credentials from the SecretRef to be passed on to a host that does not match the host as defined in URL. This may be required if the host of the advertised chart URLs in the index differ from the defined URL. Enabling this should be done with caution, as it can potentially result in credentials getting stolen in a MITM-attack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passCredentials")]
     pub pass_credentials: Option<bool>,
@@ -36,7 +40,7 @@ pub struct HelmRepositorySpec {
     /// Suspend tells the controller to suspend the reconciliation of this HelmRepository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
-    /// Timeout is used for the index fetch operation for an HTTPS helm repository, and for remote OCI Repository operations like pulling for an OCI helm repository. Its default value is 60s.
+    /// Timeout is used for the index fetch operation for an HTTPS helm repository, and for remote OCI Repository operations like pulling for an OCI helm chart by the associated HelmChart. Its default value is 60s.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
     /// Type of the HelmRepository. When this field is set to  "oci", the URL field value must be prefixed with "oci://".

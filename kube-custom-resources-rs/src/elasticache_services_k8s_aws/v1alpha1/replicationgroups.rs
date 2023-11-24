@@ -53,6 +53,10 @@ pub struct ReplicationGroupSpec {
     ///  * To create a Redis (cluster mode enabled) replication group, use CacheParameterGroupName=default.redis3.2.cluster.on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheParameterGroupName")]
     pub cache_parameter_group_name: Option<String>,
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
+    ///  from: name: my-api
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheParameterGroupRef")]
+    pub cache_parameter_group_ref: Option<ReplicationGroupCacheParameterGroupRef>,
     /// A list of cache security group names to associate with this replication group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSecurityGroupNames")]
     pub cache_security_group_names: Option<Vec<String>>,
@@ -60,6 +64,10 @@ pub struct ReplicationGroupSpec {
     ///  If you're going to launch your cluster in an Amazon VPC, you need to create a subnet group before you start creating a cluster. For more information, see Subnets and Subnet Groups (https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSubnetGroupName")]
     pub cache_subnet_group_name: Option<String>,
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
+    ///  from: name: my-api
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSubnetGroupRef")]
+    pub cache_subnet_group_ref: Option<ReplicationGroupCacheSubnetGroupRef>,
     /// Enables data tiering. Data tiering is only supported for replication groups using the r6gd node type. This parameter must be set to true when using r6gd nodes. For more information, see Data tiering (https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTieringEnabled")]
     pub data_tiering_enabled: Option<bool>,
@@ -134,6 +142,8 @@ pub struct ReplicationGroupSpec {
     ///  Use this parameter only when you are creating a replication group in an Amazon Virtual Private Cloud (Amazon VPC).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
+    pub security_group_refs: Option<Vec<ReplicationGroupSecurityGroupRefs>>,
     /// A list of Amazon Resource Names (ARN) that uniquely identify the Redis RDB snapshot files stored in Amazon S3. The snapshot files are used to populate the new replication group. The Amazon S3 object name in the ARN cannot contain any commas. The new replication group will have the number of node groups (console: shards) specified by the parameter NumNodeGroups or the number of node groups configured by NodeGroupConfiguration regardless of the number of ARNs specified here. 
     ///  Example of an Amazon S3 ARN: arn:aws:s3:::my_bucket/snapshot1.rdb
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotARNs")]
@@ -185,6 +195,38 @@ pub struct ReplicationGroupAuthToken {
     /// namespace defines the space within which the secret name must be unique.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
+///  from: name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationGroupCacheParameterGroupRef {
+    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<ReplicationGroupCacheParameterGroupRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationGroupCacheParameterGroupRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
+///  from: name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationGroupCacheSubnetGroupRef {
+    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<ReplicationGroupCacheSubnetGroupRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationGroupCacheSubnetGroupRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Specifies the destination, format and type of the logs.
@@ -245,6 +287,22 @@ pub struct ReplicationGroupNodeGroupConfiguration {
     pub replica_outpost_ar_ns: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slots: Option<String>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
+///  from: name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationGroupSecurityGroupRefs {
+    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<ReplicationGroupSecurityGroupRefsFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationGroupSecurityGroupRefsFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// A tag that can be added to an ElastiCache cluster or replication group. Tags are composed of a Key/Value pair. You can use tags to categorize and track all your ElastiCache resources, with the exception of global replication group. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. A tag with a null Value is permitted.

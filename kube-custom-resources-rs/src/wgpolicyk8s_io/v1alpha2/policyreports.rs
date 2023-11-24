@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/kubernetes-sigs/wg-policy-prototypes/wgpolicyk8s.io/v1alpha2/policyreports.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.2
 
-
+use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 

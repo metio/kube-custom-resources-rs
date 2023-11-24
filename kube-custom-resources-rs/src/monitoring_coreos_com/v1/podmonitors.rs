@@ -157,6 +157,10 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// TLS configuration to use when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PodMonitorPodMetricsEndpointsTlsConfig>,
+    /// TrackTimestampsStaleness whether Prometheus tracks staleness of the metrics that have an explicit timestamps present in scraped data. Has no effect if `honorTimestamps` is false. 
+    ///  It requires Prometheus >= v2.48.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackTimestampsStaleness")]
+    pub track_timestamps_staleness: Option<bool>,
 }
 
 /// `authorization` configures the Authorization header credentials to use when scraping the target. 

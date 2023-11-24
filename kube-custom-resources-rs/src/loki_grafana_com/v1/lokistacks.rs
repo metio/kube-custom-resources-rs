@@ -137,6 +137,9 @@ pub struct LokiStackLimitsGlobalIngestion {
     /// MaxLineSize defines the maximum line size on ingestion path. Units in Bytes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLineSize")]
     pub max_line_size: Option<i32>,
+    /// PerStreamDesiredRate defines the desired ingestion rate per second that LokiStack should target applying automatic stream sharding. Units MB.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamDesiredRate")]
+    pub per_stream_desired_rate: Option<i32>,
     /// PerStreamRateLimit defines the maximum byte rate per second per stream. Units MB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamRateLimit")]
     pub per_stream_rate_limit: Option<i32>,
@@ -225,6 +228,9 @@ pub struct LokiStackLimitsTenantsIngestion {
     /// MaxLineSize defines the maximum line size on ingestion path. Units in Bytes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLineSize")]
     pub max_line_size: Option<i32>,
+    /// PerStreamDesiredRate defines the desired ingestion rate per second that LokiStack should target applying automatic stream sharding. Units MB.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamDesiredRate")]
+    pub per_stream_desired_rate: Option<i32>,
     /// PerStreamRateLimit defines the maximum byte rate per second per stream. Units MB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamRateLimit")]
     pub per_stream_rate_limit: Option<i32>,
@@ -420,6 +426,8 @@ pub enum LokiStackStorageSchemasVersion {
     V11,
     #[serde(rename = "v12")]
     V12,
+    #[serde(rename = "v13")]
+    V13,
 }
 
 /// Secret for object storage authentication. Name of a secret in the same namespace as the LokiStack custom resource.
@@ -2227,5 +2235,7 @@ pub enum LokiStackStatusStorageSchemasVersion {
     V11,
     #[serde(rename = "v12")]
     V12,
+    #[serde(rename = "v13")]
+    V13,
 }
 

@@ -961,10 +961,12 @@ spec:
                           type: string
                         namespace:
                           type: string
+                        templateName:
+                          type: string
+                        templateNamespace:
+                          type: string
                         version:
                           type: string
-                      required:
-                      - name
                       type: object
                   required:
                   - name
@@ -1013,10 +1015,12 @@ spec:
                           type: string
                         namespace:
                           type: string
+                        templateName:
+                          type: string
+                        templateNamespace:
+                          type: string
                         version:
                           type: string
-                      required:
-                      - name
                       type: object
                   required:
                   - name

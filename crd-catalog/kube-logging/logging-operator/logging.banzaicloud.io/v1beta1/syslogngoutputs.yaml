@@ -277,6 +277,15 @@ spec:
                         type: object
                       peer_verify:
                         type: boolean
+                      ssl_version:
+                        enum:
+                        - sslv3
+                        - tlsv1
+                        - tlsv1_0
+                        - tlsv1_1
+                        - tlsv1_2
+                        - tlsv1_3
+                        type: string
                       use-system-cert-store:
                         type: boolean
                     type: object
@@ -565,6 +574,15 @@ spec:
                         type: object
                       peer_verify:
                         type: boolean
+                      ssl_version:
+                        enum:
+                        - sslv3
+                        - tlsv1
+                        - tlsv1_0
+                        - tlsv1_1
+                        - tlsv1_2
+                        - tlsv1_3
+                        type: string
                       use-system-cert-store:
                         type: boolean
                     type: object
@@ -767,6 +785,15 @@ spec:
                         type: object
                       peer_verify:
                         type: boolean
+                      ssl_version:
+                        enum:
+                        - sslv3
+                        - tlsv1
+                        - tlsv1_0
+                        - tlsv1_1
+                        - tlsv1_2
+                        - tlsv1_3
+                        type: string
                       use-system-cert-store:
                         type: boolean
                     type: object
@@ -1076,6 +1103,15 @@ spec:
                             type: object
                           peer_verify:
                             type: boolean
+                          ssl_version:
+                            enum:
+                            - sslv3
+                            - tlsv1
+                            - tlsv1_0
+                            - tlsv1_1
+                            - tlsv1_2
+                            - tlsv1_3
+                            type: string
                           use-system-cert-store:
                             type: boolean
                         type: object
@@ -1710,6 +1746,15 @@ spec:
                         type: object
                       peer_verify:
                         type: boolean
+                      ssl_version:
+                        enum:
+                        - sslv3
+                        - tlsv1
+                        - tlsv1_0
+                        - tlsv1_1
+                        - tlsv1_2
+                        - tlsv1_3
+                        type: string
                       use-system-cert-store:
                         type: boolean
                     type: object
@@ -1970,6 +2015,15 @@ spec:
                         type: object
                       peer_verify:
                         type: boolean
+                      ssl_version:
+                        enum:
+                        - sslv3
+                        - tlsv1
+                        - tlsv1_0
+                        - tlsv1_1
+                        - tlsv1_2
+                        - tlsv1_3
+                        type: string
                       use-system-cert-store:
                         type: boolean
                     type: object
@@ -2179,6 +2233,15 @@ spec:
                         type: object
                       peer_verify:
                         type: boolean
+                      ssl_version:
+                        enum:
+                        - sslv3
+                        - tlsv1
+                        - tlsv1_0
+                        - tlsv1_1
+                        - tlsv1_2
+                        - tlsv1_3
+                        type: string
                       use-system-cert-store:
                         type: boolean
                     type: object
@@ -2371,6 +2434,15 @@ spec:
                         type: object
                       peer_verify:
                         type: boolean
+                      ssl_version:
+                        enum:
+                        - sslv3
+                        - tlsv1
+                        - tlsv1_0
+                        - tlsv1_1
+                        - tlsv1_2
+                        - tlsv1_3
+                        type: string
                       use-system-cert-store:
                         type: boolean
                     type: object

@@ -28,6 +28,9 @@ pub struct ImageRepositorySpec {
     /// Image is the name of the image repository
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// Insecure allows connecting to a non-TLS HTTP container registry.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<bool>,
     /// Interval is the length of time to wait between scans of the image repository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
