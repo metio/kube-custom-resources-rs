@@ -295,6 +295,12 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `AwsAuthSyncConfig`
 
+## authorization_openshift_io
+
+- apiVersion: `authorization.openshift.io/v1`
+- kinds:
+  - `RoleBindingRestriction`
+
 ## authzed_com
 
 - apiVersion: `authzed.com/v1alpha1`
@@ -568,6 +574,12 @@ Every group has its own feature in this crate. The available features are as fol
   - `CiliumNodeConfig`
   - `CiliumPodIPPool`
 
+## cloud_network_openshift_io
+
+- apiVersion: `cloud.network.openshift.io/v1`
+- kinds:
+  - `CloudPrivateIPConfig`
+
 ## cloudformation_linki_space
 
 - apiVersion: `cloudformation.linki.space/v1alpha1`
@@ -641,6 +653,49 @@ Every group has its own feature in this crate. The available features are as fol
 - apiVersion: `config.koordinator.sh/v1alpha1`
 - kinds:
   - `ClusterColocationProfile`
+
+## config_openshift_io
+
+- apiVersion: `config.openshift.io/v1`
+- kinds:
+  - `APIServer`
+  - `Authentication`
+  - `ClusterOperator`
+  - `ClusterVersion`
+  - `Console`
+  - `DNS`
+  - `FeatureGate`
+  - `ImageDigestMirrorSet`
+  - `Image`
+  - `ImageTagMirrorSet`
+  - `Infrastructure`
+  - `Ingress`
+  - `Network`
+  - `Node`
+  - `OAuth`
+  - `OperatorHub`
+  - `Project`
+  - `Proxy`
+  - `Scheduler`
+
+## console_openshift_io
+
+- apiVersion: `console.openshift.io/v1`
+- kinds:
+  - `ConsolePlugin`
+  - `ConsoleQuickStart`
+  - `ConsoleSample`
+  - `ConsoleYAMLSample`
+
+- apiVersion: `console.openshift.io/v1alpha1`
+- kinds:
+  - `ConsolePlugin`
+
+## controlplane_operator_openshift_io
+
+- apiVersion: `controlplane.operator.openshift.io/v1alpha1`
+- kinds:
+  - `PodNetworkConnectivityCheck`
 
 ## core_linuxsuren_github_com
 
@@ -842,6 +897,12 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `EnterpriseSearch`
 
+## example_openshift_io
+
+- apiVersion: `example.openshift.io/v1`
+- kinds:
+  - `StableConfigType`
+
 ## execution_furiko_io
 
 - apiVersion: `execution.furiko.io/v1alpha1`
@@ -1021,6 +1082,13 @@ Every group has its own feature in this crate. The available features are as fol
   - `Map`
   - `WanReplication`
 
+## helm_openshift_io
+
+- apiVersion: `helm.openshift.io/v1beta1`
+- kinds:
+  - `HelmChartRepository`
+  - `ProjectHelmChartRepository`
+
 ## helm_toolkit_fluxcd_io
 
 - apiVersion: `helm.toolkit.fluxcd.io/v2beta1`
@@ -1106,6 +1174,13 @@ Every group has its own feature in this crate. The available features are as fol
   - `ImagePolicy`
   - `ImageRepository`
 
+## imageregistry_operator_openshift_io
+
+- apiVersion: `imageregistry.operator.openshift.io/v1`
+- kinds:
+  - `Config`
+  - `ImagePruner`
+
 ## imaging_ingestion_alvearie_org
 
 - apiVersion: `imaging-ingestion.alvearie.org/v1alpha1`
@@ -1171,6 +1246,18 @@ Every group has its own feature in this crate. The available features are as fol
   - `IBMVPCCluster`
   - `IBMVPCMachine`
   - `IBMVPCMachineTemplate`
+
+## ingress_operator_openshift_io
+
+- apiVersion: `ingress.operator.openshift.io/v1`
+- kinds:
+  - `DNSRecord`
+
+## insights_openshift_io
+
+- apiVersion: `insights.openshift.io/v1alpha1`
+- kinds:
+  - `DataGather`
 
 ## installation_mattermost_com
 
@@ -1521,6 +1608,18 @@ Every group has its own feature in this crate. The available features are as fol
   - `VolumeAttachment`
   - `Volume`
 
+## machine_openshift_io
+
+- apiVersion: `machine.openshift.io/v1`
+- kinds:
+  - `ControlPlaneMachineSet`
+
+- apiVersion: `machine.openshift.io/v1beta1`
+- kinds:
+  - `MachineHealthCheck`
+  - `Machine`
+  - `MachineSet`
+
 ## machineconfiguration_openshift_io
 
 - apiVersion: `machineconfiguration.openshift.io/v1`
@@ -1624,6 +1723,13 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `AlertmanagerConfig`
 
+## monitoring_openshift_io
+
+- apiVersion: `monitoring.openshift.io/v1`
+- kinds:
+  - `AlertingRule`
+  - `AlertRelabelConfig`
+
 ## monocle_monocle_change_metrics_io
 
 - apiVersion: `monocle.monocle.change-metrics.io/v1alpha1`
@@ -1688,6 +1794,21 @@ Every group has its own feature in this crate. The available features are as fol
 - apiVersion: `nativestor.alauda.io/v1`
 - kinds:
   - `RawDevice`
+
+## network_openshift_io
+
+- apiVersion: `network.openshift.io/v1`
+- kinds:
+  - `ClusterNetwork`
+  - `EgressNetworkPolicy`
+  - `HostSubnet`
+  - `NetNamespace`
+
+## network_operator_openshift_io
+
+- apiVersion: `network.operator.openshift.io/v1`
+- kinds:
+  - `EgressRouter`
 
 ## networking_karmada_io
 
@@ -1810,6 +1931,31 @@ Every group has its own feature in this crate. The available features are as fol
   - `ClusterManager`
   - `Klusterlet`
 
+## operator_openshift_io
+
+- apiVersion: `operator.openshift.io/v1`
+- kinds:
+  - `Authentication`
+  - `CloudCredential`
+  - `ClusterCSIDriver`
+  - `Config`
+  - `Console`
+  - `CSISnapshotController`
+  - `DNS`
+  - `Etcd`
+  - `IngressController`
+  - `InsightsOperator`
+  - `KubeAPIServer`
+  - `KubeControllerManager`
+  - `KubeScheduler`
+  - `KubeStorageVersionMigrator`
+  - `MachineConfiguration`
+  - `Network`
+  - `OpenShiftAPIServer`
+  - `OpenShiftControllerManager`
+  - `ServiceCA`
+  - `Storage`
+
 ## operator_shipwright_io
 
 - apiVersion: `operator.shipwright.io/v1alpha1`
@@ -1858,6 +2004,12 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `Lock`
 
+## platform_openshift_io
+
+- apiVersion: `platform.openshift.io/v1alpha1`
+- kinds:
+  - `PlatformOperator`
+
 ## policy_clusterpedia_io
 
 - apiVersion: `policy.clusterpedia.io/v1alpha1`
@@ -1904,6 +2056,12 @@ Every group has its own feature in this crate. The available features are as fol
 - apiVersion: `quay.redhat.com/v1`
 - kinds:
   - `QuayRegistry`
+
+## quota_openshift_io
+
+- apiVersion: `quota.openshift.io/v1`
+- kinds:
+  - `ClusterResourceQuota`
 
 ## ray_io
 
@@ -1985,6 +2143,12 @@ Every group has its own feature in this crate. The available features are as fol
   - `NameService`
   - `TopicTransfer`
 
+## route_openshift_io
+
+- apiVersion: `route.openshift.io/v1`
+- kinds:
+  - `Route`
+
 ## rules_kubeedge_io
 
 - apiVersion: `rules.kubeedge.io/v1`
@@ -2028,6 +2192,12 @@ Every group has its own feature in this crate. The available features are as fol
   - `TrainingJob`
   - `TransformJob`
   - `UserProfile`
+
+## samples_operator_openshift_io
+
+- apiVersion: `samples.operator.openshift.io/v1`
+- kinds:
+  - `Config`
 
 ## scheduling_koordinator_sh
 
@@ -2120,6 +2290,18 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `SeccompProfile`
 
+## security_internal_openshift_io
+
+- apiVersion: `security.internal.openshift.io/v1`
+- kinds:
+  - `RangeAllocation`
+
+## security_openshift_io
+
+- apiVersion: `security.openshift.io/v1`
+- kinds:
+  - `SecurityContextConstraints`
+
 ## servicebinding_io
 
 - apiVersion: `servicebinding.io/v1alpha3`
@@ -2151,6 +2333,13 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `Activity`
   - `StateMachine`
+
+## sharedresource_openshift_io
+
+- apiVersion: `sharedresource.openshift.io/v1alpha1`
+- kinds:
+  - `SharedConfigMap`
+  - `SharedSecret`
 
 ## site_superedge_io
 
@@ -2434,6 +2623,8 @@ pub mod asdb_aerospike_com;
 pub mod atlasmap_io;
 #[cfg(feature = "auth_ops42_org")]
 pub mod auth_ops42_org;
+#[cfg(feature = "authorization_openshift_io")]
+pub mod authorization_openshift_io;
 #[cfg(feature = "authzed_com")]
 pub mod authzed_com;
 #[cfg(feature = "autoscaling_k8s_io")]
@@ -2478,6 +2669,8 @@ pub mod chaosblade_io;
 pub mod che_eclipse_org;
 #[cfg(feature = "cilium_io")]
 pub mod cilium_io;
+#[cfg(feature = "cloud_network_openshift_io")]
+pub mod cloud_network_openshift_io;
 #[cfg(feature = "cloudformation_linki_space")]
 pub mod cloudformation_linki_space;
 #[cfg(feature = "cluster_clusterpedia_io")]
@@ -2496,6 +2689,12 @@ pub mod config_grafana_com;
 pub mod config_karmada_io;
 #[cfg(feature = "config_koordinator_sh")]
 pub mod config_koordinator_sh;
+#[cfg(feature = "config_openshift_io")]
+pub mod config_openshift_io;
+#[cfg(feature = "console_openshift_io")]
+pub mod console_openshift_io;
+#[cfg(feature = "controlplane_operator_openshift_io")]
+pub mod controlplane_operator_openshift_io;
 #[cfg(feature = "core_linuxsuren_github_com")]
 pub mod core_linuxsuren_github_com;
 #[cfg(feature = "core_openfeature_dev")]
@@ -2534,6 +2733,8 @@ pub mod elbv2_k8s_aws;
 pub mod emrcontainers_services_k8s_aws;
 #[cfg(feature = "enterprisesearch_k8s_elastic_co")]
 pub mod enterprisesearch_k8s_elastic_co;
+#[cfg(feature = "example_openshift_io")]
+pub mod example_openshift_io;
 #[cfg(feature = "execution_furiko_io")]
 pub mod execution_furiko_io;
 #[cfg(feature = "executor_testkube_io")]
@@ -2572,6 +2773,8 @@ pub mod gitops_hybrid_cloud_patterns_io;
 pub mod grafana_integreatly_org;
 #[cfg(feature = "hazelcast_com")]
 pub mod hazelcast_com;
+#[cfg(feature = "helm_openshift_io")]
+pub mod helm_openshift_io;
 #[cfg(feature = "helm_toolkit_fluxcd_io")]
 pub mod helm_toolkit_fluxcd_io;
 #[cfg(feature = "hive_openshift_io")]
@@ -2588,6 +2791,8 @@ pub mod iam_services_k8s_aws;
 pub mod ibmcloud_ibm_com;
 #[cfg(feature = "image_toolkit_fluxcd_io")]
 pub mod image_toolkit_fluxcd_io;
+#[cfg(feature = "imageregistry_operator_openshift_io")]
+pub mod imageregistry_operator_openshift_io;
 #[cfg(feature = "imaging_ingestion_alvearie_org")]
 pub mod imaging_ingestion_alvearie_org;
 #[cfg(feature = "inference_kubedl_io")]
@@ -2596,6 +2801,10 @@ pub mod inference_kubedl_io;
 pub mod infinispan_org;
 #[cfg(feature = "infrastructure_cluster_x_k8s_io")]
 pub mod infrastructure_cluster_x_k8s_io;
+#[cfg(feature = "ingress_operator_openshift_io")]
+pub mod ingress_operator_openshift_io;
+#[cfg(feature = "insights_openshift_io")]
+pub mod insights_openshift_io;
 #[cfg(feature = "installation_mattermost_com")]
 pub mod installation_mattermost_com;
 #[cfg(feature = "integration_rock8s_com")]
@@ -2658,6 +2867,8 @@ pub mod logging_banzaicloud_io;
 pub mod loki_grafana_com;
 #[cfg(feature = "longhorn_io")]
 pub mod longhorn_io;
+#[cfg(feature = "machine_openshift_io")]
+pub mod machine_openshift_io;
 #[cfg(feature = "machineconfiguration_openshift_io")]
 pub mod machineconfiguration_openshift_io;
 #[cfg(feature = "maps_k8s_elastic_co")]
@@ -2678,6 +2889,8 @@ pub mod mirrors_kts_studio;
 pub mod model_kubedl_io;
 #[cfg(feature = "monitoring_coreos_com")]
 pub mod monitoring_coreos_com;
+#[cfg(feature = "monitoring_openshift_io")]
+pub mod monitoring_openshift_io;
 #[cfg(feature = "monocle_monocle_change_metrics_io")]
 pub mod monocle_monocle_change_metrics_io;
 #[cfg(feature = "mq_services_k8s_aws")]
@@ -2690,6 +2903,10 @@ pub mod multicluster_x_k8s_io;
 pub mod mutations_gatekeeper_sh;
 #[cfg(feature = "nativestor_alauda_io")]
 pub mod nativestor_alauda_io;
+#[cfg(feature = "network_openshift_io")]
+pub mod network_openshift_io;
+#[cfg(feature = "network_operator_openshift_io")]
+pub mod network_operator_openshift_io;
 #[cfg(feature = "networking_karmada_io")]
 pub mod networking_karmada_io;
 #[cfg(feature = "nfd_k8s_sigs_io")]
@@ -2718,6 +2935,8 @@ pub mod operator_cluster_x_k8s_io;
 pub mod operator_cryostat_io;
 #[cfg(feature = "operator_open_cluster_management_io")]
 pub mod operator_open_cluster_management_io;
+#[cfg(feature = "operator_openshift_io")]
+pub mod operator_openshift_io;
 #[cfg(feature = "operator_shipwright_io")]
 pub mod operator_shipwright_io;
 #[cfg(feature = "operator_tigera_io")]
@@ -2728,6 +2947,8 @@ pub mod operator_victoriametrics_com;
 pub mod org_eclipse_che;
 #[cfg(feature = "pkg_crossplane_io")]
 pub mod pkg_crossplane_io;
+#[cfg(feature = "platform_openshift_io")]
+pub mod platform_openshift_io;
 #[cfg(feature = "policy_clusterpedia_io")]
 pub mod policy_clusterpedia_io;
 #[cfg(feature = "policy_karmada_io")]
@@ -2740,6 +2961,8 @@ pub mod postgresql_cnpg_io;
 pub mod prometheusservice_services_k8s_aws;
 #[cfg(feature = "quay_redhat_com")]
 pub mod quay_redhat_com;
+#[cfg(feature = "quota_openshift_io")]
+pub mod quota_openshift_io;
 #[cfg(feature = "ray_io")]
 pub mod ray_io;
 #[cfg(feature = "rds_services_k8s_aws")]
@@ -2756,6 +2979,8 @@ pub mod repo_manager_pulpproject_org;
 pub mod resources_teleport_dev;
 #[cfg(feature = "rocketmq_apache_org")]
 pub mod rocketmq_apache_org;
+#[cfg(feature = "route_openshift_io")]
+pub mod route_openshift_io;
 #[cfg(feature = "rules_kubeedge_io")]
 pub mod rules_kubeedge_io;
 #[cfg(feature = "runtime_cluster_x_k8s_io")]
@@ -2764,6 +2989,8 @@ pub mod runtime_cluster_x_k8s_io;
 pub mod s3_services_k8s_aws;
 #[cfg(feature = "sagemaker_services_k8s_aws")]
 pub mod sagemaker_services_k8s_aws;
+#[cfg(feature = "samples_operator_openshift_io")]
+pub mod samples_operator_openshift_io;
 #[cfg(feature = "scheduling_koordinator_sh")]
 pub mod scheduling_koordinator_sh;
 #[cfg(feature = "scheduling_sigs_k8s_io")]
@@ -2784,6 +3011,10 @@ pub mod secrets_hashicorp_com;
 pub mod secscan_quay_redhat_com;
 #[cfg(feature = "security_profiles_operator_x_k8s_io")]
 pub mod security_profiles_operator_x_k8s_io;
+#[cfg(feature = "security_internal_openshift_io")]
+pub mod security_internal_openshift_io;
+#[cfg(feature = "security_openshift_io")]
+pub mod security_openshift_io;
 #[cfg(feature = "servicebinding_io")]
 pub mod servicebinding_io;
 #[cfg(feature = "services_k8s_aws")]
@@ -2792,6 +3023,8 @@ pub mod services_k8s_aws;
 pub mod serving_kubedl_io;
 #[cfg(feature = "sfn_services_k8s_aws")]
 pub mod sfn_services_k8s_aws;
+#[cfg(feature = "sharedresource_openshift_io")]
+pub mod sharedresource_openshift_io;
 #[cfg(feature = "site_superedge_io")]
 pub mod site_superedge_io;
 #[cfg(feature = "slo_koordinator_sh")]

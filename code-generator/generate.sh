@@ -12,16 +12,7 @@ cargo run --package code-generator --bin crd_v1_fetcher "${FILTER}"
 cargo run --package code-generator --bin dep5_generator
 
 # fix YAMLs
-shopt -s globstar nullglob
-for file in ./crd-catalog/**/fixup.sh; do
-  if [ -n "${FILTER}" ]; then
-    if ! echo -n "${file}" | grep --quiet "${FILTER}"; then
-      continue
-    fi
-  fi
-
-  "${file}"
-done
+./code-generator/run-fixups.sh "${FILTER}"
 
 # generate Rust code
 ./code-generator/create-custom-resources.sh "${FILTER}"
