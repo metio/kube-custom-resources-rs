@@ -567,6 +567,10 @@ Files: crd-catalog/kubevious/workload-operator/*
 Copyright: The kubevious/workload-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/kubewharf/kubeadmiral/*
+Copyright: The kubewharf/kubeadmiral Authors
+License: Apache-2.0
+
 Files: crd-catalog/kumahq/kuma/*
 Copyright: The kumahq/kuma Authors
 License: Apache-2.0

@@ -697,6 +697,25 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `PodNetworkConnectivityCheck`
 
+## core_kubeadmiral_io
+
+- apiVersion: `core.kubeadmiral.io/v1alpha1`
+- kinds:
+  - `ClusterCollectedStatus`
+  - `ClusterFederatedObject`
+  - `ClusterOverridePolicy`
+  - `ClusterPropagatedVersion`
+  - `ClusterPropagationPolicy`
+  - `CollectedStatus`
+  - `FederatedCluster`
+  - `FederatedObject`
+  - `FederatedTypeConfig`
+  - `OverridePolicy`
+  - `PropagatedVersion`
+  - `PropagationPolicy`
+  - `SchedulerPluginWebhookConfiguration`
+  - `SchedulingProfile`
+
 ## core_linuxsuren_github_com
 
 - apiVersion: `core.linuxsuren.github.com/v1alpha1`
@@ -2695,6 +2714,8 @@ pub mod config_openshift_io;
 pub mod console_openshift_io;
 #[cfg(feature = "controlplane_operator_openshift_io")]
 pub mod controlplane_operator_openshift_io;
+#[cfg(feature = "core_kubeadmiral_io")]
+pub mod core_kubeadmiral_io;
 #[cfg(feature = "core_linuxsuren_github_com")]
 pub mod core_linuxsuren_github_com;
 #[cfg(feature = "core_openfeature_dev")]

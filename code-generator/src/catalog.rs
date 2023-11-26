@@ -1467,6 +1467,26 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kubewharf/kubeadmiral",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_clustercollectedstatuses.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_clusterfederatedobjects.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_clusteroverridepolicies.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_clusterpropagatedversions.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_clusterpropagationpolicies.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_collectedstatuses.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_federatedclusters.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_federatedobjects.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_federatedtypeconfigs.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_overridepolicies.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_propagatedversions.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_propagationpolicies.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_schedulerpluginwebhookconfigurations.yaml",
+            "https://github.com/kubewharf/kubeadmiral/blob/main/config/crds/core.kubeadmiral.io_schedulingprofiles.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kumahq/kuma",
         license: APACHE_V2,
         urls: &[
