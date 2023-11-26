@@ -1,0 +1,13 @@
+pub mod clustercollectedstatuses;
+pub mod clusterfederatedobjects;
+pub mod clusteroverridepolicies;
+pub mod clusterpropagatedversions;
+pub mod clusterpropagationpolicies;
+pub mod collectedstatuses;
+pub mod federatedclusters;
+pub mod federatedobjects;
+pub mod overridepolicies;
+pub mod propagatedversions;
+pub mod propagationpolicies;
+pub mod schedulerpluginwebhookconfigurations;
+pub mod schedulingprofiles;
