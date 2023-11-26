@@ -1240,6 +1240,16 @@ Every group has its own feature in this crate. The available features are as fol
   - `Cache`
   - `Restore`
 
+## infra_contrib_fluxcd_io
+
+- apiVersion: `infra.contrib.fluxcd.io/v1alpha1`
+- kinds:
+  - `Terraform`
+
+- apiVersion: `infra.contrib.fluxcd.io/v1alpha2`
+- kinds:
+  - `Terraform`
+
 ## infrastructure_cluster_x_k8s_io
 
 - apiVersion: `infrastructure.cluster.x-k8s.io/v1alpha1`
@@ -2856,6 +2866,8 @@ pub mod imaging_ingestion_alvearie_org;
 pub mod inference_kubedl_io;
 #[cfg(feature = "infinispan_org")]
 pub mod infinispan_org;
+#[cfg(feature = "infra_contrib_fluxcd_io")]
+pub mod infra_contrib_fluxcd_io;
 #[cfg(feature = "infrastructure_cluster_x_k8s_io")]
 pub mod infrastructure_cluster_x_k8s_io;
 #[cfg(feature = "ingress_operator_openshift_io")]
