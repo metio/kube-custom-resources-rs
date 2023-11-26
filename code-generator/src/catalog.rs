@@ -457,6 +457,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "berops/claudie",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/berops/claudie/blob/master/manifests/claudie/crd/claudie.io_inputmanifests.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "bitnami-labs/sealed-secrets",
         license: APACHE_V2,
         urls: &[

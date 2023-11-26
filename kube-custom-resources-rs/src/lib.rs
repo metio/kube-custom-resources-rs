@@ -574,6 +574,12 @@ Every group has its own feature in this crate. The available features are as fol
   - `CiliumNodeConfig`
   - `CiliumPodIPPool`
 
+## claudie_io
+
+- apiVersion: `claudie.io/v1beta1`
+- kinds:
+  - `InputManifest`
+
 ## cloud_network_openshift_io
 
 - apiVersion: `cloud.network.openshift.io/v1`
@@ -2708,6 +2714,8 @@ pub mod chaosblade_io;
 pub mod che_eclipse_org;
 #[cfg(feature = "cilium_io")]
 pub mod cilium_io;
+#[cfg(feature = "claudie_io")]
+pub mod claudie_io;
 #[cfg(feature = "cloud_network_openshift_io")]
 pub mod cloud_network_openshift_io;
 #[cfg(feature = "cloudformation_linki_space")]
