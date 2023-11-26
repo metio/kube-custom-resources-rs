@@ -709,7 +709,6 @@ Every group has its own feature in this crate. The available features are as fol
   - `CollectedStatus`
   - `FederatedCluster`
   - `FederatedObject`
-  - `FederatedTypeConfig`
   - `OverridePolicy`
   - `PropagatedVersion`
   - `PropagationPolicy`
@@ -810,6 +809,14 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `DeviceModel`
   - `Device`
+
+## dex_gpu_ninja_com
+
+- apiVersion: `dex.gpu-ninja.com/v1alpha1`
+- kinds:
+  - `DexIdentityProvider`
+  - `DexOAuth2Client`
+  - `DexUser`
 
 ## digitalis_io
 
@@ -2732,6 +2739,8 @@ pub mod databases_schemahero_io;
 pub mod dataprotection_kubeblocks_io;
 #[cfg(feature = "devices_kubeedge_io")]
 pub mod devices_kubeedge_io;
+#[cfg(feature = "dex_gpu_ninja_com")]
+pub mod dex_gpu_ninja_com;
 #[cfg(feature = "digitalis_io")]
 pub mod digitalis_io;
 #[cfg(feature = "druid_apache_org")]
