@@ -839,6 +839,10 @@ Files: crd-catalog/volcano-sh/volcano/*
 Copyright: The volcano-sh/volcano Authors
 License: Apache-2.0
 
+Files: crd-catalog/weaveworks/tf-controller/*
+Copyright: The weaveworks/tf-controller Authors
+License: MPL-2.0
+
 Files: crd-catalog/wildfly/wildfly-operator/*
 Copyright: The wildfly/wildfly-operator Authors
 License: Apache-2.0

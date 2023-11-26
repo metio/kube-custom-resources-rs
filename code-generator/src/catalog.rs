@@ -2247,6 +2247,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "weaveworks/tf-controller",
+        license: MPL_V2,
+        urls: &[
+            "https://github.com/weaveworks/tf-controller/blob/main/config/crd/bases/infra.contrib.fluxcd.io_terraforms.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "wildfly/wildfly-operator",
         license: APACHE_V2,
         urls: &[
