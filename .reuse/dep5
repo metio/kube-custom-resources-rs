@@ -163,6 +163,10 @@ Files: crd-catalog/backube/snapscheduler/*
 Copyright: The backube/snapscheduler Authors
 License: AGPL-3.0-or-later
 
+Files: crd-catalog/berops/claudie/*
+Copyright: The berops/claudie Authors
+License: Apache-2.0
+
 Files: crd-catalog/bitnami-labs/sealed-secrets/*
 Copyright: The bitnami-labs/sealed-secrets Authors
 License: Apache-2.0
