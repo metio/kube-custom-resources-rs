@@ -355,6 +355,10 @@ Files: crd-catalog/gp42/aws-auth-operator/*
 Copyright: The gp42/aws-auth-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/gpu-ninja/dex-operator/*
+Copyright: The gpu-ninja/dex-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/grafana-operator/grafana-operator/*
 Copyright: The grafana-operator/grafana-operator Authors
 License: Apache-2.0

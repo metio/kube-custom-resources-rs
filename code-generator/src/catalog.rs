@@ -919,6 +919,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "gpu-ninja/dex-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/gpu-ninja/dex-operator/blob/main/config/crd/bases/dex.gpu-ninja.com_dexidentityproviders.yaml",
+            "https://github.com/gpu-ninja/dex-operator/blob/main/config/crd/bases/dex.gpu-ninja.com_dexoauth2clients.yaml",
+            "https://github.com/gpu-ninja/dex-operator/blob/main/config/crd/bases/dex.gpu-ninja.com_dexusers.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "grafana-operator/grafana-operator",
         license: APACHE_V2,
         urls: &[
