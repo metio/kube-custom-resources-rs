@@ -584,6 +584,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "clastix/kamaji",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/clastix/kamaji/blob/master/config/crd/bases/kamaji.clastix.io_datastores.yaml",
+            "https://github.com/clastix/kamaji/blob/master/config/crd/bases/kamaji.clastix.io_tenantcontrolplanes.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "CleverCloud/clever-operator",
         license: MIT,
         urls: &[
