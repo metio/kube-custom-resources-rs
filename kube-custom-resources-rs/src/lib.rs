@@ -2387,6 +2387,12 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `PrometheusServiceLevel`
 
+## snapscheduler_backube
+
+- apiVersion: `snapscheduler.backube/v1`
+- kinds:
+  - `SnapshotSchedule`
+
 ## sonataflow_org
 
 - apiVersion: `sonataflow.org/v1alpha08`
@@ -3061,6 +3067,8 @@ pub mod site_superedge_io;
 pub mod slo_koordinator_sh;
 #[cfg(feature = "sloth_slok_dev")]
 pub mod sloth_slok_dev;
+#[cfg(feature = "snapscheduler_backube")]
+pub mod snapscheduler_backube;
 #[cfg(feature = "sonataflow_org")]
 pub mod sonataflow_org;
 #[cfg(feature = "source_toolkit_fluxcd_io")]

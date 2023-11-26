@@ -450,6 +450,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "backube/snapscheduler",
+        license: AGPL_V3_OR_LATER,
+        urls: &[
+            "https://github.com/backube/snapscheduler/blob/master/config/crd/bases/snapscheduler.backube_snapshotschedules.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "bitnami-labs/sealed-secrets",
         license: APACHE_V2,
         urls: &[
