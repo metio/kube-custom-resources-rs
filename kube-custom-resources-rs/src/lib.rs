@@ -467,6 +467,12 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `Kamelet`
 
+## canaries_flanksource_com
+
+- apiVersion: `canaries.flanksource.com/v1`
+- kinds:
+  - `Canary`
+
 ## capsule_clastix_io
 
 - apiVersion: `capsule.clastix.io/v1alpha1`
@@ -2716,6 +2722,8 @@ pub mod cache_kubedl_io;
 pub mod caching_ibm_com;
 #[cfg(feature = "camel_apache_org")]
 pub mod camel_apache_org;
+#[cfg(feature = "canaries_flanksource_com")]
+pub mod canaries_flanksource_com;
 #[cfg(feature = "capsule_clastix_io")]
 pub mod capsule_clastix_io;
 #[cfg(feature = "ceph_rook_io")]
