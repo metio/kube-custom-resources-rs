@@ -985,6 +985,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "hardbyte/netchecks",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/hardbyte/netchecks/blob/main/operator/charts/netchecks/crds/networkassertions.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "hashicorp/terraform-cloud-operator",
         license: MPL_V2,
         urls: &[

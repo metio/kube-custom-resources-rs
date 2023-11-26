@@ -1834,6 +1834,12 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `RawDevice`
 
+## netchecks_io
+
+- apiVersion: `netchecks.io/v1`
+- kinds:
+  - `NetworkAssertion`
+
 ## network_openshift_io
 
 - apiVersion: `network.openshift.io/v1`
@@ -2956,6 +2962,8 @@ pub mod multicluster_x_k8s_io;
 pub mod mutations_gatekeeper_sh;
 #[cfg(feature = "nativestor_alauda_io")]
 pub mod nativestor_alauda_io;
+#[cfg(feature = "netchecks_io")]
+pub mod netchecks_io;
 #[cfg(feature = "network_openshift_io")]
 pub mod network_openshift_io;
 #[cfg(feature = "network_operator_openshift_io")]
