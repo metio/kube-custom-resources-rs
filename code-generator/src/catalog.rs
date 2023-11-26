@@ -814,6 +814,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "flanksource/canary-checker",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/flanksource/canary-checker/blob/master/config/deploy/crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "fluid-cloudnative/fluid",
         license: APACHE_V2,
         urls: &[
