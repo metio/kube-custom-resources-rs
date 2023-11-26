@@ -1395,6 +1395,13 @@ Every group has its own feature in this crate. The available features are as fol
   - `KafkaTopic`
   - `KafkaUser`
 
+## kamaji_clastix_io
+
+- apiVersion: `kamaji.clastix.io/v1alpha1`
+- kinds:
+  - `DataStore`
+  - `TenantControlPlane`
+
 ## keda_sh
 
 - apiVersion: `keda.sh/v1alpha1`
@@ -2863,6 +2870,8 @@ pub mod k8s_nginx_org;
 pub mod k8s_otterize_com;
 #[cfg(feature = "kafka_strimzi_io")]
 pub mod kafka_strimzi_io;
+#[cfg(feature = "kamaji_clastix_io")]
+pub mod kamaji_clastix_io;
 #[cfg(feature = "keda_sh")]
 pub mod keda_sh;
 #[cfg(feature = "keycloak_k8s_reddec_net")]
