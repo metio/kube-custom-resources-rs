@@ -827,6 +827,10 @@ Files: crd-catalog/tektoncd/operator/*
 Copyright: The tektoncd/operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/theketchio/ketch/*
+Copyright: The theketchio/ketch Authors
+License: Apache-2.0
+
 Files: crd-catalog/traefik/traefik/*
 Copyright: The traefik/traefik Authors
 License: MIT

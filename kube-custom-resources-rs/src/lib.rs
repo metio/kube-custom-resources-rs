@@ -2533,6 +2533,13 @@ Every group has its own feature in this crate. The available features are as fol
   - `Test`
   - `TestSuite`
 
+## theketch_io
+
+- apiVersion: `theketch.io/v1beta1`
+- kinds:
+  - `App`
+  - `Job`
+
 ## topology_node_k8s_io
 
 - apiVersion: `topology.node.k8s.io/v1alpha1`
@@ -3134,6 +3141,8 @@ pub mod submariner_io;
 pub mod templates_gatekeeper_sh;
 #[cfg(feature = "tests_testkube_io")]
 pub mod tests_testkube_io;
+#[cfg(feature = "theketch_io")]
+pub mod theketch_io;
 #[cfg(feature = "topology_node_k8s_io")]
 pub mod topology_node_k8s_io;
 #[cfg(feature = "topolvm_cybozu_com")]
