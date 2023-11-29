@@ -2198,6 +2198,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "theketchio/ketch",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/theketchio/ketch/blob/main/config/crd/bases/theketch.io_apps.yaml",
+            "https://github.com/theketchio/ketch/blob/main/config/crd/bases/theketch.io_jobs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "traefik/traefik",
         license: MIT,
         urls: &[
