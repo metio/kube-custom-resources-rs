@@ -100,6 +100,9 @@ pub struct TestExecutionExecutionRequest {
     /// Execution variables passed to executor from secrets. Deprecated: use Secret Variables instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretEnvs")]
     pub secret_envs: Option<BTreeMap<String, String>>,
+    /// pod request body
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slavePodRequest")]
+    pub slave_pod_request: Option<TestExecutionExecutionRequestSlavePodRequest>,
     /// whether to start execution sync or async
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
@@ -232,6 +235,53 @@ pub enum TestExecutionExecutionRequestRunningContextType {
     Testexecution,
     #[serde(rename = "testsuiteexecution")]
     Testsuiteexecution,
+}
+
+/// pod request body
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TestExecutionExecutionRequestSlavePodRequest {
+    /// pod template extensions
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplate")]
+    pub pod_template: Option<String>,
+    /// name of the template resource
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplateReference")]
+    pub pod_template_reference: Option<String>,
+    /// pod resources request specification
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<TestExecutionExecutionRequestSlavePodRequestResources>,
+}
+
+/// pod resources request specification
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TestExecutionExecutionRequestSlavePodRequestResources {
+    /// resource request specification
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<TestExecutionExecutionRequestSlavePodRequestResourcesLimits>,
+    /// resource request specification
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<TestExecutionExecutionRequestSlavePodRequestResourcesRequests>,
+}
+
+/// resource request specification
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TestExecutionExecutionRequestSlavePodRequestResourcesLimits {
+    /// requested cpu units
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<String>,
+    /// requested memory units
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<String>,
+}
+
+/// resource request specification
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TestExecutionExecutionRequestSlavePodRequestResourcesRequests {
+    /// requested cpu units
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<String>,
+    /// requested memory units
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -403,6 +453,9 @@ pub struct TestExecutionStatusLatestExecution {
     /// running context for test or test suite execution
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningContext")]
     pub running_context: Option<TestExecutionStatusLatestExecutionRunningContext>,
+    /// pod request body
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slavePodRequest")]
+    pub slave_pod_request: Option<TestExecutionStatusLatestExecutionSlavePodRequest>,
     /// test start time
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
@@ -652,6 +705,53 @@ pub enum TestExecutionStatusLatestExecutionRunningContextType {
     Testexecution,
     #[serde(rename = "testsuiteexecution")]
     Testsuiteexecution,
+}
+
+/// pod request body
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TestExecutionStatusLatestExecutionSlavePodRequest {
+    /// pod template extensions
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplate")]
+    pub pod_template: Option<String>,
+    /// name of the template resource
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplateReference")]
+    pub pod_template_reference: Option<String>,
+    /// pod resources request specification
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<TestExecutionStatusLatestExecutionSlavePodRequestResources>,
+}
+
+/// pod resources request specification
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TestExecutionStatusLatestExecutionSlavePodRequestResources {
+    /// resource request specification
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<TestExecutionStatusLatestExecutionSlavePodRequestResourcesLimits>,
+    /// resource request specification
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<TestExecutionStatusLatestExecutionSlavePodRequestResourcesRequests>,
+}
+
+/// resource request specification
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TestExecutionStatusLatestExecutionSlavePodRequestResourcesLimits {
+    /// requested cpu units
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<String>,
+    /// requested memory units
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<String>,
+}
+
+/// resource request specification
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TestExecutionStatusLatestExecutionSlavePodRequestResourcesRequests {
+    /// requested cpu units
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<String>,
+    /// requested memory units
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

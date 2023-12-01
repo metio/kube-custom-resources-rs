@@ -241,6 +241,9 @@ pub struct PrometheusSpec {
     ///  If the filename has an empty path, e.g. 'query.log', The Prometheus Pods will mount the file into an emptyDir volume at `/var/log/prometheus`. If a full path is provided, e.g. '/var/log/prometheus/query.log', you must mount a volume in the specified directory and it must be writable. This is because the prometheus container runs with a read-only root filesystem for security reasons. Alternatively, the location can be set to a standard I/O stream, e.g. `/dev/stdout`, to log query information to the default Prometheus log stream.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryLogFile")]
     pub query_log_file: Option<String>,
+    /// Defines the strategy used to reload the Prometheus configuration. If not specified, the configuration is reloaded using the /-/reload HTTP endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadStrategy")]
+    pub reload_strategy: Option<PrometheusReloadStrategy>,
     /// Defines the list of remote read configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteRead")]
     pub remote_read: Option<Vec<PrometheusRemoteRead>>,
@@ -3134,6 +3137,14 @@ pub struct PrometheusQuery {
     /// Maximum time a query may take before being aborted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+/// Specification of the desired behavior of the Prometheus cluster. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusReloadStrategy {
+    #[serde(rename = "HTTP")]
+    Http,
+    ProcessSignal,
 }
 
 /// RemoteReadSpec defines the configuration for Prometheus to read back samples from a remote endpoint.

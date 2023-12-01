@@ -5,6 +5,7 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// DataLoadSpec defines the desired state of DataLoad
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -34,6 +35,9 @@ pub struct DataLoadSpec {
     /// including Once, Cron, OnEvent
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<DataLoadPolicy>,
+    /// Resources that will be requested by the DataLoad job. <br>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<DataLoadResources>,
     /// Specifies that the preceding operation in a workflow
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAfter")]
     pub run_after: Option<DataLoadRunAfter>,
@@ -487,6 +491,17 @@ pub enum DataLoadPolicy {
     Once,
     Cron,
     OnEvent,
+}
+
+/// Resources that will be requested by the DataLoad job. <br>
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct DataLoadResources {
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 /// Specifies that the preceding operation in a workflow

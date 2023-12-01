@@ -58,6 +58,10 @@ spec:
               deployment_name:
                 description: Name of the restored deployment. This should be different from the original deployment name if the original deployment still exists.
                 type: string
+              force_drop_db:
+                default: false
+                description: Force drop the database before restoring. USE WITH CAUTION!
+                type: boolean
               image_pull_policy:
                 default: IfNotPresent
                 description: The image pull policy

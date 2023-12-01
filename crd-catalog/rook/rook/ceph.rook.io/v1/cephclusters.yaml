@@ -136,6 +136,32 @@ spec:
                     description: Disable determines whether we should enable the crash collector
                     type: boolean
                 type: object
+              csi:
+                description: CSI Driver Options applied per cluster.
+                properties:
+                  cephfs:
+                    description: CephFS defines CSI Driver settings for CephFS driver.
+                    properties:
+                      fuseMountOptions:
+                        description: FuseMountOptions defines the mount options for ceph fuse mounter.
+                        type: string
+                      kernelMountOptions:
+                        description: KernelMountOptions defines the mount options for kernel mounter.
+                        type: string
+                    type: object
+                  readAffinity:
+                    description: ReadAffinity defines the read affinity settings for CSI driver.
+                    properties:
+                      crushLocationLabels:
+                        description: CrushLocationLabels defines which node labels to use as CRUSH location. This should correspond to the values set in the CRUSH map.
+                        items:
+                          type: string
+                        type: array
+                      enabled:
+                        description: Enables read affinity for CSI driver.
+                        type: boolean
+                    type: object
+                type: object
               dashboard:
                 description: Dashboard settings
                 nullable: true
@@ -186,6 +212,9 @@ spec:
                     description: PGHealthCheckTimeout is the time (in minutes) that the operator will wait for the placement groups to become healthy (active+clean) after a drain was completed and OSDs came back up. Rook will continue with the next drain if the timeout exceeds. It only works if managePodBudgets is true. No values or 0 means that the operator will wait until the placement groups are healthy before unblocking the next drain.
                     format: int64
                     type: integer
+                  pgHealthyRegex:
+                    description: PgHealthyRegex is the regular expression that is used to determine which PG states should be considered healthy. The default is `^(active\+clean|active\+clean\+scrubbing|active\+clean\+scrubbing\+deep)$`
+                    type: string
                 type: object
               external:
                 description: Whether the Ceph Cluster is running external to this Kubernetes cluster mon, mgr, osd, mds, and discover daemons will not be created for external clusters.

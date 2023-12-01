@@ -1688,6 +1688,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsServiceKey {
 /// PushoverConfig configures notifications via Pushover. See https://prometheus.io/docs/alerting/latest/configuration/#pushover_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigs {
+    /// The name of a device to send the notification to
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub device: Option<String>,
     /// How long your notification will continue to be retried for, unless the user acknowledges the notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expire: Option<String>,

@@ -681,6 +681,11 @@ spec:
                 - basic
                 - exhaustive
                 type: string
+              verbosity:
+                description: Sets the level of verbosity
+                maximum: 4.0
+                minimum: 1.0
+                type: integer
               version:
                 type: string
             type: object

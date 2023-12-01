@@ -79,6 +79,9 @@ pub struct TerraformSpec {
     /// RefreshBeforeApply forces refreshing of the state before the apply step.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshBeforeApply")]
     pub refresh_before_apply: Option<bool>,
+    /// Remediation specifies what the controller should do when reconciliation fails. The default is to not perform any action.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remediation: Option<TerraformRemediation>,
     /// The interval at which to retry a previously failed reconciliation. The default value is 15 when not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
@@ -270,6 +273,14 @@ pub struct TerraformReadInputsFromSecrets {
     #[serde(rename = "as")]
     pub r#as: String,
     pub name: String,
+}
+
+/// Remediation specifies what the controller should do when reconciliation fails. The default is to not perform any action.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TerraformRemediation {
+    /// Retries is the number of retries that should be attempted on failures before bailing. Defaults to '0', a negative integer denotes unlimited retries.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retries: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -3018,6 +3029,9 @@ pub struct TerraformStatus {
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plan: Option<TerraformStatusPlan>,
+    /// ReconciliationFailures is the number of reconciliation failures since the last success or update.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationFailures")]
+    pub reconciliation_failures: Option<i64>,
 }
 
 /// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 

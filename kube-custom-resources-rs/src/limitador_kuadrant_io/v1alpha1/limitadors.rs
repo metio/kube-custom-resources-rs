@@ -37,6 +37,9 @@ pub struct LimitadorSpec {
     /// Telemetry defines the level of metrics Limitador will expose to the user
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telemetry: Option<LimitadorTelemetry>,
+    /// Sets the level of verbosity
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub verbosity: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

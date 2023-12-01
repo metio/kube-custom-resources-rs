@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/kubewharf/kubeadmiral/core.kubeadmiral.io/v1alpha1/clustercollectedstatuses.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.2
 
-
+use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 

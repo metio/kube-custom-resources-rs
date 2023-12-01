@@ -243,6 +243,9 @@ pub struct CanaryAnalysisWebhooks {
     pub mute_alert: Option<bool>,
     /// Name of the webhook
     pub name: String,
+    /// Number of retries for this webhook
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retries: Option<f64>,
     /// Request timeout for this webhook
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,

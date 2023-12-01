@@ -43,6 +43,11 @@ spec:
                     forwardOriginalToken:
                       description: If set to true, the original token will be kept for the upstream request.
                       type: boolean
+                    fromCookies:
+                      description: List of cookie names from which JWT is expected.
+                      items:
+                        type: string
+                      type: array
                     fromHeaders:
                       description: List of header locations from which JWT is expected.
                       items:
@@ -105,12 +110,16 @@ spec:
               targetRef:
                 properties:
                   group:
+                    description: group is the group of the target resource.
                     type: string
                   kind:
+                    description: kind is kind of the target resource.
                     type: string
                   name:
+                    description: name is the name of the target resource.
                     type: string
                   namespace:
+                    description: namespace is the namespace of the referent.
                     type: string
                 type: object
             type: object

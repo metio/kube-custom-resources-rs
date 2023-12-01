@@ -291,6 +291,40 @@ spec:
                       type: string
                     description: 'Execution variables passed to executor from secrets. Deprecated: use Secret Variables instead'
                     type: object
+                  slavePodRequest:
+                    description: pod request body
+                    properties:
+                      podTemplate:
+                        description: pod template extensions
+                        type: string
+                      podTemplateReference:
+                        description: name of the template resource
+                        type: string
+                      resources:
+                        description: pod resources request specification
+                        properties:
+                          limits:
+                            description: resource request specification
+                            properties:
+                              cpu:
+                                description: requested cpu units
+                                type: string
+                              memory:
+                                description: requested memory units
+                                type: string
+                            type: object
+                          requests:
+                            description: resource request specification
+                            properties:
+                              cpu:
+                                description: requested cpu units
+                                type: string
+                              memory:
+                                description: requested memory units
+                                type: string
+                            type: object
+                        type: object
+                    type: object
                   sync:
                     description: whether to start execution sync or async
                     type: boolean

@@ -14,6 +14,11 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "WorkloadStatus")]
 #[kube(schema = "disabled")]
 pub struct WorkloadSpec {
+    /// Active determines if a workload can be admitted into a queue. Changing active from true to false will evict any running workloads. Possible values are: 
+    ///  - false: indicates that a workload should never be admitted and evicts running workloads - true: indicates that a workload can be evaluated for admission into it's respective queue. 
+    ///  Defaults to true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub active: Option<bool>,
     /// podSets is a list of sets of homogeneous pods, each described by a Pod spec and a count. There must be at least one element and at most 8. podSets cannot be changed.
     #[serde(rename = "podSets")]
     pub pod_sets: Vec<WorkloadPodSets>,

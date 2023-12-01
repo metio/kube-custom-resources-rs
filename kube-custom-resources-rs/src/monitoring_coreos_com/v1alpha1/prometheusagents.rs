@@ -195,6 +195,9 @@ pub struct PrometheusAgentSpec {
     ///  Default: "prometheus"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusExternalLabelName")]
     pub prometheus_external_label_name: Option<String>,
+    /// Defines the strategy used to reload the Prometheus configuration. If not specified, the configuration is reloaded using the /-/reload HTTP endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadStrategy")]
+    pub reload_strategy: Option<PrometheusAgentReloadStrategy>,
     /// Defines the list of remote write configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteWrite")]
     pub remote_write: Option<Vec<PrometheusAgentRemoteWrite>>,
@@ -2703,6 +2706,14 @@ pub struct PrometheusAgentProbeSelectorMatchExpressions {
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Specification of the desired behavior of the Prometheus agent. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentReloadStrategy {
+    #[serde(rename = "HTTP")]
+    Http,
+    ProcessSignal,
 }
 
 /// RemoteWriteSpec defines the configuration to write samples from Prometheus to a remote endpoint.

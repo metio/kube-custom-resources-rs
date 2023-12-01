@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/kubewharf/kubeadmiral/core.kubeadmiral.io/v1alpha1/clusterpropagatedversions.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.2
 
-
+use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
 /// PropagatedVersionStatus defines the observed state of PropagatedVersion

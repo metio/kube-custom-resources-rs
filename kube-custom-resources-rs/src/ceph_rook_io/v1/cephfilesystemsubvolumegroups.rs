@@ -16,6 +16,9 @@ pub struct CephFilesystemSubVolumeGroupSpec {
     /// FilesystemName is the name of Ceph Filesystem SubVolumeGroup volume name. Typically it's the name of the CephFilesystem CR. If not coming from the CephFilesystem CR, it can be retrieved from the list of Ceph Filesystem volumes with `ceph fs volume ls`. To learn more about Ceph Filesystem abstractions see https://docs.ceph.com/en/latest/cephfs/fs-volumes/#fs-volumes-and-subvolumes
     #[serde(rename = "filesystemName")]
     pub filesystem_name: String,
+    /// The name of the subvolume group. If not set, the default is the name of the subvolumeGroup CR.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Status represents the status of a CephFilesystem SubvolumeGroup
