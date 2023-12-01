@@ -30,6 +30,9 @@ pub struct PropagationPolicySpec {
     /// Placement is an explicit list of clusters used to select member clusters to propagate resources to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<Vec<PropagationPolicyPlacement>>,
+    /// ReplicasStrategy is the strategy used for scheduling replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasStrategy")]
+    pub replicas_strategy: Option<PropagationPolicyReplicasStrategy>,
     /// Configures behaviors related to rescheduling.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reschedulePolicy")]
     pub reschedule_policy: Option<PropagationPolicyReschedulePolicy>,
@@ -132,9 +135,18 @@ pub struct PropagationPolicyPlacementPreferences {
     /// Minimum number of replicas that should be assigned to this cluster workload object. 0 by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i64>,
-    /// A number expressing the preference to put an additional replica to this cluster workload object.
+    /// A number expressing the priority of the cluster. The higher the value, the higher the priority. When selecting clusters for propagation, clusters with higher priority are preferred. When the Binpack ReplicasStrategy is selected, replicas will be scheduled to clusters with higher priority first.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i64>,
+    /// A number expressing the preference to put an additional replica to this cluster workload object. It will not take effect when ReplicasStrategy is Binpack.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weight: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PropagationPolicyReplicasStrategy {
+    Binpack,
+    Spread,
 }
 
 /// Configures behaviors related to rescheduling.

@@ -37,6 +37,9 @@ pub struct WorkspaceSpec {
     pub notifications: Option<Vec<WorkspaceNotifications>>,
     /// Organization name where the Workspace will be created. More information: - https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/organizations
     pub organization: String,
+    /// Projects let you organize your workspaces into groups. Default: default organization project. More information: - https://developer.hashicorp.com/terraform/tutorials/cloud/projects
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub project: Option<WorkspaceProject>,
     /// Remote state access between workspaces. By default, new workspaces in Terraform Cloud do not allow other workspaces to access their state. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#accessing-state-from-other-workspaces
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteStateSharing")]
     pub remote_state_sharing: Option<WorkspaceRemoteStateSharing>,
@@ -180,6 +183,17 @@ pub enum WorkspaceNotificationsType {
     MicrosoftTeams,
     #[serde(rename = "slack")]
     Slack,
+}
+
+/// Projects let you organize your workspaces into groups. Default: default organization project. More information: - https://developer.hashicorp.com/terraform/tutorials/cloud/projects
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WorkspaceProject {
+    /// Project ID. Must match pattern: ^prj-[a-zA-Z0-9]+$
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Project name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Remote state access between workspaces. By default, new workspaces in Terraform Cloud do not allow other workspaces to access their state. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#accessing-state-from-other-workspaces

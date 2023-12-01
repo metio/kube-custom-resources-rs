@@ -19,6 +19,9 @@ pub struct HelmReleaseSpec {
     /// DependsOn may contain a meta.NamespacedObjectReference slice with references to HelmRelease resources that must be ready before this HelmRelease can be reconciled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
     pub depends_on: Option<Vec<HelmReleaseDependsOn>>,
+    /// DriftDetection holds the configuration for detecting and handling differences between the manifest in the Helm storage and the resources currently existing in the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "driftDetection")]
+    pub drift_detection: Option<HelmReleaseDriftDetection>,
     /// Install holds the configuration for Helm install actions for this HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub install: Option<HelmReleaseInstall>,
@@ -188,6 +191,64 @@ pub struct HelmReleaseDependsOn {
     /// Namespace of the referent, when not specified it acts as LocalObjectReference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// DriftDetection holds the configuration for detecting and handling differences between the manifest in the Helm storage and the resources currently existing in the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HelmReleaseDriftDetection {
+    /// Ignore contains a list of rules for specifying which changes to ignore during diffing.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ignore: Option<Vec<HelmReleaseDriftDetectionIgnore>>,
+    /// Mode defines how differences should be handled between the Helm manifest and the manifest currently applied to the cluster. If not explicitly set, it defaults to DiffModeDisabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<HelmReleaseDriftDetectionMode>,
+}
+
+/// IgnoreRule defines a rule to selectively disregard specific changes during the drift detection process.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HelmReleaseDriftDetectionIgnore {
+    /// Paths is a list of JSON Pointer (RFC 6901) paths to be excluded from consideration in a Kubernetes object.
+    pub paths: Vec<String>,
+    /// Target is a selector for specifying Kubernetes objects to which this rule applies. If Target is not set, the Paths will be ignored for all Kubernetes objects within the manifest of the Helm release.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<HelmReleaseDriftDetectionIgnoreTarget>,
+}
+
+/// Target is a selector for specifying Kubernetes objects to which this rule applies. If Target is not set, the Paths will be ignored for all Kubernetes objects within the manifest of the Helm release.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HelmReleaseDriftDetectionIgnoreTarget {
+    /// AnnotationSelector is a string that follows the label selection expression https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api It matches with the resource annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    /// Group is the API group to select resources from. Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the API Group to select resources from. Together with Group and Version it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// LabelSelector is a string that follows the label selection expression https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api It matches with the resource labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    /// Name to match resources with.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace to select resources from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Version of the API Group to select resources from. Together with Group and Kind it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+/// DriftDetection holds the configuration for detecting and handling differences between the manifest in the Helm storage and the resources currently existing in the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HelmReleaseDriftDetectionMode {
+    #[serde(rename = "enabled")]
+    Enabled,
+    #[serde(rename = "warn")]
+    Warn,
+    #[serde(rename = "disabled")]
+    Disabled,
 }
 
 /// Install holds the configuration for Helm install actions for this HelmRelease.

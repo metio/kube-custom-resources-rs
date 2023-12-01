@@ -1924,6 +1924,11 @@ Every group has its own feature in this crate. The available features are as fol
   - `Provider`
   - `Receiver`
 
+- apiVersion: `notification.toolkit.fluxcd.io/v1beta3`
+- kinds:
+  - `Alert`
+  - `Provider`
+
 ## opensearchservice_services_k8s_aws
 
 - apiVersion: `opensearchservice.services.k8s.aws/v1alpha1`

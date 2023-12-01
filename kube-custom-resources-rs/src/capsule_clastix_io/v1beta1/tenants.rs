@@ -537,6 +537,12 @@ pub struct TenantServiceOptions {
     /// Specifies the external IPs that can be used in Services with type ClusterIP. An empty list means no IPs are allowed. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<TenantServiceOptionsExternalIPs>,
+    /// Define the annotations that a Tenant Owner cannot set for their Service resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forbiddenAnnotations")]
+    pub forbidden_annotations: Option<TenantServiceOptionsForbiddenAnnotations>,
+    /// Define the labels that a Tenant Owner cannot set for their Service resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forbiddenLabels")]
+    pub forbidden_labels: Option<TenantServiceOptionsForbiddenLabels>,
 }
 
 /// Specifies additional labels and annotations the Capsule operator places on any Service resource in the Tenant. Optional.
@@ -566,6 +572,24 @@ pub struct TenantServiceOptionsAllowedServices {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantServiceOptionsExternalIPs {
     pub allowed: Vec<String>,
+}
+
+/// Define the annotations that a Tenant Owner cannot set for their Service resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TenantServiceOptionsForbiddenAnnotations {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denied: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deniedRegex")]
+    pub denied_regex: Option<String>,
+}
+
+/// Define the labels that a Tenant Owner cannot set for their Service resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TenantServiceOptionsForbiddenLabels {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denied: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deniedRegex")]
+    pub denied_regex: Option<String>,
 }
 
 /// Specifies the allowed StorageClasses assigned to the Tenant. Capsule assures that all PersistentVolumeClaim resources created in the Tenant can use only one of the allowed StorageClasses. Optional.

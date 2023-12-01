@@ -42,6 +42,9 @@ pub struct TenantSpec {
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the owners of the Tenant. Mandatory.
     pub owners: Vec<TenantOwners>,
+    /// Specifies options for the Pods deployed in the Tenant namespaces, such as additional metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOptions")]
+    pub pod_options: Option<TenantPodOptions>,
     /// Prevent accidental deletion of the Tenant. When enabled, the deletion request will be declined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preventDeletion")]
     pub prevent_deletion: Option<bool>,
@@ -525,6 +528,23 @@ pub enum TenantOwnersProxySettingsKind {
     PersistentVolumes,
 }
 
+/// Specifies options for the Pods deployed in the Tenant namespaces, such as additional metadata.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TenantPodOptions {
+    /// Specifies additional labels and annotations the Capsule operator places on any Pod resource in the Tenant. Optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalMetadata")]
+    pub additional_metadata: Option<TenantPodOptionsAdditionalMetadata>,
+}
+
+/// Specifies additional labels and annotations the Capsule operator places on any Pod resource in the Tenant. Optional.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TenantPodOptionsAdditionalMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
 /// Specifies the allowed priorityClasses assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed PriorityClasses. A default value can be specified, and all the Pod resources created will inherit the declared class. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantPriorityClasses {
@@ -645,6 +665,12 @@ pub struct TenantServiceOptions {
     /// Specifies the external IPs that can be used in Services with type ClusterIP. An empty list means no IPs are allowed. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<TenantServiceOptionsExternalIPs>,
+    /// Define the annotations that a Tenant Owner cannot set for their Service resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forbiddenAnnotations")]
+    pub forbidden_annotations: Option<TenantServiceOptionsForbiddenAnnotations>,
+    /// Define the labels that a Tenant Owner cannot set for their Service resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forbiddenLabels")]
+    pub forbidden_labels: Option<TenantServiceOptionsForbiddenLabels>,
 }
 
 /// Specifies additional labels and annotations the Capsule operator places on any Service resource in the Tenant. Optional.
@@ -674,6 +700,24 @@ pub struct TenantServiceOptionsAllowedServices {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantServiceOptionsExternalIPs {
     pub allowed: Vec<String>,
+}
+
+/// Define the annotations that a Tenant Owner cannot set for their Service resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TenantServiceOptionsForbiddenAnnotations {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denied: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deniedRegex")]
+    pub denied_regex: Option<String>,
+}
+
+/// Define the labels that a Tenant Owner cannot set for their Service resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TenantServiceOptionsForbiddenLabels {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denied: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deniedRegex")]
+    pub denied_regex: Option<String>,
 }
 
 /// Specifies the allowed StorageClasses assigned to the Tenant. Capsule assures that all PersistentVolumeClaim resources created in the Tenant can use only one of the allowed StorageClasses. A default value can be specified, and all the PersistentVolumeClaim resources created will inherit the declared class. Optional.

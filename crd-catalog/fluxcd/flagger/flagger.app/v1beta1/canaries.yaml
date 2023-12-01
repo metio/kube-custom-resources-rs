@@ -296,6 +296,9 @@ spec:
                         name:
                           description: Name of the webhook
                           type: string
+                        retries:
+                          description: Number of retries for this webhook
+                          type: number
                         timeout:
                           description: Request timeout for this webhook
                           pattern: ^[0-9]+(m|s)

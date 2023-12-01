@@ -54,6 +54,8 @@ pub enum NodeDisksDiskType {
 /// NodeStatus defines the observed state of the Longhorn node
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoEvicting")]
+    pub auto_evicting: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<NodeStatusConditions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskStatus")]

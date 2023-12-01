@@ -511,6 +511,12 @@ pub struct NodeMetricStatusPodsMetric {
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUsage")]
     pub pod_usage: Option<NodeMetricStatusPodsMetricPodUsage>,
+    /// Priority class of the application
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<String>,
+    /// QoS class of the application
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub qos: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -242,6 +242,9 @@ pub struct LokiStackLimitsTenantsIngestion {
 /// QueryLimits defines the limit applied on querying log streams.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackLimitsTenantsQueries {
+    /// Blocked defines the list of rules to block matching queries.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub blocked: Option<Vec<LokiStackLimitsTenantsQueriesBlocked>>,
     /// CardinalityLimit defines the cardinality limit for index queries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cardinalityLimit")]
     pub cardinality_limit: Option<i32>,
@@ -257,6 +260,23 @@ pub struct LokiStackLimitsTenantsQueries {
     /// Timeout when querying ingesters or storage during the execution of a query request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryTimeout")]
     pub query_timeout: Option<String>,
+}
+
+/// BlockedQuerySpec defines the rule spec for queries to be blocked.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LokiStackLimitsTenantsQueriesBlocked {
+    /// Hash is a 32-bit FNV-1 hash of the query string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hash: Option<i32>,
+    /// Pattern defines the pattern matching the queries to be blocked.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    /// Regex defines if the pattern is a regular expression. If false the pattern will be used only for exact matches.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<bool>,
+    /// Types defines the list of query types that should be considered for blocking.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub types: Option<Vec<String>>,
 }
 
 /// Retention defines how long logs are kept in storage.

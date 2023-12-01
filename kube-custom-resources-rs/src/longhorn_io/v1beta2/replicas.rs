@@ -31,6 +31,8 @@ pub struct ReplicaSpec {
     pub engine_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineName")]
     pub engine_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
+    pub eviction_requested: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedAt")]
     pub failed_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardNodeAffinity")]
@@ -75,6 +77,7 @@ pub struct ReplicaStatus {
     pub current_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentState")]
     pub current_state: Option<String>,
+    /// Deprecated: Replaced by field `spec.evictionRequested`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
     pub eviction_requested: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceManagerName")]

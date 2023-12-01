@@ -39,6 +39,8 @@ pub struct ClientIntentsCallsHttpResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientIntentsCallsDatabaseResources {
+    #[serde(rename = "databaseName")]
+    pub database_name: String,
     pub operations: Vec<String>,
     pub table: String,
 }

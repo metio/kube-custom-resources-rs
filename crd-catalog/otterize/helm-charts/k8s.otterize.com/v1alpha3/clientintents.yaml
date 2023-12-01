@@ -73,6 +73,8 @@ spec:
                     databaseResources:
                       items:
                         properties:
+                          databaseName:
+                            type: string
                           operations:
                             items:
                               enum:
@@ -86,6 +88,7 @@ spec:
                           table:
                             type: string
                         required:
+                        - databaseName
                         - operations
                         - table
                         type: object
