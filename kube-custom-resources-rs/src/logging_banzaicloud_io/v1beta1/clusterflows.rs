@@ -64,6 +64,8 @@ pub struct ClusterFlowFilters {
     pub tag_normaliser: Option<ClusterFlowFiltersTagNormaliser>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub throttle: Option<ClusterFlowFiltersThrottle>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub useragent: Option<ClusterFlowFiltersUseragent>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -999,6 +1001,18 @@ pub struct ClusterFlowFiltersThrottle {
     pub group_reset_rate_s: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group_warning_delay_s: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterFlowFiltersUseragent {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delete_key: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flatten: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub out_key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

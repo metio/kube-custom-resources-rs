@@ -1205,6 +1205,9 @@ pub struct HazelcastUserCodeDeploymentBucketConfig {
 /// HazelcastStatus defines the observed state of Hazelcast
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastStatus {
+    /// Number of Hazelcast members in the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSize")]
+    pub cluster_size: Option<i32>,
     /// Status of the Hazelcast cluster
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hazelcastClusterStatus")]
     pub hazelcast_cluster_status: Option<HazelcastStatusHazelcastClusterStatus>,
@@ -1220,6 +1223,9 @@ pub struct HazelcastStatus {
     /// Status of restore process of the Hazelcast cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restore: Option<HazelcastStatusRestore>,
+    /// Selector is a label selector used by HorizontalPodAutoscaler to autoscale Hazelcast resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<String>,
 }
 
 /// Status of the Hazelcast cluster

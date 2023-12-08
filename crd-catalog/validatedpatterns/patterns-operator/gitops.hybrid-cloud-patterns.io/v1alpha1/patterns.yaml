@@ -100,8 +100,7 @@ spec:
                     description: The git reference when deploying the clustergroup helm chart directly from a git repo Defaults to 'main'. (Only used when developing the clustergroup helm chart)
                     type: string
                   clusterGroupChartVersion:
-                    default: 0.8.*
-                    description: Which chart version for the clustergroup helm chart Defaults to "0.8.*"
+                    description: Which chart version for the clustergroup helm chart. Defaults to "0.8.*"
                     type: string
                   clusterGroupGitRepoUrl:
                     description: The url when deploying the clustergroup helm chart directly from a git repo Defaults to '' which means not used (Only used when developing the clustergroup helm chart)
@@ -111,8 +110,7 @@ spec:
                     description: (EXPERIMENTAL) Enable multi-source support when deploying the clustergroup argo application
                     type: boolean
                   helmRepoUrl:
-                    default: https://charts.validatedpatterns.io/
-                    description: The helm chart url to fetch the helm charts from in order to deploy the pattern Defaults to https://charts.validatedpatterns.io/
+                    description: The helm chart url to fetch the helm charts from in order to deploy the pattern. Defaults to https://charts.validatedpatterns.io/
                     type: string
                 type: object
             required:

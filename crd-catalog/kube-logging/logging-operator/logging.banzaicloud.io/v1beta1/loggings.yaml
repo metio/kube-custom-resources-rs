@@ -989,6 +989,17 @@ spec:
                             group_warning_delay_s:
                               type: integer
                           type: object
+                        useragent:
+                          properties:
+                            delete_key:
+                              type: boolean
+                            flatten:
+                              type: boolean
+                            key_name:
+                              type: string
+                            out_key:
+                              type: string
+                          type: object
                       type: object
                     type: array
                   flowLabel:
@@ -7009,6 +7020,17 @@ spec:
                           type: integer
                         group_warning_delay_s:
                           type: integer
+                      type: object
+                    useragent:
+                      properties:
+                        delete_key:
+                          type: boolean
+                        flatten:
+                          type: boolean
+                        key_name:
+                          type: string
+                        out_key:
+                          type: string
                       type: object
                   type: object
                 type: array
@@ -15244,6 +15266,13 @@ spec:
                     type: object
                   skipRBACCreate:
                     type: boolean
+                  sourceDateParser:
+                    properties:
+                      format:
+                        type: string
+                      template:
+                        type: string
+                    type: object
                   sourceMetrics:
                     items:
                       properties:
@@ -18628,12 +18657,16 @@ spec:
                 additionalProperties:
                   type: boolean
                 type: object
+              fluentdConfigName:
+                type: string
               problems:
                 items:
                   type: string
                 type: array
               problemsCount:
                 type: integer
+              syslogNGConfigName:
+                type: string
               watchNamespaces:
                 items:
                   type: string

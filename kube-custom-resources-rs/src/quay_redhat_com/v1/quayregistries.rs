@@ -544,12 +544,6 @@ pub struct QuayRegistryStatus {
     /// Conditions represent the conditions that a QuayRegistry can have.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<QuayRegistryStatusConditions>>,
-    /// ConfigEditorCredentialsSecret is the Kubernetes `Secret` containing the config editor password.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configEditorCredentialsSecret")]
-    pub config_editor_credentials_secret: Option<String>,
-    /// ConfigEditorEndpoint is the external access point for a web-based reconfiguration interface for the Quay registry instance.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configEditorEndpoint")]
-    pub config_editor_endpoint: Option<String>,
     /// CurrentVersion is the actual version of Quay that is actively deployed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVersion")]
     pub current_version: Option<String>,

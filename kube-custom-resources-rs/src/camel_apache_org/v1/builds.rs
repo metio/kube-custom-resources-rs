@@ -42,6 +42,9 @@ pub struct BuildConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -152,6 +155,9 @@ pub struct BuildTasksBuildahConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -253,6 +259,9 @@ pub struct BuildTasksBuilderConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -655,6 +664,9 @@ pub struct BuildTasksCustomConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -727,6 +739,9 @@ pub struct BuildTasksJibConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -839,6 +854,9 @@ pub struct BuildTasksKanikoConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -940,6 +958,9 @@ pub struct BuildTasksPackageConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -1339,6 +1360,9 @@ pub struct BuildTasksS2iConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -1411,6 +1435,9 @@ pub struct BuildTasksSpectrumConfiguration {
     /// The maximum amount of memory required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
+    /// The node selector for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,

@@ -76,27 +76,27 @@ pub struct MeshRetryToDefault {
 /// GRPC defines a configuration of retries for GRPC traffic
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultGrpc {
-    /// BackOff is a configuration of durations which will be used in exponential backoff strategy between retries.
+    /// BackOff is a configuration of durations which will be used in an exponential backoff strategy between retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backOff")]
     pub back_off: Option<MeshRetryToDefaultGrpcBackOff>,
-    /// NumRetries is the number of attempts that will be made on failed (and retriable) requests.
+    /// NumRetries is the number of attempts that will be made on failed (and retriable) requests. If not set, the default value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i32>,
-    /// PerTryTimeout is the amount of time after which retry attempt should timeout. Setting this timeout to 0 will disable it. Default is 15s.
+    /// PerTryTimeout is the maximum amount of time each retry attempt can take before it times out. If not set, the global request timeout for the route will be used. Setting this value to 0 will disable the per-try timeout.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     /// RateLimitedBackOff is a configuration of backoff which will be used when the upstream returns one of the headers configured.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitedBackOff")]
     pub rate_limited_back_off: Option<MeshRetryToDefaultGrpcRateLimitedBackOff>,
-    /// RetryOn is a list of conditions which will cause a retry. Available values are: [Canceled, DeadlineExceeded, Internal, ResourceExhausted, Unavailable].
+    /// RetryOn is a list of conditions which will cause a retry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOn")]
     pub retry_on: Option<Vec<String>>,
 }
 
-/// BackOff is a configuration of durations which will be used in exponential backoff strategy between retries.
+/// BackOff is a configuration of durations which will be used in an exponential backoff strategy between retries.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultGrpcBackOff {
-    /// BaseInterval is an amount of time which should be taken between retries. Must be greater than zero. Values less than 1 ms are rounded up to 1 ms. Default is 25ms.
+    /// BaseInterval is an amount of time which should be taken between retries. Must be greater than zero. Values less than 1 ms are rounded up to 1 ms.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseInterval")]
     pub base_interval: Option<String>,
     /// MaxInterval is a maximal amount of time which will be taken between retries. Default is 10 times the "BaseInterval".
@@ -107,7 +107,7 @@ pub struct MeshRetryToDefaultGrpcBackOff {
 /// RateLimitedBackOff is a configuration of backoff which will be used when the upstream returns one of the headers configured.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultGrpcRateLimitedBackOff {
-    /// MaxInterval is a maximal amount of time which will be taken between retries. Default is 300 seconds.
+    /// MaxInterval is a maximal amount of time which will be taken between retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInterval")]
     pub max_interval: Option<String>,
     /// ResetHeaders specifies the list of headers (like Retry-After or X-RateLimit-Reset) to match against the response. Headers are tried in order, and matched case-insensitive. The first header to be parsed successfully is used. If no headers match the default exponential BackOff is used instead.
@@ -117,7 +117,7 @@ pub struct MeshRetryToDefaultGrpcRateLimitedBackOff {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultGrpcRateLimitedBackOffResetHeaders {
-    /// The format of the reset header, either Seconds or UnixTimestamp.
+    /// The format of the reset header.
     pub format: MeshRetryToDefaultGrpcRateLimitedBackOffResetHeadersFormat,
     /// The Name of the reset header.
     pub name: String,
@@ -132,7 +132,7 @@ pub enum MeshRetryToDefaultGrpcRateLimitedBackOffResetHeadersFormat {
 /// HTTP defines a configuration of retries for HTTP traffic
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultHttp {
-    /// BackOff is a configuration of durations which will be used in exponential backoff strategy between retries
+    /// BackOff is a configuration of durations which will be used in exponential backoff strategy between retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backOff")]
     pub back_off: Option<MeshRetryToDefaultHttpBackOff>,
     /// HostSelection is a list of predicates that dictate how hosts should be selected when requests are retried.
@@ -141,10 +141,10 @@ pub struct MeshRetryToDefaultHttp {
     /// HostSelectionMaxAttempts is the maximum number of times host selection will be reattempted before giving up, at which point the host that was last selected will be routed to. If unspecified, this will default to retrying once.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostSelectionMaxAttempts")]
     pub host_selection_max_attempts: Option<i64>,
-    /// NumRetries is the number of attempts that will be made on failed (and retriable) requests
+    /// NumRetries is the number of attempts that will be made on failed (and retriable) requests.  If not set, the default value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i32>,
-    /// PerTryTimeout is the amount of time after which retry attempt should timeout. Setting this timeout to 0 will disable it. Default is 15s.
+    /// PerTryTimeout is the amount of time after which retry attempt should time out. If left unspecified, the global route timeout for the request will be used. Consequently, when using a 5xx based retry policy, a request that times out will not be retried as the total timeout budget would have been exhausted. Setting this timeout to 0 will disable it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     /// RateLimitedBackOff is a configuration of backoff which will be used when the upstream returns one of the headers configured.
@@ -153,18 +153,18 @@ pub struct MeshRetryToDefaultHttp {
     /// RetriableRequestHeaders is an HTTP headers which must be present in the request for retries to be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retriableRequestHeaders")]
     pub retriable_request_headers: Option<Vec<MeshRetryToDefaultHttpRetriableRequestHeaders>>,
-    /// RetriableResponseHeaders is an HTTP response headers that trigger a retry if present in the response. A retry will be triggered if any of the header matches match the upstream response headers.
+    /// RetriableResponseHeaders is an HTTP response headers that trigger a retry if present in the response. A retry will be triggered if any of the header matches the upstream response headers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retriableResponseHeaders")]
     pub retriable_response_headers: Option<Vec<MeshRetryToDefaultHttpRetriableResponseHeaders>>,
-    /// RetryOn is a list of conditions which will cause a retry. Available values are: [5XX, GatewayError, Reset, Retriable4xx, ConnectFailure, EnvoyRatelimited, RefusedStream, Http3PostConnectFailure, HttpMethodConnect, HttpMethodDelete, HttpMethodGet, HttpMethodHead, HttpMethodOptions, HttpMethodPatch, HttpMethodPost, HttpMethodPut, HttpMethodTrace]. Also, any HTTP status code (500, 503, etc).
+    /// RetryOn is a list of conditions which will cause a retry. Available values are: [5XX, GatewayError, Reset, Retriable4xx, ConnectFailure, EnvoyRatelimited, RefusedStream, Http3PostConnectFailure, HttpMethodConnect, HttpMethodDelete, HttpMethodGet, HttpMethodHead, HttpMethodOptions, HttpMethodPatch, HttpMethodPost, HttpMethodPut, HttpMethodTrace]. Also, any HTTP status code (500, 503, etc.).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOn")]
     pub retry_on: Option<Vec<String>>,
 }
 
-/// BackOff is a configuration of durations which will be used in exponential backoff strategy between retries
+/// BackOff is a configuration of durations which will be used in exponential backoff strategy between retries.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultHttpBackOff {
-    /// BaseInterval is an amount of time which should be taken between retries. Must be greater than zero. Values less than 1 ms are rounded up to 1 ms. Default is 25ms.
+    /// BaseInterval is an amount of time which should be taken between retries. Must be greater than zero. Values less than 1 ms are rounded up to 1 ms.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseInterval")]
     pub base_interval: Option<String>,
     /// MaxInterval is a maximal amount of time which will be taken between retries. Default is 10 times the "BaseInterval".
@@ -174,20 +174,27 @@ pub struct MeshRetryToDefaultHttpBackOff {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultHttpHostSelection {
-    /// Type is requested predicate mode. Available values are OmitPreviousHosts, OmitHostsWithTags, and OmitPreviousPriorities.
-    pub predicate: String,
+    /// Type is requested predicate mode.
+    pub predicate: MeshRetryToDefaultHttpHostSelectionPredicate,
     /// Tags is a map of metadata to match against for selecting the omitted hosts. Required if Type is OmitHostsWithTags
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
-    /// UpdateFrequency is how often the priority load should be updated based on previously attempted priorities. Used for OmitPreviousPriorities. Default is 2 if not set.
+    /// UpdateFrequency is how often the priority load should be updated based on previously attempted priorities. Used for OmitPreviousPriorities.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateFrequency")]
     pub update_frequency: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshRetryToDefaultHttpHostSelectionPredicate {
+    OmitPreviousHosts,
+    OmitHostsWithTags,
+    OmitPreviousPriorities,
 }
 
 /// RateLimitedBackOff is a configuration of backoff which will be used when the upstream returns one of the headers configured.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultHttpRateLimitedBackOff {
-    /// MaxInterval is a maximal amount of time which will be taken between retries. Default is 300 seconds.
+    /// MaxInterval is a maximal amount of time which will be taken between retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInterval")]
     pub max_interval: Option<String>,
     /// ResetHeaders specifies the list of headers (like Retry-After or X-RateLimit-Reset) to match against the response. Headers are tried in order, and matched case-insensitive. The first header to be parsed successfully is used. If no headers match the default exponential BackOff is used instead.
@@ -197,7 +204,7 @@ pub struct MeshRetryToDefaultHttpRateLimitedBackOff {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToDefaultHttpRateLimitedBackOffResetHeaders {
-    /// The format of the reset header, either Seconds or UnixTimestamp.
+    /// The format of the reset header.
     pub format: MeshRetryToDefaultHttpRateLimitedBackOffResetHeadersFormat,
     /// The Name of the reset header.
     pub name: String,

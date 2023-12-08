@@ -312,7 +312,10 @@ pub struct BackupStatusSnapshotBackupStatus {
 pub struct BackupStatusSnapshotBackupStatusElements {
     /// Name is the snapshot resource name
     pub name: String,
-    /// Type is tho role of the snapshot in the cluster, such as PG_DATA and PG_WAL
+    /// TablespaceName is the name of the snapshotted tablespace. Only set when type is PG_TABLESPACE
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tablespaceName")]
+    pub tablespace_name: Option<String>,
+    /// Type is tho role of the snapshot in the cluster, such as PG_DATA, PG_WAL and PG_TABLESPACE
     #[serde(rename = "type")]
     pub r#type: String,
 }

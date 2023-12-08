@@ -359,15 +359,6 @@ pub struct ControllerConfigInfraSpecPlatformSpecAzure {
 /// BareMetal contains settings specific to the BareMetal platform.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ControllerConfigInfraSpecPlatformSpecBaremetal {
-    /// apiServerInternalIPs are the IP addresses to contact the Kubernetes API server that can be used by components inside the cluster, like kubelets using the infrastructure rather than Kubernetes networking. These are the IPs for a self-hosted load balancer in front of the API servers. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.apiServerInternalIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerInternalIPs")]
-    pub api_server_internal_i_ps: Option<Vec<String>>,
-    /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.ingressIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
-    pub ingress_i_ps: Option<Vec<String>>,
-    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes. Each network is provided in the CIDR format and should be IPv4 or IPv6, for example "10.0.0.0/8" or "fd00::/8".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
-    pub machine_networks: Option<Vec<String>>,
 }
 
 /// EquinixMetal contains settings specific to the Equinix Metal infrastructure provider.
@@ -497,15 +488,6 @@ pub struct ControllerConfigInfraSpecPlatformSpecNutanixPrismElementsEndpoint {
 /// OpenStack contains settings specific to the OpenStack infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ControllerConfigInfraSpecPlatformSpecOpenstack {
-    /// apiServerInternalIPs are the IP addresses to contact the Kubernetes API server that can be used by components inside the cluster, like kubelets using the infrastructure rather than Kubernetes networking. These are the IPs for a self-hosted load balancer in front of the API servers. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.apiServerInternalIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerInternalIPs")]
-    pub api_server_internal_i_ps: Option<Vec<String>>,
-    /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.ingressIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
-    pub ingress_i_ps: Option<Vec<String>>,
-    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes. Each network is provided in the CIDR format and should be IPv4 or IPv6, for example "10.0.0.0/8" or "fd00::/8".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
-    pub machine_networks: Option<Vec<String>>,
 }
 
 /// Ovirt contains settings specific to the oVirt infrastructure provider.
@@ -561,18 +543,9 @@ pub enum ControllerConfigInfraSpecPlatformSpecType {
 /// VSphere contains settings specific to the VSphere infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ControllerConfigInfraSpecPlatformSpecVsphere {
-    /// apiServerInternalIPs are the IP addresses to contact the Kubernetes API server that can be used by components inside the cluster, like kubelets using the infrastructure rather than Kubernetes networking. These are the IPs for a self-hosted load balancer in front of the API servers. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.apiServerInternalIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerInternalIPs")]
-    pub api_server_internal_i_ps: Option<Vec<String>>,
     /// failureDomains contains the definition of region, zone and the vCenter topology. If this is omitted failure domains (regions and zones) will not be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<ControllerConfigInfraSpecPlatformSpecVsphereFailureDomains>>,
-    /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IP addresses, one from IPv4 family and one from IPv6. In single stack clusters a single IP address is expected. When omitted, values from the status.ingressIPs will be used. Once set, the list cannot be completely removed (but its second entry can).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
-    pub ingress_i_ps: Option<Vec<String>>,
-    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes. Each network is provided in the CIDR format and should be IPv4 or IPv6, for example "10.0.0.0/8" or "fd00::/8".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
-    pub machine_networks: Option<Vec<String>>,
     /// nodeNetworking contains the definition of internal and external network constraints for assigning the node's networking. If this field is omitted, networking defaults to the legacy address selection behavior which is to only support a single address and return the first one found.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeNetworking")]
     pub node_networking: Option<ControllerConfigInfraSpecPlatformSpecVsphereNodeNetworking>,
@@ -916,9 +889,6 @@ pub struct ControllerConfigInfraStatusPlatformStatusBaremetal {
     /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IPs otherwise only one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
     pub ingress_i_ps: Option<Vec<String>>,
-    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
-    pub machine_networks: Option<Vec<String>>,
     /// nodeDNSIP is the IP address for the internal DNS used by the nodes. Unlike the one managed by the DNS operator, `NodeDNSIP` provides name resolution for the nodes themselves. There is no DNS-as-a-service for BareMetal deployments. In order to minimize necessary changes to the datacenter DNS, a DNS service is hosted as a static pod to serve those hostnames to the nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,
@@ -1078,9 +1048,6 @@ pub struct ControllerConfigInfraStatusPlatformStatusOpenstack {
     /// loadBalancer defines how the load balancer used by the cluster is configured.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<ControllerConfigInfraStatusPlatformStatusOpenstackLoadBalancer>,
-    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
-    pub machine_networks: Option<Vec<String>>,
     /// nodeDNSIP is the IP address for the internal DNS used by the nodes. Unlike the one managed by the DNS operator, `NodeDNSIP` provides name resolution for the nodes themselves. There is no DNS-as-a-service for OpenStack deployments. In order to minimize necessary changes to the datacenter DNS, a DNS service is hosted as a static pod to serve those hostnames to the nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,
@@ -1200,9 +1167,6 @@ pub struct ControllerConfigInfraStatusPlatformStatusVsphere {
     /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IPs otherwise only one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
     pub ingress_i_ps: Option<Vec<String>>,
-    /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
-    pub machine_networks: Option<Vec<String>>,
     /// nodeDNSIP is the IP address for the internal DNS used by the nodes. Unlike the one managed by the DNS operator, `NodeDNSIP` provides name resolution for the nodes themselves. There is no DNS-as-a-service for vSphere deployments. In order to minimize necessary changes to the datacenter DNS, a DNS service is hosted as a static pod to serve those hostnames to the nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,

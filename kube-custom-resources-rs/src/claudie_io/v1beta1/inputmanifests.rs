@@ -228,14 +228,12 @@ pub struct InputManifestNodePoolsDynamicTaints {
 /// StaticNodePool defines nodepool of already existing nodes, managed outside of Claudie.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InputManifestNodePoolsStatic {
-    /// User defined labels for this nodepool.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name of the nodepool.
     pub name: String,
     /// List of static nodes for a particular static nodepool.
     pub nodes: Vec<InputManifestNodePoolsStaticNodes>,
-    /// User defined taints for this nodepool.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<InputManifestNodePoolsStaticTaints>>,
 }

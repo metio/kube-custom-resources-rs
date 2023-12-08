@@ -2916,6 +2916,9 @@ pub struct CheClusterNetworking {
 /// Authentication settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterNetworkingAuth {
+    /// Advance authorization settings. Determines which users and groups are allowed to access Che. User is allowed to access Che if he/she is either in the `allowUsers` list or is member of group from `allowGroups` list and not in neither the `denyUsers` list nor is member of group from `denyGroups` list. If `allowUsers` and `allowGroups` are empty, then all users are allowed to access Che. if `denyUsers` and `denyGroups` are empty, then no users are denied to access Che.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "advancedAuthorization")]
+    pub advanced_authorization: Option<CheClusterNetworkingAuthAdvancedAuthorization>,
     /// Gateway settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<CheClusterNetworkingAuthGateway>,
@@ -2940,6 +2943,23 @@ pub struct CheClusterNetworkingAuth {
     /// Name of the secret set in the OpenShift `OAuthClient` resource used to set up identity federation on the OpenShift side.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthSecret")]
     pub o_auth_secret: Option<String>,
+}
+
+/// Advance authorization settings. Determines which users and groups are allowed to access Che. User is allowed to access Che if he/she is either in the `allowUsers` list or is member of group from `allowGroups` list and not in neither the `denyUsers` list nor is member of group from `denyGroups` list. If `allowUsers` and `allowGroups` are empty, then all users are allowed to access Che. if `denyUsers` and `denyGroups` are empty, then no users are denied to access Che.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterNetworkingAuthAdvancedAuthorization {
+    /// List of groups allowed to access Che (currently supported in OpenShift only).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowGroups")]
+    pub allow_groups: Option<Vec<String>>,
+    /// List of users allowed to access Che.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUsers")]
+    pub allow_users: Option<Vec<String>>,
+    /// List of groups denied to access Che (currently supported in OpenShift only).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "denyGroups")]
+    pub deny_groups: Option<Vec<String>>,
+    /// List of users denied to access Che.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "denyUsers")]
+    pub deny_users: Option<Vec<String>>,
 }
 
 /// Gateway settings.

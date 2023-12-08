@@ -16,7 +16,7 @@ pub struct MeshAccessLogSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<MeshAccessLogFrom>>,
-    /// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+    /// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined in-place.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshAccessLogTargetRef,
     /// To list makes a match between the consumed services and corresponding configurations
@@ -189,7 +189,7 @@ pub enum MeshAccessLogFromTargetRefKind {
     MeshHttpRoute,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined in-place.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshAccessLogTargetRef {
     /// Kind of the referenced resource
@@ -206,7 +206,7 @@ pub struct MeshAccessLogTargetRef {
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined in-place.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshAccessLogTargetRefKind {
     Mesh,
