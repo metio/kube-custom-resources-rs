@@ -61,6 +61,10 @@ spec:
       name: ReloadedCRIO
       priority: 1
       type: string
+    - jsonPath: .status.conditions[?(@.type=="Uncordoned")].status
+      name: UncordonedNode
+      priority: 1
+      type: string
     name: v1alpha1
     schema:
       openAPIV3Schema:

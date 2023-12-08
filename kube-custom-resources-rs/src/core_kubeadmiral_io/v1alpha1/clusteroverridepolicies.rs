@@ -30,12 +30,89 @@ pub struct ClusterOverridePolicyOverrideRules {
 /// Overriders specify the overriders to be applied in the target clusters.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterOverridePolicyOverrideRulesOverriders {
-    /// Image specifies the overriders that applies to the image.
+    /// Annotation specifies overriders that apply to the resource annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersAnnotations>>,
+    /// Args specifies overriders that apply to the container arguments.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersArgs>>,
+    /// Command specifies overriders that apply to the container commands.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersCommand>>,
+    /// Image specifies the overriders that apply to the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersImage>>,
     /// JsonPatch specifies overriders in a syntax similar to RFC6902 JSON Patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jsonpatch: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersJsonpatch>>,
+    /// Label specifies overriders that apply to the resource labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<ClusterOverridePolicyOverrideRulesOverridersLabels>>,
+}
+
+/// StringMapOverrider represents the rules dedicated to handling resource labels/annotations
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterOverridePolicyOverrideRulesOverridersAnnotations {
+    /// Operator specifies the operation. If omitted, defaults to "overwrite".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<ClusterOverridePolicyOverrideRulesOverridersAnnotationsOperator>,
+    /// Value is the value(s) that will be applied to annotations/labels of resource. If Operator is 'addIfAbsent', items in Value (empty is not allowed) will be added in annotations/labels. - For 'addIfAbsent' Operator, the keys in Value cannot conflict with annotations/labels. If Operator is 'overwrite', items in Value which match in annotations/labels will be replaced. If Operator is 'delete', items in Value which match in annotations/labels will be deleted.
+    pub value: BTreeMap<String, String>,
+}
+
+/// StringMapOverrider represents the rules dedicated to handling resource labels/annotations
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOverridePolicyOverrideRulesOverridersAnnotationsOperator {
+    #[serde(rename = "addIfAbsent")]
+    AddIfAbsent,
+    #[serde(rename = "overwrite")]
+    Overwrite,
+    #[serde(rename = "delete")]
+    Delete,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterOverridePolicyOverrideRulesOverridersArgs {
+    /// ContainerName targets the specified container or init container in the pod template.
+    #[serde(rename = "containerName")]
+    pub container_name: String,
+    /// Operator specifies the operation. If omitted, defaults to "overwrite".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<ClusterOverridePolicyOverrideRulesOverridersArgsOperator>,
+    /// Value is the value(s) that will be applied to command/args of ContainerName. If Operator is 'append', items in Value (empty is not allowed) will be appended to command/args. If Operator is 'overwrite', current command/args of ContainerName will be completely replaced by Value. If Operator is 'delete', items in Value that match in command/args will be deleted.
+    pub value: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOverridePolicyOverrideRulesOverridersArgsOperator {
+    #[serde(rename = "append")]
+    Append,
+    #[serde(rename = "overwrite")]
+    Overwrite,
+    #[serde(rename = "delete")]
+    Delete,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterOverridePolicyOverrideRulesOverridersCommand {
+    /// ContainerName targets the specified container or init container in the pod template.
+    #[serde(rename = "containerName")]
+    pub container_name: String,
+    /// Operator specifies the operation. If omitted, defaults to "overwrite".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<ClusterOverridePolicyOverrideRulesOverridersCommandOperator>,
+    /// Value is the value(s) that will be applied to command/args of ContainerName. If Operator is 'append', items in Value (empty is not allowed) will be appended to command/args. If Operator is 'overwrite', current command/args of ContainerName will be completely replaced by Value. If Operator is 'delete', items in Value that match in command/args will be deleted.
+    pub value: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOverridePolicyOverrideRulesOverridersCommandOperator {
+    #[serde(rename = "append")]
+    Append,
+    #[serde(rename = "overwrite")]
+    Overwrite,
+    #[serde(rename = "delete")]
+    Delete,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -92,6 +169,27 @@ pub struct ClusterOverridePolicyOverrideRulesOverridersJsonpatch {
     /// Value is the value(s) required by the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<HashMap<String, serde_json::Value>>,
+}
+
+/// StringMapOverrider represents the rules dedicated to handling resource labels/annotations
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterOverridePolicyOverrideRulesOverridersLabels {
+    /// Operator specifies the operation. If omitted, defaults to "overwrite".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<ClusterOverridePolicyOverrideRulesOverridersLabelsOperator>,
+    /// Value is the value(s) that will be applied to annotations/labels of resource. If Operator is 'addIfAbsent', items in Value (empty is not allowed) will be added in annotations/labels. - For 'addIfAbsent' Operator, the keys in Value cannot conflict with annotations/labels. If Operator is 'overwrite', items in Value which match in annotations/labels will be replaced. If Operator is 'delete', items in Value which match in annotations/labels will be deleted.
+    pub value: BTreeMap<String, String>,
+}
+
+/// StringMapOverrider represents the rules dedicated to handling resource labels/annotations
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOverridePolicyOverrideRulesOverridersLabelsOperator {
+    #[serde(rename = "addIfAbsent")]
+    AddIfAbsent,
+    #[serde(rename = "overwrite")]
+    Overwrite,
+    #[serde(rename = "delete")]
+    Delete,
 }
 
 /// TargetClusters selects the clusters in which the overriders in this rule should be applied. If multiple types of selectors are specified, the overall result is the intersection of all of them.

@@ -20,9 +20,11 @@ pub struct OpsRequestSpec {
     /// cancel defines the action to cancel the Pending/Creating/Running opsRequest, supported types: [VerticalScaling, HorizontalScaling]. once cancel is set to true, this opsRequest will be canceled and modifying this property again will not take effect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel: Option<bool>,
-    /// clusterRef references clusterDefinition.
+    /// clusterRef references cluster object.
     #[serde(rename = "clusterRef")]
     pub cluster_ref: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customSpec")]
+    pub custom_spec: Option<OpsRequestCustomSpec>,
     /// expose defines services the component needs to expose.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expose: Option<Vec<OpsRequestExpose>>,
@@ -32,6 +34,9 @@ pub struct OpsRequestSpec {
     /// reconfigure defines the variables that need to input when updating configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconfigure: Option<OpsRequestReconfigure>,
+    /// reconfigure defines the variables that need to input when updating configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reconfigures: Option<Vec<OpsRequestReconfigures>>,
     /// restart the specified components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restart: Option<Vec<OpsRequestRestart>>,
@@ -95,6 +100,19 @@ pub struct OpsRequestBackupSpec {
 pub enum OpsRequestBackupSpecDeletionPolicy {
     Delete,
     Retain,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestCustomSpec {
+    /// cluster component name.
+    #[serde(rename = "componentName")]
+    pub component_name: String,
+    /// reference a opsDefinition
+    #[serde(rename = "opsDefinitionRef")]
+    pub ops_definition_ref: String,
+    /// the input for this operation declared in the opsDefinition.spec.parametersSchema. will create corresponding jobs for each array element. if the param type is array, the format must be "v1,v2,v3".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Vec<BTreeMap<String, String>>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -180,6 +198,62 @@ pub struct OpsRequestReconfigureConfigurationsKeysParameters {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestReconfigureConfigurationsPolicy {
+    #[serde(rename = "simple")]
+    Simple,
+    #[serde(rename = "parallel")]
+    Parallel,
+    #[serde(rename = "rolling")]
+    Rolling,
+    #[serde(rename = "autoReload")]
+    AutoReload,
+    #[serde(rename = "operatorSyncUpdate")]
+    OperatorSyncUpdate,
+}
+
+/// Reconfigure defines the variables that need to input when updating configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestReconfigures {
+    /// componentName cluster component name.
+    #[serde(rename = "componentName")]
+    pub component_name: String,
+    /// configurations defines which components perform the operation.
+    pub configurations: Vec<OpsRequestReconfiguresConfigurations>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestReconfiguresConfigurations {
+    /// keys is used to set the parameters to be updated.
+    pub keys: Vec<OpsRequestReconfiguresConfigurationsKeys>,
+    /// name is a config template name.
+    pub name: String,
+    /// policy defines the upgrade policy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policy: Option<OpsRequestReconfiguresConfigurationsPolicy>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestReconfiguresConfigurationsKeys {
+    /// fileContent indicates the configuration file content. update whole file.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileContent")]
+    pub file_content: Option<String>,
+    /// key indicates the key name of ConfigMap.
+    pub key: String,
+    /// Setting the list of parameters for a single configuration file. update specified the parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<Vec<OpsRequestReconfiguresConfigurationsKeysParameters>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestReconfiguresConfigurationsKeysParameters {
+    /// key is name of the parameter to be updated.
+    pub key: String,
+    /// parameter values to be updated. if set nil, the parameter defined by the key field will be deleted from the configuration file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsRequestReconfiguresConfigurationsPolicy {
     #[serde(rename = "simple")]
     Simple,
     #[serde(rename = "parallel")]
@@ -394,6 +468,7 @@ pub enum OpsRequestType {
     DataScript,
     Backup,
     Restore,
+    Custom,
 }
 
 /// upgrade specifies the cluster version by specifying clusterVersionRef.
@@ -490,6 +565,9 @@ pub struct OpsRequestStatus {
     /// reconfiguringStatus defines the status information of reconfiguring.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfiguringStatus")]
     pub reconfiguring_status: Option<OpsRequestStatusReconfiguringStatus>,
+    /// reconfiguringStatus defines the status information of reconfiguring.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfiguringStatusAsComponent")]
+    pub reconfiguring_status_as_component: Option<BTreeMap<String, OpsRequestStatusReconfiguringStatusAsComponent>>,
     /// startTimestamp The time when the OpsRequest started processing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
@@ -703,9 +781,44 @@ pub enum OpsRequestStatusPhase {
 /// reconfiguringStatus defines the status information of reconfiguring.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatus {
+    /// conditions describes reconfiguring detail status.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<OpsRequestStatusReconfiguringStatusConditions>>,
     /// configurationStatus describes the status of the component reconfiguring.
     #[serde(rename = "configurationStatus")]
     pub configuration_status: Vec<OpsRequestStatusReconfiguringStatusConfigurationStatus>,
+}
+
+/// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 
+///  type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: "Available", "Progressing", and "Degraded" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"` 
+///  // other fields }
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusReconfiguringStatusConditions {
+    /// lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+    #[serde(rename = "lastTransitionTime")]
+    pub last_transition_time: String,
+    /// message is a human readable message indicating details about the transition. This may be an empty string.
+    pub message: String,
+    /// observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+    pub reason: String,
+    /// status of the condition, one of True, False, Unknown.
+    pub status: OpsRequestStatusReconfiguringStatusConditionsStatus,
+    /// type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 
+///  type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: "Available", "Progressing", and "Degraded" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"` 
+///  // other fields }
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsRequestStatusReconfiguringStatusConditionsStatus {
+    True,
+    False,
+    Unknown,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -755,6 +868,107 @@ pub enum OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatePolicy {
 /// updatedParameters describes the updated parameters.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatedParameters {
+    /// addedKeys describes the key added.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addedKeys")]
+    pub added_keys: Option<BTreeMap<String, String>>,
+    /// deletedKeys describes the key deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletedKeys")]
+    pub deleted_keys: Option<BTreeMap<String, String>>,
+    /// updatedKeys describes the key updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedKeys")]
+    pub updated_keys: Option<BTreeMap<String, String>>,
+}
+
+/// reconfiguringStatus defines the status information of reconfiguring.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusReconfiguringStatusAsComponent {
+    /// conditions describes reconfiguring detail status.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<OpsRequestStatusReconfiguringStatusAsComponentConditions>>,
+    /// configurationStatus describes the status of the component reconfiguring.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationStatus")]
+    pub configuration_status: Option<Vec<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatus>>,
+}
+
+/// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 
+///  type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: "Available", "Progressing", and "Degraded" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"` 
+///  // other fields }
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusReconfiguringStatusAsComponentConditions {
+    /// lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+    #[serde(rename = "lastTransitionTime")]
+    pub last_transition_time: String,
+    /// message is a human readable message indicating details about the transition. This may be an empty string.
+    pub message: String,
+    /// observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+    pub reason: String,
+    /// status of the condition, one of True, False, Unknown.
+    pub status: OpsRequestStatusReconfiguringStatusAsComponentConditionsStatus,
+    /// type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 
+///  type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: "Available", "Progressing", and "Degraded" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"` 
+///  // other fields }
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsRequestStatusReconfiguringStatusAsComponentConditionsStatus {
+    True,
+    False,
+    Unknown,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatus {
+    /// expectedCount describes the number of expected reconfiguring.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedCount")]
+    pub expected_count: Option<i32>,
+    /// LastAppliedConfiguration describes the last configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedConfiguration")]
+    pub last_applied_configuration: Option<BTreeMap<String, String>>,
+    /// lastStatus describes the last status for the reconfiguring controller.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStatus")]
+    pub last_status: Option<String>,
+    /// message describes the details about this operation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// name is a config template name.
+    pub name: String,
+    /// status describes the current state of the reconfiguring state machine.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+    /// succeedCount describes the number of successful reconfiguring.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "succeedCount")]
+    pub succeed_count: Option<i32>,
+    /// updatePolicy describes the policy of reconfiguring.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
+    pub update_policy: Option<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatePolicy>,
+    /// updatedParameters describes the updated parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedParameters")]
+    pub updated_parameters: Option<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatedParameters>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatePolicy {
+    #[serde(rename = "simple")]
+    Simple,
+    #[serde(rename = "parallel")]
+    Parallel,
+    #[serde(rename = "rolling")]
+    Rolling,
+    #[serde(rename = "autoReload")]
+    AutoReload,
+    #[serde(rename = "operatorSyncUpdate")]
+    OperatorSyncUpdate,
+}
+
+/// updatedParameters describes the updated parameters.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatedParameters {
     /// addedKeys describes the key added.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addedKeys")]
     pub added_keys: Option<BTreeMap<String, String>>,

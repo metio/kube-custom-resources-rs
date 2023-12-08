@@ -352,7 +352,7 @@ spec:
                             type: object
                           type: array
                         patchesJson6902:
-                          description: JSON 6902 patches, defined as inline YAML objects.
+                          description: 'JSON 6902 patches, defined as inline YAML objects. Deprecated: use Patches instead.'
                           items:
                             description: JSON6902Patch contains a JSON6902 patch and the target the patch should be applied to.
                             properties:
@@ -416,7 +416,7 @@ spec:
                             type: object
                           type: array
                         patchesStrategicMerge:
-                          description: Strategic merge patches, defined as inline YAML objects.
+                          description: 'Strategic merge patches, defined as inline YAML objects. Deprecated: use Patches instead.'
                           items:
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
@@ -785,8 +785,14 @@ spec:
               lastAttemptedValuesChecksum:
                 description: 'LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last reconciliation attempt. Deprecated: Use LastAttemptedConfigDigest instead.'
                 type: string
+              lastHandledForceAt:
+                description: LastHandledForceAt holds the value of the most recent force request value, so a change of the annotation value can be detected.
+                type: string
               lastHandledReconcileAt:
                 description: LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
+                type: string
+              lastHandledResetAt:
+                description: LastHandledResetAt holds the value of the most recent reset request value, so a change of the annotation value can be detected.
                 type: string
               lastReleaseRevision:
                 description: 'LastReleaseRevision is the revision of the last successful Helm release. Deprecated: Use History instead.'

@@ -348,10 +348,10 @@ pub struct HelmReleasePostRenderersKustomize {
     /// Strategic merge and JSON patches, defined as inline YAML objects, capable of targeting objects based on kind, label and annotation selectors.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patches: Option<Vec<HelmReleasePostRenderersKustomizePatches>>,
-    /// JSON 6902 patches, defined as inline YAML objects.
+    /// JSON 6902 patches, defined as inline YAML objects. Deprecated: use Patches instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<Vec<HelmReleasePostRenderersKustomizePatchesJson6902>>,
-    /// Strategic merge patches, defined as inline YAML objects.
+    /// Strategic merge patches, defined as inline YAML objects. Deprecated: use Patches instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesStrategicMerge")]
     pub patches_strategic_merge: Option<Vec<HashMap<String, serde_json::Value>>>,
 }
@@ -693,9 +693,15 @@ pub struct HelmReleaseStatus {
     /// LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last reconciliation attempt. Deprecated: Use LastAttemptedConfigDigest instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedValuesChecksum")]
     pub last_attempted_values_checksum: Option<String>,
+    /// LastHandledForceAt holds the value of the most recent force request value, so a change of the annotation value can be detected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledForceAt")]
+    pub last_handled_force_at: Option<String>,
     /// LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
+    /// LastHandledResetAt holds the value of the most recent reset request value, so a change of the annotation value can be detected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledResetAt")]
+    pub last_handled_reset_at: Option<String>,
     /// LastReleaseRevision is the revision of the last successful Helm release. Deprecated: Use History instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastReleaseRevision")]
     pub last_release_revision: Option<i64>,

@@ -91,6 +91,8 @@ pub struct CanarySpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redis: Option<Vec<CanaryRedis>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restic: Option<Vec<CanaryRestic>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resultMode")]
     pub result_mode: Option<String>,
@@ -204,6 +206,9 @@ pub struct CanaryAlertmanagerPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryAlertmanagerPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAlertmanagerPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -260,6 +265,9 @@ pub struct CanaryAlertmanagerUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryAlertmanagerUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAlertmanagerUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -347,6 +355,9 @@ pub struct CanaryAwsConfigAccessKeyValueFrom {
     pub config_map_key_ref: Option<CanaryAwsConfigAccessKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigAccessKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -412,6 +423,9 @@ pub struct CanaryAwsConfigSecretKeyValueFrom {
     pub config_map_key_ref: Option<CanaryAwsConfigSecretKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigSecretKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -444,6 +458,9 @@ pub struct CanaryAwsConfigSessionTokenValueFrom {
     pub config_map_key_ref: Option<CanaryAwsConfigSessionTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigSessionTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -561,6 +578,9 @@ pub struct CanaryAwsConfigRuleAccessKeyValueFrom {
     pub config_map_key_ref: Option<CanaryAwsConfigRuleAccessKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigRuleAccessKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -626,6 +646,9 @@ pub struct CanaryAwsConfigRuleSecretKeyValueFrom {
     pub config_map_key_ref: Option<CanaryAwsConfigRuleSecretKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigRuleSecretKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -658,6 +681,9 @@ pub struct CanaryAwsConfigRuleSessionTokenValueFrom {
     pub config_map_key_ref: Option<CanaryAwsConfigRuleSessionTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigRuleSessionTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -789,6 +815,9 @@ pub struct CanaryAzureDevopsPersonalAccessTokenValueFrom {
     pub config_map_key_ref: Option<CanaryAzureDevopsPersonalAccessTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAzureDevopsPersonalAccessTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -905,6 +934,9 @@ pub struct CanaryCloudwatchAccessKeyValueFrom {
     pub config_map_key_ref: Option<CanaryCloudwatchAccessKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryCloudwatchAccessKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -970,6 +1002,9 @@ pub struct CanaryCloudwatchSecretKeyValueFrom {
     pub config_map_key_ref: Option<CanaryCloudwatchSecretKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryCloudwatchSecretKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1002,6 +1037,9 @@ pub struct CanaryCloudwatchSessionTokenValueFrom {
     pub config_map_key_ref: Option<CanaryCloudwatchSessionTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryCloudwatchSessionTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1185,6 +1223,9 @@ pub struct CanaryContainerdAuthPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryContainerdAuthPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryContainerdAuthPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1217,6 +1258,9 @@ pub struct CanaryContainerdAuthUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryContainerdAuthUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryContainerdAuthUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1385,6 +1429,9 @@ pub struct CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFrom {
     pub config_map_key_ref: Option<CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1562,6 +1609,9 @@ pub struct CanaryDockerAuthPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryDockerAuthPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDockerAuthPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1594,6 +1644,9 @@ pub struct CanaryDockerAuthUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryDockerAuthUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDockerAuthUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1682,6 +1735,9 @@ pub struct CanaryDockerPushAuthPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryDockerPushAuthPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDockerPushAuthPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1714,6 +1770,9 @@ pub struct CanaryDockerPushAuthUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryDockerPushAuthUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDockerPushAuthUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1805,6 +1864,9 @@ pub struct CanaryDynatraceApiKeyValueFrom {
     pub config_map_key_ref: Option<CanaryDynatraceApiKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDynatraceApiKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1954,6 +2016,9 @@ pub struct CanaryEc2AccessKeyValueFrom {
     pub config_map_key_ref: Option<CanaryEc2AccessKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryEc2AccessKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2015,6 +2080,9 @@ pub struct CanaryEc2SecretKeyValueFrom {
     pub config_map_key_ref: Option<CanaryEc2SecretKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryEc2SecretKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2047,6 +2115,9 @@ pub struct CanaryEc2SessionTokenValueFrom {
     pub config_map_key_ref: Option<CanaryEc2SessionTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryEc2SessionTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2158,6 +2229,9 @@ pub struct CanaryElasticsearchPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryElasticsearchPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryElasticsearchPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2214,6 +2288,9 @@ pub struct CanaryElasticsearchUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryElasticsearchUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryElasticsearchUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2365,6 +2442,9 @@ pub struct CanaryExecCheckoutCertificateValueFrom {
     pub config_map_key_ref: Option<CanaryExecCheckoutCertificateValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecCheckoutCertificateValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2397,6 +2477,9 @@ pub struct CanaryExecCheckoutPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryExecCheckoutPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecCheckoutPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2429,6 +2512,9 @@ pub struct CanaryExecCheckoutUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryExecCheckoutUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecCheckoutUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2497,6 +2583,9 @@ pub struct CanaryExecConnectionsAwsAccessKeyValueFrom {
     pub config_map_key_ref: Option<CanaryExecConnectionsAwsAccessKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAwsAccessKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2529,6 +2618,9 @@ pub struct CanaryExecConnectionsAwsSecretKeyValueFrom {
     pub config_map_key_ref: Option<CanaryExecConnectionsAwsSecretKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAwsSecretKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2561,6 +2653,9 @@ pub struct CanaryExecConnectionsAwsSessionTokenValueFrom {
     pub config_map_key_ref: Option<CanaryExecConnectionsAwsSessionTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAwsSessionTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2605,6 +2700,9 @@ pub struct CanaryExecConnectionsAzureClientIdValueFrom {
     pub config_map_key_ref: Option<CanaryExecConnectionsAzureClientIdValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAzureClientIdValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2637,6 +2735,9 @@ pub struct CanaryExecConnectionsAzureClientSecretValueFrom {
     pub config_map_key_ref: Option<CanaryExecConnectionsAzureClientSecretValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAzureClientSecretValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2680,6 +2781,9 @@ pub struct CanaryExecConnectionsGcpCredentialsValueFrom {
     pub config_map_key_ref: Option<CanaryExecConnectionsGcpCredentialsValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsGcpCredentialsValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2724,6 +2828,9 @@ pub struct CanaryExecEnvValueFrom {
     pub config_map_key_ref: Option<CanaryExecEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecEnvValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2893,6 +3000,9 @@ pub struct CanaryFolderAwsConnectionAccessKeyValueFrom {
     pub config_map_key_ref: Option<CanaryFolderAwsConnectionAccessKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderAwsConnectionAccessKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2925,6 +3035,9 @@ pub struct CanaryFolderAwsConnectionSecretKeyValueFrom {
     pub config_map_key_ref: Option<CanaryFolderAwsConnectionSecretKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderAwsConnectionSecretKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2957,6 +3070,9 @@ pub struct CanaryFolderAwsConnectionSessionTokenValueFrom {
     pub config_map_key_ref: Option<CanaryFolderAwsConnectionSessionTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderAwsConnectionSessionTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3028,6 +3144,9 @@ pub struct CanaryFolderGcpConnectionCredentialsValueFrom {
     pub config_map_key_ref: Option<CanaryFolderGcpConnectionCredentialsValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderGcpConnectionCredentialsValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3096,6 +3215,9 @@ pub struct CanaryFolderSftpConnectionPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryFolderSftpConnectionPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderSftpConnectionPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3128,6 +3250,9 @@ pub struct CanaryFolderSftpConnectionUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryFolderSftpConnectionUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderSftpConnectionUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3177,6 +3302,9 @@ pub struct CanaryFolderSmbConnectionPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryFolderSmbConnectionPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderSmbConnectionPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3209,6 +3337,9 @@ pub struct CanaryFolderSmbConnectionUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryFolderSmbConnectionUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderSmbConnectionUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3313,6 +3444,9 @@ pub struct CanaryGithubGithubTokenValueFrom {
     pub config_map_key_ref: Option<CanaryGithubGithubTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryGithubGithubTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3430,6 +3564,9 @@ pub struct CanaryHelmAuthPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryHelmAuthPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHelmAuthPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3462,6 +3599,9 @@ pub struct CanaryHelmAuthUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryHelmAuthUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHelmAuthUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3609,6 +3749,9 @@ pub struct CanaryHttpEnvValueFrom {
     pub config_map_key_ref: Option<CanaryHttpEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHttpEnvValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3641,6 +3784,9 @@ pub struct CanaryHttpHeadersValueFrom {
     pub config_map_key_ref: Option<CanaryHttpHeadersValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHttpHeadersValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3705,6 +3851,9 @@ pub struct CanaryHttpPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryHttpPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHttpPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3768,6 +3917,9 @@ pub struct CanaryHttpUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryHttpUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHttpUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3895,6 +4047,9 @@ pub struct CanaryJmeterJmxValueFrom {
     pub config_map_key_ref: Option<CanaryJmeterJmxValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryJmeterJmxValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4216,6 +4371,9 @@ pub struct CanaryLdapPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryLdapPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryLdapPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4248,6 +4406,9 @@ pub struct CanaryLdapUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryLdapUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryLdapUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4335,6 +4496,9 @@ pub struct CanaryMongodbPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryMongodbPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMongodbPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4367,6 +4531,9 @@ pub struct CanaryMongodbUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryMongodbUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMongodbUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4477,6 +4644,9 @@ pub struct CanaryMssqlPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryMssqlPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMssqlPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4533,6 +4703,9 @@ pub struct CanaryMssqlUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryMssqlUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMssqlUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4643,6 +4816,9 @@ pub struct CanaryMysqlPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryMysqlPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMysqlPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4699,6 +4875,9 @@ pub struct CanaryMysqlUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryMysqlUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMysqlUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4889,6 +5068,9 @@ pub struct CanaryOpensearchPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryOpensearchPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryOpensearchPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4945,6 +5127,9 @@ pub struct CanaryOpensearchUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryOpensearchUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryOpensearchUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5134,6 +5319,9 @@ pub struct CanaryPostgresPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryPostgresPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryPostgresPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5190,6 +5378,9 @@ pub struct CanaryPostgresUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryPostgresUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryPostgresUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5300,6 +5491,9 @@ pub struct CanaryPrometheusPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryPrometheusPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryPrometheusPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5356,6 +5550,9 @@ pub struct CanaryPrometheusUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryPrometheusUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryPrometheusUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5448,6 +5645,9 @@ pub struct CanaryRedisPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryRedisPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryRedisPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5480,6 +5680,9 @@ pub struct CanaryRedisUsernameValueFrom {
     pub config_map_key_ref: Option<CanaryRedisUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryRedisUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5562,6 +5765,9 @@ pub struct CanaryResticAccessKeyValueFrom {
     pub config_map_key_ref: Option<CanaryResticAccessKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryResticAccessKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5616,6 +5822,9 @@ pub struct CanaryResticPasswordValueFrom {
     pub config_map_key_ref: Option<CanaryResticPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryResticPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5649,6 +5858,9 @@ pub struct CanaryResticSecretKeyValueFrom {
     pub config_map_key_ref: Option<CanaryResticSecretKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryResticSecretKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5729,6 +5941,9 @@ pub struct CanaryS3AccessKeyValueFrom {
     pub config_map_key_ref: Option<CanaryS3AccessKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryS3AccessKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5782,6 +5997,9 @@ pub struct CanaryS3SecretKeyValueFrom {
     pub config_map_key_ref: Option<CanaryS3SecretKeyValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryS3SecretKeyValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5814,6 +6032,9 @@ pub struct CanaryS3SessionTokenValueFrom {
     pub config_map_key_ref: Option<CanaryS3SessionTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryS3SessionTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5974,6 +6195,9 @@ pub struct CanaryWebhookTokenValueFrom {
     pub config_map_key_ref: Option<CanaryWebhookTokenValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryWebhookTokenValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6025,6 +6249,9 @@ pub struct CanaryStatus {
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistedID")]
     pub persisted_id: Option<String>,
+    /// Replicas keep track of the number of replicas
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// Availibility over a rolling 1h period

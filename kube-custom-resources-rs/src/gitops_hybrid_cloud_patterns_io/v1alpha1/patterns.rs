@@ -71,7 +71,7 @@ pub struct PatternMultiSourceConfig {
     /// The git reference when deploying the clustergroup helm chart directly from a git repo Defaults to 'main'. (Only used when developing the clustergroup helm chart)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterGroupChartGitRevision")]
     pub cluster_group_chart_git_revision: Option<String>,
-    /// Which chart version for the clustergroup helm chart Defaults to "0.8.*"
+    /// Which chart version for the clustergroup helm chart. Defaults to "0.8.*"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterGroupChartVersion")]
     pub cluster_group_chart_version: Option<String>,
     /// The url when deploying the clustergroup helm chart directly from a git repo Defaults to '' which means not used (Only used when developing the clustergroup helm chart)
@@ -80,7 +80,7 @@ pub struct PatternMultiSourceConfig {
     /// (EXPERIMENTAL) Enable multi-source support when deploying the clustergroup argo application
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The helm chart url to fetch the helm charts from in order to deploy the pattern Defaults to https://charts.validatedpatterns.io/
+    /// The helm chart url to fetch the helm charts from in order to deploy the pattern. Defaults to https://charts.validatedpatterns.io/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRepoUrl")]
     pub helm_repo_url: Option<String>,
 }

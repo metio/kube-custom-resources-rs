@@ -1974,7 +1974,7 @@ pub struct FlowCollectorProcessorResourcesClaims {
 pub struct FlowCollectorStatus {
     /// `conditions` represent the latest available observations of an object's state
     pub conditions: Vec<FlowCollectorStatusConditions>,
-    /// Namespace where console plugin and flowlogs-pipeline have been deployed.
+    /// Namespace where console plugin and flowlogs-pipeline have been deployed. Deprecated: annotations are used instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }

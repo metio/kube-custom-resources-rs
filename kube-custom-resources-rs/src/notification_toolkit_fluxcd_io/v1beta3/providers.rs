@@ -111,5 +111,7 @@ pub enum ProviderType {
     Pagerduty,
     #[serde(rename = "datadog")]
     Datadog,
+    #[serde(rename = "nats")]
+    Nats,
 }
 

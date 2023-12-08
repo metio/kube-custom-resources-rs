@@ -96,6 +96,9 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancer {
 /// LeastRequest selects N random available hosts as specified in 'choiceCount' (2 by default) and picks the host which has the fewest active requests
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerLeastRequest {
+    /// ActiveRequestBias refers to dynamic weights applied when hosts have varying load balancing weights. A higher value here aggressively reduces the weight of endpoints that are currently handling active requests. In essence, the higher the ActiveRequestBias value, the more forcefully it reduces the load balancing weight of endpoints that are actively serving requests.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeRequestBias")]
+    pub active_request_bias: Option<IntOrString>,
     /// ChoiceCount is the number of random healthy hosts from which the host with the fewest active requests will be chosen. Defaults to 2 so that Envoy performs two-choice selection if the field is not set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "choiceCount")]
     pub choice_count: Option<i32>,

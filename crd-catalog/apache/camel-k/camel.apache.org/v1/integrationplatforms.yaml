@@ -81,6 +81,11 @@ spec:
                       limitMemory:
                         description: The maximum amount of memory required. Only used for `pod` strategy
                         type: string
+                      nodeSelector:
+                        additionalProperties:
+                          type: string
+                        description: The node selector for the builder pod. Only used for `pod` strategy
+                        type: object
                       operatorNamespace:
                         description: The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
                         type: string
@@ -420,6 +425,11 @@ spec:
                         items:
                           type: string
                         type: array
+                      nodeSelector:
+                        additionalProperties:
+                          type: string
+                        description: Defines a set of nodes the builder pod is eligible to be scheduled on, based on labels on the node.
+                        type: object
                       orderStrategy:
                         default: sequential
                         description: The build order strategy to use, either `dependencies`, `fifo` or `sequential` (default `sequential`)
@@ -1491,6 +1501,11 @@ spec:
                       limitMemory:
                         description: The maximum amount of memory required. Only used for `pod` strategy
                         type: string
+                      nodeSelector:
+                        additionalProperties:
+                          type: string
+                        description: The node selector for the builder pod. Only used for `pod` strategy
+                        type: object
                       operatorNamespace:
                         description: The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
                         type: string
@@ -1872,6 +1887,11 @@ spec:
                         items:
                           type: string
                         type: array
+                      nodeSelector:
+                        additionalProperties:
+                          type: string
+                        description: Defines a set of nodes the builder pod is eligible to be scheduled on, based on labels on the node.
+                        type: object
                       orderStrategy:
                         default: sequential
                         description: The build order strategy to use, either `dependencies`, `fifo` or `sequential` (default `sequential`)

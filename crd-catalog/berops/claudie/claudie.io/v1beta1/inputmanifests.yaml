@@ -3,8 +3,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.11.3
-  labels:
-    app.kubernetes.io/part-of: claudie
   name: inputmanifests.claudie.io
 spec:
   group: claudie.io
@@ -272,7 +270,6 @@ spec:
                         labels:
                           additionalProperties:
                             type: string
-                          description: User defined labels for this nodepool.
                           type: object
                         name:
                           description: Name of the nodepool.
@@ -302,7 +299,6 @@ spec:
                             type: object
                           type: array
                         taints:
-                          description: User defined taints for this nodepool.
                           items:
                             description: The node this Taint is attached to has the "effect" on any pod that does not tolerate the Taint.
                             properties:

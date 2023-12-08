@@ -41,6 +41,11 @@ pub struct ClusterQueueSpec {
     /// resourceGroups describes groups of resources. Each resource group defines the list of resources and a list of flavors that provide quotas for these resources. Each resource and each flavor can only form part of one resource group. resourceGroups can be up to 16.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroups")]
     pub resource_groups: Option<Vec<ClusterQueueResourceGroups>>,
+    /// stopPolicy - if set to a value different than None, the ClusterQueue is considered Inactive, no new reservation being made. 
+    ///  Depending on its value, its associated workloads will: 
+    ///  - None - Workloads are admitted - HoldAndDrain - Admitted workloads are evicted and Reserving workloads will cancel the reservation. - Hold - Admitted workloads will run to completion and Reserving workloads will cancel the reservation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopPolicy")]
+    pub stop_policy: Option<ClusterQueueStopPolicy>,
 }
 
 /// flavorFungibility defines whether a workload should try the next flavor before borrowing or preempting in the flavor being evaluated.
@@ -168,6 +173,14 @@ pub struct ClusterQueueResourceGroupsFlavorsResources {
     ///  If the ClusterQueue belongs to a cohort, the sum of the quotas for each (flavor, resource) combination defines the maximum quantity that can be allocated by a ClusterQueue in the cohort.
     #[serde(rename = "nominalQuota")]
     pub nominal_quota: IntOrString,
+}
+
+/// ClusterQueueSpec defines the desired state of ClusterQueue
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterQueueStopPolicy {
+    None,
+    Hold,
+    HoldAndDrain,
 }
 
 /// ClusterQueueStatus defines the observed state of ClusterQueue

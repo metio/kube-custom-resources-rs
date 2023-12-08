@@ -23,7 +23,7 @@ spec:
     - jsonPath: .spec.deploymentModel
       name: Deployment Model
       type: string
-    - jsonPath: .status.conditions[*].reason
+    - jsonPath: .status.conditions[?(@.type=="Ready")].reason
       name: Status
       type: string
     name: v1beta1

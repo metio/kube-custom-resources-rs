@@ -69,6 +69,9 @@ pub struct RouteTableRoutes {
     pub vpc_endpoint_ref: Option<RouteTableRoutesVpcEndpointRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionID")]
     pub vpc_peering_connection_id: Option<String>,
+    /// Reference field for VPCPeeringConnectionID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionRef")]
+    pub vpc_peering_connection_ref: Option<RouteTableRoutesVpcPeeringConnectionRef>,
 }
 
 /// Reference field for GatewayID
@@ -127,6 +130,21 @@ pub struct RouteTableRoutesVpcEndpointRef {
 /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteTableRoutesVpcEndpointRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Reference field for VPCPeeringConnectionID
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RouteTableRoutesVpcPeeringConnectionRef {
+    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<RouteTableRoutesVpcPeeringConnectionRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RouteTableRoutesVpcPeeringConnectionRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
