@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    config.couchbase.com/version: 2.4.2
+    config.couchbase.com/version: 2.5.0
     controller-gen.kubebuilder.io/version: v0.8.0
   name: couchbasebackups.couchbase.com
 spec:
@@ -108,6 +108,14 @@ spec:
                     type: array
                     x-kubernetes-list-type: set
                 type: object
+              defaultRecoveryMethod:
+                default: none
+                description: DefaultRecoveryMethod specifies how cbbackupmgr should recover from broken backup/restore attempts.
+                enum:
+                - none
+                - resume
+                - purge
+                type: string
               ephemeralVolume:
                 default: false
                 description: EphemeralVolume sets backup to use an ephemeral volume instead of a persistent volume. This is used when backing up to a remote cloud provider, where a persistent volume is not needed.

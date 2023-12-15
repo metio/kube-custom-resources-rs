@@ -35,7 +35,7 @@ pub struct AlertmanagerSpec {
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted in the pod. If the service account has `automountServiceAccountToken: true`, set the field to `false` to opt out of automounting API credentials.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
-    /// Base image that is used to deploy pods, without tag. Deprecated: use 'image' instead
+    /// Base image that is used to deploy pods, without tag. Deprecated: use 'image' instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
     pub base_image: Option<String>,
     /// ClusterAdvertiseAddress is the explicit address to advertise in cluster. Needs to be provided for non RFC1918 [1] (public) addresses. [1] RFC1918: https://tools.ietf.org/html/rfc1918
@@ -131,13 +131,13 @@ pub struct AlertmanagerSpec {
     /// ServiceAccountName is the name of the ServiceAccount to use to run the Prometheus Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    /// SHA of Alertmanager container image to be deployed. Defaults to the value of `version`. Similar to a tag, but the SHA explicitly deploys an immutable container image. Version and Tag are ignored if SHA is set. Deprecated: use 'image' instead.  The image digest can be specified as part of the image URL.
+    /// SHA of Alertmanager container image to be deployed. Defaults to the value of `version`. Similar to a tag, but the SHA explicitly deploys an immutable container image. Version and Tag are ignored if SHA is set. Deprecated: use 'image' instead. The image digest can be specified as part of the image URL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha: Option<String>,
     /// Storage is the definition of how storage will be used by the Alertmanager instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<AlertmanagerStorage>,
-    /// Tag of Alertmanager container image to be deployed. Defaults to the value of `version`. Version is ignored if Tag is set. Deprecated: use 'image' instead.  The image tag can be specified as part of the image URL.
+    /// Tag of Alertmanager container image to be deployed. Defaults to the value of `version`. Version is ignored if Tag is set. Deprecated: use 'image' instead. The image tag can be specified as part of the image URL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// If specified, the pod's tolerations.
@@ -2832,7 +2832,7 @@ pub struct AlertmanagerSecurityContextWindowsOptions {
 /// Storage is the definition of how storage will be used by the Alertmanager instances.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerStorage {
-    /// *Deprecated: subPath usage will be removed in a future release.*
+    /// Deprecated: subPath usage will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMountSubPath")]
     pub disable_mount_sub_path: Option<bool>,
     /// EmptyDirVolumeSource to be used by the StatefulSet. If specified, it takes precedence over `ephemeral` and `volumeClaimTemplate`. More info: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
@@ -3003,7 +3003,7 @@ pub struct AlertmanagerStorageVolumeClaimTemplate {
     /// Defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<AlertmanagerStorageVolumeClaimTemplateSpec>,
-    /// *Deprecated: this field is never set.*
+    /// Deprecated: this field is never set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<AlertmanagerStorageVolumeClaimTemplateStatus>,
 }
@@ -3124,7 +3124,7 @@ pub struct AlertmanagerStorageVolumeClaimTemplateSpecSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// *Deprecated: this field is never set.*
+/// Deprecated: this field is never set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerStorageVolumeClaimTemplateStatus {
     /// accessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1

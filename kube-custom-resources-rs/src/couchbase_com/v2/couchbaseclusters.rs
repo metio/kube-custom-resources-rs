@@ -73,7 +73,7 @@ pub struct CouchbaseClusterSpec {
     pub rolling_upgrade: Option<CouchbaseClusterRollingUpgrade>,
     /// Security defines Couchbase cluster security options such as the administrator account username and password, and user RBAC settings.
     pub security: CouchbaseClusterSecurity,
-    /// SecurityContext allows the configuration of the security context for all Couchbase server pods.  When using persistent volumes you may need to set the fsGroup field in order to write to the volume.  For non-root clusters you must also set runAsUser to 1000, corresponding to the Couchbase user in official container images.  More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    /// DEPRECATED - by spec.security.securityContext SecurityContext allows the configuration of the security context for all Couchbase server pods.  When using persistent volumes you may need to set the fsGroup field in order to write to the volume.  For non-root clusters you must also set runAsUser to 1000, corresponding to the Couchbase user in official container images.  More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CouchbaseClusterSecurityContext>,
     /// ServerGroups define the set of availability zones you want to distribute pods over, and construct Couchbase server groups for.  By default, most cloud providers will label nodes with the key "topology.kubernetes.io/zone", the values associated with that key are used here to provide explicit scheduling by the Operator.  You may manually label nodes using the "topology.kubernetes.io/zone" key, to provide failure-domain aware scheduling when none is provided for you.  Global server groups are applied to all server classes, and may be overridden on a per-server class basis to give more control over scheduling and server groups.
@@ -277,7 +277,7 @@ pub struct CouchbaseClusterCluster {
     /// AutoCompaction allows the configuration of auto-compaction, including on what conditions disk space is reclaimed and when it is allowed to run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCompaction")]
     pub auto_compaction: Option<CouchbaseClusterClusterAutoCompaction>,
-    /// AutoFailoverMaxCount is the maximum number of automatic failovers Couchbase server will allow before not allowing any more.  This field must be between 1-3 for server versions prior to 7.1.0 default is 3.
+    /// AutoFailoverMaxCount is the maximum number of automatic failovers Couchbase server will allow before not allowing any more.  This field must be between 1-3 for server versions prior to 7.1.0 default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailoverMaxCount")]
     pub auto_failover_max_count: Option<i64>,
     /// AutoFailoverOnDataDiskIssues defines whether Couchbase server should failover a pod if a disk issue was detected.
@@ -383,10 +383,16 @@ pub struct CouchbaseClusterClusterAutoCompactionViewFragmentationThreshold {
 /// Data allows the data service to be configured.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CouchbaseClusterClusterData {
+    /// AuxIOThreads allows the number of threads used by the data service, per pod, to be altered.  This indicates the number of threads that are to be used in the AuxIO thread pool to run auxiliary I/O tasks. This value must be between 4 and 64 threads, and should only be increased where there are sufficient CPU resources allocated for their use. If not specified, this defaults to the default value set by Couchbase Server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auxIOThreads")]
+    pub aux_io_threads: Option<i64>,
+    /// NonIOThreads allows the number of threads used by the data service, per pod, to be altered.  This indicates the number of threads that are to be used in the NonIO thread pool to run in memory tasks. This value must be between 4 and 64 threads, and should only be increased where there are sufficient CPU resources allocated for their use. If not specified, this defaults to the default value set by Couchbase Server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonIOThreads")]
+    pub non_io_threads: Option<i64>,
     /// ReaderThreads allows the number of threads used by the data service, per pod, to be altered.  This value must be between 4 and 64 threads, and should only be increased where there are sufficient CPU resources allocated for their use.  If not specified, this defaults to the default value set by Couchbase Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readerThreads")]
     pub reader_threads: Option<i64>,
-    /// ReaderThreads allows the number of threads used by the data service, per pod, to be altered.  This setting is especially relevant when using "durable writes", increasing this field will have a large impact on performance.  This value must be between 4 and 64 threads, and should only be increased where there are sufficient CPU resources allocated for their use. If not specified, this defaults to the default value set by Couchbase Server.
+    /// WriterThreads allows the number of threads used by the data service, per pod, to be altered.  This setting is especially relevant when using "durable writes", increasing this field will have a large impact on performance.  This value must be between 4 and 64 threads, and should only be increased where there are sufficient CPU resources allocated for their use. If not specified, this defaults to the default value set by Couchbase Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writerThreads")]
     pub writer_threads: Option<i64>,
 }
@@ -624,10 +630,10 @@ pub struct CouchbaseClusterMonitoringPrometheus {
     /// AuthorizationSecret is the name of a Kubernetes secret that contains a bearer token to authorize GET requests to the metrics endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizationSecret")]
     pub authorization_secret: Option<String>,
-    /// Enabled is a boolean that enables/disables the metrics sidecar container.
+    /// Enabled is a boolean that enables/disables the metrics sidecar container. This must be set to true, when image is provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Image is the metrics image to be used to collect metrics. No validation is carried out as this can be any arbitrary repo and tag.
+    /// Image is the metrics image to be used to collect metrics. No validation is carried out as this can be any arbitrary repo and tag. enabled must be set to true, when image is provided.
     pub image: String,
     /// RefreshRate is the frequency in which cached statistics are updated in seconds. Shorter intervals will add additional resource overhead to clusters running Couchbase Server 7.0+ Default is 60 seconds, Maximum value is 600 seconds, and minimum value is 1 second.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshRate")]
@@ -663,6 +669,9 @@ pub struct CouchbaseClusterNetworking {
     /// DEPRECATED - not required by Couchbase Server. AdminConsoleServices is a selector to choose specific services to expose via the admin console. This field may contain any of "data", "index", "query", "search", "eventing" and "analytics".  Each service may only be included once.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminConsoleServices")]
     pub admin_console_services: Option<Vec<String>>,
+    /// DEVELOPER PREVIEW - This feature is in developer preview. CloudNativeGateway is used to provision a gRPC gateway proxying a Couchbase cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudNativeGateway")]
+    pub cloud_native_gateway: Option<CouchbaseClusterNetworkingCloudNativeGateway>,
     /// DisableUIOverHTTP is used to explicitly enable and disable UI access over the HTTP protocol.  If not specified, this field defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableUIOverHTTP")]
     pub disable_ui_over_http: Option<bool>,
@@ -812,6 +821,24 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpecSessionAffin
 pub enum CouchbaseClusterNetworkingAdminConsoleServiceType {
     NodePort,
     LoadBalancer,
+}
+
+/// DEVELOPER PREVIEW - This feature is in developer preview. CloudNativeGateway is used to provision a gRPC gateway proxying a Couchbase cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterNetworkingCloudNativeGateway {
+    /// DEVELOPER PREVIEW - This feature is in developer preview. Image is the Cloud Native Gateway image to be used to run the sidecar container. No validation is carried out as this can be any arbitrary repo and tag. TODO: provide a default kubebuilder default image tag as field is mandatory.
+    pub image: String,
+    /// DEVELOPER PREVIEW - This feature is in developer preview. TLS defines the TLS configuration for the Cloud Native Gateway server including server and client certificate configuration, and TLS security policies.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<CouchbaseClusterNetworkingCloudNativeGatewayTls>,
+}
+
+/// DEVELOPER PREVIEW - This feature is in developer preview. TLS defines the TLS configuration for the Cloud Native Gateway server including server and client certificate configuration, and TLS security policies.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterNetworkingCloudNativeGatewayTls {
+    /// DEVELOPER PREVIEW - This feature is in developer preview. ServerSecretName specifies the secret name, in the same namespace as the cluster, that contains Cloud Native Gateway gRPC server TLS data. The secret is expected to contain "tls.crt" and "tls.key" as per the kubernetes.io/tls secret type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSecretName")]
+    pub server_secret_name: Option<String>,
 }
 
 /// DNS defines information required for Dynamic DNS support.
@@ -1119,9 +1146,15 @@ pub struct CouchbaseClusterSecurity {
     /// LDAP provides settings to authenticate and authorize LDAP users with Couchbase Server. When specified, the Operator keeps these settings in sync with Cocuhbase Server's LDAP configuration. Leave empty to manually manage LDAP configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap: Option<CouchbaseClusterSecurityLdap>,
+    /// PodSecurityContext allows the configuration of the security context for all Couchbase server pods.  When using persistent volumes you may need to set the fsGroup field in order to write to the volume.  For non-root clusters you must also set runAsUser to 1000, corresponding to the Couchbase user in official container images.  More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
+    pub pod_security_context: Option<CouchbaseClusterSecurityPodSecurityContext>,
     /// RBAC is the options provided for enabling and selecting RBAC User resources to manage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbac: Option<CouchbaseClusterSecurityRbac>,
+    /// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. Use securityContext.allowPrivilegeEscalation field to grant more privileges than its parent process. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<CouchbaseClusterSecuritySecurityContext>,
     /// UISessionTimeout sets how long, in minutes, before a user is declared inactive and signed out from the Couchbase Server UI. 0 represents no time out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uiSessionTimeout")]
     pub ui_session_timeout: Option<i64>,
@@ -1196,6 +1229,98 @@ pub struct CouchbaseClusterSecurityLdapUserDnMapping {
     pub template: Option<String>,
 }
 
+/// PodSecurityContext allows the configuration of the security context for all Couchbase server pods.  When using persistent volumes you may need to set the fsGroup field in order to write to the volume.  For non-root clusters you must also set runAsUser to 1000, corresponding to the Couchbase user in official container images.  More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecurityPodSecurityContext {
+    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
+    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
+    ///  If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
+    pub fs_group: Option<i64>,
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
+    pub fs_group_change_policy: Option<String>,
+    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<CouchbaseClusterSecurityPodSecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<CouchbaseClusterSecurityPodSecurityContextSeccompProfile>,
+    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sysctls: Option<Vec<CouchbaseClusterSecurityPodSecurityContextSysctls>>,
+    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<CouchbaseClusterSecurityPodSecurityContextWindowsOptions>,
+}
+
+/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecurityPodSecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecurityPodSecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
+    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// Sysctl defines a kernel parameter to be set
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecurityPodSecurityContextSysctls {
+    /// Name of a property to set
+    pub name: String,
+    /// Value of a property to set
+    pub value: String,
+}
+
+/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecurityPodSecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
+}
+
 /// RBAC is the options provided for enabling and selecting RBAC User resources to manage.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CouchbaseClusterSecurityRbac {
@@ -1230,7 +1355,102 @@ pub struct CouchbaseClusterSecurityRbacSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// SecurityContext allows the configuration of the security context for all Couchbase server pods.  When using persistent volumes you may need to set the fsGroup field in order to write to the volume.  For non-root clusters you must also set runAsUser to 1000, corresponding to the Couchbase user in official container images.  More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+/// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. Use securityContext.allowPrivilegeEscalation field to grant more privileges than its parent process. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecuritySecurityContext {
+    /// AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<CouchbaseClusterSecuritySecurityContextCapabilities>,
+    /// Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    /// procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
+    pub proc_mount: Option<String>,
+    /// Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<CouchbaseClusterSecuritySecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<CouchbaseClusterSecuritySecurityContextSeccompProfile>,
+    /// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<CouchbaseClusterSecuritySecurityContextWindowsOptions>,
+}
+
+/// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecuritySecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+/// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecuritySecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecuritySecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
+    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CouchbaseClusterSecuritySecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
+}
+
+/// DEPRECATED - by spec.security.securityContext SecurityContext allows the configuration of the security context for all Couchbase server pods.  When using persistent volumes you may need to set the fsGroup field in order to write to the volume.  For non-root clusters you must also set runAsUser to 1000, corresponding to the Couchbase user in official container images.  More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CouchbaseClusterSecurityContext {
     /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
@@ -2252,7 +2472,7 @@ pub struct CouchbaseClusterXdcrRemoteClusters {
     pub authentication_secret: Option<String>,
     /// Hostname is the connection string to use to connect the remote cluster.  To use IPv6, place brackets (`[`, `]`) around the IPv6 value.
     pub hostname: String,
-    /// Name of the remote cluster.
+    /// Name of the remote cluster. Note that, -operator-managed is added as suffix by operator automatically to the name in order to diffrentiate from non operator managed remote clusters.
     pub name: String,
     /// Replications are replication streams from this cluster to the remote one. This field defines how to look up CouchbaseReplication resources.  By default any CouchbaseReplication resources in the namespace will be considered.
     #[serde(default, skip_serializing_if = "Option::is_none")]

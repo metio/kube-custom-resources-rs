@@ -143,6 +143,9 @@ pub struct CanaryAlertmanager {
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<CanaryAlertmanagerPassword>,
+    /// Relationships defines a way to link the check results to components and configs using lookup expressions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub relationships: Option<CanaryAlertmanagerRelationships>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub test: Option<CanaryAlertmanagerTest>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -223,6 +226,127 @@ pub struct CanaryAlertmanagerPasswordValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// Relationships defines a way to link the check results to components and configs using lookup expressions.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationships {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<CanaryAlertmanagerRelationshipsComponents>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configs: Option<Vec<CanaryAlertmanagerRelationshipsConfigs>>,
+}
+
+/// LookupSpec defines a tuple of fields to lookup.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationshipsComponents {
+    /// Lookup specifies the type of lookup to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<CanaryAlertmanagerRelationshipsComponentsName>,
+    /// Lookup specifies the type of lookup to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<CanaryAlertmanagerRelationshipsComponentsNamespace>,
+    /// Lookup specifies the type of lookup to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<CanaryAlertmanagerRelationshipsComponentsType>,
+}
+
+/// Lookup specifies the type of lookup to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationshipsComponentsName {
+    /// Expr is a cel-expression.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    /// Label specifies the key to lookup on the label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    /// Value is the static value to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Lookup specifies the type of lookup to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationshipsComponentsNamespace {
+    /// Expr is a cel-expression.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    /// Label specifies the key to lookup on the label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    /// Value is the static value to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Lookup specifies the type of lookup to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationshipsComponentsType {
+    /// Expr is a cel-expression.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    /// Label specifies the key to lookup on the label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    /// Value is the static value to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// LookupSpec defines a tuple of fields to lookup.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationshipsConfigs {
+    /// Lookup specifies the type of lookup to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<CanaryAlertmanagerRelationshipsConfigsName>,
+    /// Lookup specifies the type of lookup to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<CanaryAlertmanagerRelationshipsConfigsNamespace>,
+    /// Lookup specifies the type of lookup to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<CanaryAlertmanagerRelationshipsConfigsType>,
+}
+
+/// Lookup specifies the type of lookup to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationshipsConfigsName {
+    /// Expr is a cel-expression.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    /// Label specifies the key to lookup on the label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    /// Value is the static value to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Lookup specifies the type of lookup to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationshipsConfigsNamespace {
+    /// Expr is a cel-expression.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    /// Label specifies the key to lookup on the label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    /// Value is the static value to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Lookup specifies the type of lookup to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerRelationshipsConfigsType {
+    /// Expr is a cel-expression.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    /// Label specifies the key to lookup on the label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    /// Value is the static value to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

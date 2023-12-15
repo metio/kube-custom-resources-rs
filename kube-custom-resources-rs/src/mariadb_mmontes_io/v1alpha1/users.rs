@@ -12,21 +12,27 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "UserStatus")]
 #[kube(schema = "disabled")]
 pub struct UserSpec {
+    /// Host related to the User.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
+    /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: UserMariaDbRef,
+    /// MaxUserConnections defines the maximum number of connections that the User can have.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUserConnections")]
     pub max_user_connections: Option<i32>,
+    /// Name overrides the default name provided by metadata.name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// SecretKeySelector selects a key of a Secret.
+    /// PasswordSecretKeyRef is a reference to the password to be used by the User.
     #[serde(rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: UserPasswordSecretKeyRef,
+    /// RetryInterval is the interval used to perform health check retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
+/// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct UserMariaDbRef {
     /// API version of the referent.
@@ -50,11 +56,12 @@ pub struct UserMariaDbRef {
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+    /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
+/// PasswordSecretKeyRef is a reference to the password to be used by the User.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct UserPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -70,6 +77,7 @@ pub struct UserPasswordSecretKeyRef {
 /// UserStatus defines the observed state of User
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct UserStatus {
+    /// Conditions for the User object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<UserStatusConditions>>,
 }

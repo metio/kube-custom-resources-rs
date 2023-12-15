@@ -19,13 +19,13 @@ pub struct FlowCollectorSpec {
     /// `consolePlugin` defines the settings related to the OpenShift Console plugin, when available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolePlugin")]
     pub console_plugin: Option<FlowCollectorConsolePlugin>,
-    /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br> - `DIRECT` (default) to make the flow processor listening directly from the agents.<br> - `KAFKA` to make flows sent to a Kafka pipeline before consumption by the processor.<br> Kafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).
+    /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br> - `Direct` (default) to make the flow processor listening directly from the agents.<br> - `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br> Kafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentModel")]
     pub deployment_model: Option<FlowCollectorDeploymentModel>,
     /// `exporters` define additional optional exporters for custom consumption or storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exporters: Option<Vec<FlowCollectorExporters>>,
-    /// Kafka configuration, allowing to use Kafka as a broker as part of the flow collection pipeline. Available when the `spec.deploymentModel` is `KAFKA`.
+    /// Kafka configuration, allowing to use Kafka as a broker as part of the flow collection pipeline. Available when the `spec.deploymentModel` is `Kafka`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<FlowCollectorKafka>,
     /// `loki`, the flow store, client settings.
@@ -42,18 +42,18 @@ pub struct FlowCollectorSpec {
 /// Agent configuration for flows extraction.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgent {
-    /// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `EBPF`.
+    /// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `eBPF`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ebpf: Option<FlowCollectorAgentEbpf>,
     /// `ipfix` [deprecated (*)] - describes the settings related to the IPFIX-based flow reporter when `spec.agent.type` is set to `IPFIX`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipfix: Option<FlowCollectorAgentIpfix>,
-    /// `type` selects the flows tracing agent. Possible values are:<br> - `EBPF` (default) to use NetObserv eBPF agent.<br> - `IPFIX` [deprecated (*)] - to use the legacy IPFIX collector.<br> `EBPF` is recommended as it offers better performances and should work regardless of the CNI installed on the cluster. `IPFIX` works with OVN-Kubernetes CNI (other CNIs could work if they support exporting IPFIX, but they would require manual configuration).
+    /// `type` selects the flows tracing agent. Possible values are:<br> - `eBPF` (default) to use NetObserv eBPF agent.<br> - `IPFIX` [deprecated (*)] - to use the legacy IPFIX collector.<br> `eBPF` is recommended as it offers better performances and should work regardless of the CNI installed on the cluster. `IPFIX` works with OVN-Kubernetes CNI (other CNIs could work if they support exporting IPFIX, but they would require manual configuration).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorAgentType>,
 }
 
-/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `EBPF`.
+/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `eBPF`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpf {
     /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending. Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load, however you can expect higher memory consumption and an increased latency in the flow collection.
@@ -68,7 +68,7 @@ pub struct FlowCollectorAgentEbpf {
     /// `excludeInterfaces` contains the interface names that are excluded from flow tracing. An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression. Otherwise it is matched as a case-sensitive string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
-    /// List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br> - `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting the kernel debug filesystem, so the eBPF pod has to run as privileged. If the `spec.agent.eBPF.privileged` parameter is not set, an error is reported.<br> - `DNSTracking`: enable the DNS tracking feature.<br> - `FlowRTT` [unsupported (*)]: enable flow latency (RTT) calculations in the eBPF agent during TCP handshakes. This feature better works with `sampling` set to 1.<br>
+    /// List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br> - `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting the kernel debug filesystem, so the eBPF pod has to run as privileged. If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br> - `DNSTracking`: enable the DNS tracking feature.<br> - `FlowRTT`: enable flow latency (RTT) calculations in the eBPF agent during TCP handshakes. This feature better works with `sampling` set to 1.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
@@ -102,7 +102,7 @@ pub struct FlowCollectorAgentEbpfDebug {
     pub env: Option<BTreeMap<String, String>>,
 }
 
-/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `EBPF`.
+/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `eBPF`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorAgentEbpfImagePullPolicy {
     IfNotPresent,
@@ -110,7 +110,7 @@ pub enum FlowCollectorAgentEbpfImagePullPolicy {
     Never,
 }
 
-/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `EBPF`.
+/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `eBPF`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorAgentEbpfLogLevel {
     #[serde(rename = "trace")]
@@ -200,8 +200,8 @@ pub struct FlowCollectorAgentIpfixOvnKubernetes {
 /// Agent configuration for flows extraction.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorAgentType {
-    #[serde(rename = "EBPF")]
-    Ebpf,
+    #[serde(rename = "eBPF")]
+    EBpf,
     #[serde(rename = "IPFIX")]
     Ipfix,
 }
@@ -253,7 +253,7 @@ pub struct FlowCollectorConsolePluginAutoscaler {
     /// `minReplicas` is the lower limit for the number of replicas to which the autoscaler can scale down. It defaults to 1 pod. minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured. Scaling is active as long as at least one metric value is available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
-    /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br> - `DISABLED` does not deploy an horizontal pod autoscaler.<br> - `ENABLED` deploys an horizontal pod autoscaler.<br>
+    /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br> - `Disabled` does not deploy an horizontal pod autoscaler.<br> - `Enabled` deploys an horizontal pod autoscaler.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<FlowCollectorConsolePluginAutoscalerStatus>,
 }
@@ -530,9 +530,7 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsResourceTarget {
 /// `autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorConsolePluginAutoscalerStatus {
-    #[serde(rename = "DISABLED")]
     Disabled,
-    #[serde(rename = "ENABLED")]
     Enabled,
 }
 
@@ -612,9 +610,7 @@ pub struct FlowCollectorConsolePluginResourcesClaims {
 /// Defines the desired state of the FlowCollector resource. <br><br> *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature is not officially supported by Red Hat. It might have been, for instance, contributed by the community and accepted without a formal agreement for maintenance. The product maintainers might provide some support for these features as a best effort only.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorDeploymentModel {
-    #[serde(rename = "DIRECT")]
     Direct,
-    #[serde(rename = "KAFKA")]
     Kafka,
 }
 
@@ -627,7 +623,7 @@ pub struct FlowCollectorExporters {
     /// Kafka configuration, such as the address and topic, to send enriched flows to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<FlowCollectorExportersKafka>,
-    /// `type` selects the type of exporters. The available options are `KAFKA` and `IPFIX`.
+    /// `type` selects the type of exporters. The available options are `Kafka` and `IPFIX`.
     #[serde(rename = "type")]
     pub r#type: FlowCollectorExportersType,
 }
@@ -679,7 +675,7 @@ pub struct FlowCollectorExportersKafkaSasl {
     /// Reference to the secret or config map containing the client secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecretReference")]
     pub client_secret_reference: Option<FlowCollectorExportersKafkaSaslClientSecretReference>,
-    /// Type of SASL authentication to use, or `DISABLED` if SASL is not used
+    /// Type of SASL authentication to use, or `Disabled` if SASL is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorExportersKafkaSaslType>,
 }
@@ -739,11 +735,9 @@ pub enum FlowCollectorExportersKafkaSaslClientSecretReferenceType {
 /// SASL authentication configuration. [Unsupported (*)].
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorExportersKafkaSaslType {
-    #[serde(rename = "DISABLED")]
     Disabled,
-    #[serde(rename = "PLAIN")]
     Plain,
-    #[serde(rename = "SCRAM-SHA512")]
+    #[serde(rename = "ScramSHA512")]
     ScramSha512,
 }
 
@@ -825,13 +819,12 @@ pub enum FlowCollectorExportersKafkaTlsUserCertType {
 /// `FlowCollectorExporter` defines an additional exporter to send enriched flows to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorExportersType {
-    #[serde(rename = "KAFKA")]
     Kafka,
     #[serde(rename = "IPFIX")]
     Ipfix,
 }
 
-/// Kafka configuration, allowing to use Kafka as a broker as part of the flow collection pipeline. Available when the `spec.deploymentModel` is `KAFKA`.
+/// Kafka configuration, allowing to use Kafka as a broker as part of the flow collection pipeline. Available when the `spec.deploymentModel` is `Kafka`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorKafka {
     /// Address of the Kafka server
@@ -855,7 +848,7 @@ pub struct FlowCollectorKafkaSasl {
     /// Reference to the secret or config map containing the client secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecretReference")]
     pub client_secret_reference: Option<FlowCollectorKafkaSaslClientSecretReference>,
-    /// Type of SASL authentication to use, or `DISABLED` if SASL is not used
+    /// Type of SASL authentication to use, or `Disabled` if SASL is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorKafkaSaslType>,
 }
@@ -915,11 +908,9 @@ pub enum FlowCollectorKafkaSaslClientSecretReferenceType {
 /// SASL authentication configuration. [Unsupported (*)].
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorKafkaSaslType {
-    #[serde(rename = "DISABLED")]
     Disabled,
-    #[serde(rename = "PLAIN")]
     Plain,
-    #[serde(rename = "SCRAM-SHA512")]
+    #[serde(rename = "ScramSHA512")]
     ScramSha512,
 }
 
@@ -1056,7 +1047,7 @@ pub struct FlowCollectorLokiLokiStack {
 /// Loki configuration for "Manual" mode. This is the most flexible configuration. It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorLokiManual {
-    /// `authToken` describes the way to get a token to authenticate to Loki.<br> - `DISABLED` does not send any token with the request.<br> - `FORWARD` forwards the user token for authorization.<br> - `HOST` [deprecated (*)] - uses the local pod service account to authenticate to Loki.<br> When using the Loki Operator, this must be set to `FORWARD`.
+    /// `authToken` describes the way to get a token to authenticate to Loki.<br> - `Disabled` does not send any token with the request.<br> - `Forward` forwards the user token for authorization.<br> - `Host` [deprecated (*)] - uses the local pod service account to authenticate to Loki.<br> When using the Loki Operator, this must be set to `Forward`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authToken")]
     pub auth_token: Option<FlowCollectorLokiManualAuthToken>,
     /// `ingesterUrl` is the address of an existing Loki ingester service to push the flows to. When using the Loki Operator, set it to the Loki gateway service with the `network` tenant set in path, for example https://loki-gateway-http.netobserv.svc:8080/api/logs/v1/network.
@@ -1082,11 +1073,8 @@ pub struct FlowCollectorLokiManual {
 /// Loki configuration for "Manual" mode. This is the most flexible configuration. It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiManualAuthToken {
-    #[serde(rename = "DISABLED")]
     Disabled,
-    #[serde(rename = "HOST")]
     Host,
-    #[serde(rename = "FORWARD")]
     Forward,
 }
 
@@ -1475,7 +1463,7 @@ pub struct FlowCollectorProcessor {
     /// `logLevel` of the processor runtime
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorProcessorLogLevel>,
-    /// `logTypes` defines the desired record types to generate. Possible values are:<br> - `FLOWS` (default) to export regular network flows<br> - `CONVERSATIONS` to generate events for started conversations, ended conversations as well as periodic "tick" updates<br> - `ENDED_CONVERSATIONS` to generate only ended conversations events<br> - `ALL` to generate both network flows and all conversations events<br>
+    /// `logTypes` defines the desired record types to generate. Possible values are:<br> - `Flows` (default) to export regular network flows<br> - `Conversations` to generate events for started conversations, ended conversations as well as periodic "tick" updates<br> - `EndedConversations` to generate only ended conversations events<br> - `All` to generate both network flows and all conversations events<br>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logTypes")]
     pub log_types: Option<FlowCollectorProcessorLogTypes>,
     /// `Metrics` define the processor configuration regarding metrics
@@ -1523,7 +1511,7 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscaler {
     /// `minReplicas` is the lower limit for the number of replicas to which the autoscaler can scale down. It defaults to 1 pod. minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured. Scaling is active as long as at least one metric value is available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
-    /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br> - `DISABLED` does not deploy an horizontal pod autoscaler.<br> - `ENABLED` deploys an horizontal pod autoscaler.<br>
+    /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br> - `Disabled` does not deploy an horizontal pod autoscaler.<br> - `Enabled` deploys an horizontal pod autoscaler.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<FlowCollectorProcessorKafkaConsumerAutoscalerStatus>,
 }
@@ -1800,9 +1788,7 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsResourceTarget {
 /// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages. This setting is ignored when Kafka is disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorKafkaConsumerAutoscalerStatus {
-    #[serde(rename = "DISABLED")]
     Disabled,
-    #[serde(rename = "ENABLED")]
     Enabled,
 }
 
@@ -1828,13 +1814,9 @@ pub enum FlowCollectorProcessorLogLevel {
 /// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorLogTypes {
-    #[serde(rename = "FLOWS")]
     Flows,
-    #[serde(rename = "CONVERSATIONS")]
     Conversations,
-    #[serde(rename = "ENDED_CONVERSATIONS")]
     EndedConversations,
-    #[serde(rename = "ALL")]
     All,
 }
 
@@ -1869,18 +1851,18 @@ pub struct FlowCollectorProcessorMetricsServerTls {
     /// `insecureSkipVerify` allows skipping client-side verification of the provided certificate. If set to `true`, the `providedCaFile` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// TLS configuration when `type` is set to `PROVIDED`.
+    /// TLS configuration when `type` is set to `Provided`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provided: Option<FlowCollectorProcessorMetricsServerTlsProvided>,
-    /// Reference to the CA file when `type` is set to `PROVIDED`.
+    /// Reference to the CA file when `type` is set to `Provided`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providedCaFile")]
     pub provided_ca_file: Option<FlowCollectorProcessorMetricsServerTlsProvidedCaFile>,
-    /// Select the type of TLS configuration:<br> - `DISABLED` (default) to not configure TLS for the endpoint. - `PROVIDED` to manually provide cert file and a key file. - `AUTO` to use OpenShift auto generated certificate using annotations.
+    /// Select the type of TLS configuration:<br> - `Disabled` (default) to not configure TLS for the endpoint. - `Provided` to manually provide cert file and a key file. - `Auto` to use OpenShift auto generated certificate using annotations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorProcessorMetricsServerTlsType>,
 }
 
-/// TLS configuration when `type` is set to `PROVIDED`.
+/// TLS configuration when `type` is set to `Provided`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorMetricsServerTlsProvided {
     /// `certFile` defines the path to the certificate file name within the config map or secret
@@ -1900,7 +1882,7 @@ pub struct FlowCollectorProcessorMetricsServerTlsProvided {
     pub r#type: Option<FlowCollectorProcessorMetricsServerTlsProvidedType>,
 }
 
-/// TLS configuration when `type` is set to `PROVIDED`.
+/// TLS configuration when `type` is set to `Provided`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorMetricsServerTlsProvidedType {
     #[serde(rename = "configmap")]
@@ -1909,7 +1891,7 @@ pub enum FlowCollectorProcessorMetricsServerTlsProvidedType {
     Secret,
 }
 
-/// Reference to the CA file when `type` is set to `PROVIDED`.
+/// Reference to the CA file when `type` is set to `Provided`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorMetricsServerTlsProvidedCaFile {
     /// File name within the config map or secret
@@ -1926,7 +1908,7 @@ pub struct FlowCollectorProcessorMetricsServerTlsProvidedCaFile {
     pub r#type: Option<FlowCollectorProcessorMetricsServerTlsProvidedCaFileType>,
 }
 
-/// Reference to the CA file when `type` is set to `PROVIDED`.
+/// Reference to the CA file when `type` is set to `Provided`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorMetricsServerTlsProvidedCaFileType {
     #[serde(rename = "configmap")]
@@ -1938,11 +1920,8 @@ pub enum FlowCollectorProcessorMetricsServerTlsProvidedCaFileType {
 /// TLS configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorMetricsServerTlsType {
-    #[serde(rename = "DISABLED")]
     Disabled,
-    #[serde(rename = "PROVIDED")]
     Provided,
-    #[serde(rename = "AUTO")]
     Auto,
 }
 

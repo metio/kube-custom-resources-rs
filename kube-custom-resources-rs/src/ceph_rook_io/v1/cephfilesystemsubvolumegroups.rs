@@ -19,6 +19,20 @@ pub struct CephFilesystemSubVolumeGroupSpec {
     /// The name of the subvolume group. If not set, the default is the name of the subvolumeGroup CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Pinning configuration of CephFilesystemSubVolumeGroup, reference https://docs.ceph.com/en/latest/cephfs/fs-volumes/#pinning-subvolumes-and-subvolume-groups only one out of (export, distributed, random) can be set at a time
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pinning: Option<CephFilesystemSubVolumeGroupPinning>,
+}
+
+/// Pinning configuration of CephFilesystemSubVolumeGroup, reference https://docs.ceph.com/en/latest/cephfs/fs-volumes/#pinning-subvolumes-and-subvolume-groups only one out of (export, distributed, random) can be set at a time
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephFilesystemSubVolumeGroupPinning {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub distributed: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub export: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub random: Option<f64>,
 }
 
 /// Status represents the status of a CephFilesystem SubvolumeGroup

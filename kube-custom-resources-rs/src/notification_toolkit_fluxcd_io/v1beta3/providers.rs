@@ -21,6 +21,9 @@ pub struct ProviderSpec {
     /// Channel specifies the destination channel where events should be posted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<String>,
+    /// Interval at which to reconcile the Provider with its Secret references. Deprecated and not used in v1beta3.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
     /// Proxy the HTTP/S address of the proxy server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,

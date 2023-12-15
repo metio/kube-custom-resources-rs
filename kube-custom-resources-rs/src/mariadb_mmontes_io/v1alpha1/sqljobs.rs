@@ -14,41 +14,50 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "SqlJobStatus")]
 #[kube(schema = "disabled")]
 pub struct SqlJobSpec {
-    /// Affinity is a group of affinity scheduling rules.
+    /// Affinity to be used in the SqlJob Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SqlJobAffinity>,
+    /// BackoffLimit defines the maximum number of attempts to successfully execute a SqlJob.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
+    /// Username to be used when executing the SqlJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
+    /// DependsOn defines dependencies with other SqlJob objectecs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
     pub depends_on: Option<Vec<SqlJobDependsOn>>,
+    /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: SqlJobMariaDbRef,
+    /// NodeSelector to be used in the SqlJob Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// SecretKeySelector selects a key of a Secret.
+    /// UserPasswordSecretKeyRef is a reference to the impersonated user's password to be used when executing the SqlJob.
     #[serde(rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: SqlJobPasswordSecretKeyRef,
-    /// ResourceRequirements describes the compute resource requirements.
+    /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SqlJobResources>,
-    /// RestartPolicy describes how the container should be restarted. Only one of the following restart policies may be specified. If none of the following policies is specified, the default one is RestartPolicyAlways.
+    /// RestartPolicy to be added to the SqlJob Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
-    pub restart_policy: Option<String>,
+    pub restart_policy: Option<SqlJobRestartPolicy>,
+    /// Schedule defines when the SqlJob will be executed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<SqlJobSchedule>,
+    /// Sql is the script to be executed by the SqlJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sql: Option<String>,
-    /// Selects a key from a ConfigMap.
+    /// SqlConfigMapKeyRef is a reference to a ConfigMap containing the Sql script. It is defaulted to a ConfigMap with the contents of the Sql field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqlConfigMapKeyRef")]
     pub sql_config_map_key_ref: Option<SqlJobSqlConfigMapKeyRef>,
+    /// Tolerations to be used in the SqlJob Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<SqlJobTolerations>>,
+    /// Username to be impersonated when executing the SqlJob.
     pub username: String,
 }
 
-/// Affinity is a group of affinity scheduling rules.
+/// Affinity to be used in the SqlJob Pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SqlJobAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -462,6 +471,7 @@ pub struct SqlJobDependsOn {
     pub name: Option<String>,
 }
 
+/// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SqlJobMariaDbRef {
     /// API version of the referent.
@@ -485,11 +495,12 @@ pub struct SqlJobMariaDbRef {
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+    /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
+/// UserPasswordSecretKeyRef is a reference to the impersonated user's password to be used when executing the SqlJob.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SqlJobPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -502,7 +513,7 @@ pub struct SqlJobPasswordSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// ResourceRequirements describes the compute resource requirements.
+/// Resouces describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SqlJobResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -525,14 +536,25 @@ pub struct SqlJobResourcesClaims {
     pub name: String,
 }
 
+/// SqlJobSpec defines the desired state of SqlJob
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SqlJobRestartPolicy {
+    Always,
+    OnFailure,
+    Never,
+}
+
+/// Schedule defines when the SqlJob will be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SqlJobSchedule {
+    /// Cron is a cron expression that defines the schedule.
     pub cron: String,
+    /// Suspend defines whether the schedule is active or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }
 
-/// Selects a key from a ConfigMap.
+/// SqlConfigMapKeyRef is a reference to a ConfigMap containing the Sql script. It is defaulted to a ConfigMap with the contents of the Sql field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SqlJobSqlConfigMapKeyRef {
     /// The key to select.
@@ -568,6 +590,7 @@ pub struct SqlJobTolerations {
 /// SqlJobStatus defines the observed state of SqlJob
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SqlJobStatus {
+    /// Conditions for the SqlJob object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<SqlJobStatusConditions>>,
 }

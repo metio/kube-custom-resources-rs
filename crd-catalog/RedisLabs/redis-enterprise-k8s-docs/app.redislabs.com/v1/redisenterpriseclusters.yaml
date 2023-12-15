@@ -3163,6 +3163,12 @@ spec:
                       type: object
                     type: array
                 type: object
+              redisEnterpriseIPFamily:
+                description: Reserved, future use, only for use if instructed by Redis. IPFamily dictates what IP family to choose for pods' internal and external communication.
+                enum:
+                - IPv4
+                - IPv6
+                type: string
               redisEnterpriseImageSpec:
                 description: Specification for Redis Enterprise container image
                 properties:
@@ -7353,6 +7359,8 @@ spec:
                     description: The most recent time at which the status being indicated is known by the responder to have been correct.
                     type: string
                 type: object
+              redisEnterpriseIPFamily:
+                type: string
               specStatus:
                 type: string
               state:

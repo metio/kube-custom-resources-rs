@@ -27,7 +27,7 @@ pub struct VaultPKISecretSpec {
     /// ExcludeCNFromSans from DNS or Email Subject Alternate Names. Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeCNFromSans")]
     pub exclude_cn_from_sans: Option<bool>,
-    /// ExpiryOffset to use for computing when the certificate should be renewed. The rotation time will be difference between the expiration and the offset. Should be in duration notation e.g. 30s, 120s, etc. Set to empty string "" to prevent certificate rotation.
+    /// ExpiryOffset to use for computing when the certificate should be renewed. The rotation time will be difference between the expiration and the offset. Should be in duration notation e.g. 30s, 120s, etc.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expiryOffset")]
     pub expiry_offset: Option<String>,
     /// Format for the certificate. Choices: "pem", "der", "pem_bundle". If "pem_bundle", any private key and issuing cert will be appended to the certificate pem. If "der", the value will be base64 encoded. Default: pem
@@ -114,6 +114,17 @@ pub struct VaultPKISecretStatus {
     pub error: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expiration: Option<i64>,
+    /// LastGeneration is the Generation of the last reconciled resource.
+    #[serde(rename = "lastGeneration")]
+    pub last_generation: i64,
+    /// LastLastRotation of the certificate.
+    #[serde(rename = "lastRotation")]
+    pub last_rotation: i64,
+    /// SecretMAC used when deciding whether new Vault secret data should be synced. 
+    ///  The controller will compare the "new" Vault secret data to this value using HMAC, if they are different, then the data will be synced to the Destination. 
+    ///  The SecretMac is also used to detect drift in the Destination Secret's Data. If drift is detected the data will be synced to the Destination.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretMAC")]
+    pub secret_mac: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialNumber")]
     pub serial_number: Option<String>,
     pub valid: bool,

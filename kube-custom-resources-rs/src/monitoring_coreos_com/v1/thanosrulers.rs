@@ -2591,7 +2591,7 @@ pub struct ThanosRulerSecurityContextWindowsOptions {
 /// Storage spec to specify how storage shall be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ThanosRulerStorage {
-    /// *Deprecated: subPath usage will be removed in a future release.*
+    /// Deprecated: subPath usage will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMountSubPath")]
     pub disable_mount_sub_path: Option<bool>,
     /// EmptyDirVolumeSource to be used by the StatefulSet. If specified, it takes precedence over `ephemeral` and `volumeClaimTemplate`. More info: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
@@ -2762,7 +2762,7 @@ pub struct ThanosRulerStorageVolumeClaimTemplate {
     /// Defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ThanosRulerStorageVolumeClaimTemplateSpec>,
-    /// *Deprecated: this field is never set.*
+    /// Deprecated: this field is never set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<ThanosRulerStorageVolumeClaimTemplateStatus>,
 }
@@ -2883,7 +2883,7 @@ pub struct ThanosRulerStorageVolumeClaimTemplateSpecSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// *Deprecated: this field is never set.*
+/// Deprecated: this field is never set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ThanosRulerStorageVolumeClaimTemplateStatus {
     /// accessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1

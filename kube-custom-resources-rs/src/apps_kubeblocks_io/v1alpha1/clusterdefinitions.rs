@@ -61,6 +61,9 @@ pub struct ClusterDefinitionComponentDefs {
     /// podSpec define pod spec template of the cluster component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSpec")]
     pub pod_spec: Option<ClusterDefinitionComponentDefsPodSpec>,
+    /// postStartSpec defines the command to be executed when the component is ready, and the command will only be executed once after the component becomes ready.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStartSpec")]
+    pub post_start_spec: Option<ClusterDefinitionComponentDefsPostStartSpec>,
     /// probes setting for healthy checks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probes: Option<ClusterDefinitionComponentDefsProbes>,
@@ -4508,6 +4511,118 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesVsphereVolume {
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+/// postStartSpec defines the command to be executed when the component is ready, and the command will only be executed once after the component becomes ready.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpec {
+    /// cmdExecutorConfig is the executor configuration of the post-start command.
+    #[serde(rename = "cmdExecutorConfig")]
+    pub cmd_executor_config: ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfig,
+    /// scriptSpecSelectors defines the selector of the scriptSpecs that need to be referenced. Once ScriptSpecSelectors is defined, the scripts defined in scriptSpecs can be referenced in the PostStartAction.CmdExecutorConfig.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
+    pub script_spec_selectors: Option<Vec<ClusterDefinitionComponentDefsPostStartSpecScriptSpecSelectors>>,
+}
+
+/// cmdExecutorConfig is the executor configuration of the post-start command.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfig {
+    /// args is used to perform statements.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// command to perform statements.
+    pub command: Vec<String>,
+    /// envs is a list of environment variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnv>>,
+    /// image for Connector when executing the command.
+    pub image: String,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionComponentDefsPostStartSpecScriptSpecSelectors {
+    /// ScriptSpec name of the referent, refer to componentDefs[x].scriptSpecs[y].Name.
+    pub name: String,
 }
 
 /// probes setting for healthy checks.

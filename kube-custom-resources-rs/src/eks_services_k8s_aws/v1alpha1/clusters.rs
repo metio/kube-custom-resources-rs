@@ -99,14 +99,14 @@ pub struct ClusterLoggingClusterLogging {
 pub struct ClusterOutpostConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneInstanceType")]
     pub control_plane_instance_type: Option<String>,
-    /// The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see Capacity considerations (https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html) in the Amazon EKS User Guide
+    /// The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see Capacity considerations (https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html) in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlanePlacement")]
     pub control_plane_placement: Option<ClusterOutpostConfigControlPlanePlacement>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outpostARNs")]
     pub outpost_ar_ns: Option<Vec<String>>,
 }
 
-/// The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see Capacity considerations (https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html) in the Amazon EKS User Guide
+/// The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see Capacity considerations (https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html) in the Amazon EKS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutpostConfigControlPlanePlacement {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupName")]

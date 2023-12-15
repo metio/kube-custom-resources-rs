@@ -38,6 +38,8 @@ pub struct FlinkSessionJobJob {
     pub jar_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallelism: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "savepointRedeployNonce")]
+    pub savepoint_redeploy_nonce: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "savepointTriggerNonce")]
     pub savepoint_trigger_nonce: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

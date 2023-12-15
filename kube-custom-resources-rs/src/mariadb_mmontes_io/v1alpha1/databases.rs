@@ -12,18 +12,24 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "DatabaseStatus")]
 #[kube(schema = "disabled")]
 pub struct DatabaseSpec {
+    /// CharacterSet to use in the Database.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "characterSet")]
     pub character_set: Option<String>,
+    /// CharacterSet to use in the Database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collate: Option<String>,
+    /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: DatabaseMariaDbRef,
+    /// Name overrides the default Database name provided by metadata.name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// RetryInterval is the interval used to perform health check retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
+/// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseMariaDbRef {
     /// API version of the referent.
@@ -47,6 +53,7 @@ pub struct DatabaseMariaDbRef {
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+    /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
 }
@@ -54,6 +61,7 @@ pub struct DatabaseMariaDbRef {
 /// DatabaseStatus defines the observed state of Database
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseStatus {
+    /// Conditions for the Database object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<DatabaseStatusConditions>>,
 }

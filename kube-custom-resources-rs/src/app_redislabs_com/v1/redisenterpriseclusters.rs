@@ -117,6 +117,9 @@ pub struct RedisEnterpriseClusterSpec {
     /// ADVANCED USAGE USE AT YOUR OWN RISK - specify pod attributes that are required for the statefulset - Redis Enterprise pods. Pod attributes managed by the operator might override these settings. Also make sure the attributes are supported by the K8s version running on the cluster - the operator does not validate that.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseAdditionalPodSpecAttributes")]
     pub redis_enterprise_additional_pod_spec_attributes: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributes>,
+    /// Reserved, future use, only for use if instructed by Redis. IPFamily dictates what IP family to choose for pods' internal and external communication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseIPFamily")]
+    pub redis_enterprise_ip_family: Option<RedisEnterpriseClusterRedisEnterpriseIpFamily>,
     /// Specification for Redis Enterprise container image
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseImageSpec")]
     pub redis_enterprise_image_spec: Option<RedisEnterpriseClusterRedisEnterpriseImageSpec>,
@@ -2923,6 +2926,13 @@ pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolum
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+/// RedisEnterpriseClusterSpec defines the desired state of RedisEnterpriseCluster
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RedisEnterpriseClusterRedisEnterpriseIpFamily {
+    IPv4,
+    IPv6,
 }
 
 /// Specification for Redis Enterprise container image
@@ -6721,6 +6731,8 @@ pub struct RedisEnterpriseClusterStatus {
     /// An API object that represents the cluster's OCSP status
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspStatus")]
     pub ocsp_status: Option<RedisEnterpriseClusterStatusOcspStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseIPFamily")]
+    pub redis_enterprise_ip_family: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "specStatus")]
     pub spec_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

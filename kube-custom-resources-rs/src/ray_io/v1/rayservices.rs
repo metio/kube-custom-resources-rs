@@ -39,6 +39,8 @@ pub struct RayServiceRayClusterConfig {
     pub head_service_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayVersion")]
     pub ray_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerGroupSpecs")]
     pub worker_group_specs: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecs>>,
 }

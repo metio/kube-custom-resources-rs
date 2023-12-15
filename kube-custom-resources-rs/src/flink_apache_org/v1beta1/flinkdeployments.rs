@@ -66,7 +66,19 @@ pub struct FlinkDeploymentIngress {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "className")]
     pub class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<Vec<FlinkDeploymentIngressTls>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentIngressTls {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hosts: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -85,6 +97,8 @@ pub struct FlinkDeploymentJob {
     pub jar_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallelism: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "savepointRedeployNonce")]
+    pub savepoint_redeploy_nonce: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "savepointTriggerNonce")]
     pub savepoint_trigger_nonce: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

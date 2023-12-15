@@ -23,6 +23,9 @@ pub struct CouchbaseBackupSpec {
     /// Data allows control over what key-value/document data is included in the backup.  By default, all data is included.  Modifications to this field will only take effect on the next full backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<CouchbaseBackupData>,
+    /// DefaultRecoveryMethod specifies how cbbackupmgr should recover from broken backup/restore attempts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRecoveryMethod")]
+    pub default_recovery_method: Option<CouchbaseBackupDefaultRecoveryMethod>,
     /// EphemeralVolume sets backup to use an ephemeral volume instead of a persistent volume. This is used when backing up to a remote cloud provider, where a persistent volume is not needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralVolume")]
     pub ephemeral_volume: Option<bool>,
@@ -90,6 +93,17 @@ pub struct CouchbaseBackupData {
     /// Include defines the buckets, scopes or collections that are included in the backup. When this field is set, it implies that by default nothing will be backed up, and data items must be explicitly included.  You may define an inclusion as a bucket -- `my-bucket`, a scope -- `my-bucket.my-scope`, or a collection -- `my-bucket.my-scope.my-collection`. Buckets may contain periods, and therefore must be escaped -- `my\.bucket.my-scope`, as period is the separator used to delimit scopes and collections.  Included data cannot overlap e.g. specifying `my-bucket` and `my-bucket.my-scope` is illegal.  This field cannot be used at the same time as excluded items.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub include: Option<Vec<String>>,
+}
+
+/// CouchbaseBackupSpec is allows the specification of how a Couchbase backup is configured, including when backups are performed, how long they are retained for, and where they are backed up to.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CouchbaseBackupDefaultRecoveryMethod {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "resume")]
+    Resume,
+    #[serde(rename = "purge")]
+    Purge,
 }
 
 /// Full is the schedule on when to take full backups. Used in Full/Incremental and FullOnly backup strategies.

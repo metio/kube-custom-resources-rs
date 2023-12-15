@@ -62,8 +62,6 @@ spec:
                             type: string
                         required:
                         - databaseName
-                        - operations
-                        - table
                         type: object
                       type: array
                     name:

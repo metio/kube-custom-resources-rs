@@ -14,34 +14,39 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "RestoreStatus")]
 #[kube(schema = "disabled")]
 pub struct RestoreSpec {
-    /// Affinity is a group of affinity scheduling rules.
+    /// Affinity to be used in the Restore Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<RestoreAffinity>,
+    /// BackoffLimit defines the maximum number of attempts to successfully perform a Backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
-    /// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+    /// BackupRef is a reference to a Backup object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRef")]
     pub backup_ref: Option<RestoreBackupRef>,
+    /// FileName is the file within the source to be restored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileName")]
     pub file_name: Option<String>,
+    /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: RestoreMariaDbRef,
+    /// NodeSelector to be used in the Restore Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// ResourceRequirements describes the compute resource requirements.
+    /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RestoreResources>,
-    /// RestartPolicy describes how the container should be restarted. Only one of the following restart policies may be specified. If none of the following policies is specified, the default one is RestartPolicyAlways.
+    /// RestartPolicy to be added to the Backup Job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
-    pub restart_policy: Option<String>,
+    pub restart_policy: Option<RestoreRestartPolicy>,
+    /// Tolerations to be used in the Restore Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<RestoreTolerations>>,
-    /// Represents the source of a volume to mount. Only one of its members may be specified.
+    /// Volume is a Kubernetes Volume object that contains a backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volume: Option<RestoreVolume>,
 }
 
-/// Affinity is a group of affinity scheduling rules.
+/// Affinity to be used in the Restore Pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -447,7 +452,7 @@ pub struct RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
     pub values: Option<Vec<String>>,
 }
 
-/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+/// BackupRef is a reference to a Backup object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreBackupRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -455,6 +460,7 @@ pub struct RestoreBackupRef {
     pub name: Option<String>,
 }
 
+/// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreMariaDbRef {
     /// API version of the referent.
@@ -478,11 +484,12 @@ pub struct RestoreMariaDbRef {
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+    /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
 }
 
-/// ResourceRequirements describes the compute resource requirements.
+/// Resouces describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -505,6 +512,14 @@ pub struct RestoreResourcesClaims {
     pub name: String,
 }
 
+/// RestoreSpec defines the desired state of restore
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RestoreRestartPolicy {
+    Always,
+    OnFailure,
+    Never,
+}
+
 /// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreTolerations {
@@ -525,7 +540,7 @@ pub struct RestoreTolerations {
     pub value: Option<String>,
 }
 
-/// Represents the source of a volume to mount. Only one of its members may be specified.
+/// Volume is a Kubernetes Volume object that contains a backup.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreVolume {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
@@ -1500,6 +1515,7 @@ pub struct RestoreVolumeVsphereVolume {
 /// RestoreStatus defines the observed state of restore
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreStatus {
+    /// Conditions for the Restore object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<RestoreStatusConditions>>,
 }

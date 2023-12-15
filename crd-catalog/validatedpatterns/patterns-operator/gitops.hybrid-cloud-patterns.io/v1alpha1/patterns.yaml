@@ -85,10 +85,16 @@ spec:
                     description: 'Interval in seconds to poll for drifts between origin and target repositories. Default: 180 seconds'
                     type: integer
                   targetRepo:
-                    description: Git repo containing the pattern to deploy. Must use https/http
+                    description: Git repo containing the pattern to deploy. Must use https/http or, for ssh, git@server:foo/bar.git
                     type: string
                   targetRevision:
                     description: 'Branch, tag, or commit to deploy.  Does not support short-sha''s. Default: HEAD'
+                    type: string
+                  tokenSecret:
+                    description: Optional. K8s secret name where the info for connecting to git can be found. The supported secrets are modeled after the private repositories in argo (https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repositories) currently ssh and username+password are supported
+                    type: string
+                  tokenSecretNamespace:
+                    description: Optional. K8s secret namespace where the token for connecting to git can be found
                     type: string
                 required:
                 - targetRepo
@@ -184,6 +190,8 @@ spec:
                 type: string
               lastStep:
                 description: Last action related to the pattern
+                type: string
+              path:
                 type: string
               version:
                 description: Number of updates to the pattern
