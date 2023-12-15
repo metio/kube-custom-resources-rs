@@ -20,7 +20,7 @@ pub struct BackupSpec {
     /// Which backupPolicy is applied to perform this backup.
     #[serde(rename = "backupPolicyName")]
     pub backup_policy_name: String,
-    /// deletionPolicy determines whether the backup contents stored in backup repository should be deleted when the backup custom resource is deleted. Supported values are "Retain" and "Delete". "Retain" means that the backup can not be deleted and remains in 'Deleting' phase. "Delete" means that the backup content and its physical snapshot on backup repository are deleted.
+    /// deletionPolicy determines whether the backup contents stored in backup repository should be deleted when the backup custom resource is deleted. Supported values are "Retain" and "Delete". "Retain" means that the backup can not be deleted and remains in 'Deleting' phase. "Delete" means that the backup content and its physical snapshot on backup repository are deleted. TODO: for the retain policy, we should support in the future for only deleting the backup custom objects but retaining the backup contents in backup repository. The current implementation only prevent accidental deletion of backup data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<String>,
     /// parentBackupName determines the parent backup name for incremental or differential backup.

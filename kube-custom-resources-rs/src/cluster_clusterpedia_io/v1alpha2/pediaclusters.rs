@@ -20,6 +20,8 @@ pub struct PediaClusterSpec {
     pub key_data: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubeconfig: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingName")]
+    pub sharding_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncAllCustomResources")]
     pub sync_all_custom_resources: Option<bool>,
     #[serde(rename = "syncResources")]
@@ -44,6 +46,8 @@ pub struct PediaClusterStatus {
     pub apiserver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<PediaClusterStatusConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingName")]
+    pub sharding_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncResources")]
     pub sync_resources: Option<Vec<PediaClusterStatusSyncResources>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

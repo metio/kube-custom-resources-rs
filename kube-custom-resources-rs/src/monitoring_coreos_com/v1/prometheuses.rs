@@ -41,7 +41,7 @@ pub struct PrometheusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alerting: Option<PrometheusAlerting>,
     /// AllowOverlappingBlocks enables vertical compaction and vertical query merge in Prometheus. 
-    ///  *Deprecated: this flag has no effect for Prometheus >= 2.39.0 where overlapping blocks are enabled by default.*
+    ///  Deprecated: this flag has no effect for Prometheus >= 2.39.0 where overlapping blocks are enabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowOverlappingBlocks")]
     pub allow_overlapping_blocks: Option<bool>,
     /// APIServerConfig allows specifying a host and auth methods to access the Kuberntees API server. If null, Prometheus is assumed to run inside of the cluster: it will discover the API servers automatically and use the Pod's CA certificate and bearer token file at /var/run/secrets/kubernetes.io/serviceaccount/.
@@ -50,7 +50,7 @@ pub struct PrometheusSpec {
     /// When true, ServiceMonitor, PodMonitor and Probe object are forbidden to reference arbitrary files on the file system of the 'prometheus' container. When a ServiceMonitor's endpoint specifies a `bearerTokenFile` value (e.g.  '/var/run/secrets/kubernetes.io/serviceaccount/token'), a malicious target can get access to the Prometheus service account's token in the Prometheus' scrape request. Setting `spec.arbitraryFSAccessThroughSM` to 'true' would prevent the attack. Users should instead provide the credentials using the `spec.bearerTokenSecret` field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "arbitraryFSAccessThroughSMs")]
     pub arbitrary_fs_access_through_s_ms: Option<PrometheusArbitraryFsAccessThroughSMs>,
-    /// *Deprecated: use 'spec.image' instead.*
+    /// Deprecated: use 'spec.image' instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
     pub base_image: Option<String>,
     /// BodySizeLimit defines per-scrape on response body size. Only valid in Prometheus versions 2.45.0 and newer.
@@ -231,7 +231,7 @@ pub struct PrometheusSpec {
     ///  Default: "prometheus"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusExternalLabelName")]
     pub prometheus_external_label_name: Option<String>,
-    /// Defines the list of PrometheusRule objects to which the namespace label enforcement doesn't apply. This is only relevant when `spec.enforcedNamespaceLabel` is set to true. *Deprecated: use `spec.excludedFromEnforcement` instead.*
+    /// Defines the list of PrometheusRule objects to which the namespace label enforcement doesn't apply. This is only relevant when `spec.enforcedNamespaceLabel` is set to true. Deprecated: use `spec.excludedFromEnforcement` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusRulesExcludedFromEnforce")]
     pub prometheus_rules_excluded_from_enforce: Option<Vec<PrometheusPrometheusRulesExcludedFromEnforce>>,
     /// QuerySpec defines the configuration of the Promethus query service.
@@ -314,7 +314,7 @@ pub struct PrometheusSpec {
     ///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitorSelector")]
     pub service_monitor_selector: Option<PrometheusServiceMonitorSelector>,
-    /// *Deprecated: use 'spec.image' instead. The image's digest can be specified as part of the image name.*
+    /// Deprecated: use 'spec.image' instead. The image's digest can be specified as part of the image name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha: Option<String>,
     /// EXPERIMENTAL: Number of shards to distribute targets onto. `spec.replicas` multiplied by `spec.shards` is the total number of Pods created. 
@@ -326,7 +326,7 @@ pub struct PrometheusSpec {
     /// Storage defines the storage used by Prometheus.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<PrometheusStorage>,
-    /// *Deprecated: use 'spec.image' instead. The image's tag can be specified as part of the image name.*
+    /// Deprecated: use 'spec.image' instead. The image's tag can be specified as part of the image name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// TargetLimit defines a limit on the number of scraped targets that will be accepted. Only valid in Prometheus versions 2.45.0 and newer.
@@ -853,7 +853,7 @@ pub struct PrometheusAlertingAlertmanagers {
     pub basic_auth: Option<PrometheusAlertingAlertmanagersBasicAuth>,
     /// File to read bearer token for Alertmanager. 
     ///  Cannot be set at the same time as `basicAuth`, `authorization`, or `sigv4`. 
-    ///  *Deprecated: this will be removed in a future release. Prefer using `authorization`.*
+    ///  Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Whether to enable HTTP2.
@@ -1125,12 +1125,12 @@ pub struct PrometheusApiserverConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PrometheusApiserverConfigBasicAuth>,
     /// *Warning: this field shouldn't be used because the token value appears in clear-text. Prefer using `authorization`.* 
-    ///  *Deprecated: this will be removed in a future release.*
+    ///  Deprecated: this will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File to read bearer token for accessing apiserver. 
     ///  Cannot be set at the same time as `basicAuth`, `authorization`, or `bearerToken`. 
-    ///  *Deprecated: this will be removed in a future release. Prefer using `authorization`.*
+    ///  Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Kubernetes API address consisting of a hostname or IP address followed by an optional port number.
@@ -3160,11 +3160,11 @@ pub struct PrometheusRemoteRead {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PrometheusRemoteReadBasicAuth>,
     /// *Warning: this field shouldn't be used because the token value appears in clear-text. Prefer using `authorization`.* 
-    ///  *Deprecated: this will be removed in a future release.*
+    ///  Deprecated: this will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File from which to read the bearer token for the URL. 
-    ///  *Deprecated: this will be removed in a future release. Prefer using `authorization`.*
+    ///  Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Whether to use the external labels as selectors for the remote read endpoint. 
@@ -3481,11 +3481,11 @@ pub struct PrometheusRemoteWrite {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PrometheusRemoteWriteBasicAuth>,
     /// *Warning: this field shouldn't be used because the token value appears in clear-text. Prefer using `authorization`.* 
-    ///  *Deprecated: this will be removed in a future release.*
+    ///  Deprecated: this will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File from which to read bearer token for the URL. 
-    ///  *Deprecated: this will be removed in a future release. Prefer using `authorization`.*
+    ///  Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Custom HTTP headers to be sent along with each remote write request. Be aware that headers that are set by Prometheus itself can't be overwritten. 
@@ -4280,7 +4280,7 @@ pub struct PrometheusServiceMonitorSelectorMatchExpressions {
 /// Storage defines the storage used by Prometheus.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusStorage {
-    /// *Deprecated: subPath usage will be removed in a future release.*
+    /// Deprecated: subPath usage will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMountSubPath")]
     pub disable_mount_sub_path: Option<bool>,
     /// EmptyDirVolumeSource to be used by the StatefulSet. If specified, it takes precedence over `ephemeral` and `volumeClaimTemplate`. More info: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
@@ -4451,7 +4451,7 @@ pub struct PrometheusStorageVolumeClaimTemplate {
     /// Defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<PrometheusStorageVolumeClaimTemplateSpec>,
-    /// *Deprecated: this field is never set.*
+    /// Deprecated: this field is never set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<PrometheusStorageVolumeClaimTemplateStatus>,
 }
@@ -4572,7 +4572,7 @@ pub struct PrometheusStorageVolumeClaimTemplateSpecSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// *Deprecated: this field is never set.*
+/// Deprecated: this field is never set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusStorageVolumeClaimTemplateStatus {
     /// accessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
@@ -4629,7 +4629,7 @@ pub struct PrometheusThanos {
     /// AdditionalArgs allows setting additional arguments for the Thanos container. The arguments are passed as-is to the Thanos container which may cause issues if they are invalid or not supported the given Thanos version. In case of an argument conflict (e.g. an argument which is already set by the operator itself) or when providing an invalid argument, the reconciliation will fail and an error will be logged.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalArgs")]
     pub additional_args: Option<Vec<PrometheusThanosAdditionalArgs>>,
-    /// *Deprecated: use 'image' instead.*
+    /// Deprecated: use 'image' instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
     pub base_image: Option<String>,
     /// BlockDuration controls the size of TSDB blocks produced by Prometheus. The default value is 2h to match the upstream Prometheus defaults. 
@@ -4659,7 +4659,7 @@ pub struct PrometheusThanos {
     ///  If neither `spec.thanos.image` nor `spec.thanos.baseImage` are defined, the operator will use the latest upstream version of Thanos available at the time when the operator was released.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// *Deprecated: use `grpcListenLocal` and `httpListenLocal` instead.*
+    /// Deprecated: use `grpcListenLocal` and `httpListenLocal` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenLocal")]
     pub listen_local: Option<bool>,
     /// Log format for the Thanos sidecar.
@@ -4687,10 +4687,10 @@ pub struct PrometheusThanos {
     /// Defines the resources requests and limits of the Thanos sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PrometheusThanosResources>,
-    /// *Deprecated: use 'image' instead.  The image digest can be specified as part of the image name.*
+    /// Deprecated: use 'image' instead.  The image digest can be specified as part of the image name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha: Option<String>,
-    /// *Deprecated: use 'image' instead. The image's tag can be specified as part of the image name.*
+    /// Deprecated: use 'image' instead. The image's tag can be specified as as part of the image name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// Defines the tracing configuration for the Thanos sidecar. 

@@ -13,34 +13,46 @@ use std::collections::BTreeMap;
 #[kube(status = "ConnectionStatus")]
 #[kube(schema = "disabled")]
 pub struct ConnectionSpec {
+    /// Database to use for configuring the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
+    /// HealthCheck to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<ConnectionHealthCheck>,
+    /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: ConnectionMariaDbRef,
+    /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
-    /// SecretKeySelector selects a key of a Secret.
+    /// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.
     #[serde(rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: ConnectionPasswordSecretKeyRef,
+    /// SecretName to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
+    /// SecretTemplate to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<ConnectionSecretTemplate>,
+    /// ServiceName to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
+    /// Username to use for configuring the Connection.
     pub username: String,
 }
 
+/// HealthCheck to be used in the Connection.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConnectionHealthCheck {
+    /// Interval used to perform health checks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
+    /// RetryInterval is the intervañ used to perform health check retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
+/// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConnectionMariaDbRef {
     /// API version of the referent.
@@ -64,11 +76,12 @@ pub struct ConnectionMariaDbRef {
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+    /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
+/// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConnectionPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -81,24 +94,34 @@ pub struct ConnectionPasswordSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+/// SecretTemplate to be used in the Connection.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConnectionSecretTemplate {
+    /// Annotations to be added to the Secret object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// DatabaseKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
     pub database_key: Option<String>,
+    /// Format to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
+    /// HostKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
     pub host_key: Option<String>,
+    /// Key to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
+    /// Labels to be added to the Secret object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// PasswordKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
+    /// PortKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
+    /// UsernameKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
@@ -106,6 +129,7 @@ pub struct ConnectionSecretTemplate {
 /// ConnectionStatus defines the observed state of Connection
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConnectionStatus {
+    /// Conditions for the Connection object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ConnectionStatusConditions>>,
 }

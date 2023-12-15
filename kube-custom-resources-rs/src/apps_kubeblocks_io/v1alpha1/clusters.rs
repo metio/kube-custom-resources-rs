@@ -161,7 +161,7 @@ pub struct ClusterComponentSpecs {
     /// noCreatePDB defines the PodDisruptionBudget creation behavior and is set to true if creation of PodDisruptionBudget for this component is not needed. It defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noCreatePDB")]
     pub no_create_pdb: Option<bool>,
-    /// Component replicas. The default value is used in ClusterDefinition spec if not specified.
+    /// Component replicas.
     pub replicas: i32,
     /// Resources requests and limits of workload.
     #[serde(default, skip_serializing_if = "Option::is_none")]

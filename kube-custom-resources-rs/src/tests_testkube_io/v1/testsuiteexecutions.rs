@@ -282,8 +282,17 @@ pub struct TestSuiteExecutionStatusLatestExecution {
 /// execution result returned from executor
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TestSuiteExecutionStatusLatestExecutionExecuteStepResults {
+    /// step duration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub duration: Option<String>,
+    /// step end time
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
+    pub end_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub execute: Option<Vec<TestSuiteExecutionStatusLatestExecutionExecuteStepResultsExecute>>,
+    /// step start time
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
+    pub start_time: Option<String>,
     /// set of steps run in parallel
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub step: Option<TestSuiteExecutionStatusLatestExecutionExecuteStepResultsStep>,
@@ -419,9 +428,15 @@ pub struct TestSuiteExecutionStatusLatestExecutionExecuteStepResultsExecuteExecu
     /// artifact directories for scraping
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dirs: Option<Vec<String>>,
+    /// regexp to filter scraped artifacts, single or comma separated
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub masks: Option<Vec<String>>,
     /// don't use a separate folder for execution artifacts
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "omitFolderPerExecution")]
     pub omit_folder_per_execution: Option<bool>,
+    /// whether to share volume between pods
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedBetweenPods")]
+    pub shared_between_pods: Option<bool>,
     /// artifact bucket storage
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageBucket")]
     pub storage_bucket: Option<String>,
@@ -971,9 +986,15 @@ pub struct TestSuiteExecutionStatusLatestExecutionStepResultsExecutionArtifactRe
     /// artifact directories for scraping
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dirs: Option<Vec<String>>,
+    /// regexp to filter scraped artifacts, single or comma separated
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub masks: Option<Vec<String>>,
     /// don't use a separate folder for execution artifacts
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "omitFolderPerExecution")]
     pub omit_folder_per_execution: Option<bool>,
+    /// whether to share volume between pods
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedBetweenPods")]
+    pub shared_between_pods: Option<bool>,
     /// artifact bucket storage
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageBucket")]
     pub storage_bucket: Option<String>,

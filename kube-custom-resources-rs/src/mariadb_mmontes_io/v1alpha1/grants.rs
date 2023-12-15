@@ -12,22 +12,31 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "GrantStatus")]
 #[kube(schema = "disabled")]
 pub struct GrantSpec {
+    /// Database to use in the Grant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
+    /// GrantOption to use in the Grant.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantOption")]
     pub grant_option: Option<bool>,
+    /// Host to use in the Grant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
+    /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: GrantMariaDbRef,
+    /// Privileges to use in the Grant.
     pub privileges: Vec<String>,
+    /// RetryInterval is the interval used to perform health check retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
+    /// Table to use in the Grant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub table: Option<String>,
+    /// Username to use in the Grant.
     pub username: String,
 }
 
+/// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct GrantMariaDbRef {
     /// API version of the referent.
@@ -51,6 +60,7 @@ pub struct GrantMariaDbRef {
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+    /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
 }
@@ -58,6 +68,7 @@ pub struct GrantMariaDbRef {
 /// GrantStatus defines the observed state of Grant
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct GrantStatus {
+    /// Conditions for the Grant object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<GrantStatusConditions>>,
 }

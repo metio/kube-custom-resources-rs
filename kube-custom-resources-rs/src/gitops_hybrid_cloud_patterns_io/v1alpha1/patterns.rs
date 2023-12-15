@@ -58,12 +58,18 @@ pub struct PatternGitSpec {
     /// Interval in seconds to poll for drifts between origin and target repositories. Default: 180 seconds
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollInterval")]
     pub poll_interval: Option<i64>,
-    /// Git repo containing the pattern to deploy. Must use https/http
+    /// Git repo containing the pattern to deploy. Must use https/http or, for ssh, git@server:foo/bar.git
     #[serde(rename = "targetRepo")]
     pub target_repo: String,
     /// Branch, tag, or commit to deploy.  Does not support short-sha's. Default: HEAD
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
+    /// Optional. K8s secret name where the info for connecting to git can be found. The supported secrets are modeled after the private repositories in argo (https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repositories) currently ssh and username+password are supported
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecret")]
+    pub token_secret: Option<String>,
+    /// Optional. K8s secret namespace where the token for connecting to git can be found
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecretNamespace")]
+    pub token_secret_namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -114,6 +120,8 @@ pub struct PatternStatus {
     /// Last action related to the pattern
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStep")]
     pub last_step: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// Number of updates to the pattern
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<i64>,

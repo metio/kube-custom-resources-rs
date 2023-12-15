@@ -243,6 +243,13 @@ spec:
                     items:
                       description: execution result returned from executor
                       properties:
+                        duration:
+                          description: step duration
+                          type: string
+                        endTime:
+                          description: step end time
+                          format: date-time
+                          type: string
                         execute:
                           items:
                             description: execution result returned from executor
@@ -269,8 +276,16 @@ spec:
                                         items:
                                           type: string
                                         type: array
+                                      masks:
+                                        description: regexp to filter scraped artifacts, single or comma separated
+                                        items:
+                                          type: string
+                                        type: array
                                       omitFolderPerExecution:
                                         description: don't use a separate folder for execution artifacts
+                                        type: boolean
+                                      sharedBetweenPods:
+                                        description: whether to share volume between pods
                                         type: boolean
                                       storageBucket:
                                         description: artifact bucket storage
@@ -663,6 +678,10 @@ spec:
                                 type: object
                             type: object
                           type: array
+                        startTime:
+                          description: step start time
+                          format: date-time
+                          type: string
                         step:
                           description: set of steps run in parallel
                           properties:
@@ -759,8 +778,16 @@ spec:
                                   items:
                                     type: string
                                   type: array
+                                masks:
+                                  description: regexp to filter scraped artifacts, single or comma separated
+                                  items:
+                                    type: string
+                                  type: array
                                 omitFolderPerExecution:
                                   description: don't use a separate folder for execution artifacts
+                                  type: boolean
+                                sharedBetweenPods:
+                                  description: whether to share volume between pods
                                   type: boolean
                                 storageBucket:
                                   description: artifact bucket storage

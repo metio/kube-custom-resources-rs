@@ -3074,6 +3074,11 @@ spec:
                       type: object
                     type: array
                 type: object
+              redisEnterpriseIPFamily:
+                enum:
+                - IPv4
+                - IPv6
+                type: string
               redisEnterpriseImageSpec:
                 properties:
                   digestHash:
@@ -7189,6 +7194,8 @@ spec:
                   thisUpdate:
                     type: string
                 type: object
+              redisEnterpriseIPFamily:
+                type: string
               specStatus:
                 type: string
               state:

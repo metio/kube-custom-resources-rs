@@ -12,20 +12,34 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "MultiClusterServiceStatus")]
 #[kube(schema = "disabled")]
 pub struct MultiClusterServiceSpec {
+    /// ConsumerClusters specifies the clusters where the service will be exposed, for clients. If leave it empty, the service will be exposed to all clusters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerClusters")]
+    pub consumer_clusters: Option<Vec<MultiClusterServiceConsumerClusters>>,
     /// Ports is the list of ports that are exposed by this MultiClusterService. No specified port will be filtered out during the service exposure and discovery process. All ports in the referencing service will be exposed by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<MultiClusterServicePorts>>,
-    /// Range specifies the ranges where the referencing service should be exposed. Only valid and optional in case of Types contains CrossCluster. If not set and Types contains CrossCluster, all clusters will be selected, that means the referencing service will be exposed across all registered clusters. Deprecated: in favor of ServiceProvisionClusters/ServiceConsumptionClusters.
+    /// ProviderClusters specifies the clusters which will provide the service backend. If leave it empty, we will collect the backend endpoints from all clusters and sync them to the ConsumerClusters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerClusters")]
+    pub provider_clusters: Option<Vec<MultiClusterServiceProviderClusters>>,
+    /// Range specifies the ranges where the referencing service should be exposed. Only valid and optional in case of Types contains CrossCluster. If not set and Types contains CrossCluster, all clusters will be selected, that means the referencing service will be exposed across all registered clusters. Deprecated: in favor of ProviderClusters/ConsumerClusters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub range: Option<MultiClusterServiceRange>,
-    /// ServiceConsumptionClusters specifies the clusters where the service will be exposed, for clients. If leave it empty, the service will be exposed to all clusters.
+    /// ServiceConsumptionClusters specifies the clusters where the service will be exposed, for clients. If leave it empty, the service will be exposed to all clusters. Deprecated: in favor of ProviderClusters/ConsumerClusters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceConsumptionClusters")]
     pub service_consumption_clusters: Option<Vec<String>>,
-    /// ServiceProvisionClusters specifies the clusters which will provision the service backend. If leave it empty, we will collect the backend endpoints from all clusters and sync them to the ServiceConsumptionClusters.
+    /// ServiceProvisionClusters specifies the clusters which will provision the service backend. If leave it empty, we will collect the backend endpoints from all clusters and sync them to the ServiceConsumptionClusters. Deprecated: in favor of ProviderClusters/ConsumerClusters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceProvisionClusters")]
     pub service_provision_clusters: Option<Vec<String>>,
     /// Types specifies how to expose the service referencing by this MultiClusterService.
     pub types: Vec<String>,
+}
+
+/// ClusterSelector specifies the cluster to be selected.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MultiClusterServiceConsumerClusters {
+    /// Name is the name of the cluster to be selected.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// ExposurePort describes which port will be exposed.
@@ -38,7 +52,15 @@ pub struct MultiClusterServicePorts {
     pub port: i32,
 }
 
-/// Range specifies the ranges where the referencing service should be exposed. Only valid and optional in case of Types contains CrossCluster. If not set and Types contains CrossCluster, all clusters will be selected, that means the referencing service will be exposed across all registered clusters. Deprecated: in favor of ServiceProvisionClusters/ServiceConsumptionClusters.
+/// ClusterSelector specifies the cluster to be selected.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MultiClusterServiceProviderClusters {
+    /// Name is the name of the cluster to be selected.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Range specifies the ranges where the referencing service should be exposed. Only valid and optional in case of Types contains CrossCluster. If not set and Types contains CrossCluster, all clusters will be selected, that means the referencing service will be exposed across all registered clusters. Deprecated: in favor of ProviderClusters/ConsumerClusters.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MultiClusterServiceRange {
     /// ClusterNames is the list of clusters to be selected.

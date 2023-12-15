@@ -14,33 +14,41 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "BackupStatus")]
 #[kube(schema = "disabled")]
 pub struct BackupSpec {
-    /// Affinity is a group of affinity scheduling rules.
+    /// Affinity to be used in the Backup Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<BackupAffinity>,
+    /// Args to be used in the Backup container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
+    /// BackoffLimit defines the maximum number of attempts to successfully take a Backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
+    /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: BackupMariaDbRef,
+    /// MaxRetentionDays defined the maximum age that Backups should have. Old backup will be cleaned up by the Backup Job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetentionDays")]
     pub max_retention_days: Option<i32>,
+    /// NodeSelector to be used in the Backup Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// ResourceRequirements describes the compute resource requirements.
+    /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BackupResources>,
-    /// RestartPolicy describes how the container should be restarted. Only one of the following restart policies may be specified. If none of the following policies is specified, the default one is RestartPolicyAlways.
+    /// RestartPolicy to be added to the Backup Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
-    pub restart_policy: Option<String>,
+    pub restart_policy: Option<BackupRestartPolicy>,
+    /// Schedule defines when the Backup will be taken.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<BackupSchedule>,
+    /// Storage to be used in the Backup.
     pub storage: BackupStorage,
+    /// Tolerations to be used in the Backup Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<BackupTolerations>>,
 }
 
-/// Affinity is a group of affinity scheduling rules.
+/// Affinity to be used in the Backup Pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -446,6 +454,7 @@ pub struct BackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExe
     pub values: Option<Vec<String>>,
 }
 
+/// MariaDBRef is a reference to a MariaDB object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupMariaDbRef {
     /// API version of the referent.
@@ -469,11 +478,12 @@ pub struct BackupMariaDbRef {
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+    /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
 }
 
-/// ResourceRequirements describes the compute resource requirements.
+/// Resouces describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -496,24 +506,36 @@ pub struct BackupResourcesClaims {
     pub name: String,
 }
 
+/// BackupSpec defines the desired state of Backup
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupRestartPolicy {
+    Always,
+    OnFailure,
+    Never,
+}
+
+/// Schedule defines when the Backup will be taken.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupSchedule {
+    /// Cron is a cron expression that defines the schedule.
     pub cron: String,
+    /// Suspend defines whether the schedule is active or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }
 
+/// Storage to be used in the Backup.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupStorage {
-    /// PersistentVolumeClaimSpec describes the common attributes of storage devices and allows a Source for provider-specific attributes
+    /// PersistentVolumeClaim is a Kubernetes PVC specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<BackupStoragePersistentVolumeClaim>,
-    /// Represents the source of a volume to mount. Only one of its members may be specified.
+    /// Volume is a Kubernetes volume specification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volume: Option<BackupStorageVolume>,
 }
 
-/// PersistentVolumeClaimSpec describes the common attributes of storage devices and allows a Source for provider-specific attributes
+/// PersistentVolumeClaim is a Kubernetes PVC specification.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupStoragePersistentVolumeClaim {
     /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
@@ -615,7 +637,7 @@ pub struct BackupStoragePersistentVolumeClaimSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// Represents the source of a volume to mount. Only one of its members may be specified.
+/// Volume is a Kubernetes volume specification.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupStorageVolume {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
@@ -1610,6 +1632,7 @@ pub struct BackupTolerations {
 /// BackupStatus defines the observed state of Backup
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupStatus {
+    /// Conditions for the Backup object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<BackupStatusConditions>>,
 }

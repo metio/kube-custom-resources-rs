@@ -1540,7 +1540,7 @@ spec:
                       description: The server name, required
                       type: string
                     password:
-                      description: The reference to the password to be used to connect to the server
+                      description: The reference to the password to be used to connect to the server. If a password is provided, CloudNativePG creates a PostgreSQL passfile at `/controller/external/NAME/pass` (where "NAME" is the cluster's name). This passfile is automatically referenced in the connection string when establishing a connection to the remote PostgreSQL server from the current PostgreSQL `Cluster`. This ensures secure and efficient password management for external clusters.
                       properties:
                         key:
                           description: The key of the secret to select from.  Must be a valid secret key.
@@ -1924,6 +1924,9 @@ spec:
               postgresql:
                 description: Configuration of the PostgreSQL server
                 properties:
+                  enableAlterSystem:
+                    description: If this parameter is true, the user will be able to invoke `ALTER SYSTEM` on this CloudNativePG Cluster. This should only be used for debugging and troubleshooting. Defaults to false.
+                    type: boolean
                   ldap:
                     description: Options to specify LDAP configuration
                     properties:
@@ -2921,7 +2924,7 @@ spec:
                 description: Current primary instance
                 type: string
               currentPrimaryFailingSinceTimestamp:
-                description: The timestamp when the primary was detected to be unhealthy This field is reported when spec.failoverDelay is populated or during online upgrades
+                description: The timestamp when the primary was detected to be unhealthy This field is reported when `.spec.failoverDelay` is populated or during online upgrades
                 type: string
               currentPrimaryTimestamp:
                 description: The timestamp when the last actual promotion to primary has occurred

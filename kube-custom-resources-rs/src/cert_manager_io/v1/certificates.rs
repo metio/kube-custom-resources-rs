@@ -53,6 +53,10 @@ pub struct CertificateSpec {
     ///  Cannot be set if the `subject` or `commonName` field is set. This is an Alpha Feature and is only enabled with the `--feature-gates=LiteralCertificateSubject=true` option set on both the controller and webhook components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "literalSubject")]
     pub literal_subject: Option<String>,
+    /// x.509 certificate NameConstraint extension which MUST NOT be used in a non-CA certificate. More Info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.10 
+    ///  This is an Alpha Feature and is only enabled with the `--feature-gates=useCertificateRequestNameConstraints=true` option set on both the controller and webhook components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameConstraints")]
+    pub name_constraints: Option<CertificateNameConstraints>,
     /// Private key options. These include the key algorithm and size, the used encoding and the rotation policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<CertificatePrivateKey>,
@@ -164,6 +168,55 @@ pub struct CertificateKeystoresPkcs12PasswordSecretRef {
     pub key: Option<String>,
     /// Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
+}
+
+/// x.509 certificate NameConstraint extension which MUST NOT be used in a non-CA certificate. More Info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.10 
+///  This is an Alpha Feature and is only enabled with the `--feature-gates=useCertificateRequestNameConstraints=true` option set on both the controller and webhook components.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CertificateNameConstraints {
+    /// if true then the name constraints are marked critical.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub critical: Option<bool>,
+    /// Excluded contains the constraints which must be disallowed. Any name matching a restriction in the excluded field is invalid regardless of information appearing in the permitted
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub excluded: Option<CertificateNameConstraintsExcluded>,
+    /// Permitted contains the constraints in which the names must be located.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub permitted: Option<CertificateNameConstraintsPermitted>,
+}
+
+/// Excluded contains the constraints which must be disallowed. Any name matching a restriction in the excluded field is invalid regardless of information appearing in the permitted
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CertificateNameConstraintsExcluded {
+    /// DNSDomains is a list of DNS domains that are permitted or excluded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsDomains")]
+    pub dns_domains: Option<Vec<String>>,
+    /// EmailAddresses is a list of Email Addresses that are permitted or excluded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailAddresses")]
+    pub email_addresses: Option<Vec<String>>,
+    /// IPRanges is a list of IP Ranges that are permitted or excluded. This should be a valid CIDR notation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipRanges")]
+    pub ip_ranges: Option<Vec<String>>,
+    /// URIDomains is a list of URI domains that are permitted or excluded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uriDomains")]
+    pub uri_domains: Option<Vec<String>>,
+}
+
+/// Permitted contains the constraints in which the names must be located.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CertificateNameConstraintsPermitted {
+    /// DNSDomains is a list of DNS domains that are permitted or excluded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsDomains")]
+    pub dns_domains: Option<Vec<String>>,
+    /// EmailAddresses is a list of Email Addresses that are permitted or excluded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailAddresses")]
+    pub email_addresses: Option<Vec<String>>,
+    /// IPRanges is a list of IP Ranges that are permitted or excluded. This should be a valid CIDR notation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipRanges")]
+    pub ip_ranges: Option<Vec<String>>,
+    /// URIDomains is a list of URI domains that are permitted or excluded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uriDomains")]
+    pub uri_domains: Option<Vec<String>>,
 }
 
 /// Private key options. These include the key algorithm and size, the used encoding and the rotation policy.

@@ -49,7 +49,7 @@ pub struct AlertmanagerConfigInhibitRulesSourceMatch {
     pub match_type: Option<AlertmanagerConfigInhibitRulesSourceMatchMatchType>,
     /// Label to match.
     pub name: String,
-    /// Whether to match on equality (false) or regular-expression (true). Deprecated as of AlertManager >= v0.22.0 where a user should use MatchType instead.
+    /// Whether to match on equality (false) or regular-expression (true). Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<bool>,
     /// Label value to match.
@@ -78,7 +78,7 @@ pub struct AlertmanagerConfigInhibitRulesTargetMatch {
     pub match_type: Option<AlertmanagerConfigInhibitRulesTargetMatchMatchType>,
     /// Label to match.
     pub name: String,
-    /// Whether to match on equality (false) or regular-expression (true). Deprecated as of AlertManager >= v0.22.0 where a user should use MatchType instead.
+    /// Whether to match on equality (false) or regular-expression (true). Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<bool>,
     /// Label value to match.
@@ -4539,7 +4539,7 @@ pub struct AlertmanagerConfigRouteMatchers {
     pub match_type: Option<AlertmanagerConfigRouteMatchersMatchType>,
     /// Label to match.
     pub name: String,
-    /// Whether to match on equality (false) or regular-expression (true). Deprecated as of AlertManager >= v0.22.0 where a user should use MatchType instead.
+    /// Whether to match on equality (false) or regular-expression (true). Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<bool>,
     /// Label value to match.

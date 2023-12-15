@@ -35,6 +35,10 @@ spec:
       name: ClusterHealthy
       priority: 10
       type: string
+    - jsonPath: .status.shardingName
+      name: ShardingName
+      priority: 10
+      type: string
     name: v1alpha2
     schema:
       openAPIV3Schema:
@@ -62,6 +66,8 @@ spec:
                 type: string
               kubeconfig:
                 format: byte
+                type: string
+              shardingName:
                 type: string
               syncAllCustomResources:
                 type: boolean
@@ -139,6 +145,8 @@ spec:
                   - type
                   type: object
                 type: array
+              shardingName:
+                type: string
               syncResources:
                 items:
                   properties:

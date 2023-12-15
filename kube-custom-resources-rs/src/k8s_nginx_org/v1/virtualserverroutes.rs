@@ -522,6 +522,10 @@ pub struct VirtualServerRouteSubroutesSplitsActionReturn {
 /// Upstream defines an upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRouteUpstreams {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub backup: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPort")]
+    pub backup_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "buffer-size")]
     pub buffer_size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

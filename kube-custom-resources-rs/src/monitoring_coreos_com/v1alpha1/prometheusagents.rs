@@ -732,12 +732,12 @@ pub struct PrometheusAgentApiserverConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PrometheusAgentApiserverConfigBasicAuth>,
     /// *Warning: this field shouldn't be used because the token value appears in clear-text. Prefer using `authorization`.* 
-    ///  *Deprecated: this will be removed in a future release.*
+    ///  Deprecated: this will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File to read bearer token for accessing apiserver. 
     ///  Cannot be set at the same time as `basicAuth`, `authorization`, or `bearerToken`. 
-    ///  *Deprecated: this will be removed in a future release. Prefer using `authorization`.*
+    ///  Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Kubernetes API address consisting of a hostname or IP address followed by an optional port number.
@@ -2734,11 +2734,11 @@ pub struct PrometheusAgentRemoteWrite {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PrometheusAgentRemoteWriteBasicAuth>,
     /// *Warning: this field shouldn't be used because the token value appears in clear-text. Prefer using `authorization`.* 
-    ///  *Deprecated: this will be removed in a future release.*
+    ///  Deprecated: this will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File from which to read bearer token for the URL. 
-    ///  *Deprecated: this will be removed in a future release. Prefer using `authorization`.*
+    ///  Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Custom HTTP headers to be sent along with each remote write request. Be aware that headers that are set by Prometheus itself can't be overwritten. 
@@ -3462,7 +3462,7 @@ pub struct PrometheusAgentServiceMonitorSelectorMatchExpressions {
 /// Storage defines the storage used by Prometheus.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentStorage {
-    /// *Deprecated: subPath usage will be removed in a future release.*
+    /// Deprecated: subPath usage will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMountSubPath")]
     pub disable_mount_sub_path: Option<bool>,
     /// EmptyDirVolumeSource to be used by the StatefulSet. If specified, it takes precedence over `ephemeral` and `volumeClaimTemplate`. More info: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
@@ -3633,7 +3633,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplate {
     /// Defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<PrometheusAgentStorageVolumeClaimTemplateSpec>,
-    /// *Deprecated: this field is never set.*
+    /// Deprecated: this field is never set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<PrometheusAgentStorageVolumeClaimTemplateStatus>,
 }
@@ -3754,7 +3754,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateSpecSelectorMatchExpressions
     pub values: Option<Vec<String>>,
 }
 
-/// *Deprecated: this field is never set.*
+/// Deprecated: this field is never set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentStorageVolumeClaimTemplateStatus {
     /// accessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1

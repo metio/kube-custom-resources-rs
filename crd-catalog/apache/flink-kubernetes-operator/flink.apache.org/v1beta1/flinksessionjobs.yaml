@@ -53,6 +53,8 @@ spec:
                     type: string
                   parallelism:
                     type: integer
+                  savepointRedeployNonce:
+                    type: integer
                   savepointTriggerNonce:
                     type: integer
                   state:

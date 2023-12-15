@@ -3721,6 +3721,8 @@ spec:
                     type: object
                   rayVersion:
                     type: string
+                  suspend:
+                    type: boolean
                   workerGroupSpecs:
                     items:
                       properties:

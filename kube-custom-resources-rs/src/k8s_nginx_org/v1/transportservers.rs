@@ -89,6 +89,10 @@ pub struct TransportServerUpstreamParameters {
 /// TransportServerUpstream defines an upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerUpstreams {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub backup: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPort")]
+    pub backup_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failTimeout")]
     pub fail_timeout: Option<String>,
     /// TransportServerHealthCheck defines the parameters for active Upstream HealthChecks.

@@ -55,6 +55,9 @@ pub struct TestSuiteAfterDownloadArtifacts {
     /// previous step numbers starting from 1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousStepNumbers")]
     pub previous_step_numbers: Option<Vec<i64>>,
+    /// previous test names
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousTestNames")]
+    pub previous_test_names: Option<Vec<String>>,
 }
 
 /// TestSuiteStepSpec for particular type will have config for possible step types
@@ -88,6 +91,9 @@ pub struct TestSuiteBeforeDownloadArtifacts {
     /// previous step numbers starting from 1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousStepNumbers")]
     pub previous_step_numbers: Option<Vec<i64>>,
+    /// previous test names
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousTestNames")]
+    pub previous_test_names: Option<Vec<String>>,
 }
 
 /// TestSuiteStepSpec for particular type will have config for possible step types
@@ -262,6 +268,9 @@ pub struct TestSuiteStepsDownloadArtifacts {
     /// previous step numbers starting from 1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousStepNumbers")]
     pub previous_step_numbers: Option<Vec<i64>>,
+    /// previous test names
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousTestNames")]
+    pub previous_test_names: Option<Vec<String>>,
 }
 
 /// TestSuiteStepSpec for particular type will have config for possible step types

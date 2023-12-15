@@ -41,8 +41,10 @@ pub struct ClientIntentsCallsHttpResources {
 pub struct ClientIntentsCallsDatabaseResources {
     #[serde(rename = "databaseName")]
     pub database_name: String,
-    pub operations: Vec<String>,
-    pub table: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operations: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub table: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

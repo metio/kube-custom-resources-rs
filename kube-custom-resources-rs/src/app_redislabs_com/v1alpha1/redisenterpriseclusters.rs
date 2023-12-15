@@ -84,6 +84,8 @@ pub struct RedisEnterpriseClusterSpec {
     pub rack_awareness_node_label: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseAdditionalPodSpecAttributes")]
     pub redis_enterprise_additional_pod_spec_attributes: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributes>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseIPFamily")]
+    pub redis_enterprise_ip_family: Option<RedisEnterpriseClusterRedisEnterpriseIpFamily>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseImageSpec")]
     pub redis_enterprise_image_spec: Option<RedisEnterpriseClusterRedisEnterpriseImageSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseNodeResources")]
@@ -2793,6 +2795,12 @@ pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolum
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RedisEnterpriseClusterRedisEnterpriseIpFamily {
+    IPv4,
+    IPv6,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6519,6 +6527,8 @@ pub struct RedisEnterpriseClusterStatus {
     pub modules: Option<Vec<RedisEnterpriseClusterStatusModules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspStatus")]
     pub ocsp_status: Option<RedisEnterpriseClusterStatusOcspStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseIPFamily")]
+    pub redis_enterprise_ip_family: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "specStatus")]
     pub spec_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
