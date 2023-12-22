@@ -29,6 +29,9 @@ pub struct SealedSecretTemplate {
     /// Keys that should be templated using decrypted data
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<BTreeMap<String, String>>,
+    /// Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub immutable: Option<bool>,
     /// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<SealedSecretTemplateMetadata>,

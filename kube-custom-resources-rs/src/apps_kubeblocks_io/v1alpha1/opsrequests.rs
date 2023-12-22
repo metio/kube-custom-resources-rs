@@ -150,6 +150,12 @@ pub struct OpsRequestHorizontalScaling {
     /// componentName cluster component name.
     #[serde(rename = "componentName")]
     pub component_name: String,
+    /// Instances defines the name of instance that rsm scale down priorly. If the RsmTransformPolicy is specified as ToPod and expected replicas is less than current replicas, the list of Instances will be used. current replicas - expected replicas > len(Instances): Scale down from the list of Instances priorly, the others will select from NodeAssignment. current replicas - expected replicas < len(Instances): Scale down from the list of Instances. current replicas - expected replicas < len(Instances): Scale down from a part of Instances.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instances: Option<Vec<String>>,
+    /// Nodes defines the list of nodes that pods can schedule when scale up If the RsmTransformPolicy is specified as ToPod and expected replicas is more than current replicas,the list of Nodes will be used. If the list of Nodes is empty, no specific node will be assigned. However, if the list of Nodes is filled, all pods will be evenly scheduled across the Nodes in the list when scale up.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nodes: Option<Vec<String>>,
     /// replicas for the workloads.
     pub replicas: i32,
 }

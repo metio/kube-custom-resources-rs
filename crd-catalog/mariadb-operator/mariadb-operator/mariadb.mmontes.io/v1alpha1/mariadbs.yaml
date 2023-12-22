@@ -532,8 +532,9 @@ spec:
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
-                  fileName:
-                    description: FileName is the file within the source to be restored.
+                  targetRecoveryTime:
+                    description: TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective. It is used to determine the closest restoration source in time.
+                    format: date-time
                     type: string
                   volume:
                     description: Volume is a Kubernetes Volume object that contains a backup.
@@ -2854,7 +2855,7 @@ spec:
                     type: object
                 type: object
               image:
-                description: Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`.
+                description: Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`. Only MariaDB official images are supported.
                 type: string
               imagePullPolicy:
                 description: ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
@@ -3627,7 +3628,7 @@ spec:
                           type: object
                         type: array
                       image:
-                        description: Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`.
+                        description: 'Image name to be used as metrics exporter. The supported format is `<image>:<tag>`. Only mysqld-exporter >= v0.15.0 is supported: https://github.com/prometheus/mysqld_exporter'
                         type: string
                       imagePullPolicy:
                         description: ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
@@ -3998,11 +3999,30 @@ spec:
                           type: object
                         type: array
                     type: object
+                  passwordSecretKeyRef:
+                    description: PasswordSecretKeyRef is a reference to the password of the monitoring user used by the exporter.
+                    properties:
+                      key:
+                        description: The key of the secret to select from.  Must be a valid secret key.
+                        type: string
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                      optional:
+                        description: Specify whether the Secret or its key must be defined
+                        type: boolean
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
                   serviceMonitor:
                     description: ServiceMonitor defines the ServiceMonior object.
                     properties:
                       interval:
                         description: Interval for scraping metrics.
+                        type: string
+                      jobLabel:
+                        description: JobLabel to add to the ServiceMonitor object.
                         type: string
                       prometheusRelease:
                         description: PrometheusRelease is the release label to add to the ServiceMonitor object.
@@ -4010,12 +4030,10 @@ spec:
                       scrapeTimeout:
                         description: ScrapeTimeout defines the timeout for scraping metrics.
                         type: string
-                    required:
-                    - prometheusRelease
                     type: object
-                required:
-                - exporter
-                - serviceMonitor
+                  username:
+                    description: Username is the username of the monitoring user used by the exporter.
+                    type: string
                 type: object
               myCnf:
                 description: MyCnf allows to specify the my.cnf file mounted by Mariadb.
@@ -4374,7 +4392,7 @@ spec:
                 type: object
               replicas:
                 default: 1
-                description: Replicas indicates the number of instances.
+                description: Replicas indicates the number of desired instances.
                 format: int32
                 type: integer
               replication:
@@ -6476,6 +6494,10 @@ spec:
                     description: State is a per Pod representation of the Galera state file (grastate.dat).
                     type: object
                 type: object
+              replicas:
+                description: Replicas indicates the number of current instances.
+                format: int32
+                type: integer
             type: object
         required:
         - spec
@@ -6483,4 +6505,7 @@ spec:
     served: true
     storage: true
     subresources:
+      scale:
+        specReplicasPath: .spec.replicas
+        statusReplicasPath: .status.replicas
       status: {}

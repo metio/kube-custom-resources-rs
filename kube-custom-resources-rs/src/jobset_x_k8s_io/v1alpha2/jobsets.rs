@@ -4423,5 +4423,6 @@ pub struct JobSetStatusReplicatedJobsStatus {
     pub name: String,
     pub ready: i32,
     pub succeeded: i32,
+    pub suspended: i32,
 }
 

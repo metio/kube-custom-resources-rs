@@ -32,9 +32,6 @@ pub struct ClusterSpec {
     /// List of componentSpecs you want to replace in ClusterDefinition and ClusterVersion. It will replace the field in ClusterDefinition's and ClusterVersion's component if type is matching.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSpecs")]
     pub component_specs: Option<Vec<ClusterComponentSpecs>>,
-    /// connectionCredentials defines the credentials used to access a cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredentials")]
-    pub connection_credentials: Option<Vec<ClusterConnectionCredentials>>,
     /// monitor specifies the configuration of monitor
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<ClusterMonitor>,
@@ -150,6 +147,9 @@ pub struct ClusterComponentSpecs {
     /// enabledLogs indicates which log file takes effect in the database cluster. element is the log type which is defined in cluster definition logConfig.name, and will set relative variables about this log type in database kernel.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
     pub enabled_logs: Option<Vec<String>>,
+    /// Instances defines the list of instance to be deleted priorly If the RsmTransformPolicy is specified as ToPod,the list of instances will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instances: Option<Vec<String>>,
     /// issuer defines provider context for TLS certs. required when TLS enabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterComponentSpecsIssuer>,
@@ -161,11 +161,17 @@ pub struct ClusterComponentSpecs {
     /// noCreatePDB defines the PodDisruptionBudget creation behavior and is set to true if creation of PodDisruptionBudget for this component is not needed. It defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noCreatePDB")]
     pub no_create_pdb: Option<bool>,
+    /// Nodes defines the list of nodes that pods can schedule If the RsmTransformPolicy is specified as ToPod,the list of nodes will be used. If the list of nodes is empty, no specific node will be assigned. However, if the list of node is filled, all pods will be evenly scheduled across the nodes in the list.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nodes: Option<Vec<String>>,
     /// Component replicas.
     pub replicas: i32,
     /// Resources requests and limits of workload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterComponentSpecsResources>,
+    /// RsmTransformPolicy defines the policy generate sts using rsm. ToSts: rsm transforms to statefulSet ToPod: rsm transforms to pods
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rsmTransformPolicy")]
+    pub rsm_transform_policy: Option<ClusterComponentSpecsRsmTransformPolicy>,
     /// serviceAccountName is the name of the ServiceAccount that running component depends on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
@@ -287,6 +293,13 @@ pub struct ClusterComponentSpecsResources {
 pub struct ClusterComponentSpecsResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
+}
+
+/// ClusterComponentSpec defines the cluster component spec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterComponentSpecsRsmTransformPolicy {
+    ToPod,
+    ToSts,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -519,24 +532,6 @@ pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecResourcesClaims {
     pub name: String,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterConnectionCredentials {
-    /// AccountName specifies the name of account used to access the service. If specified, the account must be defined in @SystemAccounts. Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountName")]
-    pub account_name: Option<String>,
-    /// ComponentName specifies the name of component where the account defined. For cluster-level connection credential, this field is required. Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentName")]
-    pub component_name: Option<String>,
-    /// The name of the ConnectionCredential. Cannot be updated.
-    pub name: String,
-    /// PortName specifies the name of the port to access the service. If the service has multiple ports, a specific port must be specified to use here. Otherwise, the unique port of the service will be used. Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
-    pub port_name: Option<String>,
-    /// ServiceName specifies the name of service to use for accessing. Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
-    pub service_name: Option<String>,
-}
-
 /// monitor specifies the configuration of monitor
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterMonitor {
@@ -569,15 +564,21 @@ pub struct ClusterResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterServices {
-    /// ComponentSelector extends the ServiceSpec.Selector by allowing you to specify a component as selectors for the service. For component-level services, a default component selector with the component name will be added automatically.
+    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// ComponentSelector extends the ServiceSpec.Selector by allowing you to specify a component as selectors for the service. For component-level services, a default component selector with the component name will be added automatically. if GeneratePodOrdinalService sets to true, ComponentSelector must be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSelector")]
     pub component_selector: Option<String>,
-    /// The name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
+    /// GeneratePodOrdinalService indicates whether to create a corresponding Service for each Pod of the selected Component. If sets to true, a set of Service will be automatically generated for each Pod. and ComponentSelector must be specified. They can be referred to by adding the PodOrdinal to the defined ServiceName with named pattern <Service.ServiceName>-<PodOrdinal>. For example, a Service might be defined as follows: - name: my-service serviceName: my-service generatePodOrdinalService: true componentSelector: my-component spec: type: NodePort ports: - name: http port: 80 targetPort: 8080 Assuming that the Component has 3 replicas, then three services would be generated: my-service-0, my-service-1, and my-service-2, each pointing to its respective Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatePodOrdinalService")]
+    pub generate_pod_ordinal_service: Option<bool>,
+    /// Name defines the name or namePrefix of the service. if GeneratePodOrdinalService sets to true, the Name indicates the namePrefix of the service and the fullName will be generated with named pattern <Service.Name>-<PodOrdinal>. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
     pub name: String,
-    /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service.
+    /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service. if GeneratePodOrdinalService sets to true, RoleSelector will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
-    /// ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: - <CLUSTER_NAME>: for cluster-level services - <CLUSTER_NAME>-<COMPONENT_NAME>: for component-level services Only one default service name is allowed. Cannot be updated.
+    /// ServiceName defines the name or namePrefix of the underlying service object. if GeneratePodOrdinalService sets to true, the ServiceName indicates the namePrefix of the underlying service object. otherwise, it indicates the name of the underlying service object. If not specified, the default service name with different patterns will be used: - <CLUSTER_NAME>: for cluster-level services - <CLUSTER_NAME>-<COMPONENT_NAME>: for component-level services - <CLUSTER_NAME>-<COMPONENT_NAME>-<POD_ORDINAL>: for pod-level services when GeneratePodOrdinalService set to true Only one default service name is allowed. Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
     /// Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status

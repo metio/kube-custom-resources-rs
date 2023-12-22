@@ -26,7 +26,10 @@ pub struct GrantSpec {
     pub maria_db_ref: GrantMariaDbRef,
     /// Privileges to use in the Grant.
     pub privileges: Vec<String>,
-    /// RetryInterval is the interval used to perform health check retries.
+    /// RequeueInterval is used to perform requeue reconcilizations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
+    pub requeue_interval: Option<String>,
+    /// RetryInterval is the interval used to perform retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
     /// Table to use in the Grant.

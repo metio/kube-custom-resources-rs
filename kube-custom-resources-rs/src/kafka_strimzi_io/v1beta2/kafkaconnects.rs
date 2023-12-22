@@ -31,7 +31,7 @@ pub struct KafkaConnectSpec {
     /// Pass data from Secrets or ConfigMaps to the Kafka Connect pods and use them to configure connectors.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalConfiguration")]
     pub external_configuration: Option<KafkaConnectExternalConfiguration>,
-    /// The docker image for the pods.
+    /// The container image used for Kafka Connect pods. If no image name is explicitly specified, it is determined based on the `spec.version` configuration. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// JMX Options.
@@ -61,7 +61,7 @@ pub struct KafkaConnectSpec {
     /// The maximum limits for CPU and memory resources and the requested initial resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaConnectResources>,
-    /// Template for Kafka Connect and Kafka Mirror Maker 2 resources. The template allows users to specify how the `Deployment`, `Pods` and `Service` are generated.
+    /// Template for Kafka Connect and Kafka Mirror Maker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaConnectTemplate>,
     /// TLS configuration.
@@ -70,7 +70,7 @@ pub struct KafkaConnectSpec {
     /// The configuration of tracing in Kafka Connect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<KafkaConnectTracing>,
-    /// The Kafka Connect version. Defaults to {DefaultKafkaVersion}. Consult the user documentation to understand the process required to upgrade or downgrade the version.
+    /// The Kafka Connect version. Defaults to the latest version. Consult the user documentation to understand the process required to upgrade or downgrade the version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -558,7 +558,7 @@ pub struct KafkaConnectMetricsConfig {
     /// Metrics type. Only 'jmxPrometheusExporter' supported currently.
     #[serde(rename = "type")]
     pub r#type: KafkaConnectMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
     #[serde(rename = "valueFrom")]
     pub value_from: KafkaConnectMetricsConfigValueFrom,
 }
@@ -570,7 +570,7 @@ pub enum KafkaConnectMetricsConfigType {
     JmxPrometheusExporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaConnectMetricsConfigValueFrom {
     /// Reference to the key in the ConfigMap containing the configuration.
@@ -634,7 +634,7 @@ pub struct KafkaConnectResourcesClaims {
     pub name: Option<String>,
 }
 
-/// Template for Kafka Connect and Kafka Mirror Maker 2 resources. The template allows users to specify how the `Deployment`, `Pods` and `Service` are generated.
+/// Template for Kafka Connect and Kafka Mirror Maker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaConnectTemplate {
     /// Template for Kafka Connect API `Service`.
@@ -845,7 +845,7 @@ pub struct KafkaConnectTemplateBuildPod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaConnectTemplateBuildPodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
@@ -1636,7 +1636,7 @@ pub struct KafkaConnectTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaConnectTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.

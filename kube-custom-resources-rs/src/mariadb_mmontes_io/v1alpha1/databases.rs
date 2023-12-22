@@ -24,7 +24,10 @@ pub struct DatabaseSpec {
     /// Name overrides the default Database name provided by metadata.name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// RetryInterval is the interval used to perform health check retries.
+    /// RequeueInterval is used to perform requeue reconcilizations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
+    pub requeue_interval: Option<String>,
+    /// RetryInterval is the interval used to perform retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }

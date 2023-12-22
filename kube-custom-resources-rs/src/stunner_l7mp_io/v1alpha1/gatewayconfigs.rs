@@ -72,7 +72,7 @@ pub struct GatewayConfigAuthRef {
     pub kind: Option<String>,
     /// Name is the name of the referent.
     pub name: String,
-    /// Namespace is the namespace of the backend. When unspecified, the local namespace is inferred. 
+    /// Namespace is the namespace of the referenced object. When unspecified, the local namespace is inferred. 
     ///  Note that when a namespace different than the local namespace is specified, a ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. 
     ///  Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
