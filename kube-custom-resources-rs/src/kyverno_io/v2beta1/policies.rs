@@ -38,7 +38,7 @@ pub struct PolicySpec {
     /// Rules is a list of Rule instances. A Policy contains multiple rules and each rule can validate, mutate, or generate resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<PolicyRules>>,
-    /// SchemaValidation skips validation checks for policies as well as patched resources. Optional. The default value is set to "true", it must be set to "false" to disable the validation checks.
+    /// Deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaValidation")]
     pub schema_validation: Option<bool>,
     /// UseServerSideApply controls whether to use server-side apply for generate rules If is set to "true" create & update for generate rules will use apply instead of create/update. Defaults to "false" if not specified.
@@ -98,6 +98,9 @@ pub struct PolicyRules {
     /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<PolicyRulesPreconditions>,
+    /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller. The default value is set to "true", it must be set to "false" to apply generate and mutateExisting rules to those requests.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipBackgroundRequests")]
+    pub skip_background_requests: Option<bool>,
     /// Validation is used to validate matching resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validate: Option<PolicyRulesValidate>,
@@ -1906,7 +1909,7 @@ pub struct PolicyRulesValidateManifestsAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyRulesValidateManifestsAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha256 and sha512.
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -2254,7 +2257,7 @@ pub struct PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyRulesVerifyImagesAttestationsAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha256 and sha512.
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -2517,7 +2520,7 @@ pub struct PolicyRulesVerifyImagesAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyRulesVerifyImagesAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha256 and sha512.
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -2679,6 +2682,9 @@ pub struct PolicyStatusAutogenRules {
     /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<HashMap<String, serde_json::Value>>,
+    /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller. The default value is set to "true", it must be set to "false" to apply generate and mutateExisting rules to those requests.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipBackgroundRequests")]
+    pub skip_background_requests: Option<bool>,
     /// Validation is used to validate matching resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validate: Option<PolicyStatusAutogenRulesValidate>,
@@ -4533,7 +4539,7 @@ pub struct PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyStatusAutogenRulesValidateManifestsAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha256 and sha512.
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -4902,7 +4908,7 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeys 
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha256 and sha512.
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }
@@ -5165,7 +5171,7 @@ pub struct PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeys {
     /// Reference to a Secret resource that contains a public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PolicyStatusAutogenRulesVerifyImagesAttestorsEntriesKeysSecret>,
-    /// Specify signature algorithm for public keys. Supported values are sha256 and sha512.
+    /// Specify signature algorithm for public keys. Supported values are sha224, sha256, sha384 and sha512.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<String>,
 }

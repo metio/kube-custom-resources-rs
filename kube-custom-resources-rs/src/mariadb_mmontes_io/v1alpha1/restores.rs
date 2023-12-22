@@ -23,9 +23,6 @@ pub struct RestoreSpec {
     /// BackupRef is a reference to a Backup object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRef")]
     pub backup_ref: Option<RestoreBackupRef>,
-    /// FileName is the file within the source to be restored.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileName")]
-    pub file_name: Option<String>,
     /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: RestoreMariaDbRef,
@@ -38,6 +35,9 @@ pub struct RestoreSpec {
     /// RestartPolicy to be added to the Backup Job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<RestoreRestartPolicy>,
+    /// TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective. It is used to determine the closest restoration source in time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRecoveryTime")]
+    pub target_recovery_time: Option<String>,
     /// Tolerations to be used in the Restore Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<RestoreTolerations>>,

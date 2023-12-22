@@ -26,6 +26,9 @@ pub struct ReplicatedStateMachineSpec {
     /// MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "membershipReconfiguration")]
     pub membership_reconfiguration: Option<ReplicatedStateMachineMembershipReconfiguration>,
+    /// NodeAssignment defines the expected assignment of nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAssignment")]
+    pub node_assignment: Option<Vec<ReplicatedStateMachineNodeAssignment>>,
     /// Paused indicates that the rsm is paused, means the reconciliation of this rsm object will be paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
@@ -41,6 +44,9 @@ pub struct ReplicatedStateMachineSpec {
     /// Roles, a list of roles defined in the system.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<ReplicatedStateMachineRoles>>,
+    /// RsmTransformPolicy defines the policy generate sts using rsm. Passed from cluster. ToSts: rsm transform to statefulSet ToPod: rsm transform to pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rsmTransformPolicy")]
+    pub rsm_transform_policy: Option<ReplicatedStateMachineRsmTransformPolicy>,
     /// selector is a label query over pods that should match the replica count. It must match the pod template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
     pub selector: ReplicatedStateMachineSelector,
     /// service defines the behavior of a service spec. provides read-write service https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
@@ -518,6 +524,30 @@ pub struct ReplicatedStateMachineMembershipReconfigurationSwitchoverAction {
     pub image: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ReplicatedStateMachineNodeAssignment {
+    /// Name defines the name of statefulSet that needs to allocate node.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// NodeSpec defines the detailed node info that will assign to the statefulSet.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSpec")]
+    pub node_spec: Option<ReplicatedStateMachineNodeAssignmentNodeSpec>,
+}
+
+/// NodeSpec defines the detailed node info that will assign to the statefulSet.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ReplicatedStateMachineNodeAssignmentNodeSpec {
+    /// NodeName is a type that holds a api.Node's Name identifier. Being a type captures intent and helps make sure that the node name is not confused with similar concepts (the hostname, the cloud provider id, the cloud provider name etc) 
+    ///  To clarify the various types: 
+    ///  - Node.Name is the Name field of the Node in the API.  This should be stored in a NodeName. Unfortunately, because Name is part of ObjectMeta, we can't store it as a NodeName at the API level. 
+    ///  - Hostname is the hostname of the local machine (from uname -n). However, some components allow the user to pass in a --hostname-override flag, which will override this in most places. In the absence of anything more meaningful, kubelet will use Hostname as the Node.Name when it creates the Node. 
+    ///  * The cloudproviders have the own names: GCE has InstanceName, AWS has InstanceId. 
+    ///  For GCE, InstanceName is the Name of an Instance object in the GCE API.  On GCE, Instance.Name becomes the Hostname, and thus it makes sense also to use it as the Node.Name.  But that is GCE specific, and it is up to the cloudprovider how to do this mapping. 
+    ///  For AWS, the InstanceID is not yet suitable for use as a Node.Name, so we actually use the PrivateDnsName for the Node.Name.  And this is _not_ always the same as the hostname: if we are using a custom DHCP domain it won't be.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
+    pub node_name: Option<String>,
+}
+
 /// RoleProbe provides method to probe role.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineRoleProbe {
@@ -586,6 +616,13 @@ pub enum ReplicatedStateMachineRolesAccessMode {
     None,
     Readonly,
     ReadWrite,
+}
+
+/// ReplicatedStateMachineSpec defines the desired state of ReplicatedStateMachine
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ReplicatedStateMachineRsmTransformPolicy {
+    ToPod,
+    ToSts,
 }
 
 /// selector is a label query over pods that should match the replica count. It must match the pod template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors

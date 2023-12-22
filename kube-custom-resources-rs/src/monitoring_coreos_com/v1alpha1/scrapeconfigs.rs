@@ -71,6 +71,9 @@ pub struct ScrapeConfigSpec {
     ///  It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
+    /// OpenStackSDConfigs defines a list of OpenStack service discovery configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openstackSDConfigs")]
+    pub openstack_sd_configs: Option<Vec<ScrapeConfigOpenstackSdConfigs>>,
     /// Optional HTTP URL parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
@@ -1012,6 +1015,221 @@ pub enum ScrapeConfigMetricRelabelingsAction {
     Uppercase,
     KeepEqual,
     DropEqual,
+}
+
+/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigs {
+    /// Whether the service discovery should list all instances for all projects. It is only relevant for the 'instance' role and usually requires admin permissions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allTenants")]
+    pub all_tenants: Option<bool>,
+    /// ApplicationCredentialID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialId")]
+    pub application_credential_id: Option<String>,
+    /// The ApplicationCredentialID or ApplicationCredentialName fields are required if using an application credential to authenticate. Some providers allow you to create an application credential to authenticate rather than a password.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialName")]
+    pub application_credential_name: Option<String>,
+    /// The applicationCredentialSecret field is required if using an application credential to authenticate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialSecret")]
+    pub application_credential_secret: Option<ScrapeConfigOpenstackSdConfigsApplicationCredentialSecret>,
+    /// Availability of the endpoint to connect to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub availability: Option<ScrapeConfigOpenstackSdConfigsAvailability>,
+    /// DomainID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainID")]
+    pub domain_id: Option<String>,
+    /// At most one of domainId and domainName must be provided if using username with Identity V3. Otherwise, either are optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
+    pub domain_name: Option<String>,
+    /// IdentityEndpoint specifies the HTTP endpoint that is required to work with the Identity API of the appropriate version.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityEndpoint")]
+    pub identity_endpoint: Option<String>,
+    /// Password for the Identity V2 and V3 APIs. Consult with your provider's control panel to discover your account's preferred method of authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<ScrapeConfigOpenstackSdConfigsPassword>,
+    /// The port to scrape metrics from. If using the public IP address, this must instead be specified in the relabeling rule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    /// ProjectID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
+    pub project_id: Option<String>,
+    /// The ProjectId and ProjectName fields are optional for the Identity V2 API. Some providers allow you to specify a ProjectName instead of the ProjectId. Some require both. Your provider's authentication policies will determine how these fields influence authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectName")]
+    pub project_name: Option<String>,
+    /// Refresh interval to re-read the instance list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
+    pub refresh_interval: Option<String>,
+    /// The OpenStack Region.
+    pub region: String,
+    /// The OpenStack role of entities that should be discovered.
+    pub role: ScrapeConfigOpenstackSdConfigsRole,
+    /// TLS configuration applying to the target HTTP endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ScrapeConfigOpenstackSdConfigsTlsConfig>,
+    /// UserID
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub userid: Option<String>,
+    /// Username is required if using Identity V2 API. Consult with your provider's control panel to discover your account's username. In Identity V3, either userid or a combination of username and domainId or domainName are needed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+}
+
+/// The applicationCredentialSecret field is required if using an application credential to authenticate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsApplicationCredentialSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigOpenstackSdConfigsAvailability {
+    Public,
+    #[serde(rename = "public")]
+    Public,
+    Admin,
+    #[serde(rename = "admin")]
+    Admin,
+    Internal,
+    #[serde(rename = "internal")]
+    Internal,
+}
+
+/// Password for the Identity V2 and V3 APIs. Consult with your provider's control panel to discover your account's preferred method of authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsPassword {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigOpenstackSdConfigsRole {
+    Instance,
+    #[serde(rename = "instance")]
+    Instance,
+    Hypervisor,
+    #[serde(rename = "hypervisor")]
+    Hypervisor,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsTlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<ScrapeConfigOpenstackSdConfigsTlsConfigCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<ScrapeConfigOpenstackSdConfigsTlsConfigCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigOpenstackSdConfigsTlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigOpenstackSdConfigsTlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigOpenstackSdConfigsTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigOpenstackSdConfigsTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 

@@ -241,7 +241,7 @@ spec:
                 - groupId
                 type: object
               image:
-                description: The docker image for the pods.
+                description: The container image used for Kafka MirrorMaker pods. If no image name is explicitly specified, it is determined based on the `spec.version` configuration. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration.
                 type: string
               include:
                 description: List of topics which are included for mirroring. This option allows any regular expression using Java-style regular expressions. Mirroring two topics named A and B is achieved by using the expression `A\|B`. Or, as a special case, you can mirror all topics using the regular expression `*`. You can also specify multiple regular expressions separated by commas.
@@ -340,7 +340,7 @@ spec:
                     - jmxPrometheusExporter
                     type: string
                   valueFrom:
-                    description: ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+                    description: 'ConfigMap entry where the Prometheus JMX Exporter configuration is stored. '
                     properties:
                       configMapKeyRef:
                         description: Reference to the key in the ConfigMap containing the configuration.
@@ -1005,7 +1005,7 @@ spec:
                             x-kubernetes-preserve-unknown-fields: true
                         type: object
                       priorityClassName:
-                        description: The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+                        description: 'The name of the priority class used to assign priority to the pods. '
                         type: string
                       schedulerName:
                         description: The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
@@ -1182,7 +1182,7 @@ spec:
                 - type
                 type: object
               version:
-                description: The Kafka MirrorMaker version. Defaults to {DefaultKafkaVersion}. Consult the documentation to understand the process required to upgrade or downgrade the version.
+                description: The Kafka MirrorMaker version. Defaults to the latest version. Consult the documentation to understand the process required to upgrade or downgrade the version.
                 type: string
               whitelist:
                 description: List of topics which are included for mirroring. This option allows any regular expression using Java-style regular expressions. Mirroring two topics named A and B is achieved by using the expression `A\|B`. Or, as a special case, you can mirror all topics using the regular expression `*`. You can also specify multiple regular expressions separated by commas.

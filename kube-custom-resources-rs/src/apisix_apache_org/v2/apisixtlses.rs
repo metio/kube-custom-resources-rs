@@ -30,6 +30,8 @@ pub struct ApisixTlsClient {
     pub ca_secret: Option<ApisixTlsClientCaSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub depth: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub skip_mtls_uri_regex: Option<Vec<String>>,
 }
 
 /// ApisixSecret describes the Kubernetes Secret name and namespace.

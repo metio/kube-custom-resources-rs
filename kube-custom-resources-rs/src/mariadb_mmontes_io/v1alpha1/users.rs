@@ -27,7 +27,10 @@ pub struct UserSpec {
     /// PasswordSecretKeyRef is a reference to the password to be used by the User.
     #[serde(rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: UserPasswordSecretKeyRef,
-    /// RetryInterval is the interval used to perform health check retries.
+    /// RequeueInterval is used to perform requeue reconcilizations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
+    pub requeue_interval: Option<String>,
+    /// RetryInterval is the interval used to perform retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }

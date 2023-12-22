@@ -41,7 +41,7 @@ pub struct MariaDBSpec {
     /// Replication configures high availability via Galera.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub galera: Option<MariaDBGalera>,
-    /// Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`.
+    /// Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`. Only MariaDB official images are supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
@@ -95,7 +95,7 @@ pub struct MariaDBSpec {
     /// ReadinessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<MariaDBReadinessProbe>,
-    /// Replicas indicates the number of instances.
+    /// Replicas indicates the number of desired instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// Replication configures high availability via replication.
@@ -554,9 +554,9 @@ pub struct MariaDBBootstrapFrom {
     /// BackupRef is a reference to a Backup object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRef")]
     pub backup_ref: Option<MariaDBBootstrapFromBackupRef>,
-    /// FileName is the file within the source to be restored.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileName")]
-    pub file_name: Option<String>,
+    /// TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective. It is used to determine the closest restoration source in time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRecoveryTime")]
+    pub target_recovery_time: Option<String>,
     /// Volume is a Kubernetes Volume object that contains a backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volume: Option<MariaDBBootstrapFromVolume>,
@@ -3502,10 +3502,17 @@ pub struct MariaDBMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Exporter defines the metrics exporter container.
-    pub exporter: MariaDBMetricsExporter,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exporter: Option<MariaDBMetricsExporter>,
+    /// PasswordSecretKeyRef is a reference to the password of the monitoring user used by the exporter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
+    pub password_secret_key_ref: Option<MariaDBMetricsPasswordSecretKeyRef>,
     /// ServiceMonitor defines the ServiceMonior object.
-    #[serde(rename = "serviceMonitor")]
-    pub service_monitor: MariaDBMetricsServiceMonitor,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitor")]
+    pub service_monitor: Option<MariaDBMetricsServiceMonitor>,
+    /// Username is the username of the monitoring user used by the exporter.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
 }
 
 /// Exporter defines the metrics exporter container.
@@ -3523,7 +3530,7 @@ pub struct MariaDBMetricsExporter {
     /// EnvFrom represents the references (via ConfigMap and Secrets) to environment variables to be injected in the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<MariaDBMetricsExporterEnvFrom>>,
-    /// Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`.
+    /// Image name to be used as metrics exporter. The supported format is `<image>:<tag>`. Only mysqld-exporter >= v0.15.0 is supported: https://github.com/prometheus/mysqld_exporter
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
@@ -3997,15 +4004,31 @@ pub struct MariaDBMetricsExporterVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
+/// PasswordSecretKeyRef is a reference to the password of the monitoring user used by the exporter.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBMetricsPasswordSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// ServiceMonitor defines the ServiceMonior object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBMetricsServiceMonitor {
     /// Interval for scraping metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
+    /// JobLabel to add to the ServiceMonitor object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobLabel")]
+    pub job_label: Option<String>,
     /// PrometheusRelease is the release label to add to the ServiceMonitor object.
-    #[serde(rename = "prometheusRelease")]
-    pub prometheus_release: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusRelease")]
+    pub prometheus_release: Option<String>,
     /// ScrapeTimeout defines the timeout for scraping metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
@@ -6327,6 +6350,9 @@ pub struct MariaDBStatus {
     /// GaleraRecovery is the Galera recovery current state.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "galeraRecovery")]
     pub galera_recovery: Option<MariaDBStatusGaleraRecovery>,
+    /// Replicas indicates the number of current instances.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
 }
 
 /// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 

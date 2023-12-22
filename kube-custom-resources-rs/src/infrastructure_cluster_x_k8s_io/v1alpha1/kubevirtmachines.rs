@@ -2866,8 +2866,7 @@ pub struct KubevirtMachineStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodeupdated: Option<bool>,
     /// Ready denotes that the machine is ready
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ready: Option<bool>,
+    pub ready: bool,
 }
 
 /// MachineAddress contains information for the node's address.

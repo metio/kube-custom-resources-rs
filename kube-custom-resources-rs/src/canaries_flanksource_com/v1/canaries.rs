@@ -207,6 +207,8 @@ pub struct CanaryAlertmanagerPassword {
 pub struct CanaryAlertmanagerPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAlertmanagerPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAlertmanagerPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAlertmanagerPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -216,6 +218,14 @@ pub struct CanaryAlertmanagerPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAlertmanagerPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -387,6 +397,8 @@ pub struct CanaryAlertmanagerUsername {
 pub struct CanaryAlertmanagerUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAlertmanagerUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAlertmanagerUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAlertmanagerUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -396,6 +408,14 @@ pub struct CanaryAlertmanagerUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAlertmanagerUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAlertmanagerUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -438,9 +458,6 @@ pub struct CanaryAwsConfig {
     /// Namespace of the check
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// glob path to restrict matches to a subset
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectPath")]
-    pub object_path: Option<String>,
     pub query: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
@@ -458,9 +475,6 @@ pub struct CanaryAwsConfig {
     /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformDeleteStrategy")]
     pub transform_delete_strategy: Option<String>,
-    /// Use path style path: http://s3.amazonaws.com/BUCKET/KEY instead of http://BUCKET.s3.amazonaws.com/KEY
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usePathStyle")]
-    pub use_path_style: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -477,6 +491,8 @@ pub struct CanaryAwsConfigAccessKey {
 pub struct CanaryAwsConfigAccessKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAwsConfigAccessKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAwsConfigAccessKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigAccessKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -486,6 +502,14 @@ pub struct CanaryAwsConfigAccessKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAwsConfigAccessKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAwsConfigAccessKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -545,6 +569,8 @@ pub struct CanaryAwsConfigSecretKey {
 pub struct CanaryAwsConfigSecretKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAwsConfigSecretKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAwsConfigSecretKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigSecretKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -554,6 +580,14 @@ pub struct CanaryAwsConfigSecretKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAwsConfigSecretKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAwsConfigSecretKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -580,6 +614,8 @@ pub struct CanaryAwsConfigSessionToken {
 pub struct CanaryAwsConfigSessionTokenValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAwsConfigSessionTokenValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAwsConfigSessionTokenValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigSessionTokenValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -589,6 +625,14 @@ pub struct CanaryAwsConfigSessionTokenValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAwsConfigSessionTokenValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAwsConfigSessionTokenValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -659,9 +703,6 @@ pub struct CanaryAwsConfigRule {
     /// Namespace of the check
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// glob path to restrict matches to a subset
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectPath")]
-    pub object_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     /// Specify one or more Config rule names to filter the results by rule.
@@ -681,9 +722,6 @@ pub struct CanaryAwsConfigRule {
     /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformDeleteStrategy")]
     pub transform_delete_strategy: Option<String>,
-    /// Use path style path: http://s3.amazonaws.com/BUCKET/KEY instead of http://BUCKET.s3.amazonaws.com/KEY
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usePathStyle")]
-    pub use_path_style: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -700,6 +738,8 @@ pub struct CanaryAwsConfigRuleAccessKey {
 pub struct CanaryAwsConfigRuleAccessKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAwsConfigRuleAccessKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAwsConfigRuleAccessKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigRuleAccessKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -709,6 +749,14 @@ pub struct CanaryAwsConfigRuleAccessKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAwsConfigRuleAccessKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAwsConfigRuleAccessKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -768,6 +816,8 @@ pub struct CanaryAwsConfigRuleSecretKey {
 pub struct CanaryAwsConfigRuleSecretKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAwsConfigRuleSecretKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAwsConfigRuleSecretKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigRuleSecretKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -777,6 +827,14 @@ pub struct CanaryAwsConfigRuleSecretKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAwsConfigRuleSecretKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAwsConfigRuleSecretKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -803,6 +861,8 @@ pub struct CanaryAwsConfigRuleSessionToken {
 pub struct CanaryAwsConfigRuleSessionTokenValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAwsConfigRuleSessionTokenValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAwsConfigRuleSessionTokenValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAwsConfigRuleSessionTokenValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -812,6 +872,14 @@ pub struct CanaryAwsConfigRuleSessionTokenValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAwsConfigRuleSessionTokenValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAwsConfigRuleSessionTokenValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -937,6 +1005,8 @@ pub struct CanaryAzureDevopsPersonalAccessToken {
 pub struct CanaryAzureDevopsPersonalAccessTokenValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryAzureDevopsPersonalAccessTokenValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryAzureDevopsPersonalAccessTokenValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryAzureDevopsPersonalAccessTokenValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -946,6 +1016,14 @@ pub struct CanaryAzureDevopsPersonalAccessTokenValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAzureDevopsPersonalAccessTokenValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryAzureDevopsPersonalAccessTokenValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1016,9 +1094,6 @@ pub struct CanaryCloudwatch {
     /// Namespace of the check
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// glob path to restrict matches to a subset
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectPath")]
-    pub object_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
@@ -1037,9 +1112,6 @@ pub struct CanaryCloudwatch {
     /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformDeleteStrategy")]
     pub transform_delete_strategy: Option<String>,
-    /// Use path style path: http://s3.amazonaws.com/BUCKET/KEY instead of http://BUCKET.s3.amazonaws.com/KEY
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usePathStyle")]
-    pub use_path_style: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1056,6 +1128,8 @@ pub struct CanaryCloudwatchAccessKey {
 pub struct CanaryCloudwatchAccessKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryCloudwatchAccessKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryCloudwatchAccessKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryCloudwatchAccessKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1065,6 +1139,14 @@ pub struct CanaryCloudwatchAccessKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryCloudwatchAccessKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCloudwatchAccessKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1124,6 +1206,8 @@ pub struct CanaryCloudwatchSecretKey {
 pub struct CanaryCloudwatchSecretKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryCloudwatchSecretKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryCloudwatchSecretKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryCloudwatchSecretKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1133,6 +1217,14 @@ pub struct CanaryCloudwatchSecretKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryCloudwatchSecretKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCloudwatchSecretKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1159,6 +1251,8 @@ pub struct CanaryCloudwatchSessionToken {
 pub struct CanaryCloudwatchSessionTokenValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryCloudwatchSessionTokenValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryCloudwatchSessionTokenValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryCloudwatchSessionTokenValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1168,6 +1262,14 @@ pub struct CanaryCloudwatchSessionTokenValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryCloudwatchSessionTokenValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCloudwatchSessionTokenValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1345,6 +1447,8 @@ pub struct CanaryContainerdAuthPassword {
 pub struct CanaryContainerdAuthPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryContainerdAuthPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryContainerdAuthPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryContainerdAuthPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1354,6 +1458,14 @@ pub struct CanaryContainerdAuthPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryContainerdAuthPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryContainerdAuthPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1380,6 +1492,8 @@ pub struct CanaryContainerdAuthUsername {
 pub struct CanaryContainerdAuthUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryContainerdAuthUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryContainerdAuthUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryContainerdAuthUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1389,6 +1503,14 @@ pub struct CanaryContainerdAuthUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryContainerdAuthUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryContainerdAuthUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1551,6 +1673,8 @@ pub struct CanaryDatabaseBackupGcpGcpConnectionCredentials {
 pub struct CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1560,6 +1684,14 @@ pub struct CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryDatabaseBackupGcpGcpConnectionCredentialsValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1731,6 +1863,8 @@ pub struct CanaryDockerAuthPassword {
 pub struct CanaryDockerAuthPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryDockerAuthPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryDockerAuthPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDockerAuthPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1740,6 +1874,14 @@ pub struct CanaryDockerAuthPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryDockerAuthPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryDockerAuthPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1766,6 +1908,8 @@ pub struct CanaryDockerAuthUsername {
 pub struct CanaryDockerAuthUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryDockerAuthUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryDockerAuthUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDockerAuthUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1775,6 +1919,14 @@ pub struct CanaryDockerAuthUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryDockerAuthUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryDockerAuthUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1857,6 +2009,8 @@ pub struct CanaryDockerPushAuthPassword {
 pub struct CanaryDockerPushAuthPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryDockerPushAuthPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryDockerPushAuthPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDockerPushAuthPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1866,6 +2020,14 @@ pub struct CanaryDockerPushAuthPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryDockerPushAuthPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryDockerPushAuthPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1892,6 +2054,8 @@ pub struct CanaryDockerPushAuthUsername {
 pub struct CanaryDockerPushAuthUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryDockerPushAuthUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryDockerPushAuthUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDockerPushAuthUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1901,6 +2065,14 @@ pub struct CanaryDockerPushAuthUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryDockerPushAuthUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryDockerPushAuthUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1986,6 +2158,8 @@ pub struct CanaryDynatraceApiKey {
 pub struct CanaryDynatraceApiKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryDynatraceApiKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryDynatraceApiKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryDynatraceApiKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -1995,6 +2169,14 @@ pub struct CanaryDynatraceApiKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryDynatraceApiKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryDynatraceApiKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2096,9 +2278,6 @@ pub struct CanaryEc2 {
     /// Namespace of the check
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// glob path to restrict matches to a subset
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectPath")]
-    pub object_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
@@ -2115,9 +2294,6 @@ pub struct CanaryEc2 {
     /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformDeleteStrategy")]
     pub transform_delete_strategy: Option<String>,
-    /// Use path style path: http://s3.amazonaws.com/BUCKET/KEY instead of http://BUCKET.s3.amazonaws.com/KEY
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usePathStyle")]
-    pub use_path_style: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userData")]
     pub user_data: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitTime")]
@@ -2138,6 +2314,8 @@ pub struct CanaryEc2AccessKey {
 pub struct CanaryEc2AccessKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryEc2AccessKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryEc2AccessKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryEc2AccessKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2147,6 +2325,14 @@ pub struct CanaryEc2AccessKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryEc2AccessKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryEc2AccessKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2202,6 +2388,8 @@ pub struct CanaryEc2SecretKey {
 pub struct CanaryEc2SecretKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryEc2SecretKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryEc2SecretKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryEc2SecretKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2211,6 +2399,14 @@ pub struct CanaryEc2SecretKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryEc2SecretKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryEc2SecretKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2237,6 +2433,8 @@ pub struct CanaryEc2SessionToken {
 pub struct CanaryEc2SessionTokenValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryEc2SessionTokenValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryEc2SessionTokenValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryEc2SessionTokenValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2246,6 +2444,14 @@ pub struct CanaryEc2SessionTokenValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryEc2SessionTokenValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryEc2SessionTokenValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2351,6 +2557,8 @@ pub struct CanaryElasticsearchPassword {
 pub struct CanaryElasticsearchPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryElasticsearchPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryElasticsearchPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryElasticsearchPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2360,6 +2568,14 @@ pub struct CanaryElasticsearchPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryElasticsearchPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryElasticsearchPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2410,6 +2626,8 @@ pub struct CanaryElasticsearchUsername {
 pub struct CanaryElasticsearchUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryElasticsearchUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryElasticsearchUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryElasticsearchUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2419,6 +2637,14 @@ pub struct CanaryElasticsearchUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryElasticsearchUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryElasticsearchUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2564,6 +2790,8 @@ pub struct CanaryExecCheckoutCertificate {
 pub struct CanaryExecCheckoutCertificateValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecCheckoutCertificateValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecCheckoutCertificateValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecCheckoutCertificateValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2573,6 +2801,14 @@ pub struct CanaryExecCheckoutCertificateValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecCheckoutCertificateValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecCheckoutCertificateValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2599,6 +2835,8 @@ pub struct CanaryExecCheckoutPassword {
 pub struct CanaryExecCheckoutPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecCheckoutPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecCheckoutPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecCheckoutPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2608,6 +2846,14 @@ pub struct CanaryExecCheckoutPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecCheckoutPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecCheckoutPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2634,6 +2880,8 @@ pub struct CanaryExecCheckoutUsername {
 pub struct CanaryExecCheckoutUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecCheckoutUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecCheckoutUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecCheckoutUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2643,6 +2891,14 @@ pub struct CanaryExecCheckoutUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecCheckoutUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecCheckoutUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2674,9 +2930,6 @@ pub struct CanaryExecConnectionsAws {
     pub connection: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    /// glob path to restrict matches to a subset
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectPath")]
-    pub object_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
@@ -2686,9 +2939,6 @@ pub struct CanaryExecConnectionsAws {
     /// Skip TLS verify when connecting to aws
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTLSVerify")]
     pub skip_tls_verify: Option<bool>,
-    /// Use path style path: http://s3.amazonaws.com/BUCKET/KEY instead of http://BUCKET.s3.amazonaws.com/KEY
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usePathStyle")]
-    pub use_path_style: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2705,6 +2955,8 @@ pub struct CanaryExecConnectionsAwsAccessKey {
 pub struct CanaryExecConnectionsAwsAccessKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecConnectionsAwsAccessKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecConnectionsAwsAccessKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAwsAccessKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2714,6 +2966,14 @@ pub struct CanaryExecConnectionsAwsAccessKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecConnectionsAwsAccessKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecConnectionsAwsAccessKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2740,6 +3000,8 @@ pub struct CanaryExecConnectionsAwsSecretKey {
 pub struct CanaryExecConnectionsAwsSecretKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecConnectionsAwsSecretKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecConnectionsAwsSecretKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAwsSecretKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2749,6 +3011,14 @@ pub struct CanaryExecConnectionsAwsSecretKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecConnectionsAwsSecretKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecConnectionsAwsSecretKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2775,6 +3045,8 @@ pub struct CanaryExecConnectionsAwsSessionToken {
 pub struct CanaryExecConnectionsAwsSessionTokenValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecConnectionsAwsSessionTokenValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecConnectionsAwsSessionTokenValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAwsSessionTokenValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2784,6 +3056,14 @@ pub struct CanaryExecConnectionsAwsSessionTokenValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecConnectionsAwsSessionTokenValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecConnectionsAwsSessionTokenValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2822,6 +3102,8 @@ pub struct CanaryExecConnectionsAzureClientId {
 pub struct CanaryExecConnectionsAzureClientIdValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecConnectionsAzureClientIdValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecConnectionsAzureClientIdValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAzureClientIdValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2831,6 +3113,14 @@ pub struct CanaryExecConnectionsAzureClientIdValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecConnectionsAzureClientIdValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecConnectionsAzureClientIdValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2857,6 +3147,8 @@ pub struct CanaryExecConnectionsAzureClientSecret {
 pub struct CanaryExecConnectionsAzureClientSecretValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecConnectionsAzureClientSecretValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecConnectionsAzureClientSecretValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsAzureClientSecretValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2866,6 +3158,14 @@ pub struct CanaryExecConnectionsAzureClientSecretValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecConnectionsAzureClientSecretValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecConnectionsAzureClientSecretValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2903,6 +3203,8 @@ pub struct CanaryExecConnectionsGcpCredentials {
 pub struct CanaryExecConnectionsGcpCredentialsValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecConnectionsGcpCredentialsValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecConnectionsGcpCredentialsValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecConnectionsGcpCredentialsValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2912,6 +3214,14 @@ pub struct CanaryExecConnectionsGcpCredentialsValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecConnectionsGcpCredentialsValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecConnectionsGcpCredentialsValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2950,6 +3260,8 @@ pub struct CanaryExecEnv {
 pub struct CanaryExecEnvValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryExecEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryExecEnvValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryExecEnvValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -2959,6 +3271,14 @@ pub struct CanaryExecEnvValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecEnvValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryExecEnvValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3066,6 +3386,9 @@ pub struct CanaryFolder {
     pub namespace: Option<String>,
     /// Path  to folder or object storage, e.g. `s3://<bucket-name>`,  `gcs://<bucket-name>`, `/path/tp/folder`
     pub path: String,
+    /// Recursive when set to true will recursively scan the folder to list the files in it. However, symlinks are simply listed but not traversed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub recursive: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sftpConnection")]
     pub sftp_connection: Option<CanaryFolderSftpConnection>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "smbConnection")]
@@ -3084,133 +3407,14 @@ pub struct CanaryFolder {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryFolderAwsConnection {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKey")]
-    pub access_key: Option<CanaryFolderAwsConnectionAccessKey>,
-    /// ConnectionName of the connection. It'll be used to populate the endpoint, accessKey and secretKey.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub connection: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub endpoint: Option<String>,
+    pub bucket: Option<String>,
     /// glob path to restrict matches to a subset
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectPath")]
     pub object_path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub region: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
-    pub secret_key: Option<CanaryFolderAwsConnectionSecretKey>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionToken")]
-    pub session_token: Option<CanaryFolderAwsConnectionSessionToken>,
-    /// Skip TLS verify when connecting to aws
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTLSVerify")]
-    pub skip_tls_verify: Option<bool>,
     /// Use path style path: http://s3.amazonaws.com/BUCKET/KEY instead of http://BUCKET.s3.amazonaws.com/KEY
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usePathStyle")]
     pub use_path_style: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionAccessKey {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<CanaryFolderAwsConnectionAccessKeyValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionAccessKeyValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<CanaryFolderAwsConnectionAccessKeyValueFromConfigMapKeyRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<CanaryFolderAwsConnectionAccessKeyValueFromSecretKeyRef>,
-    /// ServiceAccount specifies the service account whose token should be fetched
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
-    pub service_account: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionAccessKeyValueFromConfigMapKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionAccessKeyValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionSecretKey {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<CanaryFolderAwsConnectionSecretKeyValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionSecretKeyValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<CanaryFolderAwsConnectionSecretKeyValueFromConfigMapKeyRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<CanaryFolderAwsConnectionSecretKeyValueFromSecretKeyRef>,
-    /// ServiceAccount specifies the service account whose token should be fetched
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
-    pub service_account: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionSecretKeyValueFromConfigMapKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionSecretKeyValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionSessionToken {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<CanaryFolderAwsConnectionSessionTokenValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionSessionTokenValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<CanaryFolderAwsConnectionSessionTokenValueFromConfigMapKeyRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<CanaryFolderAwsConnectionSessionTokenValueFromSecretKeyRef>,
-    /// ServiceAccount specifies the service account whose token should be fetched
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
-    pub service_account: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionSessionTokenValueFromConfigMapKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryFolderAwsConnectionSessionTokenValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3243,6 +3447,8 @@ pub struct CanaryFolderFilter {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryFolderGcpConnection {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bucket: Option<String>,
     /// ConnectionName of the connection. It'll be used to populate the endpoint and credentials.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<String>,
@@ -3266,6 +3472,8 @@ pub struct CanaryFolderGcpConnectionCredentials {
 pub struct CanaryFolderGcpConnectionCredentialsValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryFolderGcpConnectionCredentialsValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryFolderGcpConnectionCredentialsValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderGcpConnectionCredentialsValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3275,6 +3483,14 @@ pub struct CanaryFolderGcpConnectionCredentialsValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryFolderGcpConnectionCredentialsValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryFolderGcpConnectionCredentialsValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3337,6 +3553,8 @@ pub struct CanaryFolderSftpConnectionPassword {
 pub struct CanaryFolderSftpConnectionPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryFolderSftpConnectionPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryFolderSftpConnectionPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderSftpConnectionPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3346,6 +3564,14 @@ pub struct CanaryFolderSftpConnectionPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryFolderSftpConnectionPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryFolderSftpConnectionPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3372,6 +3598,8 @@ pub struct CanaryFolderSftpConnectionUsername {
 pub struct CanaryFolderSftpConnectionUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryFolderSftpConnectionUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryFolderSftpConnectionUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderSftpConnectionUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3381,6 +3609,14 @@ pub struct CanaryFolderSftpConnectionUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryFolderSftpConnectionUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryFolderSftpConnectionUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3424,6 +3660,8 @@ pub struct CanaryFolderSmbConnectionPassword {
 pub struct CanaryFolderSmbConnectionPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryFolderSmbConnectionPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryFolderSmbConnectionPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderSmbConnectionPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3433,6 +3671,14 @@ pub struct CanaryFolderSmbConnectionPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryFolderSmbConnectionPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryFolderSmbConnectionPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3459,6 +3705,8 @@ pub struct CanaryFolderSmbConnectionUsername {
 pub struct CanaryFolderSmbConnectionUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryFolderSmbConnectionUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryFolderSmbConnectionUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryFolderSmbConnectionUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3468,6 +3716,14 @@ pub struct CanaryFolderSmbConnectionUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryFolderSmbConnectionUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryFolderSmbConnectionUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3566,6 +3822,8 @@ pub struct CanaryGithubGithubToken {
 pub struct CanaryGithubGithubTokenValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryGithubGithubTokenValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryGithubGithubTokenValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryGithubGithubTokenValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3575,6 +3833,14 @@ pub struct CanaryGithubGithubTokenValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryGithubGithubTokenValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGithubGithubTokenValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3686,6 +3952,8 @@ pub struct CanaryHelmAuthPassword {
 pub struct CanaryHelmAuthPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryHelmAuthPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryHelmAuthPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHelmAuthPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3695,6 +3963,14 @@ pub struct CanaryHelmAuthPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryHelmAuthPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryHelmAuthPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3721,6 +3997,8 @@ pub struct CanaryHelmAuthUsername {
 pub struct CanaryHelmAuthUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryHelmAuthUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryHelmAuthUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHelmAuthUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3730,6 +4008,14 @@ pub struct CanaryHelmAuthUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryHelmAuthUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryHelmAuthUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3871,6 +4157,8 @@ pub struct CanaryHttpEnv {
 pub struct CanaryHttpEnvValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryHttpEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryHttpEnvValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHttpEnvValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3880,6 +4168,14 @@ pub struct CanaryHttpEnvValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryHttpEnvValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryHttpEnvValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3906,6 +4202,8 @@ pub struct CanaryHttpHeaders {
 pub struct CanaryHttpHeadersValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryHttpHeadersValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryHttpHeadersValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHttpHeadersValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3915,6 +4213,14 @@ pub struct CanaryHttpHeadersValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryHttpHeadersValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryHttpHeadersValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3973,6 +4279,8 @@ pub struct CanaryHttpPassword {
 pub struct CanaryHttpPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryHttpPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryHttpPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHttpPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -3982,6 +4290,14 @@ pub struct CanaryHttpPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryHttpPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryHttpPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4039,6 +4355,8 @@ pub struct CanaryHttpUsername {
 pub struct CanaryHttpUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryHttpUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryHttpUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryHttpUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4048,6 +4366,14 @@ pub struct CanaryHttpUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryHttpUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryHttpUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4169,6 +4495,8 @@ pub struct CanaryJmeterJmx {
 pub struct CanaryJmeterJmxValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryJmeterJmxValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryJmeterJmxValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryJmeterJmxValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4178,6 +4506,14 @@ pub struct CanaryJmeterJmxValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryJmeterJmxValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryJmeterJmxValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4493,6 +4829,8 @@ pub struct CanaryLdapPassword {
 pub struct CanaryLdapPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryLdapPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryLdapPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryLdapPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4502,6 +4840,14 @@ pub struct CanaryLdapPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryLdapPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryLdapPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4528,6 +4874,8 @@ pub struct CanaryLdapUsername {
 pub struct CanaryLdapUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryLdapUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryLdapUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryLdapUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4537,6 +4885,14 @@ pub struct CanaryLdapUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryLdapUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryLdapUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4618,6 +4974,8 @@ pub struct CanaryMongodbPassword {
 pub struct CanaryMongodbPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryMongodbPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryMongodbPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMongodbPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4627,6 +4985,14 @@ pub struct CanaryMongodbPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryMongodbPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryMongodbPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4653,6 +5019,8 @@ pub struct CanaryMongodbUsername {
 pub struct CanaryMongodbUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryMongodbUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryMongodbUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMongodbUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4662,6 +5030,14 @@ pub struct CanaryMongodbUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryMongodbUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryMongodbUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4766,6 +5142,8 @@ pub struct CanaryMssqlPassword {
 pub struct CanaryMssqlPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryMssqlPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryMssqlPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMssqlPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4775,6 +5153,14 @@ pub struct CanaryMssqlPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryMssqlPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryMssqlPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4825,6 +5211,8 @@ pub struct CanaryMssqlUsername {
 pub struct CanaryMssqlUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryMssqlUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryMssqlUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMssqlUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4834,6 +5222,14 @@ pub struct CanaryMssqlUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryMssqlUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryMssqlUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4938,6 +5334,8 @@ pub struct CanaryMysqlPassword {
 pub struct CanaryMysqlPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryMysqlPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryMysqlPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMysqlPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -4947,6 +5345,14 @@ pub struct CanaryMysqlPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryMysqlPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryMysqlPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -4997,6 +5403,8 @@ pub struct CanaryMysqlUsername {
 pub struct CanaryMysqlUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryMysqlUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryMysqlUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryMysqlUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5006,6 +5414,14 @@ pub struct CanaryMysqlUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryMysqlUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryMysqlUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5190,6 +5606,8 @@ pub struct CanaryOpensearchPassword {
 pub struct CanaryOpensearchPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryOpensearchPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryOpensearchPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryOpensearchPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5199,6 +5617,14 @@ pub struct CanaryOpensearchPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryOpensearchPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryOpensearchPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5249,6 +5675,8 @@ pub struct CanaryOpensearchUsername {
 pub struct CanaryOpensearchUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryOpensearchUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryOpensearchUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryOpensearchUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5258,6 +5686,14 @@ pub struct CanaryOpensearchUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryOpensearchUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryOpensearchUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5441,6 +5877,8 @@ pub struct CanaryPostgresPassword {
 pub struct CanaryPostgresPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryPostgresPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryPostgresPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryPostgresPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5450,6 +5888,14 @@ pub struct CanaryPostgresPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryPostgresPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryPostgresPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5500,6 +5946,8 @@ pub struct CanaryPostgresUsername {
 pub struct CanaryPostgresUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryPostgresUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryPostgresUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryPostgresUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5509,6 +5957,14 @@ pub struct CanaryPostgresUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryPostgresUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryPostgresUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5613,6 +6069,8 @@ pub struct CanaryPrometheusPassword {
 pub struct CanaryPrometheusPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryPrometheusPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryPrometheusPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryPrometheusPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5622,6 +6080,14 @@ pub struct CanaryPrometheusPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryPrometheusPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryPrometheusPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5672,6 +6138,8 @@ pub struct CanaryPrometheusUsername {
 pub struct CanaryPrometheusUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryPrometheusUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryPrometheusUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryPrometheusUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5681,6 +6149,14 @@ pub struct CanaryPrometheusUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryPrometheusUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryPrometheusUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5767,6 +6243,8 @@ pub struct CanaryRedisPassword {
 pub struct CanaryRedisPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryRedisPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryRedisPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryRedisPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5776,6 +6254,14 @@ pub struct CanaryRedisPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryRedisPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryRedisPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5802,6 +6288,8 @@ pub struct CanaryRedisUsername {
 pub struct CanaryRedisUsernameValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryRedisUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryRedisUsernameValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryRedisUsernameValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5811,6 +6299,14 @@ pub struct CanaryRedisUsernameValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryRedisUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryRedisUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5887,6 +6383,8 @@ pub struct CanaryResticAccessKey {
 pub struct CanaryResticAccessKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryResticAccessKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryResticAccessKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryResticAccessKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5896,6 +6394,14 @@ pub struct CanaryResticAccessKeyValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryResticAccessKeyValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryResticAccessKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5944,6 +6450,8 @@ pub struct CanaryResticPassword {
 pub struct CanaryResticPasswordValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryResticPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryResticPasswordValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryResticPasswordValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5953,6 +6461,14 @@ pub struct CanaryResticPasswordValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryResticPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryResticPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5980,6 +6496,8 @@ pub struct CanaryResticSecretKey {
 pub struct CanaryResticSecretKeyValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryResticSecretKeyValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryResticSecretKeyValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryResticSecretKeyValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -5995,6 +6513,14 @@ pub struct CanaryResticSecretKeyValueFromConfigMapKeyRef {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryResticSecretKeyValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryResticSecretKeyValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6003,18 +6529,13 @@ pub struct CanaryResticSecretKeyValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryS3 {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKey")]
-    pub access_key: Option<CanaryS3AccessKey>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bucket: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketName")]
     pub bucket_name: Option<String>,
-    /// ConnectionName of the connection. It'll be used to populate the endpoint, accessKey and secretKey.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub connection: Option<String>,
     /// Description for the check
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub endpoint: Option<String>,
     /// Icon for overwriting default icon on the dashboard
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
@@ -6032,56 +6553,12 @@ pub struct CanaryS3 {
     /// glob path to restrict matches to a subset
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectPath")]
     pub object_path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub region: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
-    pub secret_key: Option<CanaryS3SecretKey>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionToken")]
-    pub session_token: Option<CanaryS3SessionToken>,
-    /// Skip TLS verify when connecting to aws
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTLSVerify")]
-    pub skip_tls_verify: Option<bool>,
     /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformDeleteStrategy")]
     pub transform_delete_strategy: Option<String>,
     /// Use path style path: http://s3.amazonaws.com/BUCKET/KEY instead of http://BUCKET.s3.amazonaws.com/KEY
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usePathStyle")]
     pub use_path_style: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3AccessKey {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<CanaryS3AccessKeyValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3AccessKeyValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<CanaryS3AccessKeyValueFromConfigMapKeyRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<CanaryS3AccessKeyValueFromSecretKeyRef>,
-    /// ServiceAccount specifies the service account whose token should be fetched
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
-    pub service_account: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3AccessKeyValueFromConfigMapKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3AccessKeyValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6103,76 +6580,6 @@ pub struct CanaryS3MetricsLabels {
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueExpr")]
     pub value_expr: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3SecretKey {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<CanaryS3SecretKeyValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3SecretKeyValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<CanaryS3SecretKeyValueFromConfigMapKeyRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<CanaryS3SecretKeyValueFromSecretKeyRef>,
-    /// ServiceAccount specifies the service account whose token should be fetched
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
-    pub service_account: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3SecretKeyValueFromConfigMapKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3SecretKeyValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3SessionToken {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<CanaryS3SessionTokenValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3SessionTokenValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<CanaryS3SessionTokenValueFromConfigMapKeyRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<CanaryS3SessionTokenValueFromSecretKeyRef>,
-    /// ServiceAccount specifies the service account whose token should be fetched
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
-    pub service_account: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3SessionTokenValueFromConfigMapKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CanaryS3SessionTokenValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6317,6 +6724,8 @@ pub struct CanaryWebhookToken {
 pub struct CanaryWebhookTokenValueFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryWebhookTokenValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryWebhookTokenValueFromHelmRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CanaryWebhookTokenValueFromSecretKeyRef>,
     /// ServiceAccount specifies the service account whose token should be fetched
@@ -6326,6 +6735,14 @@ pub struct CanaryWebhookTokenValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryWebhookTokenValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryWebhookTokenValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

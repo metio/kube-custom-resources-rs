@@ -17,8 +17,8 @@ pub struct ProfileRecordingSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<String>>,
     /// DisableProfileAfterRecording indicates whether the profile should be disabled after recording and thus skipped during reconcile. In case of SELinux profiles, reconcile can take a significant amount of time and for all profiles might not be needed. This Defaults to false.
-    #[serde(rename = "disableProfileAfterRecording")]
-    pub disable_profile_after_recording: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableProfileAfterRecording")]
+    pub disable_profile_after_recording: Option<bool>,
     /// Kind of object to be recorded.
     pub kind: ProfileRecordingKind,
     /// Whether or how to merge recorded profiles. Can be one of "none" or "containers". Default is "none".

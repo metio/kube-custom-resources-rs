@@ -34,7 +34,7 @@ pub struct KafkaBridgeSpec {
     /// The HTTP related configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<KafkaBridgeHttp>,
-    /// The docker image for the pods.
+    /// The container image used for Kafka Bridge pods. If no image name is explicitly specified, the image name corresponds to the image specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// **Currently not supported** JVM Options for pods.
@@ -703,7 +703,7 @@ pub struct KafkaBridgeTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaBridgeTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.

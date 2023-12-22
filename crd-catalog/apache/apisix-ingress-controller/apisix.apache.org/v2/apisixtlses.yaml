@@ -60,6 +60,10 @@ spec:
                     type: object
                   depth:
                     type: integer
+                  skip_mtls_uri_regex:
+                    items:
+                      type: string
+                    type: array
                 type: object
               hosts:
                 items:

@@ -44,6 +44,9 @@ pub struct AlertmanagerSpec {
     /// Interval between gossip attempts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterGossipInterval")]
     pub cluster_gossip_interval: Option<String>,
+    /// Defines the identifier that uniquely identifies the Alertmanager cluster. You should only set it when the Alertmanager cluster includes Alertmanager instances which are external to this Alertmanager resource. In practice, the addresses of the external instances are provided via the `.spec.additionalPeers` field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterLabel")]
+    pub cluster_label: Option<String>,
     /// Timeout for cluster peering.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterPeerTimeout")]
     pub cluster_peer_timeout: Option<String>,

@@ -15,7 +15,7 @@ use std::collections::BTreeMap;
 pub struct KafkaMirrorMakerSpec {
     /// Configuration of source cluster.
     pub consumer: KafkaMirrorMakerConsumer,
-    /// The docker image for the pods.
+    /// The container image used for Kafka MirrorMaker pods. If no image name is explicitly specified, it is determined based on the `spec.version` configuration. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// List of topics which are included for mirroring. This option allows any regular expression using Java-style regular expressions. Mirroring two topics named A and B is achieved by using the expression `A\|B`. Or, as a special case, you can mirror all topics using the regular expression `*`. You can also specify multiple regular expressions separated by commas.
@@ -49,7 +49,7 @@ pub struct KafkaMirrorMakerSpec {
     /// The configuration of tracing in Kafka MirrorMaker.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<KafkaMirrorMakerTracing>,
-    /// The Kafka MirrorMaker version. Defaults to {DefaultKafkaVersion}. Consult the documentation to understand the process required to upgrade or downgrade the version.
+    /// The Kafka MirrorMaker version. Defaults to the latest version. Consult the documentation to understand the process required to upgrade or downgrade the version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     /// List of topics which are included for mirroring. This option allows any regular expression using Java-style regular expressions. Mirroring two topics named A and B is achieved by using the expression `A\|B`. Or, as a special case, you can mirror all topics using the regular expression `*`. You can also specify multiple regular expressions separated by commas.
@@ -342,7 +342,7 @@ pub struct KafkaMirrorMakerMetricsConfig {
     /// Metrics type. Only 'jmxPrometheusExporter' supported currently.
     #[serde(rename = "type")]
     pub r#type: KafkaMirrorMakerMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
     #[serde(rename = "valueFrom")]
     pub value_from: KafkaMirrorMakerMetricsConfigValueFrom,
 }
@@ -354,7 +354,7 @@ pub enum KafkaMirrorMakerMetricsConfigType {
     JmxPrometheusExporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaMirrorMakerMetricsConfigValueFrom {
     /// Reference to the key in the ConfigMap containing the configuration.
@@ -746,7 +746,7 @@ pub struct KafkaMirrorMakerTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaMirrorMakerTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.

@@ -107,7 +107,7 @@ pub struct KafkaCruiseControl {
     /// The Cruise Control configuration. For a full list of configuration options refer to https://github.com/linkedin/cruise-control/wiki/Configurations. Note that properties with the following prefixes cannot be set: bootstrap.servers, client.id, zookeeper., network., security., failed.brokers.zk.path,webserver.http., webserver.api.urlprefix, webserver.session.path, webserver.accesslog., two.step., request.reason.required,metric.reporter.sampler.bootstrap.servers, capacity.config.file, self.healing., ssl., kafka.broker.failure.detection.enable, topic.config.provider.class (with the exception of: ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols, webserver.http.cors.enabled, webserver.http.cors.origin, webserver.http.cors.exposeheaders, webserver.security.enable, webserver.ssl.enable).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// The docker image for the pods.
+    /// The container image used for Cruise Control pods. If no image name is explicitly specified, the image name corresponds to the name specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// JVM Options for the Cruise Control container.
@@ -272,7 +272,7 @@ pub struct KafkaCruiseControlMetricsConfig {
     /// Metrics type. Only 'jmxPrometheusExporter' supported currently.
     #[serde(rename = "type")]
     pub r#type: KafkaCruiseControlMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
     #[serde(rename = "valueFrom")]
     pub value_from: KafkaCruiseControlMetricsConfigValueFrom,
 }
@@ -284,7 +284,7 @@ pub enum KafkaCruiseControlMetricsConfigType {
     JmxPrometheusExporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaCruiseControlMetricsConfigValueFrom {
     /// Reference to the key in the ConfigMap containing the configuration.
@@ -534,7 +534,7 @@ pub struct KafkaCruiseControlTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaCruiseControlTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
@@ -1354,7 +1354,7 @@ pub struct KafkaEntityOperatorTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaEntityOperatorTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
@@ -2826,7 +2826,7 @@ pub struct KafkaJmxTransTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaJmxTransTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
@@ -3335,7 +3335,7 @@ pub struct KafkaKafka {
     /// Kafka broker config properties with the following prefixes cannot be set: listeners, advertised., broker., listener., host.name, port, inter.broker.listener.name, sasl., ssl., security., password., log.dir, zookeeper.connect, zookeeper.set.acl, zookeeper.ssl, zookeeper.clientCnxnSocket, authorizer., super.user, cruise.control.metrics.topic, cruise.control.metrics.reporter.bootstrap.servers,node.id, process.roles, controller., metadata.log.dir (with the exception of: zookeeper.connection.timeout.ms, sasl.server.max.receive.size,ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols, ssl.secure.random.implementation,cruise.control.metrics.topic.num.partitions, cruise.control.metrics.topic.replication.factor, cruise.control.metrics.topic.retention.ms,cruise.control.metrics.topic.auto.create.retries, cruise.control.metrics.topic.auto.create.timeout.ms,cruise.control.metrics.topic.min.insync.replicas,controller.quorum.election.backoff.max.ms, controller.quorum.election.timeout.ms, controller.quorum.fetch.timeout.ms).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// The docker image for the pods. The default value depends on the configured `Kafka.spec.kafka.version`.
+    /// The container image used for Kafka pods. If the property is not set, the default Kafka image version is determined based on the `version` configuration. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration. Changing the Kafka image version does not automatically update the image versions for other components, such as Kafka Exporter. 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// JMX Options for Kafka brokers.
@@ -3352,6 +3352,9 @@ pub struct KafkaKafka {
     /// Logging configuration for Kafka.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaKafkaLogging>,
+    /// The KRaft metadata version used by the Kafka cluster. This property is ignored when running in ZooKeeper mode. If the property is not set, it defaults to the metadata version that corresponds to the `version` property.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataVersion")]
+    pub metadata_version: Option<String>,
     /// Metrics configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<KafkaKafkaMetricsConfig>,
@@ -3371,7 +3374,7 @@ pub struct KafkaKafka {
     /// Template for Kafka cluster resources. The template allows users to specify how the Kubernetes resources are generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaKafkaTemplate>,
-    /// The kafka broker version. Defaults to {DefaultKafkaVersion}. Consult the user documentation to understand the process required to upgrade or downgrade the version.
+    /// The Kafka broker version. Defaults to the latest version. Consult the user documentation to understand the process required to upgrade or downgrade the version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -4011,7 +4014,7 @@ pub struct KafkaKafkaMetricsConfig {
     /// Metrics type. Only 'jmxPrometheusExporter' supported currently.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
     #[serde(rename = "valueFrom")]
     pub value_from: KafkaKafkaMetricsConfigValueFrom,
 }
@@ -4023,7 +4026,7 @@ pub enum KafkaKafkaMetricsConfigType {
     JmxPrometheusExporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaMetricsConfigValueFrom {
     /// Reference to the key in the ConfigMap containing the configuration.
@@ -4698,7 +4701,7 @@ pub struct KafkaKafkaTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
@@ -5277,7 +5280,7 @@ pub struct KafkaKafkaExporter {
     /// Regular expression to specify which consumer groups to collect. Default value is `.*`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRegex")]
     pub group_regex: Option<String>,
-    /// The docker image for the pods.
+    /// The container image used for the Kafka Exporter pods. If no image name is explicitly specified, the image name corresponds to the version specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Pod liveness check.
@@ -5515,7 +5518,7 @@ pub struct KafkaKafkaExporterTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaExporterTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
@@ -6037,7 +6040,7 @@ pub struct KafkaZookeeper {
     /// The ZooKeeper broker config. Properties with the following prefixes cannot be set: server., dataDir, dataLogDir, clientPort, authProvider, quorum.auth, requireClientAuthScheme, snapshot.trust.empty, standaloneEnabled, reconfigEnabled, 4lw.commands.whitelist, secureClientPort, ssl., serverCnxnFactory, sslQuorum (with the exception of: ssl.protocol, ssl.quorum.protocol, ssl.enabledProtocols, ssl.quorum.enabledProtocols, ssl.ciphersuites, ssl.quorum.ciphersuites, ssl.hostnameVerification, ssl.quorum.hostnameVerification).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// The docker image for the pods.
+    /// The container image used for ZooKeeper pods. If no image name is explicitly specified, it is determined based on the Kafka version set in `spec.kafka.version`. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// JMX Options for Zookeeper nodes.
@@ -6191,7 +6194,7 @@ pub struct KafkaZookeeperMetricsConfig {
     /// Metrics type. Only 'jmxPrometheusExporter' supported currently.
     #[serde(rename = "type")]
     pub r#type: KafkaZookeeperMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
     #[serde(rename = "valueFrom")]
     pub value_from: KafkaZookeeperMetricsConfigValueFrom,
 }
@@ -6203,7 +6206,7 @@ pub enum KafkaZookeeperMetricsConfigType {
     JmxPrometheusExporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. For details of the structure of this configuration, see the {JMXExporter}.
+/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaZookeeperMetricsConfigValueFrom {
     /// Reference to the key in the ConfigMap containing the configuration.
@@ -6464,7 +6467,7 @@ pub struct KafkaZookeeperTemplatePod {
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
@@ -7128,6 +7131,9 @@ pub struct KafkaStatus {
     /// List of status conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<KafkaStatusConditions>>,
+    /// The KRaft metadata.version currently used by the Kafka cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaMetadataVersion")]
+    pub kafka_metadata_version: Option<String>,
     /// List of the KafkaNodePools used by this Kafka cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaNodePools")]
     pub kafka_node_pools: Option<Vec<KafkaStatusKafkaNodePools>>,

@@ -1551,6 +1551,10 @@ Every group has its own feature in this crate. The available features are as fol
 - kinds:
   - `UpdateRequest`
 
+- apiVersion: `kyverno.io/v2`
+- kinds:
+  - `PolicyException`
+
 - apiVersion: `kyverno.io/v2alpha1`
 - kinds:
   - `CleanupPolicy`
@@ -2486,6 +2490,13 @@ Every group has its own feature in this crate. The available features are as fol
   - `PolicyBinding`
 
 ## stunner_l7mp_io
+
+- apiVersion: `stunner.l7mp.io/v1`
+- kinds:
+  - `Dataplane`
+  - `GatewayConfig`
+  - `StaticService`
+  - `UDPRoute`
 
 - apiVersion: `stunner.l7mp.io/v1alpha1`
 - kinds:

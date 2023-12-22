@@ -234,7 +234,7 @@ spec:
                     type: integer
                 type: object
               image:
-                description: The docker image for the pods.
+                description: The container image used for Kafka Bridge pods. If no image name is explicitly specified, the image name corresponds to the image specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
                 type: string
               jvmOptions:
                 description: '**Currently not supported** JVM Options for pods.'
@@ -932,7 +932,7 @@ spec:
                             x-kubernetes-preserve-unknown-fields: true
                         type: object
                       priorityClassName:
-                        description: The name of the priority class used to assign priority to the pods. For more information about priority classes, see {K8sPriorityClass}.
+                        description: 'The name of the priority class used to assign priority to the pods. '
                         type: string
                       schedulerName:
                         description: The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.

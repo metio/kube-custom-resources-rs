@@ -229,6 +229,8 @@ pub struct UpdateRequestStatus {
     /// Specifies request status message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryCount")]
+    pub retry_count: Option<i64>,
     /// State represents state of the update request.
     pub state: String,
 }

@@ -145,6 +145,9 @@ pub struct PrometheusAgentSpec {
     /// Log level for Prometheus and the config-reloader sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<PrometheusAgentLogLevel>,
+    /// Defines the maximum time that the `prometheus` container's startup probe will wait before being considered failed. The startup probe will return success after the WAL replay is complete. If set, the value should be greater than 60 (seconds). Otherwise it will be equal to 600 seconds (15 minutes).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumStartupDurationSeconds")]
+    pub maximum_startup_duration_seconds: Option<i32>,
     /// Minimum number of seconds for which a newly created Pod should be ready without any of its container crashing for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready) 
     ///  This is an alpha field from kubernetes 1.22 until 1.24 which requires enabling the StatefulSetMinReadySeconds feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
