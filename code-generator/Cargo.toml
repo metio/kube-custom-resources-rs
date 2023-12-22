@@ -11,6 +11,6 @@ publish = false
 [dependencies]
 reqwest = { version = "0.11.23", default-features = false, features = ["blocking", "rustls-tls"] }
 k8s-openapi = { version = "0.20.0", features = ["latest"] }
-serde_yaml = { version = "0.9.28" }
+serde_yaml = { version = "0.9.29" }
 glob = { version = "0.3.1" }
 itertools = { version = "0.12.0" }
