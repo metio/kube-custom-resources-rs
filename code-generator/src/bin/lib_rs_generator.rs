@@ -25,7 +25,7 @@ fn main() -> Result<()> {
     let mut buffer = BufWriter::new(file);
 
     writeln!(buffer, "/*!")?;
-    writeln!(buffer, "This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium) and updated weekly.")?;
+    writeln!(buffer, "This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium), updated weekly, and released monthly.")?;
     writeln!(buffer, "")?;
     writeln!(buffer, "# Available Features")?;
     writeln!(buffer, "")?;
@@ -73,11 +73,10 @@ fn main() -> Result<()> {
 
         for (version, kinds) in versions.iter().sorted_by_key(|x| x.0) {
             writeln!(buffer, "")?;
-            writeln!(buffer, "- apiVersion: `{}/{}`", group, version)?;
-            writeln!(buffer, "- kinds:")?;
+            writeln!(buffer, "apiVersion `{}/{}`:", group, version)?;
 
             for crd in kinds {
-                writeln!(buffer, "  - `{}`", crd.spec.names.kind)?;
+                writeln!(buffer, "- `{}`", crd.spec.names.kind)?;
             }
         }
     }
