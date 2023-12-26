@@ -1,5 +1,5 @@
 /*!
-This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium) and updated weekly.
+This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium), updated weekly, and released monthly.
 
 # Available Features
 
@@ -7,2656 +7,2305 @@ Every group has its own feature in this crate. The available features are as fol
 
 ## about_k8s_io
 
-- apiVersion: `about.k8s.io/v1alpha1`
-- kinds:
-  - `ClusterProperty`
+apiVersion `about.k8s.io/v1alpha1`:
+- `ClusterProperty`
 
 ## acme_cert_manager_io
 
-- apiVersion: `acme.cert-manager.io/v1`
-- kinds:
-  - `Challenge`
-  - `Order`
+apiVersion `acme.cert-manager.io/v1`:
+- `Challenge`
+- `Order`
 
 ## actions_github_com
 
-- apiVersion: `actions.github.com/v1alpha1`
-- kinds:
-  - `AutoscalingListener`
-  - `AutoscalingRunnerSet`
-  - `EphemeralRunnerSet`
+apiVersion `actions.github.com/v1alpha1`:
+- `AutoscalingListener`
+- `AutoscalingRunnerSet`
+- `EphemeralRunnerSet`
 
 ## actions_summerwind_dev
 
-- apiVersion: `actions.summerwind.dev/v1alpha1`
-- kinds:
-  - `HorizontalRunnerAutoscaler`
-  - `RunnerDeployment`
-  - `RunnerReplicaSet`
-  - `Runner`
-  - `RunnerSet`
+apiVersion `actions.summerwind.dev/v1alpha1`:
+- `HorizontalRunnerAutoscaler`
+- `RunnerDeployment`
+- `RunnerReplicaSet`
+- `Runner`
+- `RunnerSet`
 
 ## addons_cluster_x_k8s_io
 
-- apiVersion: `addons.cluster.x-k8s.io/v1alpha4`
-- kinds:
-  - `ClusterResourceSet`
+apiVersion `addons.cluster.x-k8s.io/v1alpha4`:
+- `ClusterResourceSet`
 
-- apiVersion: `addons.cluster.x-k8s.io/v1beta1`
-- kinds:
-  - `ClusterResourceSet`
+apiVersion `addons.cluster.x-k8s.io/v1beta1`:
+- `ClusterResourceSet`
 
 ## agent_k8s_elastic_co
 
-- apiVersion: `agent.k8s.elastic.co/v1alpha1`
-- kinds:
-  - `Agent`
+apiVersion `agent.k8s.elastic.co/v1alpha1`:
+- `Agent`
 
 ## api_clever_cloud_com
 
-- apiVersion: `api.clever-cloud.com/v1`
-- kinds:
-  - `ConfigProvider`
-  - `ElasticSearch`
-  - `MongoDb`
-  - `MySql`
-  - `PostgreSql`
-  - `Redis`
+apiVersion `api.clever-cloud.com/v1`:
+- `ConfigProvider`
+- `ElasticSearch`
+- `MongoDb`
+- `MySql`
+- `PostgreSql`
+- `Redis`
 
-- apiVersion: `api.clever-cloud.com/v1beta1`
-- kinds:
-  - `Pulsar`
+apiVersion `api.clever-cloud.com/v1beta1`:
+- `Pulsar`
 
 ## api_kubemod_io
 
-- apiVersion: `api.kubemod.io/v1beta1`
-- kinds:
-  - `ModRule`
+apiVersion `api.kubemod.io/v1beta1`:
+- `ModRule`
 
 ## apicodegen_apimatic_io
 
-- apiVersion: `apicodegen.apimatic.io/v1beta1`
-- kinds:
-  - `APIMatic`
+apiVersion `apicodegen.apimatic.io/v1beta1`:
+- `APIMatic`
 
 ## apiextensions_crossplane_io
 
-- apiVersion: `apiextensions.crossplane.io/v1`
-- kinds:
-  - `CompositeResourceDefinition`
+apiVersion `apiextensions.crossplane.io/v1`:
+- `CompositeResourceDefinition`
 
 ## apigatewayv2_services_k8s_aws
 
-- apiVersion: `apigatewayv2.services.k8s.aws/v1alpha1`
-- kinds:
-  - `API`
-  - `Authorizer`
-  - `Deployment`
-  - `Route`
-  - `Stage`
-  - `VPCLink`
+apiVersion `apigatewayv2.services.k8s.aws/v1alpha1`:
+- `API`
+- `Authorizer`
+- `Deployment`
+- `Route`
+- `Stage`
+- `VPCLink`
 
 ## apisix_apache_org
 
-- apiVersion: `apisix.apache.org/v2`
-- kinds:
-  - `ApisixGlobalRule`
-  - `ApisixPluginConfig`
-  - `ApisixRoute`
-  - `ApisixTls`
-  - `ApisixUpstream`
+apiVersion `apisix.apache.org/v2`:
+- `ApisixGlobalRule`
+- `ApisixPluginConfig`
+- `ApisixRoute`
+- `ApisixTls`
+- `ApisixUpstream`
 
 ## apm_k8s_elastic_co
 
-- apiVersion: `apm.k8s.elastic.co/v1`
-- kinds:
-  - `ApmServer`
+apiVersion `apm.k8s.elastic.co/v1`:
+- `ApmServer`
 
-- apiVersion: `apm.k8s.elastic.co/v1beta1`
-- kinds:
-  - `ApmServer`
+apiVersion `apm.k8s.elastic.co/v1beta1`:
+- `ApmServer`
 
 ## app_kiegroup_org
 
-- apiVersion: `app.kiegroup.org/v1beta1`
-- kinds:
-  - `KogitoBuild`
-  - `KogitoInfra`
-  - `KogitoRuntime`
-  - `KogitoSupportingService`
+apiVersion `app.kiegroup.org/v1beta1`:
+- `KogitoBuild`
+- `KogitoInfra`
+- `KogitoRuntime`
+- `KogitoSupportingService`
 
 ## app_lightbend_com
 
-- apiVersion: `app.lightbend.com/v1alpha1`
-- kinds:
-  - `AkkaCluster`
+apiVersion `app.lightbend.com/v1alpha1`:
+- `AkkaCluster`
 
 ## app_redislabs_com
 
-- apiVersion: `app.redislabs.com/v1`
-- kinds:
-  - `RedisEnterpriseCluster`
+apiVersion `app.redislabs.com/v1`:
+- `RedisEnterpriseCluster`
 
-- apiVersion: `app.redislabs.com/v1alpha1`
-- kinds:
-  - `RedisEnterpriseActiveActiveDatabase`
-  - `RedisEnterpriseCluster`
-  - `RedisEnterpriseDatabase`
-  - `RedisEnterpriseRemoteCluster`
+apiVersion `app.redislabs.com/v1alpha1`:
+- `RedisEnterpriseActiveActiveDatabase`
+- `RedisEnterpriseCluster`
+- `RedisEnterpriseDatabase`
+- `RedisEnterpriseRemoteCluster`
 
 ## app_terraform_io
 
-- apiVersion: `app.terraform.io/v1alpha2`
-- kinds:
-  - `AgentPool`
-  - `Module`
-  - `Workspace`
+apiVersion `app.terraform.io/v1alpha2`:
+- `AgentPool`
+- `Module`
+- `Workspace`
 
 ## applicationautoscaling_services_k8s_aws
 
-- apiVersion: `applicationautoscaling.services.k8s.aws/v1alpha1`
-- kinds:
-  - `ScalableTarget`
-  - `ScalingPolicy`
+apiVersion `applicationautoscaling.services.k8s.aws/v1alpha1`:
+- `ScalableTarget`
+- `ScalingPolicy`
 
 ## appprotect_f5_com
 
-- apiVersion: `appprotect.f5.com/v1beta1`
-- kinds:
-  - `APLogConf`
-  - `APUserSig`
+apiVersion `appprotect.f5.com/v1beta1`:
+- `APLogConf`
+- `APUserSig`
 
 ## appprotectdos_f5_com
 
-- apiVersion: `appprotectdos.f5.com/v1beta1`
-- kinds:
-  - `APDosLogConf`
-  - `APDosPolicy`
-  - `DosProtectedResource`
+apiVersion `appprotectdos.f5.com/v1beta1`:
+- `APDosLogConf`
+- `APDosPolicy`
+- `DosProtectedResource`
 
 ## apps_3scale_net
 
-- apiVersion: `apps.3scale.net/v1alpha1`
-- kinds:
-  - `APIcast`
+apiVersion `apps.3scale.net/v1alpha1`:
+- `APIcast`
 
 ## apps_clusternet_io
 
-- apiVersion: `apps.clusternet.io/v1alpha1`
-- kinds:
-  - `Base`
-  - `Description`
-  - `FeedInventory`
-  - `Globalization`
-  - `HelmChart`
-  - `HelmRelease`
-  - `Localization`
-  - `Subscription`
+apiVersion `apps.clusternet.io/v1alpha1`:
+- `Base`
+- `Description`
+- `FeedInventory`
+- `Globalization`
+- `HelmChart`
+- `HelmRelease`
+- `Localization`
+- `Subscription`
 
 ## apps_emqx_io
 
-- apiVersion: `apps.emqx.io/v1beta3`
-- kinds:
-  - `EmqxBroker`
-  - `EmqxEnterprise`
-  - `EmqxPlugin`
+apiVersion `apps.emqx.io/v1beta3`:
+- `EmqxBroker`
+- `EmqxEnterprise`
+- `EmqxPlugin`
 
-- apiVersion: `apps.emqx.io/v1beta4`
-- kinds:
-  - `EmqxBroker`
-  - `EmqxEnterprise`
-  - `Rebalance`
+apiVersion `apps.emqx.io/v1beta4`:
+- `EmqxBroker`
+- `EmqxEnterprise`
+- `Rebalance`
 
-- apiVersion: `apps.emqx.io/v2alpha1`
-- kinds:
-  - `EMQX`
+apiVersion `apps.emqx.io/v2alpha1`:
+- `EMQX`
 
-- apiVersion: `apps.emqx.io/v2beta1`
-- kinds:
-  - `EMQX`
-  - `Rebalance`
+apiVersion `apps.emqx.io/v2beta1`:
+- `EMQX`
+- `Rebalance`
 
 ## apps_gitlab_com
 
-- apiVersion: `apps.gitlab.com/v1beta1`
-- kinds:
-  - `GitLab`
+apiVersion `apps.gitlab.com/v1beta1`:
+- `GitLab`
 
 ## apps_kubeblocks_io
 
-- apiVersion: `apps.kubeblocks.io/v1alpha1`
-- kinds:
-  - `BackupPolicyTemplate`
-  - `ClusterDefinition`
-  - `Cluster`
-  - `ClusterVersion`
-  - `ComponentClassDefinition`
-  - `ConfigConstraint`
-  - `Configuration`
-  - `OpsRequest`
-  - `ServiceDescriptor`
+apiVersion `apps.kubeblocks.io/v1alpha1`:
+- `BackupPolicyTemplate`
+- `ClusterDefinition`
+- `Cluster`
+- `ClusterVersion`
+- `ComponentClassDefinition`
+- `ConfigConstraint`
+- `Configuration`
+- `OpsRequest`
+- `ServiceDescriptor`
 
 ## apps_kubedl_io
 
-- apiVersion: `apps.kubedl.io/v1alpha1`
-- kinds:
-  - `Cron`
+apiVersion `apps.kubedl.io/v1alpha1`:
+- `Cron`
 
 ## apps_kubeedge_io
 
-- apiVersion: `apps.kubeedge.io/v1alpha1`
-- kinds:
-  - `NodeGroup`
+apiVersion `apps.kubeedge.io/v1alpha1`:
+- `NodeGroup`
 
 ## apps_m88i_io
 
-- apiVersion: `apps.m88i.io/v1alpha1`
-- kinds:
-  - `Nexus`
+apiVersion `apps.m88i.io/v1alpha1`:
+- `Nexus`
 
 ## aquasecurity_github_io
 
-- apiVersion: `aquasecurity.github.io/v1alpha1`
-- kinds:
-  - `AquaStarboard`
+apiVersion `aquasecurity.github.io/v1alpha1`:
+- `AquaStarboard`
 
 ## argoproj_io
 
-- apiVersion: `argoproj.io/v1alpha1`
-- kinds:
-  - `Application`
-  - `AppProject`
-  - `ArgoCDExport`
-  - `ArgoCD`
+apiVersion `argoproj.io/v1alpha1`:
+- `Application`
+- `AppProject`
+- `ArgoCDExport`
+- `ArgoCD`
 
-- apiVersion: `argoproj.io/v1beta1`
-- kinds:
-  - `ArgoCD`
+apiVersion `argoproj.io/v1beta1`:
+- `ArgoCD`
 
 ## asdb_aerospike_com
 
-- apiVersion: `asdb.aerospike.com/v1`
-- kinds:
-  - `AerospikeCluster`
+apiVersion `asdb.aerospike.com/v1`:
+- `AerospikeCluster`
 
-- apiVersion: `asdb.aerospike.com/v1beta1`
-- kinds:
-  - `AerospikeCluster`
+apiVersion `asdb.aerospike.com/v1beta1`:
+- `AerospikeCluster`
 
 ## atlasmap_io
 
-- apiVersion: `atlasmap.io/v1alpha1`
-- kinds:
-  - `AtlasMap`
+apiVersion `atlasmap.io/v1alpha1`:
+- `AtlasMap`
 
 ## auth_ops42_org
 
-- apiVersion: `auth.ops42.org/v1alpha1`
-- kinds:
-  - `AwsAuthSyncConfig`
+apiVersion `auth.ops42.org/v1alpha1`:
+- `AwsAuthSyncConfig`
 
 ## authorization_openshift_io
 
-- apiVersion: `authorization.openshift.io/v1`
-- kinds:
-  - `RoleBindingRestriction`
+apiVersion `authorization.openshift.io/v1`:
+- `RoleBindingRestriction`
 
 ## authzed_com
 
-- apiVersion: `authzed.com/v1alpha1`
-- kinds:
-  - `SpiceDBCluster`
+apiVersion `authzed.com/v1alpha1`:
+- `SpiceDBCluster`
 
 ## autoscaling_k8s_io
 
-- apiVersion: `autoscaling.k8s.io/v1`
-- kinds:
-  - `VerticalPodAutoscalerCheckpoint`
-  - `VerticalPodAutoscaler`
+apiVersion `autoscaling.k8s.io/v1`:
+- `VerticalPodAutoscalerCheckpoint`
+- `VerticalPodAutoscaler`
 
-- apiVersion: `autoscaling.k8s.io/v1beta2`
-- kinds:
-  - `VerticalPodAutoscalerCheckpoint`
-  - `VerticalPodAutoscaler`
+apiVersion `autoscaling.k8s.io/v1beta2`:
+- `VerticalPodAutoscalerCheckpoint`
+- `VerticalPodAutoscaler`
 
 ## autoscaling_karmada_io
 
-- apiVersion: `autoscaling.karmada.io/v1alpha1`
-- kinds:
-  - `CronFederatedHPA`
-  - `FederatedHPA`
+apiVersion `autoscaling.karmada.io/v1alpha1`:
+- `CronFederatedHPA`
+- `FederatedHPA`
 
 ## azure_microsoft_com
 
-- apiVersion: `azure.microsoft.com/v1alpha1`
-- kinds:
-  - `APIMgmtAPI`
-  - `ApimService`
-  - `AppInsights`
-  - `AppInsightsApiKey`
-  - `AzureLoadBalancer`
-  - `AzureNetworkInterface`
-  - `AzurePublicIPAddress`
-  - `AzureSqlAction`
-  - `AzureSqlDatabase`
-  - `AzureSqlFailoverGroup`
-  - `AzureSqlFirewallRule`
-  - `AzureSQLManagedUser`
-  - `AzureSqlServer`
-  - `AzureSQLUser`
-  - `AzureSQLVNetRule`
-  - `AzureVirtualMachineExtension`
-  - `AzureVirtualMachine`
-  - `AzureVMScaleSet`
-  - `BlobContainer`
-  - `ConsumerGroup`
-  - `CosmosDB`
-  - `EventhubNamespace`
-  - `Eventhub`
-  - `KeyVaultKey`
-  - `KeyVault`
-  - `MySQLAADUser`
-  - `MySQLDatabase`
-  - `MySQLFirewallRule`
-  - `MySQLServerAdministrator`
-  - `MySQLServer`
-  - `MySQLUser`
-  - `MySQLVNetRule`
-  - `PostgreSQLDatabase`
-  - `PostgreSQLFirewallRule`
-  - `PostgreSQLServer`
-  - `PostgreSQLUser`
-  - `PostgreSQLVNetRule`
-  - `RedisCacheAction`
-  - `RedisCacheFirewallRule`
-  - `ResourceGroup`
-  - `StorageAccount`
-  - `VirtualNetwork`
+apiVersion `azure.microsoft.com/v1alpha1`:
+- `APIMgmtAPI`
+- `ApimService`
+- `AppInsights`
+- `AppInsightsApiKey`
+- `AzureLoadBalancer`
+- `AzureNetworkInterface`
+- `AzurePublicIPAddress`
+- `AzureSqlAction`
+- `AzureSqlDatabase`
+- `AzureSqlFailoverGroup`
+- `AzureSqlFirewallRule`
+- `AzureSQLManagedUser`
+- `AzureSqlServer`
+- `AzureSQLUser`
+- `AzureSQLVNetRule`
+- `AzureVirtualMachineExtension`
+- `AzureVirtualMachine`
+- `AzureVMScaleSet`
+- `BlobContainer`
+- `ConsumerGroup`
+- `CosmosDB`
+- `EventhubNamespace`
+- `Eventhub`
+- `KeyVaultKey`
+- `KeyVault`
+- `MySQLAADUser`
+- `MySQLDatabase`
+- `MySQLFirewallRule`
+- `MySQLServerAdministrator`
+- `MySQLServer`
+- `MySQLUser`
+- `MySQLVNetRule`
+- `PostgreSQLDatabase`
+- `PostgreSQLFirewallRule`
+- `PostgreSQLServer`
+- `PostgreSQLUser`
+- `PostgreSQLVNetRule`
+- `RedisCacheAction`
+- `RedisCacheFirewallRule`
+- `ResourceGroup`
+- `StorageAccount`
+- `VirtualNetwork`
 
-- apiVersion: `azure.microsoft.com/v1alpha2`
-- kinds:
-  - `BlobContainer`
-  - `MySQLAADUser`
-  - `MySQLServer`
-  - `MySQLUser`
-  - `PostgreSQLServer`
+apiVersion `azure.microsoft.com/v1alpha2`:
+- `BlobContainer`
+- `MySQLAADUser`
+- `MySQLServer`
+- `MySQLUser`
+- `PostgreSQLServer`
 
-- apiVersion: `azure.microsoft.com/v1beta1`
-- kinds:
-  - `AzureSqlDatabase`
-  - `AzureSqlFailoverGroup`
-  - `AzureSqlFirewallRule`
-  - `AzureSqlServer`
+apiVersion `azure.microsoft.com/v1beta1`:
+- `AzureSqlDatabase`
+- `AzureSqlFailoverGroup`
+- `AzureSqlFirewallRule`
+- `AzureSqlServer`
 
 ## b3scale_infra_run
 
-- apiVersion: `b3scale.infra.run/v1`
-- kinds:
-  - `BBBFrontend`
+apiVersion `b3scale.infra.run/v1`:
+- `BBBFrontend`
 
 ## batch_volcano_sh
 
-- apiVersion: `batch.volcano.sh/v1alpha1`
-- kinds:
-  - `Job`
+apiVersion `batch.volcano.sh/v1alpha1`:
+- `Job`
 
 ## beat_k8s_elastic_co
 
-- apiVersion: `beat.k8s.elastic.co/v1beta1`
-- kinds:
-  - `Beat`
+apiVersion `beat.k8s.elastic.co/v1beta1`:
+- `Beat`
 
 ## binding_operators_coreos_com
 
-- apiVersion: `binding.operators.coreos.com/v1alpha1`
-- kinds:
-  - `BindableKinds`
-  - `ServiceBinding`
+apiVersion `binding.operators.coreos.com/v1alpha1`:
+- `BindableKinds`
+- `ServiceBinding`
 
 ## bitnami_com
 
-- apiVersion: `bitnami.com/v1alpha1`
-- kinds:
-  - `SealedSecret`
+apiVersion `bitnami.com/v1alpha1`:
+- `SealedSecret`
 
 ## boskos_k8s_io
 
-- apiVersion: `boskos.k8s.io/v1`
-- kinds:
-  - `DRLCObject`
-  - `ResourceObject`
+apiVersion `boskos.k8s.io/v1`:
+- `DRLCObject`
+- `ResourceObject`
 
 ## bpfd_dev
 
-- apiVersion: `bpfd.dev/v1alpha1`
-- kinds:
-  - `BpfProgram`
-  - `KprobeProgram`
-  - `TcProgram`
-  - `TracepointProgram`
-  - `UprobeProgram`
-  - `XdpProgram`
+apiVersion `bpfd.dev/v1alpha1`:
+- `BpfProgram`
+- `KprobeProgram`
+- `TcProgram`
+- `TracepointProgram`
+- `UprobeProgram`
+- `XdpProgram`
 
 ## bus_volcano_sh
 
-- apiVersion: `bus.volcano.sh/v1alpha1`
-- kinds:
-  - `Command`
+apiVersion `bus.volcano.sh/v1alpha1`:
+- `Command`
 
 ## cache_kubedl_io
 
-- apiVersion: `cache.kubedl.io/v1alpha1`
-- kinds:
-  - `CacheBackend`
+apiVersion `cache.kubedl.io/v1alpha1`:
+- `CacheBackend`
 
 ## caching_ibm_com
 
-- apiVersion: `caching.ibm.com/v1alpha1`
-- kinds:
-  - `VarnishCluster`
+apiVersion `caching.ibm.com/v1alpha1`:
+- `VarnishCluster`
 
 ## camel_apache_org
 
-- apiVersion: `camel.apache.org/v1`
-- kinds:
-  - `Build`
-  - `CamelCatalog`
-  - `Kamelet`
+apiVersion `camel.apache.org/v1`:
+- `Build`
+- `CamelCatalog`
+- `Kamelet`
 
-- apiVersion: `camel.apache.org/v1alpha1`
-- kinds:
-  - `Kamelet`
+apiVersion `camel.apache.org/v1alpha1`:
+- `Kamelet`
 
 ## canaries_flanksource_com
 
-- apiVersion: `canaries.flanksource.com/v1`
-- kinds:
-  - `Canary`
+apiVersion `canaries.flanksource.com/v1`:
+- `Canary`
 
 ## capsule_clastix_io
 
-- apiVersion: `capsule.clastix.io/v1alpha1`
-- kinds:
-  - `CapsuleConfiguration`
-  - `Tenant`
+apiVersion `capsule.clastix.io/v1alpha1`:
+- `CapsuleConfiguration`
+- `Tenant`
 
-- apiVersion: `capsule.clastix.io/v1beta1`
-- kinds:
-  - `Tenant`
+apiVersion `capsule.clastix.io/v1beta1`:
+- `Tenant`
 
-- apiVersion: `capsule.clastix.io/v1beta2`
-- kinds:
-  - `CapsuleConfiguration`
-  - `Tenant`
+apiVersion `capsule.clastix.io/v1beta2`:
+- `CapsuleConfiguration`
+- `Tenant`
 
 ## ceph_rook_io
 
-- apiVersion: `ceph.rook.io/v1`
-- kinds:
-  - `CephBlockPoolRadosNamespace`
-  - `CephBlockPool`
-  - `CephBucketNotification`
-  - `CephBucketTopic`
-  - `CephClient`
-  - `CephCOSIDriver`
-  - `CephFilesystemMirror`
-  - `CephFilesystem`
-  - `CephFilesystemSubVolumeGroup`
-  - `CephNFS`
-  - `CephObjectRealm`
-  - `CephObjectStore`
-  - `CephObjectStoreUser`
-  - `CephObjectZoneGroup`
-  - `CephObjectZone`
-  - `CephRBDMirror`
+apiVersion `ceph.rook.io/v1`:
+- `CephBlockPoolRadosNamespace`
+- `CephBlockPool`
+- `CephBucketNotification`
+- `CephBucketTopic`
+- `CephClient`
+- `CephCOSIDriver`
+- `CephFilesystemMirror`
+- `CephFilesystem`
+- `CephFilesystemSubVolumeGroup`
+- `CephNFS`
+- `CephObjectRealm`
+- `CephObjectStore`
+- `CephObjectStoreUser`
+- `CephObjectZoneGroup`
+- `CephObjectZone`
+- `CephRBDMirror`
 
 ## cert_manager_io
 
-- apiVersion: `cert-manager.io/v1`
-- kinds:
-  - `CertificateRequest`
-  - `Certificate`
-  - `ClusterIssuer`
-  - `Issuer`
+apiVersion `cert-manager.io/v1`:
+- `CertificateRequest`
+- `Certificate`
+- `ClusterIssuer`
+- `Issuer`
 
 ## chaos_mesh_org
 
-- apiVersion: `chaos-mesh.org/v1alpha1`
-- kinds:
-  - `AWSChaos`
-  - `AzureChaos`
-  - `BlockChaos`
-  - `DNSChaos`
-  - `GCPChaos`
-  - `HTTPChaos`
-  - `IOChaos`
-  - `JVMChaos`
-  - `KernelChaos`
-  - `NetworkChaos`
-  - `PhysicalMachineChaos`
-  - `PhysicalMachine`
-  - `PodChaos`
-  - `PodHttpChaos`
-  - `PodIOChaos`
-  - `PodNetworkChaos`
-  - `RemoteCluster`
-  - `Schedule`
-  - `StatusCheck`
-  - `StressChaos`
-  - `TimeChaos`
-  - `WorkflowNode`
-  - `Workflow`
+apiVersion `chaos-mesh.org/v1alpha1`:
+- `AWSChaos`
+- `AzureChaos`
+- `BlockChaos`
+- `DNSChaos`
+- `GCPChaos`
+- `HTTPChaos`
+- `IOChaos`
+- `JVMChaos`
+- `KernelChaos`
+- `NetworkChaos`
+- `PhysicalMachineChaos`
+- `PhysicalMachine`
+- `PodChaos`
+- `PodHttpChaos`
+- `PodIOChaos`
+- `PodNetworkChaos`
+- `RemoteCluster`
+- `Schedule`
+- `StatusCheck`
+- `StressChaos`
+- `TimeChaos`
+- `WorkflowNode`
+- `Workflow`
 
 ## chaosblade_io
 
-- apiVersion: `chaosblade.io/v1alpha1`
-- kinds:
-  - `ChaosBlade`
+apiVersion `chaosblade.io/v1alpha1`:
+- `ChaosBlade`
 
 ## che_eclipse_org
 
-- apiVersion: `che.eclipse.org/v1alpha1`
-- kinds:
-  - `KubernetesImagePuller`
+apiVersion `che.eclipse.org/v1alpha1`:
+- `KubernetesImagePuller`
 
 ## cilium_io
 
-- apiVersion: `cilium.io/v2`
-- kinds:
-  - `CiliumClusterwideNetworkPolicy`
-  - `CiliumEgressGatewayPolicy`
-  - `CiliumEndpoint`
-  - `CiliumExternalWorkload`
-  - `CiliumNetworkPolicy`
-  - `CiliumNode`
+apiVersion `cilium.io/v2`:
+- `CiliumClusterwideNetworkPolicy`
+- `CiliumEgressGatewayPolicy`
+- `CiliumEndpoint`
+- `CiliumExternalWorkload`
+- `CiliumNetworkPolicy`
+- `CiliumNode`
 
-- apiVersion: `cilium.io/v2alpha1`
-- kinds:
-  - `CiliumBGPPeeringPolicy`
-  - `CiliumCIDRGroup`
-  - `CiliumEndpointSlice`
-  - `CiliumL2AnnouncementPolicy`
-  - `CiliumLoadBalancerIPPool`
-  - `CiliumNodeConfig`
-  - `CiliumPodIPPool`
+apiVersion `cilium.io/v2alpha1`:
+- `CiliumBGPPeeringPolicy`
+- `CiliumCIDRGroup`
+- `CiliumEndpointSlice`
+- `CiliumL2AnnouncementPolicy`
+- `CiliumLoadBalancerIPPool`
+- `CiliumNodeConfig`
+- `CiliumPodIPPool`
 
 ## claudie_io
 
-- apiVersion: `claudie.io/v1beta1`
-- kinds:
-  - `InputManifest`
+apiVersion `claudie.io/v1beta1`:
+- `InputManifest`
 
 ## cloud_network_openshift_io
 
-- apiVersion: `cloud.network.openshift.io/v1`
-- kinds:
-  - `CloudPrivateIPConfig`
+apiVersion `cloud.network.openshift.io/v1`:
+- `CloudPrivateIPConfig`
 
 ## cloudformation_linki_space
 
-- apiVersion: `cloudformation.linki.space/v1alpha1`
-- kinds:
-  - `Stack`
+apiVersion `cloudformation.linki.space/v1alpha1`:
+- `Stack`
 
 ## cluster_clusterpedia_io
 
-- apiVersion: `cluster.clusterpedia.io/v1alpha2`
-- kinds:
-  - `ClusterSyncResources`
-  - `PediaCluster`
+apiVersion `cluster.clusterpedia.io/v1alpha2`:
+- `ClusterSyncResources`
+- `PediaCluster`
 
 ## cluster_ipfs_io
 
-- apiVersion: `cluster.ipfs.io/v1alpha1`
-- kinds:
-  - `CircuitRelay`
-  - `IpfsCluster`
+apiVersion `cluster.ipfs.io/v1alpha1`:
+- `CircuitRelay`
+- `IpfsCluster`
 
 ## cluster_x_k8s_io
 
-- apiVersion: `cluster.x-k8s.io/v1alpha4`
-- kinds:
-  - `ClusterClass`
-  - `Cluster`
-  - `MachineDeployment`
-  - `MachineHealthCheck`
-  - `MachinePool`
-  - `Machine`
-  - `MachineSet`
+apiVersion `cluster.x-k8s.io/v1alpha4`:
+- `ClusterClass`
+- `Cluster`
+- `MachineDeployment`
+- `MachineHealthCheck`
+- `MachinePool`
+- `Machine`
+- `MachineSet`
 
-- apiVersion: `cluster.x-k8s.io/v1beta1`
-- kinds:
-  - `ClusterClass`
-  - `Cluster`
-  - `MachineDeployment`
-  - `MachineHealthCheck`
-  - `MachinePool`
-  - `Machine`
-  - `MachineSet`
+apiVersion `cluster.x-k8s.io/v1beta1`:
+- `ClusterClass`
+- `Cluster`
+- `MachineDeployment`
+- `MachineHealthCheck`
+- `MachinePool`
+- `Machine`
+- `MachineSet`
 
 ## clusters_clusternet_io
 
-- apiVersion: `clusters.clusternet.io/v1beta1`
-- kinds:
-  - `ClusterRegistrationRequest`
-  - `ManagedCluster`
+apiVersion `clusters.clusternet.io/v1beta1`:
+- `ClusterRegistrationRequest`
+- `ManagedCluster`
 
 ## config_gatekeeper_sh
 
-- apiVersion: `config.gatekeeper.sh/v1alpha1`
-- kinds:
-  - `Config`
+apiVersion `config.gatekeeper.sh/v1alpha1`:
+- `Config`
 
 ## config_grafana_com
 
-- apiVersion: `config.grafana.com/v1`
-- kinds:
-  - `ProjectConfig`
+apiVersion `config.grafana.com/v1`:
+- `ProjectConfig`
 
 ## config_karmada_io
 
-- apiVersion: `config.karmada.io/v1alpha1`
-- kinds:
-  - `ResourceInterpreterCustomization`
-  - `ResourceInterpreterWebhookConfiguration`
+apiVersion `config.karmada.io/v1alpha1`:
+- `ResourceInterpreterCustomization`
+- `ResourceInterpreterWebhookConfiguration`
 
 ## config_koordinator_sh
 
-- apiVersion: `config.koordinator.sh/v1alpha1`
-- kinds:
-  - `ClusterColocationProfile`
+apiVersion `config.koordinator.sh/v1alpha1`:
+- `ClusterColocationProfile`
 
 ## config_openshift_io
 
-- apiVersion: `config.openshift.io/v1`
-- kinds:
-  - `APIServer`
-  - `Authentication`
-  - `ClusterOperator`
-  - `ClusterVersion`
-  - `Console`
-  - `DNS`
-  - `FeatureGate`
-  - `ImageDigestMirrorSet`
-  - `Image`
-  - `ImageTagMirrorSet`
-  - `Infrastructure`
-  - `Ingress`
-  - `Network`
-  - `Node`
-  - `OAuth`
-  - `OperatorHub`
-  - `Project`
-  - `Proxy`
-  - `Scheduler`
+apiVersion `config.openshift.io/v1`:
+- `APIServer`
+- `Authentication`
+- `ClusterOperator`
+- `ClusterVersion`
+- `Console`
+- `DNS`
+- `FeatureGate`
+- `ImageDigestMirrorSet`
+- `Image`
+- `ImageTagMirrorSet`
+- `Infrastructure`
+- `Ingress`
+- `Network`
+- `Node`
+- `OAuth`
+- `OperatorHub`
+- `Project`
+- `Proxy`
+- `Scheduler`
 
 ## console_openshift_io
 
-- apiVersion: `console.openshift.io/v1`
-- kinds:
-  - `ConsolePlugin`
-  - `ConsoleQuickStart`
-  - `ConsoleSample`
-  - `ConsoleYAMLSample`
+apiVersion `console.openshift.io/v1`:
+- `ConsolePlugin`
+- `ConsoleQuickStart`
+- `ConsoleSample`
+- `ConsoleYAMLSample`
 
-- apiVersion: `console.openshift.io/v1alpha1`
-- kinds:
-  - `ConsolePlugin`
+apiVersion `console.openshift.io/v1alpha1`:
+- `ConsolePlugin`
 
 ## controlplane_operator_openshift_io
 
-- apiVersion: `controlplane.operator.openshift.io/v1alpha1`
-- kinds:
-  - `PodNetworkConnectivityCheck`
+apiVersion `controlplane.operator.openshift.io/v1alpha1`:
+- `PodNetworkConnectivityCheck`
 
 ## core_kubeadmiral_io
 
-- apiVersion: `core.kubeadmiral.io/v1alpha1`
-- kinds:
-  - `ClusterCollectedStatus`
-  - `ClusterFederatedObject`
-  - `ClusterOverridePolicy`
-  - `ClusterPropagatedVersion`
-  - `ClusterPropagationPolicy`
-  - `CollectedStatus`
-  - `FederatedCluster`
-  - `FederatedObject`
-  - `OverridePolicy`
-  - `PropagatedVersion`
-  - `PropagationPolicy`
-  - `SchedulerPluginWebhookConfiguration`
-  - `SchedulingProfile`
+apiVersion `core.kubeadmiral.io/v1alpha1`:
+- `ClusterCollectedStatus`
+- `ClusterFederatedObject`
+- `ClusterOverridePolicy`
+- `ClusterPropagatedVersion`
+- `ClusterPropagationPolicy`
+- `CollectedStatus`
+- `FederatedCluster`
+- `FederatedObject`
+- `OverridePolicy`
+- `PropagatedVersion`
+- `PropagationPolicy`
+- `SchedulerPluginWebhookConfiguration`
+- `SchedulingProfile`
 
 ## core_linuxsuren_github_com
 
-- apiVersion: `core.linuxsuren.github.com/v1alpha1`
-- kinds:
-  - `ATest`
+apiVersion `core.linuxsuren.github.com/v1alpha1`:
+- `ATest`
 
 ## core_openfeature_dev
 
-- apiVersion: `core.openfeature.dev/v1alpha1`
-- kinds:
-  - `FeatureFlagConfiguration`
+apiVersion `core.openfeature.dev/v1alpha1`:
+- `FeatureFlagConfiguration`
 
-- apiVersion: `core.openfeature.dev/v1alpha2`
-- kinds:
-  - `FeatureFlagConfiguration`
+apiVersion `core.openfeature.dev/v1alpha2`:
+- `FeatureFlagConfiguration`
 
 ## couchbase_com
 
-- apiVersion: `couchbase.com/v2`
-- kinds:
-  - `CouchbaseAutoscaler`
-  - `CouchbaseBackupRestore`
-  - `CouchbaseBackup`
-  - `CouchbaseBucket`
-  - `CouchbaseCluster`
-  - `CouchbaseCollectionGroup`
-  - `CouchbaseCollection`
-  - `CouchbaseEphemeralBucket`
-  - `CouchbaseGroup`
-  - `CouchbaseMemcachedBucket`
-  - `CouchbaseMigrationReplication`
-  - `CouchbaseReplication`
-  - `CouchbaseRoleBinding`
-  - `CouchbaseScopeGroup`
-  - `CouchbaseScope`
-  - `CouchbaseUser`
+apiVersion `couchbase.com/v2`:
+- `CouchbaseAutoscaler`
+- `CouchbaseBackupRestore`
+- `CouchbaseBackup`
+- `CouchbaseBucket`
+- `CouchbaseCluster`
+- `CouchbaseCollectionGroup`
+- `CouchbaseCollection`
+- `CouchbaseEphemeralBucket`
+- `CouchbaseGroup`
+- `CouchbaseMemcachedBucket`
+- `CouchbaseMigrationReplication`
+- `CouchbaseReplication`
+- `CouchbaseRoleBinding`
+- `CouchbaseScopeGroup`
+- `CouchbaseScope`
+- `CouchbaseUser`
 
 ## crd_projectcalico_org
 
-- apiVersion: `crd.projectcalico.org/v1`
-- kinds:
-  - `BGPConfiguration`
-  - `BGPFilter`
-  - `BGPPeer`
-  - `BlockAffinity`
-  - `CalicoNodeStatus`
-  - `ClusterInformation`
-  - `GlobalNetworkSet`
-  - `HostEndpoint`
-  - `IPAMBlock`
-  - `IPAMConfig`
-  - `IPAMHandle`
-  - `IPPool`
-  - `IPReservation`
-  - `KubeControllersConfiguration`
-  - `NetworkSet`
+apiVersion `crd.projectcalico.org/v1`:
+- `BGPConfiguration`
+- `BGPFilter`
+- `BGPPeer`
+- `BlockAffinity`
+- `CalicoNodeStatus`
+- `ClusterInformation`
+- `GlobalNetworkSet`
+- `HostEndpoint`
+- `IPAMBlock`
+- `IPAMConfig`
+- `IPAMHandle`
+- `IPPool`
+- `IPReservation`
+- `KubeControllersConfiguration`
+- `NetworkSet`
 
 ## data_fluid_io
 
-- apiVersion: `data.fluid.io/v1alpha1`
-- kinds:
-  - `AlluxioRuntime`
-  - `DataBackup`
-  - `DataLoad`
-  - `Dataset`
-  - `GooseFSRuntime`
-  - `JindoRuntime`
-  - `JuiceFSRuntime`
-  - `ThinRuntimeProfile`
-  - `ThinRuntime`
+apiVersion `data.fluid.io/v1alpha1`:
+- `AlluxioRuntime`
+- `DataBackup`
+- `DataLoad`
+- `Dataset`
+- `GooseFSRuntime`
+- `JindoRuntime`
+- `JuiceFSRuntime`
+- `ThinRuntimeProfile`
+- `ThinRuntime`
 
 ## databases_schemahero_io
 
-- apiVersion: `databases.schemahero.io/v1alpha4`
-- kinds:
-  - `Database`
+apiVersion `databases.schemahero.io/v1alpha4`:
+- `Database`
 
 ## dataprotection_kubeblocks_io
 
-- apiVersion: `dataprotection.kubeblocks.io/v1alpha1`
-- kinds:
-  - `ActionSet`
-  - `BackupPolicy`
-  - `BackupRepo`
-  - `Backup`
-  - `BackupSchedule`
-  - `Restore`
+apiVersion `dataprotection.kubeblocks.io/v1alpha1`:
+- `ActionSet`
+- `BackupPolicy`
+- `BackupRepo`
+- `Backup`
+- `BackupSchedule`
+- `Restore`
 
 ## devices_kubeedge_io
 
-- apiVersion: `devices.kubeedge.io/v1alpha2`
-- kinds:
-  - `DeviceModel`
-  - `Device`
+apiVersion `devices.kubeedge.io/v1alpha2`:
+- `DeviceModel`
+- `Device`
 
 ## dex_gpu_ninja_com
 
-- apiVersion: `dex.gpu-ninja.com/v1alpha1`
-- kinds:
-  - `DexIdentityProvider`
-  - `DexOAuth2Client`
-  - `DexUser`
+apiVersion `dex.gpu-ninja.com/v1alpha1`:
+- `DexIdentityProvider`
+- `DexOAuth2Client`
+- `DexUser`
 
 ## digitalis_io
 
-- apiVersion: `digitalis.io/v1`
-- kinds:
-  - `ValsSecret`
+apiVersion `digitalis.io/v1`:
+- `ValsSecret`
 
-- apiVersion: `digitalis.io/v1beta1`
-- kinds:
-  - `DbSecret`
+apiVersion `digitalis.io/v1beta1`:
+- `DbSecret`
 
 ## druid_apache_org
 
-- apiVersion: `druid.apache.org/v1alpha1`
-- kinds:
-  - `Druid`
+apiVersion `druid.apache.org/v1alpha1`:
+- `Druid`
 
 ## dynamodb_services_k8s_aws
 
-- apiVersion: `dynamodb.services.k8s.aws/v1alpha1`
-- kinds:
-  - `Backup`
-  - `GlobalTable`
-  - `Table`
+apiVersion `dynamodb.services.k8s.aws/v1alpha1`:
+- `Backup`
+- `GlobalTable`
+- `Table`
 
 ## ec2_services_k8s_aws
 
-- apiVersion: `ec2.services.k8s.aws/v1alpha1`
-- kinds:
-  - `DHCPOptions`
-  - `ElasticIPAddress`
-  - `Instance`
-  - `InternetGateway`
-  - `NATGateway`
-  - `RouteTable`
-  - `SecurityGroup`
-  - `Subnet`
-  - `TransitGateway`
-  - `VPCEndpoint`
-  - `VPC`
+apiVersion `ec2.services.k8s.aws/v1alpha1`:
+- `DHCPOptions`
+- `ElasticIPAddress`
+- `Instance`
+- `InternetGateway`
+- `NATGateway`
+- `RouteTable`
+- `SecurityGroup`
+- `Subnet`
+- `TransitGateway`
+- `VPCEndpoint`
+- `VPC`
 
 ## ecr_services_k8s_aws
 
-- apiVersion: `ecr.services.k8s.aws/v1alpha1`
-- kinds:
-  - `PullThroughCacheRule`
-  - `Repository`
+apiVersion `ecr.services.k8s.aws/v1alpha1`:
+- `PullThroughCacheRule`
+- `Repository`
 
 ## eks_services_k8s_aws
 
-- apiVersion: `eks.services.k8s.aws/v1alpha1`
-- kinds:
-  - `Addon`
-  - `Cluster`
-  - `FargateProfile`
-  - `Nodegroup`
+apiVersion `eks.services.k8s.aws/v1alpha1`:
+- `Addon`
+- `Cluster`
+- `FargateProfile`
+- `Nodegroup`
 
 ## elasticache_services_k8s_aws
 
-- apiVersion: `elasticache.services.k8s.aws/v1alpha1`
-- kinds:
-  - `CacheParameterGroup`
-  - `CacheSubnetGroup`
-  - `ReplicationGroup`
-  - `Snapshot`
-  - `UserGroup`
-  - `User`
+apiVersion `elasticache.services.k8s.aws/v1alpha1`:
+- `CacheParameterGroup`
+- `CacheSubnetGroup`
+- `ReplicationGroup`
+- `Snapshot`
+- `UserGroup`
+- `User`
 
 ## elasticsearch_k8s_elastic_co
 
-- apiVersion: `elasticsearch.k8s.elastic.co/v1`
-- kinds:
-  - `Elasticsearch`
+apiVersion `elasticsearch.k8s.elastic.co/v1`:
+- `Elasticsearch`
 
-- apiVersion: `elasticsearch.k8s.elastic.co/v1beta1`
-- kinds:
-  - `Elasticsearch`
+apiVersion `elasticsearch.k8s.elastic.co/v1beta1`:
+- `Elasticsearch`
 
 ## elbv2_k8s_aws
 
-- apiVersion: `elbv2.k8s.aws/v1alpha1`
-- kinds:
-  - `TargetGroupBinding`
+apiVersion `elbv2.k8s.aws/v1alpha1`:
+- `TargetGroupBinding`
 
-- apiVersion: `elbv2.k8s.aws/v1beta1`
-- kinds:
-  - `IngressClassParams`
-  - `TargetGroupBinding`
+apiVersion `elbv2.k8s.aws/v1beta1`:
+- `IngressClassParams`
+- `TargetGroupBinding`
 
 ## emrcontainers_services_k8s_aws
 
-- apiVersion: `emrcontainers.services.k8s.aws/v1alpha1`
-- kinds:
-  - `JobRun`
-  - `VirtualCluster`
+apiVersion `emrcontainers.services.k8s.aws/v1alpha1`:
+- `JobRun`
+- `VirtualCluster`
 
 ## enterprisesearch_k8s_elastic_co
 
-- apiVersion: `enterprisesearch.k8s.elastic.co/v1`
-- kinds:
-  - `EnterpriseSearch`
+apiVersion `enterprisesearch.k8s.elastic.co/v1`:
+- `EnterpriseSearch`
 
-- apiVersion: `enterprisesearch.k8s.elastic.co/v1beta1`
-- kinds:
-  - `EnterpriseSearch`
+apiVersion `enterprisesearch.k8s.elastic.co/v1beta1`:
+- `EnterpriseSearch`
 
 ## example_openshift_io
 
-- apiVersion: `example.openshift.io/v1`
-- kinds:
-  - `StableConfigType`
+apiVersion `example.openshift.io/v1`:
+- `StableConfigType`
 
 ## execution_furiko_io
 
-- apiVersion: `execution.furiko.io/v1alpha1`
-- kinds:
-  - `JobConfig`
-  - `Job`
+apiVersion `execution.furiko.io/v1alpha1`:
+- `JobConfig`
+- `Job`
 
 ## executor_testkube_io
 
-- apiVersion: `executor.testkube.io/v1`
-- kinds:
-  - `Executor`
-  - `Webhook`
+apiVersion `executor.testkube.io/v1`:
+- `Executor`
+- `Webhook`
 
 ## expansion_gatekeeper_sh
 
-- apiVersion: `expansion.gatekeeper.sh/v1alpha1`
-- kinds:
-  - `ExpansionTemplate`
+apiVersion `expansion.gatekeeper.sh/v1alpha1`:
+- `ExpansionTemplate`
 
-- apiVersion: `expansion.gatekeeper.sh/v1beta1`
-- kinds:
-  - `ExpansionTemplate`
+apiVersion `expansion.gatekeeper.sh/v1beta1`:
+- `ExpansionTemplate`
 
 ## extensions_kubeblocks_io
 
-- apiVersion: `extensions.kubeblocks.io/v1alpha1`
-- kinds:
-  - `Addon`
+apiVersion `extensions.kubeblocks.io/v1alpha1`:
+- `Addon`
 
 ## external_secrets_io
 
-- apiVersion: `external-secrets.io/v1alpha1`
-- kinds:
-  - `ClusterSecretStore`
-  - `ExternalSecret`
-  - `SecretStore`
+apiVersion `external-secrets.io/v1alpha1`:
+- `ClusterSecretStore`
+- `ExternalSecret`
+- `SecretStore`
 
-- apiVersion: `external-secrets.io/v1beta1`
-- kinds:
-  - `ClusterExternalSecret`
-  - `ClusterSecretStore`
-  - `ExternalSecret`
-  - `SecretStore`
+apiVersion `external-secrets.io/v1beta1`:
+- `ClusterExternalSecret`
+- `ClusterSecretStore`
+- `ExternalSecret`
+- `SecretStore`
 
 ## externaldata_gatekeeper_sh
 
-- apiVersion: `externaldata.gatekeeper.sh/v1alpha1`
-- kinds:
-  - `Provider`
+apiVersion `externaldata.gatekeeper.sh/v1alpha1`:
+- `Provider`
 
-- apiVersion: `externaldata.gatekeeper.sh/v1beta1`
-- kinds:
-  - `Provider`
+apiVersion `externaldata.gatekeeper.sh/v1beta1`:
+- `Provider`
 
 ## externaldns_k8s_io
 
-- apiVersion: `externaldns.k8s.io/v1alpha1`
-- kinds:
-  - `DNSEndpoint`
+apiVersion `externaldns.k8s.io/v1alpha1`:
+- `DNSEndpoint`
 
 ## externaldns_nginx_org
 
-- apiVersion: `externaldns.nginx.org/v1`
-- kinds:
-  - `DNSEndpoint`
+apiVersion `externaldns.nginx.org/v1`:
+- `DNSEndpoint`
 
 ## flagger_app
 
-- apiVersion: `flagger.app/v1beta1`
-- kinds:
-  - `Canary`
+apiVersion `flagger.app/v1beta1`:
+- `Canary`
 
 ## flink_apache_org
 
-- apiVersion: `flink.apache.org/v1beta1`
-- kinds:
-  - `FlinkDeployment`
-  - `FlinkSessionJob`
+apiVersion `flink.apache.org/v1beta1`:
+- `FlinkDeployment`
+- `FlinkSessionJob`
 
 ## flow_volcano_sh
 
-- apiVersion: `flow.volcano.sh/v1alpha1`
-- kinds:
-  - `JobFlow`
-  - `JobTemplate`
+apiVersion `flow.volcano.sh/v1alpha1`:
+- `JobFlow`
+- `JobTemplate`
 
 ## flows_netobserv_io
 
-- apiVersion: `flows.netobserv.io/v1alpha1`
-- kinds:
-  - `FlowCollector`
+apiVersion `flows.netobserv.io/v1alpha1`:
+- `FlowCollector`
 
-- apiVersion: `flows.netobserv.io/v1beta1`
-- kinds:
-  - `FlowCollector`
+apiVersion `flows.netobserv.io/v1beta1`:
+- `FlowCollector`
 
-- apiVersion: `flows.netobserv.io/v1beta2`
-- kinds:
-  - `FlowCollector`
+apiVersion `flows.netobserv.io/v1beta2`:
+- `FlowCollector`
 
 ## flux_framework_org
 
-- apiVersion: `flux-framework.org/v1alpha1`
-- kinds:
-  - `MiniCluster`
+apiVersion `flux-framework.org/v1alpha1`:
+- `MiniCluster`
 
 ## gateway_networking_k8s_io
 
-- apiVersion: `gateway.networking.k8s.io/v1`
-- kinds:
-  - `GatewayClass`
-  - `Gateway`
-  - `HTTPRoute`
+apiVersion `gateway.networking.k8s.io/v1`:
+- `GatewayClass`
+- `Gateway`
+- `HTTPRoute`
 
-- apiVersion: `gateway.networking.k8s.io/v1alpha2`
-- kinds:
-  - `GRPCRoute`
-  - `ReferenceGrant`
-  - `TCPRoute`
-  - `TLSRoute`
-  - `UDPRoute`
+apiVersion `gateway.networking.k8s.io/v1alpha2`:
+- `GRPCRoute`
+- `ReferenceGrant`
+- `TCPRoute`
+- `TLSRoute`
+- `UDPRoute`
 
-- apiVersion: `gateway.networking.k8s.io/v1beta1`
-- kinds:
-  - `GatewayClass`
-  - `Gateway`
-  - `HTTPRoute`
-  - `ReferenceGrant`
+apiVersion `gateway.networking.k8s.io/v1beta1`:
+- `GatewayClass`
+- `Gateway`
+- `HTTPRoute`
+- `ReferenceGrant`
 
 ## gateway_nginx_org
 
-- apiVersion: `gateway.nginx.org/v1alpha1`
-- kinds:
-  - `NginxGateway`
+apiVersion `gateway.nginx.org/v1alpha1`:
+- `NginxGateway`
 
 ## getambassador_io
 
-- apiVersion: `getambassador.io/v3alpha1`
-- kinds:
-  - `AuthService`
-  - `ConsulResolver`
-  - `DevPortal`
-  - `Host`
-  - `KubernetesEndpointResolver`
-  - `KubernetesServiceResolver`
-  - `Listener`
-  - `LogService`
-  - `Module`
-  - `RateLimitService`
-  - `TCPMapping`
-  - `TLSContext`
-  - `TracingService`
+apiVersion `getambassador.io/v3alpha1`:
+- `AuthService`
+- `ConsulResolver`
+- `DevPortal`
+- `Host`
+- `KubernetesEndpointResolver`
+- `KubernetesServiceResolver`
+- `Listener`
+- `LogService`
+- `Module`
+- `RateLimitService`
+- `TCPMapping`
+- `TLSContext`
+- `TracingService`
 
 ## gitops_hybrid_cloud_patterns_io
 
-- apiVersion: `gitops.hybrid-cloud-patterns.io/v1alpha1`
-- kinds:
-  - `Pattern`
+apiVersion `gitops.hybrid-cloud-patterns.io/v1alpha1`:
+- `Pattern`
 
 ## grafana_integreatly_org
 
-- apiVersion: `grafana.integreatly.org/v1beta1`
-- kinds:
-  - `GrafanaDashboard`
-  - `GrafanaDatasource`
-  - `GrafanaFolder`
+apiVersion `grafana.integreatly.org/v1beta1`:
+- `GrafanaDashboard`
+- `GrafanaDatasource`
+- `GrafanaFolder`
 
 ## hazelcast_com
 
-- apiVersion: `hazelcast.com/v1alpha1`
-- kinds:
-  - `CronHotBackup`
-  - `Hazelcast`
-  - `HotBackup`
-  - `ManagementCenter`
-  - `Map`
-  - `WanReplication`
+apiVersion `hazelcast.com/v1alpha1`:
+- `CronHotBackup`
+- `Hazelcast`
+- `HotBackup`
+- `ManagementCenter`
+- `Map`
+- `WanReplication`
 
 ## helm_openshift_io
 
-- apiVersion: `helm.openshift.io/v1beta1`
-- kinds:
-  - `HelmChartRepository`
-  - `ProjectHelmChartRepository`
+apiVersion `helm.openshift.io/v1beta1`:
+- `HelmChartRepository`
+- `ProjectHelmChartRepository`
 
 ## helm_toolkit_fluxcd_io
 
-- apiVersion: `helm.toolkit.fluxcd.io/v2beta1`
-- kinds:
-  - `HelmRelease`
+apiVersion `helm.toolkit.fluxcd.io/v2beta1`:
+- `HelmRelease`
 
-- apiVersion: `helm.toolkit.fluxcd.io/v2beta2`
-- kinds:
-  - `HelmRelease`
+apiVersion `helm.toolkit.fluxcd.io/v2beta2`:
+- `HelmRelease`
 
 ## hive_openshift_io
 
-- apiVersion: `hive.openshift.io/v1`
-- kinds:
-  - `Checkpoint`
-  - `ClusterClaim`
-  - `ClusterDeploymentCustomization`
-  - `ClusterDeployment`
-  - `ClusterDeprovision`
-  - `ClusterImageSet`
-  - `ClusterPool`
-  - `ClusterProvision`
-  - `ClusterRelocate`
-  - `ClusterState`
-  - `DNSZone`
-  - `HiveConfig`
-  - `MachinePoolNameLease`
-  - `MachinePool`
-  - `SelectorSyncIdentityProvider`
-  - `SyncIdentityProvider`
+apiVersion `hive.openshift.io/v1`:
+- `Checkpoint`
+- `ClusterClaim`
+- `ClusterDeploymentCustomization`
+- `ClusterDeployment`
+- `ClusterDeprovision`
+- `ClusterImageSet`
+- `ClusterPool`
+- `ClusterProvision`
+- `ClusterRelocate`
+- `ClusterState`
+- `DNSZone`
+- `HiveConfig`
+- `MachinePoolNameLease`
+- `MachinePool`
+- `SelectorSyncIdentityProvider`
+- `SyncIdentityProvider`
 
 ## hiveinternal_openshift_io
 
-- apiVersion: `hiveinternal.openshift.io/v1alpha1`
-- kinds:
-  - `ClusterSyncLease`
-  - `ClusterSync`
-  - `FakeClusterInstall`
+apiVersion `hiveinternal.openshift.io/v1alpha1`:
+- `ClusterSyncLease`
+- `ClusterSync`
+- `FakeClusterInstall`
 
 ## hnc_x_k8s_io
 
-- apiVersion: `hnc.x-k8s.io/v1alpha2`
-- kinds:
-  - `HierarchicalResourceQuota`
-  - `HierarchyConfiguration`
-  - `HNCConfiguration`
-  - `SubnamespaceAnchor`
+apiVersion `hnc.x-k8s.io/v1alpha2`:
+- `HierarchicalResourceQuota`
+- `HierarchyConfiguration`
+- `HNCConfiguration`
+- `SubnamespaceAnchor`
 
 ## hyperfoil_io
 
-- apiVersion: `hyperfoil.io/v1alpha1`
-- kinds:
-  - `Horreum`
+apiVersion `hyperfoil.io/v1alpha1`:
+- `Horreum`
 
-- apiVersion: `hyperfoil.io/v1alpha2`
-- kinds:
-  - `Hyperfoil`
+apiVersion `hyperfoil.io/v1alpha2`:
+- `Hyperfoil`
 
 ## iam_services_k8s_aws
 
-- apiVersion: `iam.services.k8s.aws/v1alpha1`
-- kinds:
-  - `Group`
-  - `Policy`
-  - `Role`
+apiVersion `iam.services.k8s.aws/v1alpha1`:
+- `Group`
+- `Policy`
+- `Role`
 
 ## ibmcloud_ibm_com
 
-- apiVersion: `ibmcloud.ibm.com/v1alpha1`
-- kinds:
-  - `Composable`
+apiVersion `ibmcloud.ibm.com/v1alpha1`:
+- `Composable`
 
 ## image_toolkit_fluxcd_io
 
-- apiVersion: `image.toolkit.fluxcd.io/v1beta1`
-- kinds:
-  - `ImageUpdateAutomation`
-  - `ImagePolicy`
-  - `ImageRepository`
+apiVersion `image.toolkit.fluxcd.io/v1beta1`:
+- `ImageUpdateAutomation`
+- `ImagePolicy`
+- `ImageRepository`
 
-- apiVersion: `image.toolkit.fluxcd.io/v1beta2`
-- kinds:
-  - `ImagePolicy`
-  - `ImageRepository`
+apiVersion `image.toolkit.fluxcd.io/v1beta2`:
+- `ImagePolicy`
+- `ImageRepository`
 
 ## imageregistry_operator_openshift_io
 
-- apiVersion: `imageregistry.operator.openshift.io/v1`
-- kinds:
-  - `Config`
-  - `ImagePruner`
+apiVersion `imageregistry.operator.openshift.io/v1`:
+- `Config`
+- `ImagePruner`
 
 ## imaging_ingestion_alvearie_org
 
-- apiVersion: `imaging-ingestion.alvearie.org/v1alpha1`
-- kinds:
-  - `DicomEventBridge`
-  - `DicomEventDrivenIngestion`
-  - `DicomInstanceBinding`
-  - `DicomStudyBinding`
-  - `DicomwebIngestionService`
-  - `DimseIngestionService`
-  - `DimseProxy`
+apiVersion `imaging-ingestion.alvearie.org/v1alpha1`:
+- `DicomEventBridge`
+- `DicomEventDrivenIngestion`
+- `DicomInstanceBinding`
+- `DicomStudyBinding`
+- `DicomwebIngestionService`
+- `DimseIngestionService`
+- `DimseProxy`
 
 ## inference_kubedl_io
 
-- apiVersion: `inference.kubedl.io/v1alpha1`
-- kinds:
-  - `ElasticBatchJob`
+apiVersion `inference.kubedl.io/v1alpha1`:
+- `ElasticBatchJob`
 
 ## infinispan_org
 
-- apiVersion: `infinispan.org/v2alpha1`
-- kinds:
-  - `Backup`
-  - `Batch`
-  - `Cache`
-  - `Restore`
+apiVersion `infinispan.org/v2alpha1`:
+- `Backup`
+- `Batch`
+- `Cache`
+- `Restore`
 
 ## infra_contrib_fluxcd_io
 
-- apiVersion: `infra.contrib.fluxcd.io/v1alpha1`
-- kinds:
-  - `Terraform`
+apiVersion `infra.contrib.fluxcd.io/v1alpha1`:
+- `Terraform`
 
-- apiVersion: `infra.contrib.fluxcd.io/v1alpha2`
-- kinds:
-  - `Terraform`
+apiVersion `infra.contrib.fluxcd.io/v1alpha2`:
+- `Terraform`
 
 ## infrastructure_cluster_x_k8s_io
 
-- apiVersion: `infrastructure.cluster.x-k8s.io/v1alpha1`
-- kinds:
-  - `KubevirtCluster`
-  - `KubevirtClusterTemplate`
-  - `KubevirtMachine`
-  - `KubevirtMachineTemplate`
+apiVersion `infrastructure.cluster.x-k8s.io/v1alpha1`:
+- `KubevirtCluster`
+- `KubevirtClusterTemplate`
+- `KubevirtMachine`
+- `KubevirtMachineTemplate`
 
-- apiVersion: `infrastructure.cluster.x-k8s.io/v1beta1`
-- kinds:
-  - `IBMPowerVSCluster`
-  - `IBMPowerVSClusterTemplate`
-  - `IBMPowerVSImage`
-  - `IBMPowerVSMachine`
-  - `IBMPowerVSMachineTemplate`
-  - `IBMVPCCluster`
-  - `IBMVPCMachine`
-  - `IBMVPCMachineTemplate`
-  - `VSphereClusterIdentity`
-  - `VSphereCluster`
-  - `VSphereClusterTemplate`
-  - `VSphereDeploymentZone`
-  - `VSphereFailureDomain`
-  - `VSphereMachine`
-  - `VSphereMachineTemplate`
-  - `VSphereVM`
+apiVersion `infrastructure.cluster.x-k8s.io/v1beta1`:
+- `IBMPowerVSCluster`
+- `IBMPowerVSClusterTemplate`
+- `IBMPowerVSImage`
+- `IBMPowerVSMachine`
+- `IBMPowerVSMachineTemplate`
+- `IBMVPCCluster`
+- `IBMVPCMachine`
+- `IBMVPCMachineTemplate`
+- `VSphereClusterIdentity`
+- `VSphereCluster`
+- `VSphereClusterTemplate`
+- `VSphereDeploymentZone`
+- `VSphereFailureDomain`
+- `VSphereMachine`
+- `VSphereMachineTemplate`
+- `VSphereVM`
 
-- apiVersion: `infrastructure.cluster.x-k8s.io/v1beta2`
-- kinds:
-  - `IBMPowerVSCluster`
-  - `IBMPowerVSClusterTemplate`
-  - `IBMPowerVSImage`
-  - `IBMPowerVSMachine`
-  - `IBMPowerVSMachineTemplate`
-  - `IBMVPCCluster`
-  - `IBMVPCMachine`
-  - `IBMVPCMachineTemplate`
+apiVersion `infrastructure.cluster.x-k8s.io/v1beta2`:
+- `IBMPowerVSCluster`
+- `IBMPowerVSClusterTemplate`
+- `IBMPowerVSImage`
+- `IBMPowerVSMachine`
+- `IBMPowerVSMachineTemplate`
+- `IBMVPCCluster`
+- `IBMVPCMachine`
+- `IBMVPCMachineTemplate`
 
 ## ingress_operator_openshift_io
 
-- apiVersion: `ingress.operator.openshift.io/v1`
-- kinds:
-  - `DNSRecord`
+apiVersion `ingress.operator.openshift.io/v1`:
+- `DNSRecord`
 
 ## insights_openshift_io
 
-- apiVersion: `insights.openshift.io/v1alpha1`
-- kinds:
-  - `DataGather`
+apiVersion `insights.openshift.io/v1alpha1`:
+- `DataGather`
 
 ## installation_mattermost_com
 
-- apiVersion: `installation.mattermost.com/v1beta1`
-- kinds:
-  - `Mattermost`
+apiVersion `installation.mattermost.com/v1beta1`:
+- `Mattermost`
 
 ## integration_rock8s_com
 
-- apiVersion: `integration.rock8s.com/v1beta1`
-- kinds:
-  - `Plug`
-  - `Socket`
+apiVersion `integration.rock8s.com/v1beta1`:
+- `Plug`
+- `Socket`
 
 ## iot_eclipse_org
 
-- apiVersion: `iot.eclipse.org/v1alpha1`
-- kinds:
-  - `Ditto`
-  - `Hawkbit`
+apiVersion `iot.eclipse.org/v1alpha1`:
+- `Ditto`
+- `Hawkbit`
 
 ## ipam_cluster_x_k8s_io
 
-- apiVersion: `ipam.cluster.x-k8s.io/v1alpha1`
-- kinds:
-  - `IPAddressClaim`
-  - `IPAddress`
+apiVersion `ipam.cluster.x-k8s.io/v1alpha1`:
+- `IPAddressClaim`
+- `IPAddress`
 
-- apiVersion: `ipam.cluster.x-k8s.io/v1beta1`
-- kinds:
-  - `IPAddressClaim`
-  - `IPAddress`
+apiVersion `ipam.cluster.x-k8s.io/v1beta1`:
+- `IPAddressClaim`
+- `IPAddress`
 
 ## jaegertracing_io
 
-- apiVersion: `jaegertracing.io/v1`
-- kinds:
-  - `Jaeger`
+apiVersion `jaegertracing.io/v1`:
+- `Jaeger`
 
 ## jobset_x_k8s_io
 
-- apiVersion: `jobset.x-k8s.io/v1alpha2`
-- kinds:
-  - `JobSet`
+apiVersion `jobset.x-k8s.io/v1alpha2`:
+- `JobSet`
 
 ## k8gb_absa_oss
 
-- apiVersion: `k8gb.absa.oss/v1beta1`
-- kinds:
-  - `Gslb`
+apiVersion `k8gb.absa.oss/v1beta1`:
+- `Gslb`
 
 ## k8s_keycloak_org
 
-- apiVersion: `k8s.keycloak.org/v2alpha1`
-- kinds:
-  - `KeycloakRealmImport`
-  - `Keycloak`
+apiVersion `k8s.keycloak.org/v2alpha1`:
+- `KeycloakRealmImport`
+- `Keycloak`
 
 ## k8s_nginx_org
 
-- apiVersion: `k8s.nginx.org/v1`
-- kinds:
-  - `GlobalConfiguration`
-  - `Policy`
-  - `TransportServer`
-  - `VirtualServerRoute`
-  - `VirtualServer`
+apiVersion `k8s.nginx.org/v1`:
+- `GlobalConfiguration`
+- `Policy`
+- `TransportServer`
+- `VirtualServerRoute`
+- `VirtualServer`
 
-- apiVersion: `k8s.nginx.org/v1alpha1`
-- kinds:
-  - `GlobalConfiguration`
-  - `Policy`
-  - `TransportServer`
+apiVersion `k8s.nginx.org/v1alpha1`:
+- `GlobalConfiguration`
+- `Policy`
+- `TransportServer`
 
 ## k8s_otterize_com
 
-- apiVersion: `k8s.otterize.com/v1alpha2`
-- kinds:
-  - `ClientIntents`
-  - `KafkaServerConfig`
-  - `ProtectedService`
+apiVersion `k8s.otterize.com/v1alpha2`:
+- `ClientIntents`
+- `KafkaServerConfig`
+- `ProtectedService`
 
-- apiVersion: `k8s.otterize.com/v1alpha3`
-- kinds:
-  - `ClientIntents`
-  - `KafkaServerConfig`
-  - `ProtectedService`
+apiVersion `k8s.otterize.com/v1alpha3`:
+- `ClientIntents`
+- `KafkaServerConfig`
+- `ProtectedService`
 
 ## kafka_strimzi_io
 
-- apiVersion: `kafka.strimzi.io/v1alpha1`
-- kinds:
-  - `KafkaTopic`
-  - `KafkaUser`
+apiVersion `kafka.strimzi.io/v1alpha1`:
+- `KafkaTopic`
+- `KafkaUser`
 
-- apiVersion: `kafka.strimzi.io/v1beta1`
-- kinds:
-  - `KafkaTopic`
-  - `KafkaUser`
+apiVersion `kafka.strimzi.io/v1beta1`:
+- `KafkaTopic`
+- `KafkaUser`
 
-- apiVersion: `kafka.strimzi.io/v1beta2`
-- kinds:
-  - `KafkaBridge`
-  - `KafkaConnector`
-  - `KafkaConnect`
-  - `KafkaMirrorMaker`
-  - `KafkaRebalance`
-  - `Kafka`
-  - `KafkaTopic`
-  - `KafkaUser`
+apiVersion `kafka.strimzi.io/v1beta2`:
+- `KafkaBridge`
+- `KafkaConnector`
+- `KafkaConnect`
+- `KafkaMirrorMaker`
+- `KafkaRebalance`
+- `Kafka`
+- `KafkaTopic`
+- `KafkaUser`
 
 ## kamaji_clastix_io
 
-- apiVersion: `kamaji.clastix.io/v1alpha1`
-- kinds:
-  - `DataStore`
-  - `TenantControlPlane`
+apiVersion `kamaji.clastix.io/v1alpha1`:
+- `DataStore`
+- `TenantControlPlane`
 
 ## keda_sh
 
-- apiVersion: `keda.sh/v1alpha1`
-- kinds:
-  - `ClusterTriggerAuthentication`
-  - `ScaledJob`
-  - `ScaledObject`
-  - `TriggerAuthentication`
+apiVersion `keda.sh/v1alpha1`:
+- `ClusterTriggerAuthentication`
+- `ScaledJob`
+- `ScaledObject`
+- `TriggerAuthentication`
 
 ## keycloak_k8s_reddec_net
 
-- apiVersion: `keycloak.k8s.reddec.net/v1alpha1`
-- kinds:
-  - `KeycloakClient`
+apiVersion `keycloak.k8s.reddec.net/v1alpha1`:
+- `KeycloakClient`
 
 ## keycloak_org
 
-- apiVersion: `keycloak.org/v1alpha1`
-- kinds:
-  - `KeycloakBackup`
-  - `KeycloakClient`
-  - `KeycloakRealm`
-  - `Keycloak`
-  - `KeycloakUser`
+apiVersion `keycloak.org/v1alpha1`:
+- `KeycloakBackup`
+- `KeycloakClient`
+- `KeycloakRealm`
+- `Keycloak`
+- `KeycloakUser`
 
 ## kibana_k8s_elastic_co
 
-- apiVersion: `kibana.k8s.elastic.co/v1`
-- kinds:
-  - `Kibana`
+apiVersion `kibana.k8s.elastic.co/v1`:
+- `Kibana`
 
-- apiVersion: `kibana.k8s.elastic.co/v1beta1`
-- kinds:
-  - `Kibana`
+apiVersion `kibana.k8s.elastic.co/v1beta1`:
+- `Kibana`
 
 ## kms_services_k8s_aws
 
-- apiVersion: `kms.services.k8s.aws/v1alpha1`
-- kinds:
-  - `Alias`
-  - `Grant`
-  - `Key`
+apiVersion `kms.services.k8s.aws/v1alpha1`:
+- `Alias`
+- `Grant`
+- `Key`
 
 ## kube_green_com
 
-- apiVersion: `kube-green.com/v1alpha1`
-- kinds:
-  - `SleepInfo`
+apiVersion `kube-green.com/v1alpha1`:
+- `SleepInfo`
 
 ## kubean_io
 
-- apiVersion: `kubean.io/v1alpha1`
-- kinds:
-  - `ClusterOperation`
-  - `Cluster`
-  - `Manifest`
+apiVersion `kubean.io/v1alpha1`:
+- `ClusterOperation`
+- `Cluster`
+- `Manifest`
 
 ## kubevious_io
 
-- apiVersion: `kubevious.io/v1alpha1`
-- kinds:
-  - `WorkloadProfile`
-  - `Workload`
+apiVersion `kubevious.io/v1alpha1`:
+- `WorkloadProfile`
+- `Workload`
 
 ## kueue_x_k8s_io
 
-- apiVersion: `kueue.x-k8s.io/v1beta1`
-- kinds:
-  - `AdmissionCheck`
-  - `ClusterQueue`
-  - `LocalQueue`
-  - `ResourceFlavor`
-  - `Workload`
+apiVersion `kueue.x-k8s.io/v1beta1`:
+- `AdmissionCheck`
+- `ClusterQueue`
+- `LocalQueue`
+- `ResourceFlavor`
+- `Workload`
 
 ## kuma_io
 
-- apiVersion: `kuma.io/v1alpha1`
-- kinds:
-  - `ContainerPatch`
-  - `MeshAccessLog`
-  - `MeshCircuitBreaker`
-  - `MeshFaultInjection`
-  - `MeshGatewayConfig`
-  - `MeshGatewayInstance`
-  - `MeshHealthCheck`
-  - `MeshHTTPRoute`
-  - `MeshLoadBalancingStrategy`
-  - `MeshProxyPatch`
-  - `MeshRateLimit`
-  - `MeshRetry`
-  - `MeshTCPRoute`
-  - `MeshTimeout`
-  - `MeshTrace`
-  - `MeshTrafficPermission`
+apiVersion `kuma.io/v1alpha1`:
+- `ContainerPatch`
+- `MeshAccessLog`
+- `MeshCircuitBreaker`
+- `MeshFaultInjection`
+- `MeshGatewayConfig`
+- `MeshGatewayInstance`
+- `MeshHealthCheck`
+- `MeshHTTPRoute`
+- `MeshLoadBalancingStrategy`
+- `MeshProxyPatch`
+- `MeshRateLimit`
+- `MeshRetry`
+- `MeshTCPRoute`
+- `MeshTimeout`
+- `MeshTrace`
+- `MeshTrafficPermission`
 
 ## kustomize_toolkit_fluxcd_io
 
-- apiVersion: `kustomize.toolkit.fluxcd.io/v1`
-- kinds:
-  - `Kustomization`
+apiVersion `kustomize.toolkit.fluxcd.io/v1`:
+- `Kustomization`
 
-- apiVersion: `kustomize.toolkit.fluxcd.io/v1beta1`
-- kinds:
-  - `Kustomization`
+apiVersion `kustomize.toolkit.fluxcd.io/v1beta1`:
+- `Kustomization`
 
-- apiVersion: `kustomize.toolkit.fluxcd.io/v1beta2`
-- kinds:
-  - `Kustomization`
+apiVersion `kustomize.toolkit.fluxcd.io/v1beta2`:
+- `Kustomization`
 
 ## kyverno_io
 
-- apiVersion: `kyverno.io/v1`
-- kinds:
-  - `ClusterPolicy`
-  - `Policy`
+apiVersion `kyverno.io/v1`:
+- `ClusterPolicy`
+- `Policy`
 
-- apiVersion: `kyverno.io/v1alpha2`
-- kinds:
-  - `AdmissionReport`
-  - `BackgroundScanReport`
-  - `ClusterAdmissionReport`
-  - `ClusterBackgroundScanReport`
+apiVersion `kyverno.io/v1alpha2`:
+- `AdmissionReport`
+- `BackgroundScanReport`
+- `ClusterAdmissionReport`
+- `ClusterBackgroundScanReport`
 
-- apiVersion: `kyverno.io/v1beta1`
-- kinds:
-  - `UpdateRequest`
+apiVersion `kyverno.io/v1beta1`:
+- `UpdateRequest`
 
-- apiVersion: `kyverno.io/v2`
-- kinds:
-  - `PolicyException`
+apiVersion `kyverno.io/v2`:
+- `PolicyException`
 
-- apiVersion: `kyverno.io/v2alpha1`
-- kinds:
-  - `CleanupPolicy`
-  - `ClusterCleanupPolicy`
-  - `PolicyException`
+apiVersion `kyverno.io/v2alpha1`:
+- `CleanupPolicy`
+- `ClusterCleanupPolicy`
+- `PolicyException`
 
-- apiVersion: `kyverno.io/v2beta1`
-- kinds:
-  - `CleanupPolicy`
-  - `ClusterCleanupPolicy`
-  - `ClusterPolicy`
-  - `Policy`
-  - `PolicyException`
+apiVersion `kyverno.io/v2beta1`:
+- `CleanupPolicy`
+- `ClusterCleanupPolicy`
+- `ClusterPolicy`
+- `Policy`
+- `PolicyException`
 
 ## lambda_services_k8s_aws
 
-- apiVersion: `lambda.services.k8s.aws/v1alpha1`
-- kinds:
-  - `CodeSigningConfig`
-  - `EventSourceMapping`
-  - `Function`
-  - `FunctionURLConfig`
+apiVersion `lambda.services.k8s.aws/v1alpha1`:
+- `CodeSigningConfig`
+- `EventSourceMapping`
+- `Function`
+- `FunctionURLConfig`
 
 ## lerentis_uploadfilter24_eu
 
-- apiVersion: `lerentis.uploadfilter24.eu/v1beta4`
-- kinds:
-  - `BitwardenSecret`
-  - `BitwardenTemplate`
-  - `RegistryCredential`
+apiVersion `lerentis.uploadfilter24.eu/v1beta4`:
+- `BitwardenSecret`
+- `BitwardenTemplate`
+- `RegistryCredential`
 
 ## limitador_kuadrant_io
 
-- apiVersion: `limitador.kuadrant.io/v1alpha1`
-- kinds:
-  - `Limitador`
+apiVersion `limitador.kuadrant.io/v1alpha1`:
+- `Limitador`
 
 ## litmuschaos_io
 
-- apiVersion: `litmuschaos.io/v1alpha1`
-- kinds:
-  - `ChaosEngine`
-  - `ChaosExperiment`
+apiVersion `litmuschaos.io/v1alpha1`:
+- `ChaosEngine`
+- `ChaosExperiment`
 
 ## logging_extensions_banzaicloud_io
 
-- apiVersion: `logging-extensions.banzaicloud.io/v1alpha1`
-- kinds:
-  - `HostTailer`
+apiVersion `logging-extensions.banzaicloud.io/v1alpha1`:
+- `HostTailer`
 
 ## logging_banzaicloud_io
 
-- apiVersion: `logging.banzaicloud.io/v1alpha1`
-- kinds:
-  - `ClusterFlow`
-  - `ClusterOutput`
-  - `Flow`
-  - `Logging`
-  - `Output`
+apiVersion `logging.banzaicloud.io/v1alpha1`:
+- `ClusterFlow`
+- `ClusterOutput`
+- `Flow`
+- `Logging`
+- `Output`
 
-- apiVersion: `logging.banzaicloud.io/v1beta1`
-- kinds:
-  - `ClusterFlow`
-  - `ClusterOutput`
-  - `Flow`
-  - `Output`
-  - `SyslogNGClusterFlow`
-  - `SyslogNGClusterOutput`
-  - `SyslogNGFlow`
-  - `SyslogNGOutput`
+apiVersion `logging.banzaicloud.io/v1beta1`:
+- `ClusterFlow`
+- `ClusterOutput`
+- `Flow`
+- `Output`
+- `SyslogNGClusterFlow`
+- `SyslogNGClusterOutput`
+- `SyslogNGFlow`
+- `SyslogNGOutput`
 
 ## loki_grafana_com
 
-- apiVersion: `loki.grafana.com/v1`
-- kinds:
-  - `AlertingRule`
-  - `LokiStack`
-  - `RecordingRule`
-  - `RulerConfig`
+apiVersion `loki.grafana.com/v1`:
+- `AlertingRule`
+- `LokiStack`
+- `RecordingRule`
+- `RulerConfig`
 
-- apiVersion: `loki.grafana.com/v1beta1`
-- kinds:
-  - `AlertingRule`
-  - `LokiStack`
-  - `RecordingRule`
-  - `RulerConfig`
+apiVersion `loki.grafana.com/v1beta1`:
+- `AlertingRule`
+- `LokiStack`
+- `RecordingRule`
+- `RulerConfig`
 
 ## longhorn_io
 
-- apiVersion: `longhorn.io/v1beta2`
-- kinds:
-  - `BackingImageDataSource`
-  - `BackingImageManager`
-  - `BackingImage`
-  - `Backup`
-  - `BackupTarget`
-  - `BackupVolume`
-  - `EngineImage`
-  - `Engine`
-  - `InstanceManager`
-  - `Node`
-  - `Orphan`
-  - `RecurringJob`
-  - `Replica`
-  - `ShareManager`
-  - `Snapshot`
-  - `SupportBundle`
-  - `SystemBackup`
-  - `SystemRestore`
-  - `VolumeAttachment`
-  - `Volume`
+apiVersion `longhorn.io/v1beta2`:
+- `BackingImageDataSource`
+- `BackingImageManager`
+- `BackingImage`
+- `Backup`
+- `BackupTarget`
+- `BackupVolume`
+- `EngineImage`
+- `Engine`
+- `InstanceManager`
+- `Node`
+- `Orphan`
+- `RecurringJob`
+- `Replica`
+- `ShareManager`
+- `Snapshot`
+- `SupportBundle`
+- `SystemBackup`
+- `SystemRestore`
+- `VolumeAttachment`
+- `Volume`
 
 ## machine_openshift_io
 
-- apiVersion: `machine.openshift.io/v1`
-- kinds:
-  - `ControlPlaneMachineSet`
+apiVersion `machine.openshift.io/v1`:
+- `ControlPlaneMachineSet`
 
-- apiVersion: `machine.openshift.io/v1beta1`
-- kinds:
-  - `MachineHealthCheck`
-  - `Machine`
-  - `MachineSet`
+apiVersion `machine.openshift.io/v1beta1`:
+- `MachineHealthCheck`
+- `Machine`
+- `MachineSet`
 
 ## machineconfiguration_openshift_io
 
-- apiVersion: `machineconfiguration.openshift.io/v1`
-- kinds:
-  - `ContainerRuntimeConfig`
-  - `ControllerConfig`
-  - `KubeletConfig`
-  - `MachineConfigPool`
-  - `MachineConfig`
+apiVersion `machineconfiguration.openshift.io/v1`:
+- `ContainerRuntimeConfig`
+- `ControllerConfig`
+- `KubeletConfig`
+- `MachineConfigPool`
+- `MachineConfig`
 
-- apiVersion: `machineconfiguration.openshift.io/v1alpha1`
-- kinds:
-  - `MachineConfigNode`
+apiVersion `machineconfiguration.openshift.io/v1alpha1`:
+- `MachineConfigNode`
 
 ## maps_k8s_elastic_co
 
-- apiVersion: `maps.k8s.elastic.co/v1alpha1`
-- kinds:
-  - `ElasticMapsServer`
+apiVersion `maps.k8s.elastic.co/v1alpha1`:
+- `ElasticMapsServer`
 
 ## mariadb_mmontes_io
 
-- apiVersion: `mariadb.mmontes.io/v1alpha1`
-- kinds:
-  - `Backup`
-  - `Connection`
-  - `Database`
-  - `Grant`
-  - `MariaDB`
-  - `Restore`
-  - `SqlJob`
-  - `User`
+apiVersion `mariadb.mmontes.io/v1alpha1`:
+- `Backup`
+- `Connection`
+- `Database`
+- `Grant`
+- `MariaDB`
+- `Restore`
+- `SqlJob`
+- `User`
 
 ## mattermost_com
 
-- apiVersion: `mattermost.com/v1alpha1`
-- kinds:
-  - `ClusterInstallation`
-  - `MattermostRestoreDB`
+apiVersion `mattermost.com/v1alpha1`:
+- `ClusterInstallation`
+- `MattermostRestoreDB`
 
 ## metacontroller_k8s_io
 
-- apiVersion: `metacontroller.k8s.io/v1alpha1`
-- kinds:
-  - `CompositeController`
-  - `ControllerRevision`
-  - `DecoratorController`
+apiVersion `metacontroller.k8s.io/v1alpha1`:
+- `CompositeController`
+- `ControllerRevision`
+- `DecoratorController`
 
 ## metal3_io
 
-- apiVersion: `metal3.io/v1alpha1`
-- kinds:
-  - `BMCEventSubscription`
-  - `FirmwareSchema`
-  - `HardwareData`
-  - `HostFirmwareSettings`
-  - `PreprovisioningImage`
+apiVersion `metal3.io/v1alpha1`:
+- `BMCEventSubscription`
+- `FirmwareSchema`
+- `HardwareData`
+- `HostFirmwareSettings`
+- `PreprovisioningImage`
 
 ## minio_min_io
 
-- apiVersion: `minio.min.io/v2`
-- kinds:
-  - `Tenant`
+apiVersion `minio.min.io/v2`:
+- `Tenant`
 
 ## mirrors_kts_studio
 
-- apiVersion: `mirrors.kts.studio/v1alpha1`
-- kinds:
-  - `SecretMirror`
+apiVersion `mirrors.kts.studio/v1alpha1`:
+- `SecretMirror`
 
-- apiVersion: `mirrors.kts.studio/v1alpha2`
-- kinds:
-  - `SecretMirror`
+apiVersion `mirrors.kts.studio/v1alpha2`:
+- `SecretMirror`
 
 ## model_kubedl_io
 
-- apiVersion: `model.kubedl.io/v1alpha1`
-- kinds:
-  - `Model`
-  - `ModelVersion`
+apiVersion `model.kubedl.io/v1alpha1`:
+- `Model`
+- `ModelVersion`
 
 ## monitoring_coreos_com
 
-- apiVersion: `monitoring.coreos.com/v1`
-- kinds:
-  - `Alertmanager`
-  - `PodMonitor`
-  - `Probe`
-  - `Prometheus`
-  - `PrometheusRule`
-  - `ServiceMonitor`
-  - `ThanosRuler`
+apiVersion `monitoring.coreos.com/v1`:
+- `Alertmanager`
+- `PodMonitor`
+- `Probe`
+- `Prometheus`
+- `PrometheusRule`
+- `ServiceMonitor`
+- `ThanosRuler`
 
-- apiVersion: `monitoring.coreos.com/v1alpha1`
-- kinds:
-  - `AlertmanagerConfig`
-  - `PrometheusAgent`
-  - `ScrapeConfig`
+apiVersion `monitoring.coreos.com/v1alpha1`:
+- `AlertmanagerConfig`
+- `PrometheusAgent`
+- `ScrapeConfig`
 
-- apiVersion: `monitoring.coreos.com/v1beta1`
-- kinds:
-  - `AlertmanagerConfig`
+apiVersion `monitoring.coreos.com/v1beta1`:
+- `AlertmanagerConfig`
 
 ## monitoring_openshift_io
 
-- apiVersion: `monitoring.openshift.io/v1`
-- kinds:
-  - `AlertingRule`
-  - `AlertRelabelConfig`
+apiVersion `monitoring.openshift.io/v1`:
+- `AlertingRule`
+- `AlertRelabelConfig`
 
 ## monocle_monocle_change_metrics_io
 
-- apiVersion: `monocle.monocle.change-metrics.io/v1alpha1`
-- kinds:
-  - `Monocle`
+apiVersion `monocle.monocle.change-metrics.io/v1alpha1`:
+- `Monocle`
 
 ## mq_services_k8s_aws
 
-- apiVersion: `mq.services.k8s.aws/v1alpha1`
-- kinds:
-  - `Broker`
+apiVersion `mq.services.k8s.aws/v1alpha1`:
+- `Broker`
 
 ## multicluster_crd_antrea_io
 
-- apiVersion: `multicluster.crd.antrea.io/v1alpha1`
-- kinds:
-  - `ClusterInfoImport`
-  - `ClusterSet`
-  - `Gateway`
-  - `LabelIdentity`
-  - `MemberClusterAnnounce`
-  - `MultiClusterConfig`
-  - `ResourceExport`
-  - `ResourceImport`
+apiVersion `multicluster.crd.antrea.io/v1alpha1`:
+- `ClusterInfoImport`
+- `ClusterSet`
+- `Gateway`
+- `LabelIdentity`
+- `MemberClusterAnnounce`
+- `MultiClusterConfig`
+- `ResourceExport`
+- `ResourceImport`
 
-- apiVersion: `multicluster.crd.antrea.io/v1alpha2`
-- kinds:
-  - `ClusterClaim`
-  - `ClusterSet`
+apiVersion `multicluster.crd.antrea.io/v1alpha2`:
+- `ClusterClaim`
+- `ClusterSet`
 
 ## multicluster_x_k8s_io
 
-- apiVersion: `multicluster.x-k8s.io/v1alpha1`
-- kinds:
-  - `ServiceExport`
-  - `ServiceImport`
-  - `AppliedWork`
+apiVersion `multicluster.x-k8s.io/v1alpha1`:
+- `ServiceExport`
+- `ServiceImport`
+- `AppliedWork`
 
 ## mutations_gatekeeper_sh
 
-- apiVersion: `mutations.gatekeeper.sh/v1`
-- kinds:
-  - `Assign`
-  - `AssignMetadata`
-  - `ModifySet`
+apiVersion `mutations.gatekeeper.sh/v1`:
+- `Assign`
+- `AssignMetadata`
+- `ModifySet`
 
-- apiVersion: `mutations.gatekeeper.sh/v1alpha1`
-- kinds:
-  - `Assign`
-  - `AssignImage`
-  - `AssignMetadata`
-  - `ModifySet`
+apiVersion `mutations.gatekeeper.sh/v1alpha1`:
+- `Assign`
+- `AssignImage`
+- `AssignMetadata`
+- `ModifySet`
 
-- apiVersion: `mutations.gatekeeper.sh/v1beta1`
-- kinds:
-  - `Assign`
-  - `AssignMetadata`
-  - `ModifySet`
+apiVersion `mutations.gatekeeper.sh/v1beta1`:
+- `Assign`
+- `AssignMetadata`
+- `ModifySet`
 
 ## nativestor_alauda_io
 
-- apiVersion: `nativestor.alauda.io/v1`
-- kinds:
-  - `RawDevice`
+apiVersion `nativestor.alauda.io/v1`:
+- `RawDevice`
 
 ## netchecks_io
 
-- apiVersion: `netchecks.io/v1`
-- kinds:
-  - `NetworkAssertion`
+apiVersion `netchecks.io/v1`:
+- `NetworkAssertion`
 
 ## network_openshift_io
 
-- apiVersion: `network.openshift.io/v1`
-- kinds:
-  - `ClusterNetwork`
-  - `EgressNetworkPolicy`
-  - `HostSubnet`
-  - `NetNamespace`
+apiVersion `network.openshift.io/v1`:
+- `ClusterNetwork`
+- `EgressNetworkPolicy`
+- `HostSubnet`
+- `NetNamespace`
 
 ## network_operator_openshift_io
 
-- apiVersion: `network.operator.openshift.io/v1`
-- kinds:
-  - `EgressRouter`
+apiVersion `network.operator.openshift.io/v1`:
+- `EgressRouter`
 
 ## networking_karmada_io
 
-- apiVersion: `networking.karmada.io/v1alpha1`
-- kinds:
-  - `MultiClusterIngress`
-  - `MultiClusterService`
+apiVersion `networking.karmada.io/v1alpha1`:
+- `MultiClusterIngress`
+- `MultiClusterService`
 
 ## nfd_k8s_sigs_io
 
-- apiVersion: `nfd.k8s-sigs.io/v1alpha1`
-- kinds:
-  - `NodeFeatureRule`
+apiVersion `nfd.k8s-sigs.io/v1alpha1`:
+- `NodeFeatureRule`
 
 ## nfd_kubernetes_io
 
-- apiVersion: `nfd.kubernetes.io/v1`
-- kinds:
-  - `NodeFeatureDiscovery`
+apiVersion `nfd.kubernetes.io/v1`:
+- `NodeFeatureDiscovery`
 
-- apiVersion: `nfd.kubernetes.io/v1alpha1`
-- kinds:
-  - `NodeFeatureRule`
+apiVersion `nfd.kubernetes.io/v1alpha1`:
+- `NodeFeatureRule`
 
 ## nodeinfo_volcano_sh
 
-- apiVersion: `nodeinfo.volcano.sh/v1alpha1`
-- kinds:
-  - `Numatopology`
+apiVersion `nodeinfo.volcano.sh/v1alpha1`:
+- `Numatopology`
 
 ## notebook_kubedl_io
 
-- apiVersion: `notebook.kubedl.io/v1alpha1`
-- kinds:
-  - `Notebook`
+apiVersion `notebook.kubedl.io/v1alpha1`:
+- `Notebook`
 
 ## notification_toolkit_fluxcd_io
 
-- apiVersion: `notification.toolkit.fluxcd.io/v1`
-- kinds:
-  - `Receiver`
+apiVersion `notification.toolkit.fluxcd.io/v1`:
+- `Receiver`
 
-- apiVersion: `notification.toolkit.fluxcd.io/v1beta1`
-- kinds:
-  - `Alert`
-  - `Provider`
-  - `Receiver`
+apiVersion `notification.toolkit.fluxcd.io/v1beta1`:
+- `Alert`
+- `Provider`
+- `Receiver`
 
-- apiVersion: `notification.toolkit.fluxcd.io/v1beta2`
-- kinds:
-  - `Alert`
-  - `Provider`
-  - `Receiver`
+apiVersion `notification.toolkit.fluxcd.io/v1beta2`:
+- `Alert`
+- `Provider`
+- `Receiver`
 
-- apiVersion: `notification.toolkit.fluxcd.io/v1beta3`
-- kinds:
-  - `Alert`
-  - `Provider`
+apiVersion `notification.toolkit.fluxcd.io/v1beta3`:
+- `Alert`
+- `Provider`
 
 ## opensearchservice_services_k8s_aws
 
-- apiVersion: `opensearchservice.services.k8s.aws/v1alpha1`
-- kinds:
-  - `Domain`
+apiVersion `opensearchservice.services.k8s.aws/v1alpha1`:
+- `Domain`
 
 ## opentelemetry_io
 
-- apiVersion: `opentelemetry.io/v1alpha1`
-- kinds:
-  - `Instrumentation`
-  - `OpenTelemetryCollector`
+apiVersion `opentelemetry.io/v1alpha1`:
+- `Instrumentation`
+- `OpenTelemetryCollector`
 
 ## operations_kubeedge_io
 
-- apiVersion: `operations.kubeedge.io/v1alpha1`
-- kinds:
-  - `NodeUpgradeJob`
+apiVersion `operations.kubeedge.io/v1alpha1`:
+- `NodeUpgradeJob`
 
 ## operator_aquasec_com
 
-- apiVersion: `operator.aquasec.com/v1alpha1`
-- kinds:
-  - `AquaCsp`
-  - `AquaDatabase`
-  - `AquaEnforcer`
-  - `AquaGateway`
-  - `AquaKubeEnforcer`
-  - `AquaScanner`
-  - `AquaServer`
+apiVersion `operator.aquasec.com/v1alpha1`:
+- `AquaCsp`
+- `AquaDatabase`
+- `AquaEnforcer`
+- `AquaGateway`
+- `AquaKubeEnforcer`
+- `AquaScanner`
+- `AquaServer`
 
 ## operator_authorino_kuadrant_io
 
-- apiVersion: `operator.authorino.kuadrant.io/v1beta1`
-- kinds:
-  - `Authorino`
+apiVersion `operator.authorino.kuadrant.io/v1beta1`:
+- `Authorino`
 
 ## operator_cluster_x_k8s_io
 
-- apiVersion: `operator.cluster.x-k8s.io/v1alpha1`
-- kinds:
-  - `BootstrapProvider`
-  - `ControlPlaneProvider`
-  - `CoreProvider`
-  - `InfrastructureProvider`
+apiVersion `operator.cluster.x-k8s.io/v1alpha1`:
+- `BootstrapProvider`
+- `ControlPlaneProvider`
+- `CoreProvider`
+- `InfrastructureProvider`
 
-- apiVersion: `operator.cluster.x-k8s.io/v1alpha2`
-- kinds:
-  - `AddonProvider`
-  - `BootstrapProvider`
-  - `ControlPlaneProvider`
-  - `CoreProvider`
-  - `InfrastructureProvider`
+apiVersion `operator.cluster.x-k8s.io/v1alpha2`:
+- `AddonProvider`
+- `BootstrapProvider`
+- `ControlPlaneProvider`
+- `CoreProvider`
+- `InfrastructureProvider`
 
 ## operator_cryostat_io
 
-- apiVersion: `operator.cryostat.io/v1beta1`
-- kinds:
-  - `Cryostat`
+apiVersion `operator.cryostat.io/v1beta1`:
+- `Cryostat`
 
 ## operator_open_cluster_management_io
 
-- apiVersion: `operator.open-cluster-management.io/v1`
-- kinds:
-  - `ClusterManager`
-  - `ClusterManager`
-  - `Klusterlet`
+apiVersion `operator.open-cluster-management.io/v1`:
+- `ClusterManager`
+- `ClusterManager`
+- `Klusterlet`
 
 ## operator_openshift_io
 
-- apiVersion: `operator.openshift.io/v1`
-- kinds:
-  - `Authentication`
-  - `CloudCredential`
-  - `ClusterCSIDriver`
-  - `Config`
-  - `Console`
-  - `CSISnapshotController`
-  - `DNS`
-  - `Etcd`
-  - `IngressController`
-  - `InsightsOperator`
-  - `KubeAPIServer`
-  - `KubeControllerManager`
-  - `KubeScheduler`
-  - `KubeStorageVersionMigrator`
-  - `MachineConfiguration`
-  - `Network`
-  - `OpenShiftAPIServer`
-  - `OpenShiftControllerManager`
-  - `ServiceCA`
-  - `Storage`
+apiVersion `operator.openshift.io/v1`:
+- `Authentication`
+- `CloudCredential`
+- `ClusterCSIDriver`
+- `Config`
+- `Console`
+- `CSISnapshotController`
+- `DNS`
+- `Etcd`
+- `IngressController`
+- `InsightsOperator`
+- `KubeAPIServer`
+- `KubeControllerManager`
+- `KubeScheduler`
+- `KubeStorageVersionMigrator`
+- `MachineConfiguration`
+- `Network`
+- `OpenShiftAPIServer`
+- `OpenShiftControllerManager`
+- `ServiceCA`
+- `Storage`
 
 ## operator_shipwright_io
 
-- apiVersion: `operator.shipwright.io/v1alpha1`
-- kinds:
-  - `ShipwrightBuild`
+apiVersion `operator.shipwright.io/v1alpha1`:
+- `ShipwrightBuild`
 
 ## operator_tigera_io
 
-- apiVersion: `operator.tigera.io/v1`
-- kinds:
-  - `APIServer`
-  - `Installation`
-  - `TigeraStatus`
+apiVersion `operator.tigera.io/v1`:
+- `APIServer`
+- `Installation`
+- `TigeraStatus`
 
 ## operator_victoriametrics_com
 
-- apiVersion: `operator.victoriametrics.com/v1beta1`
-- kinds:
-  - `VMRule`
-  - `VMUser`
+apiVersion `operator.victoriametrics.com/v1beta1`:
+- `VMRule`
+- `VMUser`
 
 ## org_eclipse_che
 
-- apiVersion: `org.eclipse.che/v1`
-- kinds:
-  - `CheCluster`
+apiVersion `org.eclipse.che/v1`:
+- `CheCluster`
 
-- apiVersion: `org.eclipse.che/v2`
-- kinds:
-  - `CheCluster`
+apiVersion `org.eclipse.che/v2`:
+- `CheCluster`
 
 ## pkg_crossplane_io
 
-- apiVersion: `pkg.crossplane.io/v1`
-- kinds:
-  - `ConfigurationRevision`
-  - `Configuration`
-  - `ProviderRevision`
-  - `Provider`
+apiVersion `pkg.crossplane.io/v1`:
+- `ConfigurationRevision`
+- `Configuration`
+- `ProviderRevision`
+- `Provider`
 
-- apiVersion: `pkg.crossplane.io/v1alpha1`
-- kinds:
-  - `ControllerConfig`
+apiVersion `pkg.crossplane.io/v1alpha1`:
+- `ControllerConfig`
 
-- apiVersion: `pkg.crossplane.io/v1beta1`
-- kinds:
-  - `Lock`
+apiVersion `pkg.crossplane.io/v1beta1`:
+- `Lock`
 
 ## platform_openshift_io
 
-- apiVersion: `platform.openshift.io/v1alpha1`
-- kinds:
-  - `PlatformOperator`
+apiVersion `platform.openshift.io/v1alpha1`:
+- `PlatformOperator`
 
 ## policy_clusterpedia_io
 
-- apiVersion: `policy.clusterpedia.io/v1alpha1`
-- kinds:
-  - `ClusterImportPolicy`
-  - `PediaClusterLifecycle`
+apiVersion `policy.clusterpedia.io/v1alpha1`:
+- `ClusterImportPolicy`
+- `PediaClusterLifecycle`
 
 ## policy_karmada_io
 
-- apiVersion: `policy.karmada.io/v1alpha1`
-- kinds:
-  - `ClusterOverridePolicy`
-  - `ClusterPropagationPolicy`
-  - `FederatedResourceQuota`
-  - `OverridePolicy`
-  - `PropagationPolicy`
+apiVersion `policy.karmada.io/v1alpha1`:
+- `ClusterOverridePolicy`
+- `ClusterPropagationPolicy`
+- `FederatedResourceQuota`
+- `OverridePolicy`
+- `PropagationPolicy`
 
 ## postgres_operator_crunchydata_com
 
-- apiVersion: `postgres-operator.crunchydata.com/v1beta1`
-- kinds:
-  - `PGAdmin`
-  - `PGUpgrade`
-  - `PostgresCluster`
+apiVersion `postgres-operator.crunchydata.com/v1beta1`:
+- `PGAdmin`
+- `PGUpgrade`
+- `PostgresCluster`
 
 ## postgresql_cnpg_io
 
-- apiVersion: `postgresql.cnpg.io/v1`
-- kinds:
-  - `Backup`
-  - `Pooler`
-  - `ScheduledBackup`
+apiVersion `postgresql.cnpg.io/v1`:
+- `Backup`
+- `Pooler`
+- `ScheduledBackup`
 
 ## prometheusservice_services_k8s_aws
 
-- apiVersion: `prometheusservice.services.k8s.aws/v1alpha1`
-- kinds:
-  - `AlertManagerDefinition`
-  - `RuleGroupsNamespace`
-  - `Workspace`
+apiVersion `prometheusservice.services.k8s.aws/v1alpha1`:
+- `AlertManagerDefinition`
+- `RuleGroupsNamespace`
+- `Workspace`
 
 ## quay_redhat_com
 
-- apiVersion: `quay.redhat.com/v1`
-- kinds:
-  - `QuayRegistry`
+apiVersion `quay.redhat.com/v1`:
+- `QuayRegistry`
 
 ## quota_openshift_io
 
-- apiVersion: `quota.openshift.io/v1`
-- kinds:
-  - `ClusterResourceQuota`
+apiVersion `quota.openshift.io/v1`:
+- `ClusterResourceQuota`
 
 ## ray_io
 
-- apiVersion: `ray.io/v1`
-- kinds:
-  - `RayCluster`
-  - `RayJob`
-  - `RayService`
+apiVersion `ray.io/v1`:
+- `RayCluster`
+- `RayJob`
+- `RayService`
 
-- apiVersion: `ray.io/v1alpha1`
-- kinds:
-  - `RayCluster`
-  - `RayJob`
-  - `RayService`
+apiVersion `ray.io/v1alpha1`:
+- `RayCluster`
+- `RayJob`
+- `RayService`
 
 ## rds_services_k8s_aws
 
-- apiVersion: `rds.services.k8s.aws/v1alpha1`
-- kinds:
-  - `DBClusterParameterGroup`
-  - `DBCluster`
-  - `DBInstance`
-  - `DBParameterGroup`
-  - `DBProxy`
-  - `DBSubnetGroup`
-  - `GlobalCluster`
+apiVersion `rds.services.k8s.aws/v1alpha1`:
+- `DBClusterParameterGroup`
+- `DBCluster`
+- `DBInstance`
+- `DBParameterGroup`
+- `DBProxy`
+- `DBSubnetGroup`
+- `GlobalCluster`
 
 ## registry_apicur_io
 
-- apiVersion: `registry.apicur.io/v1`
-- kinds:
-  - `ApicurioRegistry`
+apiVersion `registry.apicur.io/v1`:
+- `ApicurioRegistry`
 
 ## registry_devfile_io
 
-- apiVersion: `registry.devfile.io/v1alpha1`
-- kinds:
-  - `ClusterDevfileRegistriesList`
-  - `DevfileRegistry`
-  - `DevfileRegistriesList`
+apiVersion `registry.devfile.io/v1alpha1`:
+- `ClusterDevfileRegistriesList`
+- `DevfileRegistry`
+- `DevfileRegistriesList`
 
 ## reliablesyncs_kubeedge_io
 
-- apiVersion: `reliablesyncs.kubeedge.io/v1alpha1`
-- kinds:
-  - `ClusterObjectSync`
-  - `ObjectSync`
+apiVersion `reliablesyncs.kubeedge.io/v1alpha1`:
+- `ClusterObjectSync`
+- `ObjectSync`
 
 ## repo_manager_pulpproject_org
 
-- apiVersion: `repo-manager.pulpproject.org/v1beta2`
-- kinds:
-  - `PulpBackup`
-  - `PulpRestore`
+apiVersion `repo-manager.pulpproject.org/v1beta2`:
+- `PulpBackup`
+- `PulpRestore`
 
 ## resources_teleport_dev
 
-- apiVersion: `resources.teleport.dev/v1`
-- kinds:
-  - `TeleportLoginRule`
-  - `TeleportOktaImportRule`
+apiVersion `resources.teleport.dev/v1`:
+- `TeleportLoginRule`
+- `TeleportOktaImportRule`
 
-- apiVersion: `resources.teleport.dev/v2`
-- kinds:
-  - `TeleportSAMLConnector`
-  - `TeleportUser`
+apiVersion `resources.teleport.dev/v2`:
+- `TeleportSAMLConnector`
+- `TeleportUser`
 
-- apiVersion: `resources.teleport.dev/v3`
-- kinds:
-  - `TeleportGithubConnector`
-  - `TeleportOIDCConnector`
+apiVersion `resources.teleport.dev/v3`:
+- `TeleportGithubConnector`
+- `TeleportOIDCConnector`
 
 ## rocketmq_apache_org
 
-- apiVersion: `rocketmq.apache.org/v1alpha1`
-- kinds:
-  - `Broker`
-  - `Console`
-  - `NameService`
-  - `TopicTransfer`
+apiVersion `rocketmq.apache.org/v1alpha1`:
+- `Broker`
+- `Console`
+- `NameService`
+- `TopicTransfer`
 
 ## route_openshift_io
 
-- apiVersion: `route.openshift.io/v1`
-- kinds:
-  - `Route`
+apiVersion `route.openshift.io/v1`:
+- `Route`
 
 ## rules_kubeedge_io
 
-- apiVersion: `rules.kubeedge.io/v1`
-- kinds:
-  - `RuleEndpoint`
-  - `Rule`
+apiVersion `rules.kubeedge.io/v1`:
+- `RuleEndpoint`
+- `Rule`
 
 ## runtime_cluster_x_k8s_io
 
-- apiVersion: `runtime.cluster.x-k8s.io/v1alpha1`
-- kinds:
-  - `ExtensionConfig`
+apiVersion `runtime.cluster.x-k8s.io/v1alpha1`:
+- `ExtensionConfig`
 
 ## s3_services_k8s_aws
 
-- apiVersion: `s3.services.k8s.aws/v1alpha1`
-- kinds:
-  - `Bucket`
+apiVersion `s3.services.k8s.aws/v1alpha1`:
+- `Bucket`
 
 ## sagemaker_services_k8s_aws
 
-- apiVersion: `sagemaker.services.k8s.aws/v1alpha1`
-- kinds:
-  - `App`
-  - `DataQualityJobDefinition`
-  - `Domain`
-  - `EndpointConfig`
-  - `Endpoint`
-  - `FeatureGroup`
-  - `HyperParameterTuningJob`
-  - `ModelBiasJobDefinition`
-  - `ModelExplainabilityJobDefinition`
-  - `ModelPackageGroup`
-  - `ModelPackage`
-  - `ModelQualityJobDefinition`
-  - `Model`
-  - `MonitoringSchedule`
-  - `NotebookInstanceLifecycleConfig`
-  - `NotebookInstance`
-  - `ProcessingJob`
-  - `TrainingJob`
-  - `TransformJob`
-  - `UserProfile`
+apiVersion `sagemaker.services.k8s.aws/v1alpha1`:
+- `App`
+- `DataQualityJobDefinition`
+- `Domain`
+- `EndpointConfig`
+- `Endpoint`
+- `FeatureGroup`
+- `HyperParameterTuningJob`
+- `ModelBiasJobDefinition`
+- `ModelExplainabilityJobDefinition`
+- `ModelPackageGroup`
+- `ModelPackage`
+- `ModelQualityJobDefinition`
+- `Model`
+- `MonitoringSchedule`
+- `NotebookInstanceLifecycleConfig`
+- `NotebookInstance`
+- `ProcessingJob`
+- `TrainingJob`
+- `TransformJob`
+- `UserProfile`
 
 ## samples_operator_openshift_io
 
-- apiVersion: `samples.operator.openshift.io/v1`
-- kinds:
-  - `Config`
+apiVersion `samples.operator.openshift.io/v1`:
+- `Config`
 
 ## scheduling_koordinator_sh
 
-- apiVersion: `scheduling.koordinator.sh/v1alpha1`
-- kinds:
-  - `Device`
-  - `PodMigrationJob`
-  - `Reservation`
+apiVersion `scheduling.koordinator.sh/v1alpha1`:
+- `Device`
+- `PodMigrationJob`
+- `Reservation`
 
 ## scheduling_sigs_k8s_io
 
-- apiVersion: `scheduling.sigs.k8s.io/v1alpha1`
-- kinds:
-  - `ElasticQuota`
-  - `PodGroup`
+apiVersion `scheduling.sigs.k8s.io/v1alpha1`:
+- `ElasticQuota`
+- `PodGroup`
 
 ## scheduling_volcano_sh
 
-- apiVersion: `scheduling.volcano.sh/v1beta1`
-- kinds:
-  - `PodGroup`
-  - `Queue`
+apiVersion `scheduling.volcano.sh/v1beta1`:
+- `PodGroup`
+- `Queue`
 
 ## schemas_schemahero_io
 
-- apiVersion: `schemas.schemahero.io/v1alpha4`
-- kinds:
-  - `DataType`
-  - `Migration`
-  - `Table`
+apiVersion `schemas.schemahero.io/v1alpha4`:
+- `DataType`
+- `Migration`
+- `Table`
 
 ## scylla_scylladb_com
 
-- apiVersion: `scylla.scylladb.com/v1`
-- kinds:
-  - `ScyllaCluster`
+apiVersion `scylla.scylladb.com/v1`:
+- `ScyllaCluster`
 
-- apiVersion: `scylla.scylladb.com/v1alpha1`
-- kinds:
-  - `NodeConfig`
-  - `ScyllaOperatorConfig`
+apiVersion `scylla.scylladb.com/v1alpha1`:
+- `NodeConfig`
+- `ScyllaOperatorConfig`
 
 ## secretgenerator_mittwald_de
 
-- apiVersion: `secretgenerator.mittwald.de/v1alpha1`
-- kinds:
-  - `BasicAuth`
-  - `SSHKeyPair`
-  - `StringSecret`
+apiVersion `secretgenerator.mittwald.de/v1alpha1`:
+- `BasicAuth`
+- `SSHKeyPair`
+- `StringSecret`
 
 ## secrets_crossplane_io
 
-- apiVersion: `secrets.crossplane.io/v1alpha1`
-- kinds:
-  - `StoreConfig`
+apiVersion `secrets.crossplane.io/v1alpha1`:
+- `StoreConfig`
 
 ## secrets_hashicorp_com
 
-- apiVersion: `secrets.hashicorp.com/v1beta1`
-- kinds:
-  - `HCPAuth`
-  - `HCPVaultSecretsApp`
-  - `VaultAuth`
-  - `VaultConnection`
-  - `VaultDynamicSecret`
-  - `VaultPKISecret`
-  - `VaultStaticSecret`
+apiVersion `secrets.hashicorp.com/v1beta1`:
+- `HCPAuth`
+- `HCPVaultSecretsApp`
+- `VaultAuth`
+- `VaultConnection`
+- `VaultDynamicSecret`
+- `VaultPKISecret`
+- `VaultStaticSecret`
 
 ## secscan_quay_redhat_com
 
-- apiVersion: `secscan.quay.redhat.com/v1alpha1`
-- kinds:
-  - `ImageManifestVuln`
+apiVersion `secscan.quay.redhat.com/v1alpha1`:
+- `ImageManifestVuln`
 
 ## security_profiles_operator_x_k8s_io
 
-- apiVersion: `security-profiles-operator.x-k8s.io/v1alpha1`
-- kinds:
-  - `AppArmorProfile`
-  - `ProfileBinding`
-  - `ProfileRecording`
-  - `SecurityProfileNodeStatus`
-  - `SecurityProfilesOperatorDaemon`
+apiVersion `security-profiles-operator.x-k8s.io/v1alpha1`:
+- `AppArmorProfile`
+- `ProfileBinding`
+- `ProfileRecording`
+- `SecurityProfileNodeStatus`
+- `SecurityProfilesOperatorDaemon`
 
-- apiVersion: `security-profiles-operator.x-k8s.io/v1alpha2`
-- kinds:
-  - `RawSelinuxProfile`
+apiVersion `security-profiles-operator.x-k8s.io/v1alpha2`:
+- `RawSelinuxProfile`
 
-- apiVersion: `security-profiles-operator.x-k8s.io/v1beta1`
-- kinds:
-  - `SeccompProfile`
+apiVersion `security-profiles-operator.x-k8s.io/v1beta1`:
+- `SeccompProfile`
 
 ## security_internal_openshift_io
 
-- apiVersion: `security.internal.openshift.io/v1`
-- kinds:
-  - `RangeAllocation`
+apiVersion `security.internal.openshift.io/v1`:
+- `RangeAllocation`
 
 ## security_openshift_io
 
-- apiVersion: `security.openshift.io/v1`
-- kinds:
-  - `SecurityContextConstraints`
+apiVersion `security.openshift.io/v1`:
+- `SecurityContextConstraints`
 
 ## servicebinding_io
 
-- apiVersion: `servicebinding.io/v1alpha3`
-- kinds:
-  - `ClusterWorkloadResourceMapping`
-  - `ServiceBinding`
+apiVersion `servicebinding.io/v1alpha3`:
+- `ClusterWorkloadResourceMapping`
+- `ServiceBinding`
 
-- apiVersion: `servicebinding.io/v1beta1`
-- kinds:
-  - `ClusterWorkloadResourceMapping`
-  - `ServiceBinding`
+apiVersion `servicebinding.io/v1beta1`:
+- `ClusterWorkloadResourceMapping`
+- `ServiceBinding`
 
 ## services_k8s_aws
 
-- apiVersion: `services.k8s.aws/v1alpha1`
-- kinds:
-  - `AdoptedResource`
-  - `FieldExport`
+apiVersion `services.k8s.aws/v1alpha1`:
+- `AdoptedResource`
+- `FieldExport`
 
 ## serving_kubedl_io
 
-- apiVersion: `serving.kubedl.io/v1alpha1`
-- kinds:
-  - `Inference`
+apiVersion `serving.kubedl.io/v1alpha1`:
+- `Inference`
 
 ## sfn_services_k8s_aws
 
-- apiVersion: `sfn.services.k8s.aws/v1alpha1`
-- kinds:
-  - `Activity`
-  - `StateMachine`
+apiVersion `sfn.services.k8s.aws/v1alpha1`:
+- `Activity`
+- `StateMachine`
 
 ## sharedresource_openshift_io
 
-- apiVersion: `sharedresource.openshift.io/v1alpha1`
-- kinds:
-  - `SharedConfigMap`
-  - `SharedSecret`
+apiVersion `sharedresource.openshift.io/v1alpha1`:
+- `SharedConfigMap`
+- `SharedSecret`
 
 ## site_superedge_io
 
-- apiVersion: `site.superedge.io/v1alpha1`
-- kinds:
-  - `NodeGroup`
-  - `NodeUnit`
+apiVersion `site.superedge.io/v1alpha1`:
+- `NodeGroup`
+- `NodeUnit`
 
 ## slo_koordinator_sh
 
-- apiVersion: `slo.koordinator.sh/v1alpha1`
-- kinds:
-  - `NodeMetric`
-  - `NodeSLO`
+apiVersion `slo.koordinator.sh/v1alpha1`:
+- `NodeMetric`
+- `NodeSLO`
 
 ## sloth_slok_dev
 
-- apiVersion: `sloth.slok.dev/v1`
-- kinds:
-  - `PrometheusServiceLevel`
+apiVersion `sloth.slok.dev/v1`:
+- `PrometheusServiceLevel`
 
 ## snapscheduler_backube
 
-- apiVersion: `snapscheduler.backube/v1`
-- kinds:
-  - `SnapshotSchedule`
+apiVersion `snapscheduler.backube/v1`:
+- `SnapshotSchedule`
 
 ## sonataflow_org
 
-- apiVersion: `sonataflow.org/v1alpha08`
-- kinds:
-  - `SonataFlowBuild`
-  - `SonataFlowPlatform`
+apiVersion `sonataflow.org/v1alpha08`:
+- `SonataFlowBuild`
+- `SonataFlowPlatform`
 
 ## source_toolkit_fluxcd_io
 
-- apiVersion: `source.toolkit.fluxcd.io/v1beta1`
-- kinds:
-  - `Bucket`
-  - `GitRepository`
-  - `HelmChart`
-  - `HelmRepository`
+apiVersion `source.toolkit.fluxcd.io/v1beta1`:
+- `Bucket`
+- `GitRepository`
+- `HelmChart`
+- `HelmRepository`
 
-- apiVersion: `source.toolkit.fluxcd.io/v1beta2`
-- kinds:
-  - `Bucket`
-  - `GitRepository`
-  - `HelmChart`
-  - `HelmRepository`
-  - `OCIRepository`
+apiVersion `source.toolkit.fluxcd.io/v1beta2`:
+- `Bucket`
+- `GitRepository`
+- `HelmChart`
+- `HelmRepository`
+- `OCIRepository`
 
 ## sparkoperator_k8s_io
 
-- apiVersion: `sparkoperator.k8s.io/v1beta2`
-- kinds:
-  - `ScheduledSparkApplication`
-  - `SparkApplication`
+apiVersion `sparkoperator.k8s.io/v1beta2`:
+- `ScheduledSparkApplication`
+- `SparkApplication`
 
 ## status_gatekeeper_sh
 
-- apiVersion: `status.gatekeeper.sh/v1beta1`
-- kinds:
-  - `ConstraintPodStatus`
-  - `ConstraintTemplatePodStatus`
-  - `ExpansionTemplatePodStatus`
-  - `MutatorPodStatus`
+apiVersion `status.gatekeeper.sh/v1beta1`:
+- `ConstraintPodStatus`
+- `ConstraintTemplatePodStatus`
+- `ExpansionTemplatePodStatus`
+- `MutatorPodStatus`
 
 ## storage_kubeblocks_io
 
-- apiVersion: `storage.kubeblocks.io/v1alpha1`
-- kinds:
-  - `StorageProvider`
+apiVersion `storage.kubeblocks.io/v1alpha1`:
+- `StorageProvider`
 
 ## sts_min_io
 
-- apiVersion: `sts.min.io/v1alpha1`
-- kinds:
-  - `PolicyBinding`
+apiVersion `sts.min.io/v1alpha1`:
+- `PolicyBinding`
 
 ## stunner_l7mp_io
 
-- apiVersion: `stunner.l7mp.io/v1`
-- kinds:
-  - `Dataplane`
-  - `GatewayConfig`
-  - `StaticService`
-  - `UDPRoute`
+apiVersion `stunner.l7mp.io/v1`:
+- `Dataplane`
+- `GatewayConfig`
+- `StaticService`
+- `UDPRoute`
 
-- apiVersion: `stunner.l7mp.io/v1alpha1`
-- kinds:
-  - `Dataplane`
-  - `GatewayConfig`
-  - `StaticService`
+apiVersion `stunner.l7mp.io/v1alpha1`:
+- `Dataplane`
+- `GatewayConfig`
+- `StaticService`
 
 ## submariner_io
 
-- apiVersion: `submariner.io/v1alpha1`
-- kinds:
-  - `Broker`
-  - `ServiceDiscovery`
-  - `Submariner`
+apiVersion `submariner.io/v1alpha1`:
+- `Broker`
+- `ServiceDiscovery`
+- `Submariner`
 
 ## templates_gatekeeper_sh
 
-- apiVersion: `templates.gatekeeper.sh/v1`
-- kinds:
-  - `ConstraintTemplate`
+apiVersion `templates.gatekeeper.sh/v1`:
+- `ConstraintTemplate`
 
-- apiVersion: `templates.gatekeeper.sh/v1alpha1`
-- kinds:
-  - `ConstraintTemplate`
+apiVersion `templates.gatekeeper.sh/v1alpha1`:
+- `ConstraintTemplate`
 
-- apiVersion: `templates.gatekeeper.sh/v1beta1`
-- kinds:
-  - `ConstraintTemplate`
+apiVersion `templates.gatekeeper.sh/v1beta1`:
+- `ConstraintTemplate`
 
 ## tests_testkube_io
 
-- apiVersion: `tests.testkube.io/v1`
-- kinds:
-  - `Script`
-  - `TestExecution`
-  - `Test`
-  - `TestSource`
-  - `TestSuiteExecution`
-  - `TestSuite`
-  - `TestTrigger`
+apiVersion `tests.testkube.io/v1`:
+- `Script`
+- `TestExecution`
+- `Test`
+- `TestSource`
+- `TestSuiteExecution`
+- `TestSuite`
+- `TestTrigger`
 
-- apiVersion: `tests.testkube.io/v2`
-- kinds:
-  - `Script`
-  - `Test`
-  - `TestSuite`
+apiVersion `tests.testkube.io/v2`:
+- `Script`
+- `Test`
+- `TestSuite`
 
-- apiVersion: `tests.testkube.io/v3`
-- kinds:
-  - `Test`
-  - `TestSuite`
+apiVersion `tests.testkube.io/v3`:
+- `Test`
+- `TestSuite`
 
 ## theketch_io
 
-- apiVersion: `theketch.io/v1beta1`
-- kinds:
-  - `App`
-  - `Job`
+apiVersion `theketch.io/v1beta1`:
+- `App`
+- `Job`
 
 ## topology_node_k8s_io
 
-- apiVersion: `topology.node.k8s.io/v1alpha1`
-- kinds:
-  - `NodeResourceTopology`
+apiVersion `topology.node.k8s.io/v1alpha1`:
+- `NodeResourceTopology`
 
 ## topolvm_cybozu_com
 
-- apiVersion: `topolvm.cybozu.com/v1`
-- kinds:
-  - `LogicalVolume`
+apiVersion `topolvm.cybozu.com/v1`:
+- `LogicalVolume`
 
-- apiVersion: `topolvm.cybozu.com/v2`
-- kinds:
-  - `TopolvmCluster`
+apiVersion `topolvm.cybozu.com/v2`:
+- `TopolvmCluster`
 
 ## traefik_io
 
-- apiVersion: `traefik.io/v1alpha1`
-- kinds:
-  - `IngressRoute`
-  - `IngressRouteTCP`
-  - `IngressRouteUDP`
-  - `MiddlewareTCP`
-  - `ServersTransport`
-  - `ServersTransportTCP`
-  - `TLSOption`
-  - `TLSStore`
-  - `TraefikService`
+apiVersion `traefik.io/v1alpha1`:
+- `IngressRoute`
+- `IngressRouteTCP`
+- `IngressRouteUDP`
+- `MiddlewareTCP`
+- `ServersTransport`
+- `ServersTransportTCP`
+- `TLSOption`
+- `TLSStore`
+- `TraefikService`
 
 ## training_kubedl_io
 
-- apiVersion: `training.kubedl.io/v1alpha1`
-- kinds:
-  - `ElasticDLJob`
-  - `MarsJob`
-  - `MPIJob`
-  - `PyTorchJob`
-  - `TFJob`
-  - `XDLJob`
-  - `XGBoostJob`
+apiVersion `training.kubedl.io/v1alpha1`:
+- `ElasticDLJob`
+- `MarsJob`
+- `MPIJob`
+- `PyTorchJob`
+- `TFJob`
+- `XDLJob`
+- `XGBoostJob`
 
 ## upgrade_cattle_io
 
-- apiVersion: `upgrade.cattle.io/v1`
-- kinds:
-  - `Plan`
+apiVersion `upgrade.cattle.io/v1`:
+- `Plan`
 
 ## upgrade_managed_openshift_io
 
-- apiVersion: `upgrade.managed.openshift.io/v1alpha1`
-- kinds:
-  - `UpgradeConfig`
+apiVersion `upgrade.managed.openshift.io/v1alpha1`:
+- `UpgradeConfig`
 
 ## virt_virtink_smartx_com
 
-- apiVersion: `virt.virtink.smartx.com/v1alpha1`
-- kinds:
-  - `VirtualMachineMigration`
-  - `VirtualMachine`
+apiVersion `virt.virtink.smartx.com/v1alpha1`:
+- `VirtualMachineMigration`
+- `VirtualMachine`
 
 ## wgpolicyk8s_io
 
-- apiVersion: `wgpolicyk8s.io/v1alpha1`
-- kinds:
-  - `ClusterPolicyReport`
-  - `PolicyReport`
+apiVersion `wgpolicyk8s.io/v1alpha1`:
+- `ClusterPolicyReport`
+- `PolicyReport`
 
-- apiVersion: `wgpolicyk8s.io/v1alpha2`
-- kinds:
-  - `ClusterPolicyReport`
-  - `PolicyReport`
+apiVersion `wgpolicyk8s.io/v1alpha2`:
+- `ClusterPolicyReport`
+- `PolicyReport`
 
-- apiVersion: `wgpolicyk8s.io/v1beta1`
-- kinds:
-  - `ClusterPolicyReport`
-  - `PolicyReport`
+apiVersion `wgpolicyk8s.io/v1beta1`:
+- `ClusterPolicyReport`
+- `PolicyReport`
 
 ## wildfly_org
 
-- apiVersion: `wildfly.org/v1alpha1`
-- kinds:
-  - `WildFlyServer`
+apiVersion `wildfly.org/v1alpha1`:
+- `WildFlyServer`
 
 ## work_karmada_io
 
-- apiVersion: `work.karmada.io/v1alpha1`
-- kinds:
-  - `ClusterResourceBinding`
-  - `ResourceBinding`
+apiVersion `work.karmada.io/v1alpha1`:
+- `ClusterResourceBinding`
+- `ResourceBinding`
 
-- apiVersion: `work.karmada.io/v1alpha2`
-- kinds:
-  - `ClusterResourceBinding`
-  - `ResourceBinding`
+apiVersion `work.karmada.io/v1alpha2`:
+- `ClusterResourceBinding`
+- `ResourceBinding`
 
 ## workloads_kubeblocks_io
 
-- apiVersion: `workloads.kubeblocks.io/v1alpha1`
-- kinds:
-  - `ReplicatedStateMachine`
+apiVersion `workloads.kubeblocks.io/v1alpha1`:
+- `ReplicatedStateMachine`
  */
 
 #[cfg(feature = "about_k8s_io")]
