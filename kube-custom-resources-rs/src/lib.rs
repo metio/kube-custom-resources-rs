@@ -2598,6 +2598,12 @@ Every group has its own feature in this crate. The available features are as fol
   - `XDLJob`
   - `XGBoostJob`
 
+## upgrade_cattle_io
+
+- apiVersion: `upgrade.cattle.io/v1`
+- kinds:
+  - `Plan`
+
 ## upgrade_managed_openshift_io
 
 - apiVersion: `upgrade.managed.openshift.io/v1alpha1`
@@ -3173,6 +3179,8 @@ pub mod topolvm_cybozu_com;
 pub mod traefik_io;
 #[cfg(feature = "training_kubedl_io")]
 pub mod training_kubedl_io;
+#[cfg(feature = "upgrade_cattle_io")]
+pub mod upgrade_cattle_io;
 #[cfg(feature = "upgrade_managed_openshift_io")]
 pub mod upgrade_managed_openshift_io;
 #[cfg(feature = "virt_virtink_smartx_com")]

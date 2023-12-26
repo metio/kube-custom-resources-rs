@@ -2007,6 +2007,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "rancher/system-upgrade-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/rancher/system-upgrade-controller/releases/latest/download/crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "ray-project/kuberay",
         license: APACHE_V2,
         urls: &[

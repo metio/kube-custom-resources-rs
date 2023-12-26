@@ -743,6 +743,10 @@ Files: crd-catalog/quay/quay-operator/*
 Copyright: The quay/quay-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/rancher/system-upgrade-controller/*
+Copyright: The rancher/system-upgrade-controller Authors
+License: Apache-2.0
+
 Files: crd-catalog/ray-project/kuberay/*
 Copyright: The ray-project/kuberay Authors
 License: Apache-2.0

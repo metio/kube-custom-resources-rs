@@ -69,6 +69,7 @@ fn parse_crds(content: String) -> Vec<CustomResourceDefinition> {
 fn github_url(url: &str) -> String {
     if !url.starts_with("https://github.com")
         || url.starts_with("https://raw.githubusercontent.com")
+        || url.starts_with("https://github.com") && url.contains("releases/latest/download")
     {
         url.to_owned()
     } else {
