@@ -1941,6 +1941,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "openshift/managed-upgrade-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/openshift/managed-upgrade-operator/blob/master/deploy/crds/upgrade.managed.openshift.io_upgradeconfigs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "otterize/helm-charts",
         license: APACHE_V2,
         urls: &[

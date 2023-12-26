@@ -715,6 +715,10 @@ Files: crd-catalog/openshift/hive/*
 Copyright: The openshift/hive Authors
 License: Apache-2.0
 
+Files: crd-catalog/openshift/managed-upgrade-operator/*
+Copyright: The openshift/managed-upgrade-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/otterize/helm-charts/*
 Copyright: The otterize/helm-charts Authors
 License: Apache-2.0
