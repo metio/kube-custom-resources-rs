@@ -13,6 +13,7 @@ use std::collections::BTreeMap;
 #[kube(status = "NodeStatus")]
 #[kube(schema = "disabled")]
 pub struct NodeSpec {
+    /// Allow scheduling replicas on the node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowScheduling")]
     pub allow_scheduling: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -58,12 +59,16 @@ pub struct NodeStatus {
     pub auto_evicting: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<NodeStatusConditions>>,
+    /// The status of the disks on the node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskStatus")]
     pub disk_status: Option<BTreeMap<String, NodeStatusDiskStatus>>,
+    /// The Region of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
+    /// The status of the snapshot integrity check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotCheckStatus")]
     pub snapshot_check_status: Option<NodeStatusSnapshotCheckStatus>,
+    /// The Zone of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
 }
@@ -90,6 +95,7 @@ pub struct NodeStatusConditions {
     pub r#type: Option<String>,
 }
 
+/// The status of the disks on the node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeStatusDiskStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -98,6 +104,8 @@ pub struct NodeStatusDiskStatus {
     pub disk_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskUUID")]
     pub disk_uuid: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemType")]
+    pub filesystem_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduledReplica")]
     pub scheduled_replica: Option<BTreeMap<String, i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAvailable")]
@@ -130,11 +138,10 @@ pub struct NodeStatusDiskStatusConditions {
     pub r#type: Option<String>,
 }
 
+/// The status of the snapshot integrity check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeStatusSnapshotCheckStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPeriodicCheckedAt")]
     pub last_periodic_checked_at: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotCheckState")]
-    pub snapshot_check_state: Option<String>,
 }
 

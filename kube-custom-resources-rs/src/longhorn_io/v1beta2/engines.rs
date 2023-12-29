@@ -15,10 +15,13 @@ use std::collections::BTreeMap;
 pub struct EngineSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+    /// Deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
-    pub backend_store_driver: Option<EngineBackendStoreDriver>,
+    pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupVolume")]
     pub backup_volume: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<EngineDataEngine>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desireState")]
     pub desire_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableFrontend")]
@@ -56,7 +59,7 @@ pub struct EngineSpec {
 
 /// EngineSpec defines the desired state of the Longhorn engine
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum EngineBackendStoreDriver {
+pub enum EngineDataEngine {
     #[serde(rename = "v1")]
     V1,
     #[serde(rename = "v2")]

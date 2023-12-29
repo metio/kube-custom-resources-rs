@@ -17,8 +17,7 @@ spec:
     singular: policyexception
   scope: Namespaced
   versions:
-  - deprecated: true
-    name: v2beta1
+  - name: v2beta1
     schema:
       openAPIV3Schema:
         description: PolicyException declares resources to be excluded from specified policies.
@@ -417,4 +416,4 @@ spec:
         - spec
         type: object
     served: true
-    storage: false
+    storage: true

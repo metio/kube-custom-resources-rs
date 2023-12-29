@@ -24,9 +24,12 @@ pub struct ClientIntentsCalls {
     pub aws_actions: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseResources")]
     pub database_resources: Option<Vec<ClientIntentsCallsDatabaseResources>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub internet: Option<ClientIntentsCallsInternet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaTopics")]
     pub kafka_topics: Option<Vec<ClientIntentsCallsKafkaTopics>>,
-    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ClientIntentsCallsType>,
 }
@@ -48,6 +51,14 @@ pub struct ClientIntentsCallsDatabaseResources {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClientIntentsCallsInternet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ips: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientIntentsCallsKafkaTopics {
     pub name: String,
     pub operations: Vec<String>,
@@ -63,6 +74,8 @@ pub enum ClientIntentsCallsType {
     Database,
     #[serde(rename = "aws")]
     Aws,
+    #[serde(rename = "internet")]
+    Internet,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

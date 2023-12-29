@@ -52,6 +52,9 @@ pub struct BackupStatus {
     /// expiration is when this backup is eligible for garbage collection. 'null' means the Backup will NOT be cleaned except delete manual.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expiration: Option<String>,
+    /// extra records the extra info for the backup.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub extras: Option<Vec<BTreeMap<String, String>>>,
     /// failureReason is an error that caused the backup to fail.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,

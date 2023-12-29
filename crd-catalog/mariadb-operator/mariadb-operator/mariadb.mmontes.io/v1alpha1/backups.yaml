@@ -522,10 +522,13 @@ spec:
                   type: string
                 type: array
               backoffLimit:
-                default: 5
                 description: BackoffLimit defines the maximum number of attempts to successfully take a Backup.
                 format: int32
                 type: integer
+              logLevel:
+                default: info
+                description: LogLevel to be used n the Backup Job. It defaults to 'info'.
+                type: string
               mariaDbRef:
                 description: MariaDBRef is a reference to a MariaDB object.
                 properties:
@@ -556,11 +559,9 @@ spec:
                     type: boolean
                 type: object
                 x-kubernetes-map-type: atomic
-              maxRetentionDays:
-                default: 30
-                description: MaxRetentionDays defined the maximum age that Backups should have. Old backup will be cleaned up by the Backup Job.
-                format: int32
-                type: integer
+              maxRetention:
+                description: MaxRetention defines the retention policy for backups. Old backups will be cleaned up by the Backup Job. It defaults to 30 days.
+                type: string
               nodeSelector:
                 additionalProperties:
                   type: string
@@ -748,6 +749,95 @@ spec:
                       volumeName:
                         description: volumeName is the binding reference to the PersistentVolume backing this claim.
                         type: string
+                    type: object
+                  s3:
+                    description: S3 defines the configuration to store backups in a S3 compatible storage.
+                    properties:
+                      accessKeyIdSecretKeyRef:
+                        description: AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
+                        properties:
+                          key:
+                            description: The key of the secret to select from.  Must be a valid secret key.
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                            type: string
+                          optional:
+                            description: Specify whether the Secret or its key must be defined
+                            type: boolean
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      bucket:
+                        description: Bucket is the name Name of the bucket to store backups.
+                        type: string
+                      endpoint:
+                        description: Endpoint is the S3 API endpoint without scheme.
+                        type: string
+                      region:
+                        description: Region is the S3 region name to use.
+                        type: string
+                      secretAccessKeySecretKeyRef:
+                        description: AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
+                        properties:
+                          key:
+                            description: The key of the secret to select from.  Must be a valid secret key.
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                            type: string
+                          optional:
+                            description: Specify whether the Secret or its key must be defined
+                            type: boolean
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      sessionTokenSecretKeyRef:
+                        description: SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
+                        properties:
+                          key:
+                            description: The key of the secret to select from.  Must be a valid secret key.
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                            type: string
+                          optional:
+                            description: Specify whether the Secret or its key must be defined
+                            type: boolean
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      tls:
+                        description: TLS provides the configuration required to establish TLS connections with S3.
+                        properties:
+                          caSecretKeyRef:
+                            description: CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          enabled:
+                            description: Enabled is a flag to enable TLS.
+                            type: boolean
+                        type: object
+                    required:
+                    - accessKeyIdSecretKeyRef
+                    - bucket
+                    - endpoint
+                    - secretAccessKeySecretKeyRef
                     type: object
                   volume:
                     description: Volume is a Kubernetes volume specification.

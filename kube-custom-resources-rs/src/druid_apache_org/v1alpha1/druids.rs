@@ -1312,9 +1312,9 @@ pub struct DruidNodes {
     /// Services Overrides services at top level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<DruidNodesServices>>,
-    /// StartUpProbes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startUpProbes")]
-    pub start_up_probes: Option<DruidNodesStartUpProbes>,
+    /// StartUpProbe
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startUpProbe")]
+    pub start_up_probe: Option<DruidNodesStartUpProbe>,
     /// TerminationGracePeriodSeconds
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
@@ -3677,21 +3677,21 @@ pub struct DruidNodesServicesStatusLoadBalancerIngressPorts {
     pub protocol: String,
 }
 
-/// StartUpProbes
+/// StartUpProbe
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct DruidNodesStartUpProbes {
+pub struct DruidNodesStartUpProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<DruidNodesStartUpProbesExec>,
+    pub exec: Option<DruidNodesStartUpProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<DruidNodesStartUpProbesGrpc>,
+    pub grpc: Option<DruidNodesStartUpProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<DruidNodesStartUpProbesHttpGet>,
+    pub http_get: Option<DruidNodesStartUpProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
@@ -3703,7 +3703,7 @@ pub struct DruidNodesStartUpProbes {
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<DruidNodesStartUpProbesTcpSocket>,
+    pub tcp_socket: Option<DruidNodesStartUpProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
@@ -3714,7 +3714,7 @@ pub struct DruidNodesStartUpProbes {
 
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct DruidNodesStartUpProbesExec {
+pub struct DruidNodesStartUpProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
@@ -3722,7 +3722,7 @@ pub struct DruidNodesStartUpProbesExec {
 
 /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct DruidNodesStartUpProbesGrpc {
+pub struct DruidNodesStartUpProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
@@ -3733,13 +3733,13 @@ pub struct DruidNodesStartUpProbesGrpc {
 
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct DruidNodesStartUpProbesHttpGet {
+pub struct DruidNodesStartUpProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<DruidNodesStartUpProbesHttpGetHttpHeaders>>,
+    pub http_headers: Option<Vec<DruidNodesStartUpProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3752,7 +3752,7 @@ pub struct DruidNodesStartUpProbesHttpGet {
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct DruidNodesStartUpProbesHttpGetHttpHeaders {
+pub struct DruidNodesStartUpProbeHttpGetHttpHeaders {
     /// The header field name
     pub name: String,
     /// The header field value
@@ -3761,7 +3761,7 @@ pub struct DruidNodesStartUpProbesHttpGetHttpHeaders {
 
 /// TCPSocket specifies an action involving a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct DruidNodesStartUpProbesTcpSocket {
+pub struct DruidNodesStartUpProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,

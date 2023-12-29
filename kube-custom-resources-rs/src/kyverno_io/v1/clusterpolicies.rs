@@ -2046,6 +2046,12 @@ pub struct ClusterPolicyRulesValidatePodSecurityExclude {
     /// Images selects matching containers and applies the container level PSS. Each image is the image name consisting of the registry address, repository, image, and tag. Empty list matches no containers, PSS checks are applied at the pod level only. Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// RestrictedField selects the field for the given Pod Security Standard control. When not set, all restricted fields for the control are selected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restrictedField")]
+    pub restricted_field: Option<String>,
+    /// Values defines the allowed values that can be excluded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// PodSecurityStandard specifies the Pod Security Standard controls to be excluded.
@@ -4697,6 +4703,12 @@ pub struct ClusterPolicyStatusAutogenRulesValidatePodSecurityExclude {
     /// Images selects matching containers and applies the container level PSS. Each image is the image name consisting of the registry address, repository, image, and tag. Empty list matches no containers, PSS checks are applied at the pod level only. Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// RestrictedField selects the field for the given Pod Security Standard control. When not set, all restricted fields for the control are selected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restrictedField")]
+    pub restricted_field: Option<String>,
+    /// Values defines the allowed values that can be excluded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// PodSecurityStandard specifies the Pod Security Standard controls to be excluded.

@@ -337,6 +337,9 @@ pub struct OpsRequestRestoreSpec {
     /// backupName is the name of the backup.
     #[serde(rename = "backupName")]
     pub backup_name: String,
+    /// effectiveCommonComponentDef describes this backup will be restored for all components which refer to common ComponentDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCommonComponentDef")]
+    pub effective_common_component_def: Option<bool>,
     /// restoreTime point in time to restore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreTimeStr")]
     pub restore_time_str: Option<String>,

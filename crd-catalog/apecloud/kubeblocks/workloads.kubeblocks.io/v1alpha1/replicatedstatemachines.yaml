@@ -5557,6 +5557,9 @@ spec:
                       default: Unknown
                       description: PodName pod name.
                       type: string
+                    readyWithoutPrimary:
+                      description: Is it required for rsm to have at least one primary pod to be ready.
+                      type: boolean
                     role:
                       properties:
                         accessMode:

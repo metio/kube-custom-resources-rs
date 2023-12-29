@@ -21,6 +21,10 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
+    - description: The data engine of the replica
+      jsonPath: .spec.dataEngine
+      name: Data Engine
+      type: string
     - description: The current state of the replica
       jsonPath: .status.currentState
       name: State
@@ -63,13 +67,16 @@ spec:
               active:
                 type: boolean
               backendStoreDriver:
-                enum:
-                - v1
-                - v2
+                description: Deprecated.
                 type: string
               backingImage:
                 type: string
               dataDirectoryName:
+                type: string
+              dataEngine:
+                enum:
+                - v1
+                - v2
                 type: string
               desireState:
                 type: string

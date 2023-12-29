@@ -20,9 +20,12 @@ pub struct RestoreSpec {
     /// BackoffLimit defines the maximum number of attempts to successfully perform a Backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
-    /// BackupRef is a reference to a Backup object.
+    /// BackupRef is a reference to a Backup object. It has priority over S3 and Volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRef")]
     pub backup_ref: Option<RestoreBackupRef>,
+    /// LogLevel to be used n the Backup Job. It defaults to 'info'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
+    pub log_level: Option<String>,
     /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: RestoreMariaDbRef,
@@ -35,6 +38,9 @@ pub struct RestoreSpec {
     /// RestartPolicy to be added to the Backup Job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<RestoreRestartPolicy>,
+    /// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub s3: Option<RestoreS3>,
     /// TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective. It is used to determine the closest restoration source in time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRecoveryTime")]
     pub target_recovery_time: Option<String>,
@@ -452,7 +458,7 @@ pub struct RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
     pub values: Option<Vec<String>>,
 }
 
-/// BackupRef is a reference to a Backup object.
+/// BackupRef is a reference to a Backup object. It has priority over S3 and Volume.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreBackupRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
@@ -518,6 +524,93 @@ pub enum RestoreRestartPolicy {
     Always,
     OnFailure,
     Never,
+}
+
+/// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestoreS3 {
+    /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
+    #[serde(rename = "accessKeyIdSecretKeyRef")]
+    pub access_key_id_secret_key_ref: RestoreS3AccessKeyIdSecretKeyRef,
+    /// Bucket is the name Name of the bucket to store backups.
+    pub bucket: String,
+    /// Endpoint is the S3 API endpoint without scheme.
+    pub endpoint: String,
+    /// Region is the S3 region name to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
+    #[serde(rename = "secretAccessKeySecretKeyRef")]
+    pub secret_access_key_secret_key_ref: RestoreS3SecretAccessKeySecretKeyRef,
+    /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTokenSecretKeyRef")]
+    pub session_token_secret_key_ref: Option<RestoreS3SessionTokenSecretKeyRef>,
+    /// TLS provides the configuration required to establish TLS connections with S3.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<RestoreS3Tls>,
+}
+
+/// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestoreS3AccessKeyIdSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestoreS3SecretAccessKeySecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestoreS3SessionTokenSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS provides the configuration required to establish TLS connections with S3.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestoreS3Tls {
+    /// CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecretKeyRef")]
+    pub ca_secret_key_ref: Option<RestoreS3TlsCaSecretKeyRef>,
+    /// Enabled is a flag to enable TLS.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RestoreS3TlsCaSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.

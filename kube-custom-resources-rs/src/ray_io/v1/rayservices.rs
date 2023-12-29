@@ -6417,6 +6417,14 @@ pub struct RayServiceStatusActiveServiceStatusDashboardStatus {
 pub struct RayServiceStatusActiveServiceStatusRayClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableWorkerReplicas")]
     pub available_worker_replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredCPUs")]
+    pub desired_cp_us: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredGPUs")]
+    pub desired_gp_us: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredMemory")]
+    pub desired_memory: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredTPUs")]
+    pub desired_tp_us: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredWorkerReplicas")]
     pub desired_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6491,6 +6499,14 @@ pub struct RayServiceStatusPendingServiceStatusDashboardStatus {
 pub struct RayServiceStatusPendingServiceStatusRayClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableWorkerReplicas")]
     pub available_worker_replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredCPUs")]
+    pub desired_cp_us: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredGPUs")]
+    pub desired_gp_us: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredMemory")]
+    pub desired_memory: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredTPUs")]
+    pub desired_tp_us: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredWorkerReplicas")]
     pub desired_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

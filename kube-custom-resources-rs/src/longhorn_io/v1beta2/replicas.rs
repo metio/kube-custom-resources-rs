@@ -14,12 +14,15 @@ use serde::{Serialize, Deserialize};
 pub struct ReplicaSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+    /// Deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
-    pub backend_store_driver: Option<ReplicaBackendStoreDriver>,
+    pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
     pub backing_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataDirectoryName")]
     pub data_directory_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<ReplicaDataEngine>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desireState")]
     pub desire_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskID")]
@@ -61,7 +64,7 @@ pub struct ReplicaSpec {
 
 /// ReplicaSpec defines the desired state of the Longhorn replica
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ReplicaBackendStoreDriver {
+pub enum ReplicaDataEngine {
     #[serde(rename = "v1")]
     V1,
     #[serde(rename = "v2")]

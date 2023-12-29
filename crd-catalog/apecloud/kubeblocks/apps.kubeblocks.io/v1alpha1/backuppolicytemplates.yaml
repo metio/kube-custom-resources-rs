@@ -47,6 +47,12 @@ spec:
                 description: backupPolicies is a list of backup policy template for the specified componentDefinition.
                 items:
                   properties:
+                    backoffLimit:
+                      description: Specifies the number of retries before marking the backup failed.
+                      format: int32
+                      maximum: 10.0
+                      minimum: 0.0
+                      type: integer
                     backupMethods:
                       description: backupMethods defines the backup methods.
                       items:
@@ -165,8 +171,23 @@ spec:
                                         - names
                                         type: object
                                       type: array
-                                  required:
-                                  - clusterVersionRef
+                                    componentDef:
+                                      description: mapped ComponentDefinition to env value.
+                                      items:
+                                        properties:
+                                          mappingValue:
+                                            description: mapping value for the specified ClusterVersion names.
+                                            type: string
+                                          names:
+                                            description: the array of ClusterVersion name which can be mapped to the env value.
+                                            items:
+                                              type: string
+                                            type: array
+                                        required:
+                                        - mappingValue
+                                        - names
+                                        type: object
+                                      type: array
                                   type: object
                               required:
                               - key
@@ -406,6 +427,11 @@ spec:
                       maxLength: 22
                       pattern: ^[a-z]([a-z0-9\-]*[a-z0-9])?$
                       type: string
+                    componentDefs:
+                      description: componentDef references componentDefinition. Need to comply with IANA Service Naming rule.
+                      items:
+                        type: string
+                      type: array
                     schedules:
                       description: schedule policy for backup.
                       items:
@@ -456,13 +482,9 @@ spec:
                       type: object
                   required:
                   - backupMethods
-                  - componentDefRef
                   type: object
                 minItems: 1
                 type: array
-                x-kubernetes-list-map-keys:
-                - componentDefRef
-                x-kubernetes-list-type: map
               clusterDefinitionRef:
                 description: clusterDefinitionRef references ClusterDefinition name, this is an immutable attribute.
                 pattern: ^[a-z0-9]([a-z0-9\.\-]*[a-z0-9])?$

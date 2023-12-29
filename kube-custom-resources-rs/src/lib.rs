@@ -1353,7 +1353,14 @@ apiVersion `kyverno.io/v1beta1`:
 - `UpdateRequest`
 
 apiVersion `kyverno.io/v2`:
+- `AdmissionReport`
+- `BackgroundScanReport`
+- `CleanupPolicy`
+- `ClusterAdmissionReport`
+- `ClusterBackgroundScanReport`
+- `ClusterCleanupPolicy`
 - `PolicyException`
+- `UpdateRequest`
 
 apiVersion `kyverno.io/v2alpha1`:
 - `CleanupPolicy`
