@@ -26,12 +26,18 @@ pub struct BackupPolicyTemplateSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPolicies {
+    /// Specifies the number of retries before marking the backup failed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
+    pub backoff_limit: Option<i32>,
     /// backupMethods defines the backup methods.
     #[serde(rename = "backupMethods")]
     pub backup_methods: Vec<BackupPolicyTemplateBackupPoliciesBackupMethods>,
     /// componentDefRef references componentDef defined in ClusterDefinition spec. Need to comply with IANA Service Naming rule.
-    #[serde(rename = "componentDefRef")]
-    pub component_def_ref: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
+    pub component_def_ref: Option<String>,
+    /// componentDef references componentDefinition. Need to comply with IANA Service Naming rule.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefs")]
+    pub component_defs: Option<Vec<String>>,
     /// schedule policy for backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedules: Option<Vec<BackupPolicyTemplateBackupPoliciesSchedules>>,
@@ -160,12 +166,24 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMapping {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFrom {
     /// mapped ClusterVersionRef to env value.
-    #[serde(rename = "clusterVersionRef")]
-    pub cluster_version_ref: Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromClusterVersionRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionRef")]
+    pub cluster_version_ref: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromClusterVersionRef>>,
+    /// mapped ComponentDefinition to env value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDef")]
+    pub component_def: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromComponentDef>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromClusterVersionRef {
+    /// mapping value for the specified ClusterVersion names.
+    #[serde(rename = "mappingValue")]
+    pub mapping_value: String,
+    /// the array of ClusterVersion name which can be mapped to the env value.
+    pub names: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromComponentDef {
     /// mapping value for the specified ClusterVersion names.
     #[serde(rename = "mappingValue")]
     pub mapping_value: String,

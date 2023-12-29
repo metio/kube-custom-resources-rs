@@ -57,7 +57,12 @@ spec:
                     configs:
                       description: Lookup and associate config items with this component
                       items:
+                        description: ConfigQuery is used to look up and associate config items with a component.
                         properties:
+                          class:
+                            type: string
+                          external_id:
+                            type: string
                           id:
                             items:
                               type: string
@@ -131,6 +136,10 @@ spec:
                               config:
                                 description: Lookup a config by it
                                 properties:
+                                  class:
+                                    type: string
+                                  external_id:
+                                    type: string
                                   id:
                                     items:
                                       type: string
@@ -256,6 +265,10 @@ spec:
                       type: array
                     summary:
                       properties:
+                        checks:
+                          additionalProperties:
+                            type: integer
+                          type: object
                         healthy:
                           type: integer
                         incidents:
@@ -287,7 +300,12 @@ spec:
               configs:
                 description: Lookup and associate config items with this component
                 items:
+                  description: ConfigQuery is used to look up and associate config items with a component.
                   properties:
+                    class:
+                      type: string
+                    external_id:
+                      type: string
                     id:
                       items:
                         type: string
@@ -332,6 +350,10 @@ spec:
                         config:
                           description: Lookup a config by it
                           properties:
+                            class:
+                              type: string
+                            external_id:
+                              type: string
                             id:
                               items:
                                 type: string

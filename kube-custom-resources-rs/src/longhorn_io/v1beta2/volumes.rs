@@ -16,12 +16,15 @@ pub struct VolumeSpec {
     pub standby: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<VolumeAccessMode>,
+    /// Deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
-    pub backend_store_driver: Option<VolumeBackendStoreDriver>,
+    pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
     pub backing_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCompressionMethod")]
     pub backup_compression_method: Option<VolumeBackupCompressionMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<VolumeDataEngine>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLocality")]
     pub data_locality: Option<VolumeDataLocality>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
@@ -92,15 +95,6 @@ pub enum VolumeAccessMode {
 
 /// VolumeSpec defines the desired state of the Longhorn volume
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum VolumeBackendStoreDriver {
-    #[serde(rename = "v1")]
-    V1,
-    #[serde(rename = "v2")]
-    V2,
-}
-
-/// VolumeSpec defines the desired state of the Longhorn volume
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VolumeBackupCompressionMethod {
     #[serde(rename = "none")]
     None,
@@ -108,6 +102,15 @@ pub enum VolumeBackupCompressionMethod {
     Lz4,
     #[serde(rename = "gzip")]
     Gzip,
+}
+
+/// VolumeSpec defines the desired state of the Longhorn volume
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VolumeDataEngine {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "v2")]
+    V2,
 }
 
 /// VolumeSpec defines the desired state of the Longhorn volume

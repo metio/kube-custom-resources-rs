@@ -13,6 +13,11 @@ use std::collections::BTreeMap;
 #[kube(status = "InstanceManagerStatus")]
 #[kube(schema = "disabled")]
 pub struct InstanceManagerSpec {
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
+    pub backend_store_driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
@@ -68,14 +73,19 @@ pub struct InstanceManagerStatusInstanceEngines {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceEnginesSpec {
+    /// Deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceEnginesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<BTreeMap<String, bool>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMsg")]
@@ -104,14 +114,19 @@ pub struct InstanceManagerStatusInstanceReplicas {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceReplicasSpec {
+    /// Deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceReplicasStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<BTreeMap<String, bool>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMsg")]
@@ -149,6 +164,8 @@ pub struct InstanceManagerStatusInstancesSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstancesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<BTreeMap<String, bool>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMsg")]

@@ -2141,6 +2141,14 @@ spec:
                                       items:
                                         type: string
                                       type: array
+                                    restrictedField:
+                                      description: RestrictedField selects the field for the given Pod Security Standard control. When not set, all restricted fields for the control are selected.
+                                      type: string
+                                    values:
+                                      description: Values defines the allowed values that can be excluded.
+                                      items:
+                                        type: string
+                                      type: array
                                   required:
                                     - controlName
                                   type: object
@@ -4771,6 +4779,14 @@ spec:
                                           type: string
                                         images:
                                           description: 'Images selects matching containers and applies the container level PSS. Each image is the image name consisting of the registry address, repository, image, and tag. Empty list matches no containers, PSS checks are applied at the pod level only. Wildcards (''*'' and ''?'') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.'
+                                          items:
+                                            type: string
+                                          type: array
+                                        restrictedField:
+                                          description: RestrictedField selects the field for the given Pod Security Standard control. When not set, all restricted fields for the control are selected.
+                                          type: string
+                                        values:
+                                          description: Values defines the allowed values that can be excluded.
                                           items:
                                             type: string
                                           type: array

@@ -14,12 +14,18 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ClusterColocationProfileStatus")]
 #[kube(schema = "disabled")]
 pub struct ClusterColocationProfileSpec {
+    /// AnnotationKeysMapping describes the annotations that needs to inject into Pod.Annotations with the same values. It sets the Pod.Annotations[AnnotationsToAnnotations[k]] = Pod.Annotations[k] for each key k.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationKeysMapping")]
+    pub annotation_keys_mapping: Option<BTreeMap<String, String>>,
     /// Annotations describes the k/v pair that needs to inject into Pod.Annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// KoordinatorPriority defines the Pod sub-priority in Koordinator. The priority value will be injected into Pod as label koordinator.sh/priority. Various Koordinator components determine the priority of the Pod in the Koordinator through KoordinatorPriority and the priority value in PriorityClassName. The higher the value, the higher the priority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "koordinatorPriority")]
     pub koordinator_priority: Option<i32>,
+    /// LabelKeysMapping describes the labels that needs to inject into Pod.Labels with the same values. It sets the Pod.Labels[LabelsToLabels[k]] = Pod.Labels[k] for each key k.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelKeysMapping")]
+    pub label_keys_mapping: Option<BTreeMap<String, String>>,
     /// Labels describes the k/v pair that needs to inject into Pod.Labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,

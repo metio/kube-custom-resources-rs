@@ -23,12 +23,15 @@ pub struct BackupSpec {
     /// BackoffLimit defines the maximum number of attempts to successfully take a Backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
+    /// LogLevel to be used n the Backup Job. It defaults to 'info'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
+    pub log_level: Option<String>,
     /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: BackupMariaDbRef,
-    /// MaxRetentionDays defined the maximum age that Backups should have. Old backup will be cleaned up by the Backup Job.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetentionDays")]
-    pub max_retention_days: Option<i32>,
+    /// MaxRetention defines the retention policy for backups. Old backups will be cleaned up by the Backup Job. It defaults to 30 days.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetention")]
+    pub max_retention: Option<String>,
     /// NodeSelector to be used in the Backup Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -530,6 +533,9 @@ pub struct BackupStorage {
     /// PersistentVolumeClaim is a Kubernetes PVC specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<BackupStoragePersistentVolumeClaim>,
+    /// S3 defines the configuration to store backups in a S3 compatible storage.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub s3: Option<BackupStorageS3>,
     /// Volume is a Kubernetes volume specification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volume: Option<BackupStorageVolume>,
@@ -635,6 +641,93 @@ pub struct BackupStoragePersistentVolumeClaimSelectorMatchExpressions {
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// S3 defines the configuration to store backups in a S3 compatible storage.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStorageS3 {
+    /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
+    #[serde(rename = "accessKeyIdSecretKeyRef")]
+    pub access_key_id_secret_key_ref: BackupStorageS3AccessKeyIdSecretKeyRef,
+    /// Bucket is the name Name of the bucket to store backups.
+    pub bucket: String,
+    /// Endpoint is the S3 API endpoint without scheme.
+    pub endpoint: String,
+    /// Region is the S3 region name to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
+    #[serde(rename = "secretAccessKeySecretKeyRef")]
+    pub secret_access_key_secret_key_ref: BackupStorageS3SecretAccessKeySecretKeyRef,
+    /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTokenSecretKeyRef")]
+    pub session_token_secret_key_ref: Option<BackupStorageS3SessionTokenSecretKeyRef>,
+    /// TLS provides the configuration required to establish TLS connections with S3.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<BackupStorageS3Tls>,
+}
+
+/// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStorageS3AccessKeyIdSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStorageS3SecretAccessKeySecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStorageS3SessionTokenSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS provides the configuration required to establish TLS connections with S3.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStorageS3Tls {
+    /// CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecretKeyRef")]
+    pub ca_secret_key_ref: Option<BackupStorageS3TlsCaSecretKeyRef>,
+    /// Enabled is a flag to enable TLS.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackupStorageS3TlsCaSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Volume is a Kubernetes volume specification.

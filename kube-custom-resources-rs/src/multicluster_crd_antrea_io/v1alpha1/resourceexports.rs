@@ -115,6 +115,9 @@ pub struct ResourceExportClusterNetworkPolicyAppliedTo {
     /// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyAppliedToNamespaceSelector>,
+    /// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<ResourceExportClusterNetworkPolicyAppliedToNodeSelector>,
     /// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyAppliedToPodSelector>,
@@ -163,6 +166,29 @@ pub struct ResourceExportClusterNetworkPolicyAppliedToNamespaceSelector {
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceExportClusterNetworkPolicyAppliedToNodeSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyAppliedToNodeSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceExportClusterNetworkPolicyAppliedToNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -262,6 +288,9 @@ pub struct ResourceExportClusterNetworkPolicyEgressAppliedTo {
     /// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyEgressAppliedToNamespaceSelector>,
+    /// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<ResourceExportClusterNetworkPolicyEgressAppliedToNodeSelector>,
     /// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyEgressAppliedToPodSelector>,
@@ -310,6 +339,29 @@ pub struct ResourceExportClusterNetworkPolicyEgressAppliedToNamespaceSelector {
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceExportClusterNetworkPolicyEgressAppliedToNodeSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressAppliedToNodeSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceExportClusterNetworkPolicyEgressAppliedToNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -381,7 +433,7 @@ pub struct ResourceExportClusterNetworkPolicyEgressFrom {
     /// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ResourceExportClusterNetworkPolicyEgressFromNamespaces>,
-    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set in AppliedTo field or set with any other selector.
+    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyEgressFromNodeSelector>,
     /// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
@@ -456,7 +508,7 @@ pub struct ResourceExportClusterNetworkPolicyEgressFromNamespaces {
     pub r#match: Option<String>,
 }
 
-/// Select certain Nodes which match the label selector. A NodeSelector cannot be set in AppliedTo field or set with any other selector.
+/// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -613,7 +665,7 @@ pub struct ResourceExportClusterNetworkPolicyEgressTo {
     /// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ResourceExportClusterNetworkPolicyEgressToNamespaces>,
-    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set in AppliedTo field or set with any other selector.
+    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyEgressToNodeSelector>,
     /// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
@@ -688,7 +740,7 @@ pub struct ResourceExportClusterNetworkPolicyEgressToNamespaces {
     pub r#match: Option<String>,
 }
 
-/// Select certain Nodes which match the label selector. A NodeSelector cannot be set in AppliedTo field or set with any other selector.
+/// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -803,6 +855,9 @@ pub struct ResourceExportClusterNetworkPolicyIngressAppliedTo {
     /// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyIngressAppliedToNamespaceSelector>,
+    /// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<ResourceExportClusterNetworkPolicyIngressAppliedToNodeSelector>,
     /// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyIngressAppliedToPodSelector>,
@@ -851,6 +906,29 @@ pub struct ResourceExportClusterNetworkPolicyIngressAppliedToNamespaceSelector {
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceExportClusterNetworkPolicyIngressAppliedToNodeSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressAppliedToNodeSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceExportClusterNetworkPolicyIngressAppliedToNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -922,7 +1000,7 @@ pub struct ResourceExportClusterNetworkPolicyIngressFrom {
     /// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ResourceExportClusterNetworkPolicyIngressFromNamespaces>,
-    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set in AppliedTo field or set with any other selector.
+    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyIngressFromNodeSelector>,
     /// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
@@ -997,7 +1075,7 @@ pub struct ResourceExportClusterNetworkPolicyIngressFromNamespaces {
     pub r#match: Option<String>,
 }
 
-/// Select certain Nodes which match the label selector. A NodeSelector cannot be set in AppliedTo field or set with any other selector.
+/// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1154,7 +1232,7 @@ pub struct ResourceExportClusterNetworkPolicyIngressTo {
     /// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ResourceExportClusterNetworkPolicyIngressToNamespaces>,
-    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set in AppliedTo field or set with any other selector.
+    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyIngressToNodeSelector>,
     /// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
@@ -1229,7 +1307,7 @@ pub struct ResourceExportClusterNetworkPolicyIngressToNamespaces {
     pub r#match: Option<String>,
 }
 
-/// Select certain Nodes which match the label selector. A NodeSelector cannot be set in AppliedTo field or set with any other selector.
+/// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

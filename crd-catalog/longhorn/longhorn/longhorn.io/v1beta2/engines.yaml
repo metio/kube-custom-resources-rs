@@ -21,6 +21,10 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
+    - description: The data engine of the engine
+      jsonPath: .spec.dataEngine
+      name: Data Engine
+      type: string
     - description: The current state of the engine
       jsonPath: .status.currentState
       name: State
@@ -59,11 +63,14 @@ spec:
               active:
                 type: boolean
               backendStoreDriver:
+                description: Deprecated.
+                type: string
+              backupVolume:
+                type: string
+              dataEngine:
                 enum:
                 - v1
                 - v2
-                type: string
-              backupVolume:
                 type: string
               desireState:
                 type: string

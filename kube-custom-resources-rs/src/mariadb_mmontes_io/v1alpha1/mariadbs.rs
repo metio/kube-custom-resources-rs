@@ -551,9 +551,12 @@ pub struct MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// BootstrapFrom defines a source to bootstrap from.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBBootstrapFrom {
-    /// BackupRef is a reference to a Backup object.
+    /// BackupRef is a reference to a Backup object. It has priority over S3 and Volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRef")]
     pub backup_ref: Option<MariaDBBootstrapFromBackupRef>,
+    /// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub s3: Option<MariaDBBootstrapFromS3>,
     /// TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective. It is used to determine the closest restoration source in time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRecoveryTime")]
     pub target_recovery_time: Option<String>,
@@ -562,12 +565,99 @@ pub struct MariaDBBootstrapFrom {
     pub volume: Option<MariaDBBootstrapFromVolume>,
 }
 
-/// BackupRef is a reference to a Backup object.
+/// BackupRef is a reference to a Backup object. It has priority over S3 and Volume.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBBootstrapFromBackupRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBBootstrapFromS3 {
+    /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
+    #[serde(rename = "accessKeyIdSecretKeyRef")]
+    pub access_key_id_secret_key_ref: MariaDBBootstrapFromS3AccessKeyIdSecretKeyRef,
+    /// Bucket is the name Name of the bucket to store backups.
+    pub bucket: String,
+    /// Endpoint is the S3 API endpoint without scheme.
+    pub endpoint: String,
+    /// Region is the S3 region name to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
+    #[serde(rename = "secretAccessKeySecretKeyRef")]
+    pub secret_access_key_secret_key_ref: MariaDBBootstrapFromS3SecretAccessKeySecretKeyRef,
+    /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTokenSecretKeyRef")]
+    pub session_token_secret_key_ref: Option<MariaDBBootstrapFromS3SessionTokenSecretKeyRef>,
+    /// TLS provides the configuration required to establish TLS connections with S3.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<MariaDBBootstrapFromS3Tls>,
+}
+
+/// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBBootstrapFromS3AccessKeyIdSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBBootstrapFromS3SecretAccessKeySecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBBootstrapFromS3SessionTokenSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS provides the configuration required to establish TLS connections with S3.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBBootstrapFromS3Tls {
+    /// CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecretKeyRef")]
+    pub ca_secret_key_ref: Option<MariaDBBootstrapFromS3TlsCaSecretKeyRef>,
+    /// Enabled is a flag to enable TLS.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBBootstrapFromS3TlsCaSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Volume is a Kubernetes Volume object that contains a backup.

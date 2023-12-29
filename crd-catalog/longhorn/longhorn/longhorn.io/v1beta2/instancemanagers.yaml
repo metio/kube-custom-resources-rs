@@ -21,6 +21,10 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
+    - description: The data engine of the instance manager
+      jsonPath: .spec.dataEngine
+      name: Data Engine
+      type: string
     - description: The state of the instance manager
       jsonPath: .status.currentState
       name: State
@@ -52,6 +56,11 @@ spec:
           spec:
             description: InstanceManagerSpec defines the desired state of the Longhorn instancer manager
             properties:
+              backendStoreDriver:
+                description: Deprecated.
+                type: string
+              dataEngine:
+                type: string
               image:
                 type: string
               nodeID:
@@ -78,12 +87,19 @@ spec:
                     spec:
                       properties:
                         backendStoreDriver:
+                          description: Deprecated.
+                          type: string
+                        dataEngine:
                           type: string
                         name:
                           type: string
                       type: object
                     status:
                       properties:
+                        conditions:
+                          additionalProperties:
+                            type: boolean
+                          type: object
                         endpoint:
                           type: string
                         errorMsg:
@@ -113,12 +129,19 @@ spec:
                     spec:
                       properties:
                         backendStoreDriver:
+                          description: Deprecated.
+                          type: string
+                        dataEngine:
                           type: string
                         name:
                           type: string
                       type: object
                     status:
                       properties:
+                        conditions:
+                          additionalProperties:
+                            type: boolean
+                          type: object
                         endpoint:
                           type: string
                         errorMsg:
@@ -154,6 +177,10 @@ spec:
                       type: object
                     status:
                       properties:
+                        conditions:
+                          additionalProperties:
+                            type: boolean
+                          type: object
                         endpoint:
                           type: string
                         errorMsg:

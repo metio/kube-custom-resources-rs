@@ -14,6 +14,9 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "RestoreStatus")]
 #[kube(schema = "disabled")]
 pub struct RestoreSpec {
+    /// Specifies the number of retries before marking the restore failed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
+    pub backoff_limit: Option<i32>,
     /// backup to be restored. The restore behavior based on the backup type: 1. Full: will be restored the full backup directly. 2. Incremental: will be restored sequentially from the most recent full backup of this incremental backup. 3. Differential: will be restored sequentially from the parent backup of the differential backup. 4. Continuous: will find the most recent full backup at this time point and the continuous backups after it to restore.
     pub backup: RestoreBackup,
     /// specified the required resources of restore job's container.

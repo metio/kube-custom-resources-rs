@@ -860,6 +860,9 @@ pub struct ClusterStatusComponentsMembersStatus {
     /// PodName pod name.
     #[serde(rename = "podName")]
     pub pod_name: String,
+    /// Is it required for rsm to have at least one primary pod to be ready.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyWithoutPrimary")]
+    pub ready_without_primary: Option<bool>,
     pub role: ClusterStatusComponentsMembersStatusRole,
 }
 
