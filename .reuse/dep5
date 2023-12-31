@@ -303,6 +303,10 @@ Files: crd-catalog/external-secrets/external-secrets/*
 Copyright: The external-secrets/external-secrets Authors
 License: Apache-2.0
 
+Files: crd-catalog/FairwindsOps/rbac-manager/*
+Copyright: The FairwindsOps/rbac-manager Authors
+License: Apache-2.0
+
 Files: crd-catalog/Flagsmith/flagsmith-operator/*
 Copyright: The Flagsmith/flagsmith-operator Authors
 License: LicenseRef-Flagsmith
