@@ -807,6 +807,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "FairwindsOps/rbac-manager",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/FairwindsOps/rbac-manager/blob/master/deploy/2_crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "Flagsmith/flagsmith-operator",
         license: FLAGSMITH,
         urls: &[

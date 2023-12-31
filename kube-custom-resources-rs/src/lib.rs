@@ -1875,6 +1875,11 @@ apiVersion `ray.io/v1alpha1`:
 - `RayJob`
 - `RayService`
 
+## rbacmanager_reactiveops_io
+
+apiVersion `rbacmanager.reactiveops.io/v1beta1`:
+- `RBACDefinition`
+
 ## rds_services_k8s_aws
 
 apiVersion `rds.services.k8s.aws/v1alpha1`:
@@ -2737,6 +2742,8 @@ pub mod quay_redhat_com;
 pub mod quota_openshift_io;
 #[cfg(feature = "ray_io")]
 pub mod ray_io;
+#[cfg(feature = "rbacmanager_reactiveops_io")]
+pub mod rbacmanager_reactiveops_io;
 #[cfg(feature = "rds_services_k8s_aws")]
 pub mod rds_services_k8s_aws;
 #[cfg(feature = "registry_apicur_io")]
