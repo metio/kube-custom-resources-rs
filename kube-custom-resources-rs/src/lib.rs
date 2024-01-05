@@ -1444,6 +1444,7 @@ apiVersion `longhorn.io/v1beta2`:
 - `BackingImageDataSource`
 - `BackingImageManager`
 - `BackingImage`
+- `BackupBackingImage`
 - `Backup`
 - `BackupTarget`
 - `BackupVolume`

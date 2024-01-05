@@ -14,7 +14,7 @@ use serde::{Serialize, Deserialize};
 pub struct ReplicaSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
-    /// Deprecated.
+    /// Deprecated: Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
@@ -54,6 +54,10 @@ pub struct ReplicaSpec {
     pub revision_counter_disabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "salvageRequested")]
     pub salvage_requested: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxCount")]
+    pub snapshot_max_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxSize")]
+    pub snapshot_max_size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmapMarkDiskChainRemovedEnabled")]
     pub unmap_mark_disk_chain_removed_enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]

@@ -54,11 +54,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: InstanceManagerSpec defines the desired state of the Longhorn instancer manager
+            description: InstanceManagerSpec defines the desired state of the Longhorn instance manager
             properties:
-              backendStoreDriver:
-                description: Deprecated.
-                type: string
               dataEngine:
                 type: string
               image:
@@ -87,7 +84,7 @@ spec:
                     spec:
                       properties:
                         backendStoreDriver:
-                          description: Deprecated.
+                          description: 'Deprecated: Replaced by field `dataEngine`.'
                           type: string
                         dataEngine:
                           type: string
@@ -129,7 +126,7 @@ spec:
                     spec:
                       properties:
                         backendStoreDriver:
-                          description: Deprecated.
+                          description: 'Deprecated: Replaced by field `dataEngine`.'
                           type: string
                         dataEngine:
                           type: string
@@ -171,6 +168,9 @@ spec:
                     spec:
                       properties:
                         backendStoreDriver:
+                          description: 'Deprecated: Replaced by field `dataEngine`.'
+                          type: string
+                        dataEngine:
                           type: string
                         name:
                           type: string

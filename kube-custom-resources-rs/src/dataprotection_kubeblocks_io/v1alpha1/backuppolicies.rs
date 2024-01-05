@@ -212,7 +212,7 @@ pub struct BackupPolicyBackupMethodsTargetPodSelector {
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
-    /// strategy specifies the strategy to select the target pod when multiple pods are selected. Valid values are: - Any: select any one pod that match the labelsSelector.
+    /// strategy specifies the strategy to select the target pod when multiple pods are selected. Valid values are: - Any: select any one pod that match the labelsSelector. - All: select all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyBackupMethodsTargetPodSelectorStrategy>,
 }
@@ -352,7 +352,7 @@ pub struct BackupPolicyTargetPodSelector {
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
-    /// strategy specifies the strategy to select the target pod when multiple pods are selected. Valid values are: - Any: select any one pod that match the labelsSelector.
+    /// strategy specifies the strategy to select the target pod when multiple pods are selected. Valid values are: - Any: select any one pod that match the labelsSelector. - All: select all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTargetPodSelectorStrategy>,
 }

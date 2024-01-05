@@ -1530,6 +1530,8 @@ pub struct ChaosEngineExperimentsSpecProbeRunProperties {
     pub retry: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopOnFailure")]
     pub stop_on_failure: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub verbosity: Option<String>,
 }
 
 /// inputs needed for the SLO probe

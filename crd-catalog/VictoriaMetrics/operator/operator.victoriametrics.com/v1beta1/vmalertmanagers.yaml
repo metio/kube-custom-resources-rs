@@ -536,6 +536,10 @@ spec:
                 description: Retention Time duration VMAlertmanager shall retain data for. Default is '120h', and must match the regular expression `[0-9]+(ms|s|m|h)` (milliseconds seconds minutes hours).
                 pattern: '[0-9]+(ms|s|m|h)'
                 type: string
+              revisionHistoryLimitCount:
+                description: The number of old ReplicaSets to retain to allow rollback in deployment or maximum number of revisions that will be maintained in the StatefulSet's revision history. Defaults to 10.
+                format: int32
+                type: integer
               rollingUpdateStrategy:
                 description: RollingUpdateStrategy defines strategy for application updates Default is OnDelete, in this case operator handles update process Can be changed for RollingUpdate
                 type: string
@@ -558,7 +562,7 @@ spec:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
               selectAllByDefault:
-                description: 'SelectAllByDefault changes default behavior for empty CRD selectors, such ConfigSelector. with selectAllScrapes: true and undefined ConfigSelector and ConfigNamespaceSelector Operator selects all exist alertManagerConfigs with selectAllScrapes: false - selects nothing'
+                description: 'SelectAllByDefault changes default behavior for empty CRD selectors, such ConfigSelector. with selectAllByDefault: true and undefined ConfigSelector and ConfigNamespaceSelector Operator selects all exist alertManagerConfigs with selectAllByDefault: false - selects nothing'
                 type: boolean
               serviceAccountName:
                 description: ServiceAccountName is the name of the ServiceAccount to use

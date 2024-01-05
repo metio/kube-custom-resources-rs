@@ -17,8 +17,6 @@ pub struct RayServiceSpec {
     pub deployment_unhealthy_second_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterConfig")]
     pub ray_cluster_config: Option<RayServiceRayClusterConfig>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serveConfig")]
-    pub serve_config: Option<RayServiceServeConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serveConfigV2")]
     pub serve_config_v2: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serveService")]
@@ -39,6 +37,8 @@ pub struct RayServiceRayClusterConfig {
     pub head_service_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayVersion")]
     pub ray_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerGroupSpecs")]
     pub worker_group_specs: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecs>>,
 }
@@ -6152,61 +6152,6 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesVsphereV
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct RayServiceServeConfig {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub deployments: Option<Vec<RayServiceServeConfigDeployments>>,
-    #[serde(rename = "importPath")]
-    pub import_path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeEnv")]
-    pub runtime_env: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct RayServiceServeConfigDeployments {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalingConfig")]
-    pub autoscaling_config: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeoutS")]
-    pub graceful_shutdown_timeout_s: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownWaitLoopS")]
-    pub graceful_shutdown_wait_loop_s: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckPeriodS")]
-    pub health_check_period_s: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckTimeoutS")]
-    pub health_check_timeout_s: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentQueries")]
-    pub max_concurrent_queries: Option<i32>,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numReplicas")]
-    pub num_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayActorOptions")]
-    pub ray_actor_options: Option<RayServiceServeConfigDeploymentsRayActorOptions>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routePrefix")]
-    pub route_prefix: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userConfig")]
-    pub user_config: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct RayServiceServeConfigDeploymentsRayActorOptions {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceleratorType")]
-    pub accelerator_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub memory: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numCpus")]
-    pub num_cpus: Option<f64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numGpus")]
-    pub num_gpus: Option<f64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectStoreMemory")]
-    pub object_store_memory: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeEnv")]
-    pub runtime_env: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RayServiceServeService {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -6415,6 +6360,14 @@ pub struct RayServiceStatusActiveServiceStatusDashboardStatus {
 pub struct RayServiceStatusActiveServiceStatusRayClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableWorkerReplicas")]
     pub available_worker_replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredCPU")]
+    pub desired_cpu: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredGPU")]
+    pub desired_gpu: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredMemory")]
+    pub desired_memory: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredTPU")]
+    pub desired_tpu: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredWorkerReplicas")]
     pub desired_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6489,6 +6442,14 @@ pub struct RayServiceStatusPendingServiceStatusDashboardStatus {
 pub struct RayServiceStatusPendingServiceStatusRayClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableWorkerReplicas")]
     pub available_worker_replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredCPU")]
+    pub desired_cpu: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredGPU")]
+    pub desired_gpu: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredMemory")]
+    pub desired_memory: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredTPU")]
+    pub desired_tpu: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredWorkerReplicas")]
     pub desired_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -1,6 +1,7 @@
 pub mod backingimagedatasources;
 pub mod backingimagemanagers;
 pub mod backingimages;
+pub mod backupbackingimages;
 pub mod backups;
 pub mod backuptargets;
 pub mod backupvolumes;

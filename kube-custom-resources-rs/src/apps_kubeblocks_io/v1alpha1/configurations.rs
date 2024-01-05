@@ -37,7 +37,10 @@ pub struct ConfigurationConfigItemDetails {
     pub import_template_ref: Option<ConfigurationConfigItemDetailsImportTemplateRef>,
     /// Specify the name of configuration template.
     pub name: String,
-    /// version is the version of configuration template.
+    /// Payload holds the configuration-related rerender.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub payload: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: Please use payload instead. version is the version of configuration template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

@@ -16,7 +16,7 @@ pub struct VolumeSpec {
     pub standby: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<VolumeAccessMode>,
-    /// Deprecated.
+    /// Deprecated: Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
@@ -78,6 +78,10 @@ pub struct VolumeSpec {
     pub size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotDataIntegrity")]
     pub snapshot_data_integrity: Option<VolumeSnapshotDataIntegrity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxCount")]
+    pub snapshot_max_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxSize")]
+    pub snapshot_max_size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staleReplicaTimeout")]
     pub stale_replica_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmapMarkSnapChainRemoved")]

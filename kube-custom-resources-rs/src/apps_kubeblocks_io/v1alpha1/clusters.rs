@@ -567,18 +567,15 @@ pub struct ClusterServices {
     /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// ComponentSelector extends the ServiceSpec.Selector by allowing you to specify a component as selectors for the service. For component-level services, a default component selector with the component name will be added automatically. if GeneratePodOrdinalService sets to true, ComponentSelector must be specified.
+    /// ComponentSelector extends the ServiceSpec.Selector by allowing you to specify a component as selectors for the service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSelector")]
     pub component_selector: Option<String>,
-    /// GeneratePodOrdinalService indicates whether to create a corresponding Service for each Pod of the selected Component. If sets to true, a set of Service will be automatically generated for each Pod. and ComponentSelector must be specified. They can be referred to by adding the PodOrdinal to the defined ServiceName with named pattern <Service.ServiceName>-<PodOrdinal>. For example, a Service might be defined as follows: - name: my-service serviceName: my-service generatePodOrdinalService: true componentSelector: my-component spec: type: NodePort ports: - name: http port: 80 targetPort: 8080 Assuming that the Component has 3 replicas, then three services would be generated: my-service-0, my-service-1, and my-service-2, each pointing to its respective Pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatePodOrdinalService")]
-    pub generate_pod_ordinal_service: Option<bool>,
-    /// Name defines the name or namePrefix of the service. if GeneratePodOrdinalService sets to true, the Name indicates the namePrefix of the service and the fullName will be generated with named pattern <Service.Name>-<PodOrdinal>. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
+    /// Name defines the name of the service. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
     pub name: String,
     /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service. if GeneratePodOrdinalService sets to true, RoleSelector will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
-    /// ServiceName defines the name or namePrefix of the underlying service object. if GeneratePodOrdinalService sets to true, the ServiceName indicates the namePrefix of the underlying service object. otherwise, it indicates the name of the underlying service object. If not specified, the default service name with different patterns will be used: - <CLUSTER_NAME>: for cluster-level services - <CLUSTER_NAME>-<COMPONENT_NAME>: for component-level services - <CLUSTER_NAME>-<COMPONENT_NAME>-<POD_ORDINAL>: for pod-level services when GeneratePodOrdinalService set to true Only one default service name is allowed. Cannot be updated.
+    /// ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: - <CLUSTER_NAME>: for cluster-level services - <CLUSTER_NAME>-<COMPONENT_NAME>: for component-level services Only one default service name is allowed. Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
     /// Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
@@ -761,9 +758,6 @@ pub struct ClusterStatus {
 /// components record the current status information of all components of the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterStatusComponents {
-    /// consensusSetStatus specifies the mapping of role and pod name.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consensusSetStatus")]
-    pub consensus_set_status: Option<ClusterStatusComponentsConsensusSetStatus>,
     /// members' status.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "membersStatus")]
     pub members_status: Option<Vec<ClusterStatusComponentsMembersStatus>>,
@@ -779,80 +773,6 @@ pub struct ClusterStatusComponents {
     /// podsReadyTime what time point of all component pods are ready, this time is the ready time of the last component pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsReadyTime")]
     pub pods_ready_time: Option<String>,
-    /// replicationSetStatus specifies the mapping of role and pod name.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationSetStatus")]
-    pub replication_set_status: Option<ClusterStatusComponentsReplicationSetStatus>,
-}
-
-/// consensusSetStatus specifies the mapping of role and pod name.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterStatusComponentsConsensusSetStatus {
-    /// Followers status.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub followers: Option<Vec<ClusterStatusComponentsConsensusSetStatusFollowers>>,
-    /// Leader status.
-    pub leader: ClusterStatusComponentsConsensusSetStatusLeader,
-    /// Learner status.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub learner: Option<ClusterStatusComponentsConsensusSetStatusLearner>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterStatusComponentsConsensusSetStatusFollowers {
-    /// accessMode defines what service this pod provides.
-    #[serde(rename = "accessMode")]
-    pub access_mode: ClusterStatusComponentsConsensusSetStatusFollowersAccessMode,
-    /// Defines the role name.
-    pub name: String,
-    /// Pod name.
-    pub pod: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterStatusComponentsConsensusSetStatusFollowersAccessMode {
-    None,
-    Readonly,
-    ReadWrite,
-}
-
-/// Leader status.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterStatusComponentsConsensusSetStatusLeader {
-    /// accessMode defines what service this pod provides.
-    #[serde(rename = "accessMode")]
-    pub access_mode: ClusterStatusComponentsConsensusSetStatusLeaderAccessMode,
-    /// Defines the role name.
-    pub name: String,
-    /// Pod name.
-    pub pod: String,
-}
-
-/// Leader status.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterStatusComponentsConsensusSetStatusLeaderAccessMode {
-    None,
-    Readonly,
-    ReadWrite,
-}
-
-/// Learner status.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterStatusComponentsConsensusSetStatusLearner {
-    /// accessMode defines what service this pod provides.
-    #[serde(rename = "accessMode")]
-    pub access_mode: ClusterStatusComponentsConsensusSetStatusLearnerAccessMode,
-    /// Defines the role name.
-    pub name: String,
-    /// Pod name.
-    pub pod: String,
-}
-
-/// Learner status.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterStatusComponentsConsensusSetStatusLearnerAccessMode {
-    None,
-    Readonly,
-    ReadWrite,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -899,29 +819,6 @@ pub enum ClusterStatusComponentsPhase {
     Deleting,
     Failed,
     Abnormal,
-}
-
-/// replicationSetStatus specifies the mapping of role and pod name.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterStatusComponentsReplicationSetStatus {
-    /// Primary status.
-    pub primary: ClusterStatusComponentsReplicationSetStatusPrimary,
-    /// Secondaries status.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secondaries: Option<Vec<ClusterStatusComponentsReplicationSetStatusSecondaries>>,
-}
-
-/// Primary status.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterStatusComponentsReplicationSetStatusPrimary {
-    /// Pod name.
-    pub pod: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterStatusComponentsReplicationSetStatusSecondaries {
-    /// Pod name.
-    pub pod: String,
 }
 
 /// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 

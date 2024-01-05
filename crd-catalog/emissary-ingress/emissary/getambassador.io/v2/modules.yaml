@@ -12,6 +12,8 @@ spec:
         service:
           name: emissary-apiext
           namespace: emissary-system
+          path: /webhooks/crd-convert
+          port: 443
       conversionReviewVersions:
       - v1
   group: getambassador.io

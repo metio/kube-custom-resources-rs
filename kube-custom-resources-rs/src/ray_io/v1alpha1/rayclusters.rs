@@ -23,6 +23,8 @@ pub struct RayClusterSpec {
     pub head_service_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayVersion")]
     pub ray_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerGroupSpecs")]
     pub worker_group_specs: Option<Vec<RayClusterWorkerGroupSpecs>>,
 }
@@ -6139,6 +6141,14 @@ pub struct RayClusterWorkerGroupSpecsTemplateSpecVolumesVsphereVolume {
 pub struct RayClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableWorkerReplicas")]
     pub available_worker_replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredCPU")]
+    pub desired_cpu: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredGPU")]
+    pub desired_gpu: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredMemory")]
+    pub desired_memory: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredTPU")]
+    pub desired_tpu: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredWorkerReplicas")]
     pub desired_worker_replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
