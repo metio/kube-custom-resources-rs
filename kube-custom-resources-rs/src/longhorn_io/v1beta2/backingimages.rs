@@ -32,6 +32,8 @@ pub enum BackingImageSourceType {
     Upload,
     #[serde(rename = "export-from-volume")]
     ExportFromVolume,
+    #[serde(rename = "restore")]
+    Restore,
 }
 
 /// BackingImageStatus defines the observed state of the Longhorn backing image status

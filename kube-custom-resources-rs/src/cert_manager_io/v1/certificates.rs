@@ -54,9 +54,12 @@ pub struct CertificateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "literalSubject")]
     pub literal_subject: Option<String>,
     /// x.509 certificate NameConstraint extension which MUST NOT be used in a non-CA certificate. More Info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.10 
-    ///  This is an Alpha Feature and is only enabled with the `--feature-gates=useCertificateRequestNameConstraints=true` option set on both the controller and webhook components.
+    ///  This is an Alpha Feature and is only enabled with the `--feature-gates=NameConstraints=true` option set on both the controller and webhook components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameConstraints")]
     pub name_constraints: Option<CertificateNameConstraints>,
+    /// `otherNames` is an escape hatch for SAN that allows any type. We currently restrict the support to string like otherNames, cf RFC 5280 p 37 Any UTF8 String valued otherName can be passed with by setting the keys oid: x.x.x.x and UTF8Value: somevalue for `otherName`. Most commonly this would be UPN set with oid: 1.3.6.1.4.1.311.20.2.3 You should ensure that any OID passed is valid for the UTF8String type as we do not explicitly validate this.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherNames")]
+    pub other_names: Option<Vec<CertificateOtherNames>>,
     /// Private key options. These include the key algorithm and size, the used encoding and the rotation policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<CertificatePrivateKey>,
@@ -158,6 +161,10 @@ pub struct CertificateKeystoresPkcs12 {
     /// PasswordSecretRef is a reference to a key in a Secret resource containing the password used to encrypt the PKCS12 keystore.
     #[serde(rename = "passwordSecretRef")]
     pub password_secret_ref: CertificateKeystoresPkcs12PasswordSecretRef,
+    /// Profile specifies the key and certificate encryption algorithms and the HMAC algorithm used to create the PKCS12 keystore. Default value is `LegacyRC2` for backward compatibility. 
+    ///  If provided, allowed values are: `LegacyRC2`: Deprecated. Not supported by default in OpenSSL 3 or Java 20. `LegacyDES`: Less secure algorithm. Use this option for maximal compatibility. `Modern2023`: Secure algorithm. Use this option in case you have to always use secure algorithms (eg. because of company policy). Please note that the security of the algorithm is not that important in reality, because the unencrypted certificate and private key are also stored in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profile: Option<CertificateKeystoresPkcs12Profile>,
 }
 
 /// PasswordSecretRef is a reference to a key in a Secret resource containing the password used to encrypt the PKCS12 keystore.
@@ -170,8 +177,18 @@ pub struct CertificateKeystoresPkcs12PasswordSecretRef {
     pub name: String,
 }
 
+/// PKCS12 configures options for storing a PKCS12 keystore in the `spec.secretName` Secret resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CertificateKeystoresPkcs12Profile {
+    #[serde(rename = "LegacyRC2")]
+    LegacyRc2,
+    #[serde(rename = "LegacyDES")]
+    LegacyDes,
+    Modern2023,
+}
+
 /// x.509 certificate NameConstraint extension which MUST NOT be used in a non-CA certificate. More Info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.10 
-///  This is an Alpha Feature and is only enabled with the `--feature-gates=useCertificateRequestNameConstraints=true` option set on both the controller and webhook components.
+///  This is an Alpha Feature and is only enabled with the `--feature-gates=NameConstraints=true` option set on both the controller and webhook components.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CertificateNameConstraints {
     /// if true then the name constraints are marked critical.
@@ -217,6 +234,16 @@ pub struct CertificateNameConstraintsPermitted {
     /// URIDomains is a list of URI domains that are permitted or excluded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uriDomains")]
     pub uri_domains: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CertificateOtherNames {
+    /// OID is the object identifier for the otherName SAN. The object identifier must be expressed as a dotted string, for example, "1.2.840.113556.1.4.221".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oid: Option<String>,
+    /// utf8Value is the string value of the otherName SAN. The utf8Value accepts any valid UTF8 string to set as value for the otherName SAN.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "utf8Value")]
+    pub utf8_value: Option<String>,
 }
 
 /// Private key options. These include the key algorithm and size, the used encoding and the rotation policy.

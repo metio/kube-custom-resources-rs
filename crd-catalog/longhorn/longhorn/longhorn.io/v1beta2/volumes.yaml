@@ -85,7 +85,7 @@ spec:
                 - rwx
                 type: string
               backendStoreDriver:
-                description: Deprecated.
+                description: 'Deprecated: Replaced by field `dataEngine`.'
                 type: string
               backingImage:
                 type: string
@@ -196,6 +196,11 @@ spec:
                 - disabled
                 - enabled
                 - fast-check
+                type: string
+              snapshotMaxCount:
+                type: integer
+              snapshotMaxSize:
+                format: int64
                 type: string
               staleReplicaTimeout:
                 type: integer

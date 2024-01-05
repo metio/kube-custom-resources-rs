@@ -1643,6 +1643,10 @@ spec:
                     description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                     type: object
                 type: object
+              revisionHistoryLimitCount:
+                description: The number of old ReplicaSets to retain to allow rollback in deployment or maximum number of revisions that will be maintained in the StatefulSet's revision history. Defaults to 10.
+                format: int32
+                type: integer
               rollingUpdate:
                 description: RollingUpdate - overrides deployment update params.
                 properties:
@@ -1683,7 +1687,7 @@ spec:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
               selectAllByDefault:
-                description: 'SelectAllByDefault changes default behavior for empty CRD selectors, such ServiceScrapeSelector. with selectAllScrapes: true and empty serviceScrapeSelector and ServiceScrapeNamespaceSelector Operator selects all exist serviceScrapes with selectAllScrapes: false - selects nothing'
+                description: 'SelectAllByDefault changes default behavior for empty CRD selectors, such ServiceScrapeSelector. with selectAllByDefault: true and empty serviceScrapeSelector and ServiceScrapeNamespaceSelector Operator selects all exist serviceScrapes with selectAllByDefault: false - selects nothing'
                 type: boolean
               serviceAccountName:
                 description: ServiceAccountName is the name of the ServiceAccount to use to run the VMAgent Pods.

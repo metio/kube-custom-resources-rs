@@ -241,11 +241,13 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTarget {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetResources>,
     /// select instance of corresponding role for backup, role are: - the name of Leader/Follower/Leaner for Consensus component. - primary or secondary for Replication component. finally, invalid role of the component will be ignored. such as if workload type is Replication and component's replicas is 1, the secondary role is invalid. and it also will be ignored when component is Stateful/Stateless. the role will be transformed to a role LabelSelector for BackupPolicy's target attribute.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
+    pub role: String,
     /// serviceAccountName specifies the service account to run the backup workload.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    /// PodSelectionStrategy specifies the strategy to select when multiple pods are selected for backup target. Valid values are: - Any: select any one pod that match the labelsSelector. - All: select all pods that match the labelsSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetStrategy>,
 }
 
 /// connectionCredential specifies the connection credential to connect to the target database cluster.
@@ -294,7 +296,7 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelector {
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
-    /// strategy specifies the strategy to select the target pod when multiple pods are selected. Valid values are: - Any: select any one pod that match the labelsSelector.
+    /// strategy specifies the strategy to select the target pod when multiple pods are selected. Valid values are: - Any: select any one pod that match the labelsSelector. - All: select all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorStrategy>,
 }
@@ -353,6 +355,13 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetResourcesSelecto
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// target specifies the target information to back up, it will override the global target policy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupPolicyTemplateBackupPoliciesBackupMethodsTargetStrategy {
+    Any,
+    All,
 }
 
 /// targetVolumes specifies which volumes from the target should be mounted in the backup workload.
@@ -414,8 +423,10 @@ pub struct BackupPolicyTemplateBackupPoliciesTarget {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredentialKey")]
     pub connection_credential_key: Option<BackupPolicyTemplateBackupPoliciesTargetConnectionCredentialKey>,
     /// select instance of corresponding role for backup, role are: - the name of Leader/Follower/Leaner for Consensus component. - primary or secondary for Replication component. finally, invalid role of the component will be ignored. such as if workload type is Replication and component's replicas is 1, the secondary role is invalid. and it also will be ignored when component is Stateful/Stateless. the role will be transformed to a role LabelSelector for BackupPolicy's target attribute.
+    pub role: String,
+    /// PodSelectionStrategy specifies the strategy to select when multiple pods are selected for backup target. Valid values are: - Any: select any one pod that match the labelsSelector. - All: select all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
+    pub strategy: Option<BackupPolicyTemplateBackupPoliciesTargetStrategy>,
 }
 
 /// connectionCredentialKey defines connection credential key in secret which created by spec.ConnectionCredential of the ClusterDefinition. it will be ignored when "account" is set.
@@ -433,6 +444,13 @@ pub struct BackupPolicyTemplateBackupPoliciesTargetConnectionCredentialKey {
     /// the key of username in the ConnectionCredential secret. if not set, the default key is "username".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
+}
+
+/// target instance for backup.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupPolicyTemplateBackupPoliciesTargetStrategy {
+    Any,
+    All,
 }
 
 /// BackupPolicyTemplateStatus defines the observed state of BackupPolicyTemplate

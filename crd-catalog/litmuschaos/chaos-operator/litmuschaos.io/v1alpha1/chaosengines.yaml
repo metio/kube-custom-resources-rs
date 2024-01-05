@@ -1487,6 +1487,8 @@ spec:
                                     type: integer
                                   stopOnFailure:
                                     type: boolean
+                                  verbosity:
+                                    type: string
                                 required:
                                 - probeTimeout
                                 - interval

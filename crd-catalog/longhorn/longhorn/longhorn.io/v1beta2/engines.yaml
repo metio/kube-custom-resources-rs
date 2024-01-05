@@ -63,7 +63,7 @@ spec:
               active:
                 type: boolean
               backendStoreDriver:
-                description: Deprecated.
+                description: 'Deprecated: Replaced by field `dataEngine`.'
                 type: string
               backupVolume:
                 type: string
@@ -104,6 +104,11 @@ spec:
                 type: boolean
               salvageRequested:
                 type: boolean
+              snapshotMaxCount:
+                type: integer
+              snapshotMaxSize:
+                format: int64
+                type: string
               unmapMarkSnapChainRemovedEnabled:
                 type: boolean
               upgradedReplicaAddressMap:
@@ -270,6 +275,11 @@ spec:
                 type: object
               salvageExecuted:
                 type: boolean
+              snapshotMaxCount:
+                type: integer
+              snapshotMaxSize:
+                format: int64
+                type: string
               snapshots:
                 additionalProperties:
                   properties:

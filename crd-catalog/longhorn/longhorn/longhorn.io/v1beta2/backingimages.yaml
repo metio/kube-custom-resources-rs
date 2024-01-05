@@ -79,6 +79,7 @@ spec:
                 - download
                 - upload
                 - export-from-volume
+                - restore
                 type: string
             type: object
           status:

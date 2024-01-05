@@ -370,6 +370,12 @@ spec:
                         cpu:
                           pattern: ^(\d+m|\d+(\.\d{1,3})?)$
                           type: string
+                        hugepages-1Gi:
+                          pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
+                          type: string
+                        hugepages-2Mi:
+                          pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
+                          type: string
                         memory:
                           pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                           type: string
@@ -378,6 +384,12 @@ spec:
                       properties:
                         cpu:
                           pattern: ^(\d+m|\d+(\.\d{1,3})?)$
+                          type: string
+                        hugepages-1Gi:
+                          pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
+                          type: string
+                        hugepages-2Mi:
+                          pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                           type: string
                         memory:
                           pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$

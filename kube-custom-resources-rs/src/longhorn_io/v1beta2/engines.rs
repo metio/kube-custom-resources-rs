@@ -15,7 +15,7 @@ use std::collections::BTreeMap;
 pub struct EngineSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
-    /// Deprecated.
+    /// Deprecated: Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupVolume")]
@@ -47,6 +47,10 @@ pub struct EngineSpec {
     pub revision_counter_disabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "salvageRequested")]
     pub salvage_requested: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxCount")]
+    pub snapshot_max_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxSize")]
+    pub snapshot_max_size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmapMarkSnapChainRemovedEnabled")]
     pub unmap_mark_snap_chain_removed_enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradedReplicaAddressMap")]
@@ -126,6 +130,10 @@ pub struct EngineStatus {
     pub restore_status: Option<BTreeMap<String, EngineStatusRestoreStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "salvageExecuted")]
     pub salvage_executed: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxCount")]
+    pub snapshot_max_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxSize")]
+    pub snapshot_max_size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshots: Option<BTreeMap<String, EngineStatusSnapshots>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotsError")]

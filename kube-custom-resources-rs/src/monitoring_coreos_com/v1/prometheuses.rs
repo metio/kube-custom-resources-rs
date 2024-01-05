@@ -3491,6 +3491,9 @@ pub struct PrometheusRemoteWrite {
     ///  Deprecated: this will be removed in a future release. Prefer using `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
+    /// Whether to enable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// Custom HTTP headers to be sent along with each remote write request. Be aware that headers that are set by Prometheus itself can't be overwritten. 
     ///  It requires Prometheus >= v2.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]

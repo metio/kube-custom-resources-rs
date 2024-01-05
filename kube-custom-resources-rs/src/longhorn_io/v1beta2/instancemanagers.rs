@@ -6,16 +6,13 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
-/// InstanceManagerSpec defines the desired state of the Longhorn instancer manager
+/// InstanceManagerSpec defines the desired state of the Longhorn instance manager
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "longhorn.io", version = "v1beta2", kind = "InstanceManager", plural = "instancemanagers")]
 #[kube(namespaced)]
 #[kube(status = "InstanceManagerStatus")]
 #[kube(schema = "disabled")]
 pub struct InstanceManagerSpec {
-    /// Deprecated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
-    pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
     pub data_engine: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -26,7 +23,7 @@ pub struct InstanceManagerSpec {
     pub r#type: Option<InstanceManagerType>,
 }
 
-/// InstanceManagerSpec defines the desired state of the Longhorn instancer manager
+/// InstanceManagerSpec defines the desired state of the Longhorn instance manager
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum InstanceManagerType {
     #[serde(rename = "aio")]
@@ -73,7 +70,7 @@ pub struct InstanceManagerStatusInstanceEngines {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceEnginesSpec {
-    /// Deprecated.
+    /// Deprecated: Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
@@ -114,7 +111,7 @@ pub struct InstanceManagerStatusInstanceReplicas {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceReplicasSpec {
-    /// Deprecated.
+    /// Deprecated: Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
@@ -156,8 +153,11 @@ pub struct InstanceManagerStatusInstances {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstancesSpec {
+    /// Deprecated: Replaced by field `dataEngine`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

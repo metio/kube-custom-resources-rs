@@ -120,8 +120,10 @@ pub struct OpsRequestExpose {
     /// componentName cluster component name.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// Setting the list of services to be exposed.
+    /// Setting the list of services to be exposed or removed.
     pub services: Vec<OpsRequestExposeServices>,
+    /// switch defines the switch of expose operation. if switch is set to Enable, the service will be exposed. if switch is set to Disable, the service will be removed.
+    pub switch: OpsRequestExposeSwitch,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -129,19 +131,51 @@ pub struct OpsRequestExposeServices {
     /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Service name
+    /// Name defines the name of the service. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
     pub name: String,
-    /// serviceType determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
+    /// The list of ports that are exposed by this service. If Ports are not provided, the default Services Ports defined in the ClusterDefinition or ComponentDefinition that are neither of NodePort nor LoadBalancer service type will be used. If there is no corresponding Service defined in the ClusterDefinition or ComponentDefinition, the expose operation will fail. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<OpsRequestExposeServicesPorts>>,
+    /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
+    pub role_selector: Option<String>,
+    /// Route service traffic to pods with label keys and values matching this selector. If empty or not present, the service is assumed to have an external process managing its endpoints, which Kubernetes will not modify. Only applies to types ClusterIP, NodePort, and LoadBalancer. Ignored if type is ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<BTreeMap<String, String>>,
+    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. "ExternalName" aliases this service to the specified externalName. Several other fields do not apply to ExternalName services. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
-    pub service_type: Option<OpsRequestExposeServicesServiceType>,
+    pub service_type: Option<String>,
+}
+
+/// ServicePort contains information on service's port.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestExposeServicesPorts {
+    /// The application protocol for this port. This is used as a hint for implementations to offer richer behavior for protocols that they understand. This field follows standard Kubernetes label syntax. Valid values are either: 
+    ///  * Un-prefixed protocol names - reserved for IANA standard service names (as per RFC-6335 and https://www.iana.org/assignments/service-names). 
+    ///  * Kubernetes-defined prefixed names: * 'kubernetes.io/h2c' - HTTP/2 over cleartext as described in https://www.rfc-editor.org/rfc/rfc7540 * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455 * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455 
+    ///  * Other protocols should use implementation-defined prefixed names such as mycompany.com/my-custom-protocol.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
+    pub app_protocol: Option<String>,
+    /// The name of this port within the service. This must be a DNS_LABEL. All ports within a ServiceSpec must have unique names. When considering the endpoints for a Service, this must match the 'name' field in the EndpointPort. Optional if only one ServicePort is defined on this service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The port on each node on which this service is exposed when type is NodePort or LoadBalancer.  Usually assigned by the system. If a value is specified, in-range, and not in use it will be used, otherwise the operation will fail.  If not specified, a port will be allocated if this Service requires one.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type from NodePort to ClusterIP). More info: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
+    pub node_port: Option<i32>,
+    /// The port that will be exposed by this service.
+    pub port: i32,
+    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+    /// Number or name of the port to access on the pods targeted by the service. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME. If this is a string, it will be looked up as a named port in the target Pod's container ports. If this is not specified, the value of the 'port' field is used (an identity map). This field is ignored for services with clusterIP=None, and should be omitted or set equal to the 'port' field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
+    pub target_port: Option<IntOrString>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum OpsRequestExposeServicesServiceType {
-    #[serde(rename = "ClusterIP")]
-    ClusterIp,
-    NodePort,
-    LoadBalancer,
+pub enum OpsRequestExposeSwitch {
+    Enable,
+    Disable,
 }
 
 /// HorizontalScaling defines the variables of horizontal scaling operation

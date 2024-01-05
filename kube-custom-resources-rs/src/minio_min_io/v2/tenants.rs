@@ -364,6 +364,8 @@ pub struct TenantAdditionalVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<TenantAdditionalVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -391,16 +393,9 @@ pub struct TenantAdditionalVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantAdditionalVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<TenantAdditionalVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantAdditionalVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -570,6 +565,8 @@ pub struct TenantAdditionalVolumesProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantAdditionalVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<TenantAdditionalVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<TenantAdditionalVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -578,6 +575,35 @@ pub struct TenantAdditionalVolumesProjectedSources {
     pub secret: Option<TenantAdditionalVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<TenantAdditionalVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantAdditionalVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TenantAdditionalVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantAdditionalVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TenantAdditionalVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantAdditionalVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1072,6 +1098,8 @@ pub struct TenantInitContainersLifecyclePostStart {
     pub exec: Option<TenantInitContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<TenantInitContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<TenantInitContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<TenantInitContainersLifecyclePostStartTcpSocket>,
 }
@@ -1102,6 +1130,11 @@ pub struct TenantInitContainersLifecyclePostStartHttpGetHttpHeaders {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantInitContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantInitContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -1114,6 +1147,8 @@ pub struct TenantInitContainersLifecyclePreStop {
     pub exec: Option<TenantInitContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<TenantInitContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<TenantInitContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<TenantInitContainersLifecyclePreStopTcpSocket>,
 }
@@ -1141,6 +1176,11 @@ pub struct TenantInitContainersLifecyclePreStopHttpGet {
 pub struct TenantInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantInitContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1603,6 +1643,10 @@ pub struct TenantKesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 pub struct TenantKesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TenantKesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantKesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1647,6 +1691,10 @@ pub struct TenantKesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 pub struct TenantKesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TenantKesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantKesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1706,6 +1754,10 @@ pub struct TenantKesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 pub struct TenantKesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TenantKesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantKesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1750,6 +1802,10 @@ pub struct TenantKesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 pub struct TenantKesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TenantKesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantKesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2196,6 +2252,10 @@ pub struct TenantPoolsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringE
 pub struct TenantPoolsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TenantPoolsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantPoolsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2240,6 +2300,10 @@ pub struct TenantPoolsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringE
 pub struct TenantPoolsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TenantPoolsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantPoolsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2299,6 +2363,10 @@ pub struct TenantPoolsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDur
 pub struct TenantPoolsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TenantPoolsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantPoolsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2343,6 +2411,10 @@ pub struct TenantPoolsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDur
 pub struct TenantPoolsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TenantPoolsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantPoolsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2618,6 +2690,8 @@ pub struct TenantPoolsVolumeClaimTemplateSpec {
     pub selector: Option<TenantPoolsVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -2645,16 +2719,9 @@ pub struct TenantPoolsVolumeClaimTemplateSpecDataSourceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantPoolsVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<TenantPoolsVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantPoolsVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2685,6 +2752,10 @@ pub struct TenantPoolsVolumeClaimTemplateStatus {
     pub capacity: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<TenantPoolsVolumeClaimTemplateStatusConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVolumeAttributesClassName")]
+    pub current_volume_attributes_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modifyVolumeStatus")]
+    pub modify_volume_status: Option<TenantPoolsVolumeClaimTemplateStatusModifyVolumeStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
@@ -2702,6 +2773,13 @@ pub struct TenantPoolsVolumeClaimTemplateStatusConditions {
     pub status: String,
     #[serde(rename = "type")]
     pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantPoolsVolumeClaimTemplateStatusModifyVolumeStatus {
+    pub status: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetVolumeAttributesClassName")]
+    pub target_volume_attributes_class_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2938,6 +3016,8 @@ pub struct TenantSideCarsContainersLifecyclePostStart {
     pub exec: Option<TenantSideCarsContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<TenantSideCarsContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<TenantSideCarsContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<TenantSideCarsContainersLifecyclePostStartTcpSocket>,
 }
@@ -2968,6 +3048,11 @@ pub struct TenantSideCarsContainersLifecyclePostStartHttpGetHttpHeaders {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantSideCarsContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantSideCarsContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -2980,6 +3065,8 @@ pub struct TenantSideCarsContainersLifecyclePreStop {
     pub exec: Option<TenantSideCarsContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<TenantSideCarsContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<TenantSideCarsContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<TenantSideCarsContainersLifecyclePreStopTcpSocket>,
 }
@@ -3007,6 +3094,11 @@ pub struct TenantSideCarsContainersLifecyclePreStopHttpGet {
 pub struct TenantSideCarsContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantSideCarsContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3387,6 +3479,8 @@ pub struct TenantSideCarsVolumeClaimTemplatesSpec {
     pub selector: Option<TenantSideCarsVolumeClaimTemplatesSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -3414,16 +3508,9 @@ pub struct TenantSideCarsVolumeClaimTemplatesSpecDataSourceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantSideCarsVolumeClaimTemplatesSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<TenantSideCarsVolumeClaimTemplatesSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantSideCarsVolumeClaimTemplatesSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3454,6 +3541,10 @@ pub struct TenantSideCarsVolumeClaimTemplatesStatus {
     pub capacity: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<TenantSideCarsVolumeClaimTemplatesStatusConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVolumeAttributesClassName")]
+    pub current_volume_attributes_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modifyVolumeStatus")]
+    pub modify_volume_status: Option<TenantSideCarsVolumeClaimTemplatesStatusModifyVolumeStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
@@ -3471,6 +3562,13 @@ pub struct TenantSideCarsVolumeClaimTemplatesStatusConditions {
     pub status: String,
     #[serde(rename = "type")]
     pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantSideCarsVolumeClaimTemplatesStatusModifyVolumeStatus {
+    pub status: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetVolumeAttributesClassName")]
+    pub target_volume_attributes_class_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3737,6 +3835,8 @@ pub struct TenantSideCarsVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<TenantSideCarsVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -3764,16 +3864,9 @@ pub struct TenantSideCarsVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantSideCarsVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<TenantSideCarsVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantSideCarsVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3943,6 +4036,8 @@ pub struct TenantSideCarsVolumesProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantSideCarsVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<TenantSideCarsVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<TenantSideCarsVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -3951,6 +4046,35 @@ pub struct TenantSideCarsVolumesProjectedSources {
     pub secret: Option<TenantSideCarsVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<TenantSideCarsVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantSideCarsVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TenantSideCarsVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantSideCarsVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TenantSideCarsVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantSideCarsVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -52,6 +52,9 @@ pub enum MeshHTTPRouteTargetRefKind {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteTo {
+    /// Hostnames is only valid when targeting MeshGateway and limits the effects of the rules to requests to this hostname. Given hostnames must intersect with the hostname of the listeners the route attaches to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hostnames: Option<Vec<String>>,
     /// Rules contains the routing rules applies to a combination of top-level targetRef and the targetRef in this entry.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<MeshHTTPRouteToRules>>,

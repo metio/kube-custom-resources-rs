@@ -138,7 +138,7 @@ pub struct CanaryAlertmanager {
     pub metrics: Option<Vec<CanaryAlertmanagerMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -455,7 +455,7 @@ pub struct CanaryAwsConfig {
     pub metrics: Option<Vec<CanaryAwsConfigMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     pub query: String,
@@ -700,7 +700,7 @@ pub struct CanaryAwsConfigRule {
     pub metrics: Option<Vec<CanaryAwsConfigRuleMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -937,7 +937,7 @@ pub struct CanaryAzureDevops {
     pub metrics: Option<Vec<CanaryAzureDevopsMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     pub organization: String,
@@ -1091,7 +1091,7 @@ pub struct CanaryCloudwatch {
     pub metrics: Option<Vec<CanaryCloudwatchMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1324,7 +1324,7 @@ pub struct CanaryConfigDb {
     pub metrics: Option<Vec<CanaryConfigDbMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     pub query: String,
@@ -1417,7 +1417,7 @@ pub struct CanaryContainerd {
     pub metrics: Option<Vec<CanaryContainerdMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
@@ -1561,7 +1561,7 @@ pub struct CanaryContainerdPush {
     pub metrics: Option<Vec<CanaryContainerdPushMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1616,7 +1616,7 @@ pub struct CanaryDatabaseBackup {
     pub metrics: Option<Vec<CanaryDatabaseBackupMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1769,7 +1769,7 @@ pub struct CanaryDns {
     pub minrecords: Option<i64>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1833,7 +1833,7 @@ pub struct CanaryDocker {
     pub metrics: Option<Vec<CanaryDockerMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
@@ -1979,7 +1979,7 @@ pub struct CanaryDockerPush {
     pub metrics: Option<Vec<CanaryDockerPushMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
@@ -2130,7 +2130,7 @@ pub struct CanaryDynatrace {
     pub metrics: Option<Vec<CanaryDynatraceMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2275,7 +2275,7 @@ pub struct CanaryEc2 {
     pub metrics: Option<Vec<CanaryEc2Metrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2487,7 +2487,7 @@ pub struct CanaryElasticsearch {
     pub metrics: Option<Vec<CanaryElasticsearchMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2738,7 +2738,7 @@ pub struct CanaryExec {
     pub metrics: Option<Vec<CanaryExecMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Script can be a inline script or a path to a script that needs to be executed On windows executed via powershell and in darwin and linux executed using bash
@@ -3381,7 +3381,7 @@ pub struct CanaryFolder {
     pub min_size: Option<String>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Path  to folder or object storage, e.g. `s3://<bucket-name>`,  `gcs://<bucket-name>`, `/path/tp/folder`
@@ -3933,7 +3933,7 @@ pub struct CanaryGithub {
     pub metrics: Option<Vec<CanaryGithubMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Query to be executed. Please see https://github.com/askgitdev/askgit for more details regarding syntax
@@ -4071,7 +4071,7 @@ pub struct CanaryHelm {
     pub metrics: Option<Vec<CanaryHelmMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4239,7 +4239,7 @@ pub struct CanaryHttp {
     pub metrics: Option<Vec<CanaryHttpMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// NTLM when set to true will do authentication using NTLM v1 protocol
@@ -4555,7 +4555,7 @@ pub struct CanaryIcmp {
     pub metrics: Option<Vec<CanaryIcmpMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "packetCount")]
@@ -4611,7 +4611,7 @@ pub struct CanaryJmeter {
     pub metrics: Option<Vec<CanaryJmeterMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Port on which the server is running
@@ -4719,7 +4719,7 @@ pub struct CanaryJunit {
     pub metrics: Option<Vec<CanaryJunitMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     pub spec: BTreeMap<String, serde_json::Value>,
@@ -4822,9 +4822,11 @@ pub struct CanaryKubernetes {
     pub metrics: Option<Vec<CanaryKubernetesMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<CanaryKubernetesNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4869,6 +4871,16 @@ pub struct CanaryKubernetesMetricsLabels {
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueExpr")]
     pub value_expr: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesNamespaceSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
+    pub field_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4926,7 +4938,7 @@ pub struct CanaryLdap {
     pub metrics: Option<Vec<CanaryLdapMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5075,7 +5087,7 @@ pub struct CanaryMongodb {
     pub metrics: Option<Vec<CanaryMongodbMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5222,7 +5234,7 @@ pub struct CanaryMssql {
     pub metrics: Option<Vec<CanaryMssqlMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5414,7 +5426,7 @@ pub struct CanaryMysql {
     pub metrics: Option<Vec<CanaryMysqlMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5619,7 +5631,7 @@ pub struct CanaryNamespace {
     pub metrics: Option<Vec<CanaryNamespaceMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceAnnotations")]
@@ -5688,7 +5700,7 @@ pub struct CanaryOpensearch {
     pub metrics: Option<Vec<CanaryOpensearchMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5893,7 +5905,7 @@ pub struct CanaryPod {
     pub metrics: Option<Vec<CanaryPodMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5957,7 +5969,7 @@ pub struct CanaryPostgres {
     pub metrics: Option<Vec<CanaryPostgresMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6152,7 +6164,7 @@ pub struct CanaryPrometheus {
     pub metrics: Option<Vec<CanaryPrometheusMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6344,7 +6356,7 @@ pub struct CanaryRedis {
     pub metrics: Option<Vec<CanaryRedisMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6504,7 +6516,7 @@ pub struct CanaryRestic {
     pub metrics: Option<Vec<CanaryResticMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Password for the restic repository
@@ -6705,7 +6717,7 @@ pub struct CanaryS3 {
     pub metrics: Option<Vec<CanaryS3Metrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// glob path to restrict matches to a subset
@@ -6902,7 +6914,7 @@ pub struct CanaryTcp {
     pub metrics: Option<Vec<CanaryTcpMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "thresholdMillis")]
@@ -6951,7 +6963,7 @@ pub struct CanaryWebhook {
     pub metrics: Option<Vec<CanaryWebhookMetrics>>,
     /// Name of the check
     pub name: String,
-    /// Namespace of the check
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

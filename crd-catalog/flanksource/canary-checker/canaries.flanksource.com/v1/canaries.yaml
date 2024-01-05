@@ -133,7 +133,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -445,7 +445,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     query:
                       type: string
@@ -676,7 +676,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     region:
                       type: string
@@ -859,7 +859,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     organization:
                       type: string
@@ -1059,7 +1059,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     region:
                       type: string
@@ -1233,7 +1233,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     query:
                       type: string
@@ -1402,7 +1402,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     transformDeleteStrategy:
                       description: Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
@@ -1457,7 +1457,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       type: string
@@ -1586,7 +1586,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     test:
                       properties:
@@ -1666,7 +1666,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     port:
                       type: integer
@@ -1822,7 +1822,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     transformDeleteStrategy:
                       description: Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
@@ -1962,7 +1962,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     transformDeleteStrategy:
                       description: Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
@@ -2071,7 +2071,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     scheme:
                       type: string
@@ -2207,7 +2207,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     region:
                       type: string
@@ -2370,7 +2370,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -3063,7 +3063,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     script:
                       description: Script can be a inline script or a path to a script that needs to be executed On windows executed via powershell and in darwin and linux executed using bash
@@ -3383,7 +3383,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     path:
                       description: Path  to folder or object storage, e.g. `s3://<bucket-name>`,  `gcs://<bucket-name>`, `/path/tp/folder`
@@ -3710,7 +3710,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     query:
                       description: Query to be executed. Please see https://github.com/askgitdev/askgit for more details regarding syntax
@@ -3877,7 +3877,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     project:
                       type: string
@@ -4045,7 +4045,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     ntlm:
                       description: NTLM when set to true will do authentication using NTLM v1 protocol
@@ -4251,7 +4251,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     packetCount:
                       type: integer
@@ -4362,7 +4362,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     port:
                       description: Port on which the server is running
@@ -4454,7 +4454,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     spec:
                       type: object
@@ -4556,7 +4556,9 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
+                      type: string
+                    namespaceSelector:
                       properties:
                         fieldSelector:
                           type: string
@@ -4564,7 +4566,7 @@ spec:
                           type: string
                         name:
                           type: string
-                      type: string
+                      type: object
                     ready:
                       type: boolean
                     resource:
@@ -4654,7 +4656,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -4799,7 +4801,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -4950,7 +4952,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -5128,7 +5130,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -5318,7 +5320,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     namespaceAnnotations:
                       additionalProperties:
@@ -5412,7 +5414,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -5607,7 +5609,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     path:
                       type: string
@@ -5690,7 +5692,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -5871,7 +5873,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -6042,7 +6044,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       properties:
@@ -6239,7 +6241,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     password:
                       description: Password for the restic repository
@@ -6433,7 +6435,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     objectPath:
                       description: glob path to restrict matches to a subset
@@ -6585,7 +6587,7 @@ spec:
                       description: Name of the check
                       type: string
                     namespace:
-                      description: Namespace of the check
+                      description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                       type: string
                     thresholdMillis:
                       format: int64
@@ -6650,7 +6652,7 @@ spec:
                     description: Name of the check
                     type: string
                   namespace:
-                    description: Namespace of the check
+                    description: Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
                     type: string
                   test:
                     properties:
