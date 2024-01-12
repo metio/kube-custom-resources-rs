@@ -23,10 +23,10 @@ spec:
         description: CephBucketTopic represents a Ceph Object Topic for Bucket Notifications
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: APIVersion defines the versioned schema of this representation of an object.
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: Kind is a string value representing the REST resource this object represents.
             type: string
           metadata:
             type: object
@@ -69,7 +69,7 @@ spec:
                         description: Indicate whether the server certificate is validated by the client or not
                         type: boolean
                       sendCloudEvents:
-                        description: 'Send the notifications with the CloudEvents header: https://github.com/cloudevents/spec/blob/main/cloudevents/adapters/aws-s3.md'
+                        description: 'Send the notifications with the CloudEvents header: https://github.'
                         type: boolean
                       uri:
                         description: The URI of the HTTP endpoint to push notification to

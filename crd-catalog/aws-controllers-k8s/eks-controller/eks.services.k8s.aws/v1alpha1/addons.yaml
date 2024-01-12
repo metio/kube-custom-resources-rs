@@ -36,7 +36,7 @@ spec:
                 description: A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
                 type: string
               clusterName:
-                description: The name of the cluster to create the add-on for.
+                description: The name of your cluster.
                 type: string
               clusterRef:
                 description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: \n from: name: my-api"
@@ -49,10 +49,10 @@ spec:
                     type: object
                 type: object
               configurationValues:
-                description: The set of configuration values for the add-on that's created. The values that you provide are validated against the schema in DescribeAddonConfiguration (https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonConfiguration.html).
+                description: The set of configuration values for the add-on that's created. The values that you provide are validated against the schema returned by DescribeAddonConfiguration.
                 type: string
               name:
-                description: The name of the add-on. The name must match one of the names that DescribeAddonVersions (https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonVersions.html) returns.
+                description: The name of the add-on. The name must match one of the names returned by DescribeAddonVersions.
                 type: string
               resolveConflicts:
                 description: "How to resolve field value conflicts for an Amazon EKS add-on. Conflicts are handled based on the value you choose: \n * None – If the self-managed version of the add-on is installed on your cluster, Amazon EKS doesn't change the value. Creation of the add-on might fail. \n * Overwrite – If the self-managed version of the add-on is installed on your cluster and the Amazon EKS default value is different than the existing value, Amazon EKS changes the value to the Amazon EKS default value. \n * Preserve – This is similar to the NONE option. If the self-managed version of the add-on is installed on your cluster Amazon EKS doesn't change the add-on resource properties. Creation of the add-on might fail if conflicts are detected. This option works differently during the update operation. For more information, see UpdateAddon (https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateAddon.html). \n If you don't currently have the self-managed version of the add-on installed on your cluster, the Amazon EKS add-on is installed. Amazon EKS sets all values to default values, regardless of the option that you specify."
@@ -73,7 +73,7 @@ spec:
               tags:
                 additionalProperties:
                   type: string
-                description: The metadata to apply to the cluster to assist with categorization and organization. Each tag consists of a key and an optional value. You define both.
+                description: Metadata that assists with categorization and organization. Each tag consists of a key and an optional value. You define both. Tags don't propagate to any other cluster or Amazon Web Services resources.
                 type: object
             required:
             - name
@@ -124,7 +124,7 @@ spec:
                   type: object
                 type: array
               createdAt:
-                description: The date and time that the add-on was created.
+                description: The Unix epoch timestamp at object creation.
                 format: date-time
                 type: string
               health:
@@ -154,7 +154,7 @@ spec:
                     type: string
                 type: object
               modifiedAt:
-                description: The date and time that the add-on was last modified.
+                description: The Unix epoch timestamp for the last modification to the object.
                 format: date-time
                 type: string
               owner:

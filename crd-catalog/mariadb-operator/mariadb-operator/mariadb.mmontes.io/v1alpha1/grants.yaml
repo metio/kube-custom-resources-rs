@@ -43,7 +43,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Grant is the Schema for the grants API
+        description: Grant is the Schema for the grants API. It is used to define grants as if you were running a 'GRANT' statement.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'

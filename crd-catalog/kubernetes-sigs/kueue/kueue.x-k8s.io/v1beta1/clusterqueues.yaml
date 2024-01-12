@@ -108,6 +108,21 @@ spec:
               preemption:
                 description: "preemption describes policies to preempt Workloads from this ClusterQueue or the ClusterQueue's cohort. \n Preemption can happen in two scenarios: \n - When a Workload fits within the nominal quota of the ClusterQueue, but the quota is currently borrowed by other ClusterQueues in the cohort. Preempting Workloads in other ClusterQueues allows this ClusterQueue to reclaim its nominal quota. - When a Workload doesn't fit within the nominal quota of the ClusterQueue and there are admitted Workloads in the ClusterQueue with lower priority. \n The preemption algorithm tries to find a minimal set of Workloads to preempt to accomomdate the pending Workload, preempting Workloads with lower priority first."
                 properties:
+                  borrowWithinCohort:
+                    description: borrowWithinCohort provides configuration to allow preemption within cohort while borrowing.
+                    properties:
+                      maxPriorityThreshold:
+                        description: maxPriorityThreshold allows to restrict the set of workloads which might be preempted by a borrowing workload, to only workloads with priority less than or equal to the specified threshold priority. When the threshold is not specified, then any workload satisfying the policy can be preempted by the borrowing workload.
+                        format: int32
+                        type: integer
+                      policy:
+                        default: Never
+                        description: 'policy determines the policy for preemption to reclaim quota within cohort while borrowing. Possible values are: - `Never` (default): do not allow for preemption, in other ClusterQueues within the cohort, for a borrowing workload. - `LowerPriority`: allow preemption, in other ClusterQueues within the cohort, for a borrowing workload, but only if the preempted workloads are of lower priority.'
+                        enum:
+                        - Never
+                        - LowerPriority
+                        type: string
+                    type: object
                   reclaimWithinCohort:
                     default: Never
                     description: "reclaimWithinCohort determines whether a pending Workload can preempt Workloads from other ClusterQueues in the cohort that are using more than their nominal quota. The possible values are: \n - `Never` (default): do not preempt Workloads in the cohort. - `LowerPriority`: if the pending Workload fits within the nominal quota of its ClusterQueue, only preempt Workloads in the cohort that have lower priority than the pending Workload. - `Any`: if the pending Workload fits within the nominal quota of its ClusterQueue, preempt any Workload in the cohort, irrespective of priority."

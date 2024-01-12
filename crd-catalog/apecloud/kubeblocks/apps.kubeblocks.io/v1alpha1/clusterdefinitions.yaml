@@ -5015,6 +5015,11 @@ spec:
                             logSyncAction:
                               description: LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
                               properties:
+                                args:
+                                  description: Args is used to perform statements.
+                                  items:
+                                    type: string
+                                  type: array
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
                                   items:
@@ -5029,6 +5034,11 @@ spec:
                             memberJoinAction:
                               description: MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
                               properties:
+                                args:
+                                  description: Args is used to perform statements.
+                                  items:
+                                    type: string
+                                  type: array
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
                                   items:
@@ -5043,6 +5053,11 @@ spec:
                             memberLeaveAction:
                               description: MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
                               properties:
+                                args:
+                                  description: Args is used to perform statements.
+                                  items:
+                                    type: string
+                                  type: array
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
                                   items:
@@ -5057,6 +5072,11 @@ spec:
                             promoteAction:
                               description: PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
                               properties:
+                                args:
+                                  description: Args is used to perform statements.
+                                  items:
+                                    type: string
+                                  type: array
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
                                   items:
@@ -5071,6 +5091,11 @@ spec:
                             switchoverAction:
                               description: SwitchoverAction specifies how to do switchover latest [BusyBox](https://busybox.net/) image will be used if Image not configured
                               properties:
+                                args:
+                                  description: Args is used to perform statements.
+                                  items:
+                                    type: string
+                                  type: array
                                 command:
                                   description: Command will be executed in Container to retrieve or process role info
                                   items:
@@ -5093,6 +5118,11 @@ spec:
                               description: "CustomHandler defines the custom way to do role probe. if the BuiltinHandler satisfies the requirement, use it instead. \n how the actions defined here works: \n Actions will be taken in serial. after all actions done, the final output should be a single string of the role name defined in spec.Roles latest [BusyBox](https://busybox.net/) image will be used if Image not configured Environment variables can be used in Command: - v_KB_RSM_LAST_STDOUT stdout from last action, watch 'v_' prefixed - KB_RSM_USERNAME username part of credential - KB_RSM_PASSWORD password part of credential"
                               items:
                                 properties:
+                                  args:
+                                    description: Args is used to perform statements.
+                                    items:
+                                      type: string
+                                    type: array
                                   command:
                                     description: Command will be executed in Container to retrieve or process role info
                                     items:

@@ -680,6 +680,10 @@ spec:
               maxScrapeInterval:
                 description: MaxScrapeInterval allows limiting maximum scrape interval for VMServiceScrape, VMPodScrape and other scrapes If interval is higher than defined limit, `maxScrapeInterval` will be used.
                 type: string
+              minReadySeconds:
+                description: MinReadySeconds defines a minim number os seconds to wait before starting update next pod if previous in healthy state
+                format: int32
+                type: integer
               minScrapeInterval:
                 description: MinScrapeInterval allows limiting minimal scrape interval for VMServiceScrape, VMPodScrape and other scrapes If interval is lower than defined limit, `minScrapeInterval` will be used.
                 type: string
