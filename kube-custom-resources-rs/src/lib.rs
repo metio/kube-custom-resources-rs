@@ -1389,6 +1389,11 @@ apiVersion `lerentis.uploadfilter24.eu/v1beta4`:
 - `BitwardenTemplate`
 - `RegistryCredential`
 
+apiVersion `lerentis.uploadfilter24.eu/v1beta5`:
+- `BitwardenSecret`
+- `BitwardenTemplate`
+- `RegistryCredential`
+
 ## limitador_kuadrant_io
 
 apiVersion `limitador.kuadrant.io/v1alpha1`:

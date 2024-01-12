@@ -31,7 +31,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: MariaDB is the Schema for the mariadbs API
+        description: MariaDB is the Schema for the mariadbs API. It is used to define MariaDB clusters.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
@@ -1753,6 +1753,9 @@ spec:
                       x-kubernetes-map-type: atomic
                   type: object
                 type: array
+              ephemeralStorage:
+                description: EphemeralStorage indicates whether to use ephemeral storage for the instances.
+                type: boolean
               galera:
                 description: Replication configures high availability via Galera.
                 properties:
@@ -4377,6 +4380,9 @@ spec:
                     - LoadBalancer
                     type: string
                 type: object
+              priorityClassName:
+                description: PriorityClassName to be used in the Pod.
+                type: string
               readinessProbe:
                 description: ReadinessProbe to be used in the Container.
                 properties:
@@ -4582,6 +4588,9 @@ spec:
                     description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                     type: object
                 type: object
+              rootEmptyPassword:
+                description: RootEmptyPassword indicates if the root password should be empty.
+                type: boolean
               rootPasswordSecretKeyRef:
                 description: RootPasswordSecretKeyRef is a reference to a Secret key containing the root password.
                 properties:
@@ -6482,8 +6491,6 @@ spec:
                   - name
                   type: object
                 type: array
-            required:
-            - volumeClaimTemplate
             type: object
           status:
             description: MariaDBStatus defines the observed state of MariaDB

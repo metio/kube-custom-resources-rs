@@ -2639,8 +2639,12 @@ spec:
                                   name:
                                     description: The name of required secret
                                     type: string
+                                required:
+                                - name
                                 type: object
                             type: object
+                        required:
+                        - name
                         type: object
                       type: array
                     mountPoint:
@@ -2665,6 +2669,8 @@ spec:
                     shared:
                       description: 'Optional: Defaults to false (shared).'
                       type: boolean
+                  required:
+                  - mountPoint
                   type: object
                 type: array
               selector:

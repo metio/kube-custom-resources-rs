@@ -523,7 +523,7 @@ spec:
                   type: object
                 type: array
               hostname:
-                description: The hostname of the instance
+                description: (Deprecated) The hostname of the instance
                 type: string
               image:
                 description: Registry path to the application container to use
@@ -562,6 +562,18 @@ spec:
               ingress_controller:
                 description: Special configuration for specific Ingress Controllers
                 type: string
+              ingress_hosts:
+                description: Ingress hostnames of the instance
+                items:
+                  properties:
+                    hostname:
+                      description: Hostname of the instance
+                      type: string
+                    tls_secret:
+                      description: Secret where the Ingress TLS secret can be found
+                      type: string
+                  type: object
+                type: array
               ingress_path:
                 description: The ingress path used to reach the deployed service
                 type: string
@@ -569,7 +581,7 @@ spec:
                 description: The ingress path type for the deployed service
                 type: string
               ingress_tls_secret:
-                description: Secret where the Ingress TLS secret can be found
+                description: (Deprecated) Secret where the Ingress TLS secret can be found
                 type: string
               ingress_type:
                 description: The ingress type to use to reach the deployed instance

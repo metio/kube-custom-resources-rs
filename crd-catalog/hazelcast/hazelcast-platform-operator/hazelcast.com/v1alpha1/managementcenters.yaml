@@ -47,6 +47,11 @@ spec:
               repository: docker.io/hazelcast/management-center
             description: Initial values will be filled with its fields' default values.
             properties:
+              annotations:
+                additionalProperties:
+                  type: string
+                description: ManagementCenter Kubernetes resource annotations
+                type: object
               externalConnectivity:
                 default:
                   type: LoadBalancer
@@ -142,6 +147,11 @@ spec:
                     items:
                       type: string
                     type: array
+                type: object
+              labels:
+                additionalProperties:
+                  type: string
+                description: ManagementCenter Kubernetes resource labels
                 type: object
               licenseKeySecret:
                 description: licenseKeySecret is a deprecated alias for licenseKeySecretName.
