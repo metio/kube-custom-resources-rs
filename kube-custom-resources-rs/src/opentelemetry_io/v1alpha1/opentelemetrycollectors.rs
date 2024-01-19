@@ -32,6 +32,9 @@ pub struct OpenTelemetryCollectorSpec {
     /// ConfigMaps is a list of ConfigMaps in the same namespace as the OpenTelemetryCollector object, which shall be mounted into the Collector Pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configmaps: Option<Vec<OpenTelemetryCollectorConfigmaps>>,
+    /// UpdateStrategy represents the strategy the operator will take replacing existing Deployment pods with new pods https://kubernetes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentUpdateStrategy")]
+    pub deployment_update_strategy: Option<OpenTelemetryCollectorDeploymentUpdateStrategy>,
     /// ENV vars to set on the OpenTelemetry Collector's Pods. These can then in certain cases be consumed in the config file for the Collector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpenTelemetryCollectorEnv>>,
@@ -104,6 +107,9 @@ pub struct OpenTelemetryCollectorSpec {
     /// ServiceAccount indicates the name of an existing service account to use with this instance. When set, the operator will not automatically create a ServiceAccount for the collector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
+    /// ShareProcessNamespace indicates if the pod's containers should share process namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
+    pub share_process_namespace: Option<bool>,
     /// TargetAllocator indicates a value which determines whether to spawn a target allocation resource or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetAllocator")]
     pub target_allocator: Option<OpenTelemetryCollectorTargetAllocator>,
@@ -1522,6 +1528,28 @@ pub struct OpenTelemetryCollectorConfigmaps {
     pub mountpath: String,
     /// Configmap defines name and path where the configMaps should be mounted.
     pub name: String,
+}
+
+/// UpdateStrategy represents the strategy the operator will take replacing existing Deployment pods with new pods https://kubernetes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorDeploymentUpdateStrategy {
+    /// Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate. --- TODO: Update this to follow our convention for oneOf, whatever we decide it to be.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<OpenTelemetryCollectorDeploymentUpdateStrategyRollingUpdate>,
+    /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate. --- TODO: Update this to follow our convention for oneOf, whatever we decide it to be.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorDeploymentUpdateStrategyRollingUpdate {
+    /// The maximum number of pods that can be scheduled above the desired number of pods. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
+    pub max_surge: Option<IntOrString>,
+    /// The maximum number of pods that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
 }
 
 /// EnvVar represents an environment variable present in a Container.

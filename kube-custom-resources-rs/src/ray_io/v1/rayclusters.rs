@@ -3264,6 +3264,8 @@ pub struct RayClusterWorkerGroupSpecs {
     pub max_replicas: i32,
     #[serde(rename = "minReplicas")]
     pub min_replicas: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numOfHosts")]
+    pub num_of_hosts: Option<i32>,
     #[serde(rename = "rayStartParams")]
     pub ray_start_params: BTreeMap<String, String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

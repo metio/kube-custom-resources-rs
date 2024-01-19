@@ -63,7 +63,8 @@ pub struct VirtualServerExternalDns {
     pub record_type: Option<String>,
 }
 
-/// ProviderSpecificProperty defines specific property for using with ExternalDNS sub-resource.
+/// ProviderSpecificProperty defines specific property
+/// for using with ExternalDNS sub-resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerExternalDnsProviderSpecific {
     /// Name of the property

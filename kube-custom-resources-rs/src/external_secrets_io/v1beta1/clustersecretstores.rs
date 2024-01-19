@@ -1483,6 +1483,9 @@ pub struct ClusterSecretStoreProviderVault {
     pub read_your_writes: Option<bool>,
     /// Server is the connection address for the Vault server, e.g: "https://vault.example.com:8200".
     pub server: String,
+    /// The configuration used for client side related TLS communication, when the Vault server requires mutual authentication. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. It's worth noting this configuration is different from the "TLS certificates auth method", which is available under the `auth.cert` section.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<ClusterSecretStoreProviderVaultTls>,
     /// Version is the Vault KV secret engine version. This can be either "v1" or "v2". Version defaults to "v2".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<ClusterSecretStoreProviderVaultVersion>,
@@ -1893,6 +1896,45 @@ pub struct ClusterSecretStoreProviderVaultCaProvider {
 pub enum ClusterSecretStoreProviderVaultCaProviderType {
     Secret,
     ConfigMap,
+}
+
+/// The configuration used for client side related TLS communication, when the Vault server requires mutual authentication. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. It's worth noting this configuration is different from the "TLS certificates auth method", which is available under the `auth.cert` section.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultTls {
+    /// CertSecretRef is a certificate added to the transport layer when communicating with the Vault server. If no key for the Secret is specified, external-secret will default to 'tls.crt'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
+    pub cert_secret_ref: Option<ClusterSecretStoreProviderVaultTlsCertSecretRef>,
+    /// KeySecretRef to a key in a Secret resource containing client private key added to the transport layer when communicating with the Vault server. If no key for the Secret is specified, external-secret will default to 'tls.key'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecretRef")]
+    pub key_secret_ref: Option<ClusterSecretStoreProviderVaultTlsKeySecretRef>,
+}
+
+/// CertSecretRef is a certificate added to the transport layer when communicating with the Vault server. If no key for the Secret is specified, external-secret will default to 'tls.crt'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultTlsCertSecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// KeySecretRef to a key in a Secret resource containing client private key added to the transport layer when communicating with the Vault server. If no key for the Secret is specified, external-secret will default to 'tls.key'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultTlsKeySecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Vault configures this store to sync secrets using Hashi provider

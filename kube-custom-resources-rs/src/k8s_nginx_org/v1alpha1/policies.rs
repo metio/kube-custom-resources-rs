@@ -5,7 +5,9 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// PolicySpec is the spec of the Policy resource. The spec includes multiple fields, where each field represents a different policy. Only one policy (field) is allowed.
+/// PolicySpec is the spec of the Policy resource.
+/// The spec includes multiple fields, where each field represents a different policy.
+/// Only one policy (field) is allowed.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "k8s.nginx.org", version = "v1alpha1", kind = "Policy", plural = "policies")]
 #[kube(namespaced)]

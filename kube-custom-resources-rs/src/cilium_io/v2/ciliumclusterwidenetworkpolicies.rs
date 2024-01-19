@@ -235,14 +235,14 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPorts {
 /// listener specifies the name of a custom Envoy listener to which this traffic should be redirected to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressToPortsListener {
-    /// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+    /// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
     #[serde(rename = "envoyConfig")]
     pub envoy_config: CiliumClusterwideNetworkPolicyEgressToPortsListenerEnvoyConfig,
     /// Name is the name of the listener.
     pub name: String,
 }
 
-/// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+/// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressToPortsListenerEnvoyConfig {
     /// Kind is the resource type being referred to. Defaults to CiliumEnvoyConfig or CiliumClusterwideEnvoyConfig for CiliumNetworkPolicy and CiliumClusterwideNetworkPolicy, respectively. The only case this is currently explicitly needed is when referring to a CiliumClusterwideEnvoyConfig from CiliumNetworkPolicy, as using a namespaced listener from a cluster scoped policy is not allowed.
@@ -252,7 +252,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsListenerEnvoyConfig {
     pub name: String,
 }
 
-/// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+/// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumClusterwideNetworkPolicyEgressToPortsListenerEnvoyConfigKind {
     CiliumEnvoyConfig,
@@ -1043,14 +1043,14 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPorts {
 /// listener specifies the name of a custom Envoy listener to which this traffic should be redirected to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyIngressToPortsListener {
-    /// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+    /// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
     #[serde(rename = "envoyConfig")]
     pub envoy_config: CiliumClusterwideNetworkPolicyIngressToPortsListenerEnvoyConfig,
     /// Name is the name of the listener.
     pub name: String,
 }
 
-/// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+/// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyIngressToPortsListenerEnvoyConfig {
     /// Kind is the resource type being referred to. Defaults to CiliumEnvoyConfig or CiliumClusterwideEnvoyConfig for CiliumNetworkPolicy and CiliumClusterwideNetworkPolicy, respectively. The only case this is currently explicitly needed is when referring to a CiliumClusterwideEnvoyConfig from CiliumNetworkPolicy, as using a namespaced listener from a cluster scoped policy is not allowed.
@@ -1060,7 +1060,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsListenerEnvoyConfig {
     pub name: String,
 }
 
-/// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+/// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumClusterwideNetworkPolicyIngressToPortsListenerEnvoyConfigKind {
     CiliumEnvoyConfig,
@@ -1721,14 +1721,14 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPorts {
 /// listener specifies the name of a custom Envoy listener to which this traffic should be redirected to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressToPortsListener {
-    /// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+    /// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
     #[serde(rename = "envoyConfig")]
     pub envoy_config: CiliumClusterwideNetworkPolicysEgressToPortsListenerEnvoyConfig,
     /// Name is the name of the listener.
     pub name: String,
 }
 
-/// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+/// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressToPortsListenerEnvoyConfig {
     /// Kind is the resource type being referred to. Defaults to CiliumEnvoyConfig or CiliumClusterwideEnvoyConfig for CiliumNetworkPolicy and CiliumClusterwideNetworkPolicy, respectively. The only case this is currently explicitly needed is when referring to a CiliumClusterwideEnvoyConfig from CiliumNetworkPolicy, as using a namespaced listener from a cluster scoped policy is not allowed.
@@ -1738,7 +1738,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsListenerEnvoyConfig {
     pub name: String,
 }
 
-/// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+/// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumClusterwideNetworkPolicysEgressToPortsListenerEnvoyConfigKind {
     CiliumEnvoyConfig,
@@ -2529,14 +2529,14 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPorts {
 /// listener specifies the name of a custom Envoy listener to which this traffic should be redirected to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysIngressToPortsListener {
-    /// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+    /// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
     #[serde(rename = "envoyConfig")]
     pub envoy_config: CiliumClusterwideNetworkPolicysIngressToPortsListenerEnvoyConfig,
     /// Name is the name of the listener.
     pub name: String,
 }
 
-/// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+/// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysIngressToPortsListenerEnvoyConfig {
     /// Kind is the resource type being referred to. Defaults to CiliumEnvoyConfig or CiliumClusterwideEnvoyConfig for CiliumNetworkPolicy and CiliumClusterwideNetworkPolicy, respectively. The only case this is currently explicitly needed is when referring to a CiliumClusterwideEnvoyConfig from CiliumNetworkPolicy, as using a namespaced listener from a cluster scoped policy is not allowed.
@@ -2546,7 +2546,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsListenerEnvoyConfig {
     pub name: String,
 }
 
-/// EnvoyConfig is a reference to the CEC or CCNP resource in which the listener is defined.
+/// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumClusterwideNetworkPolicysIngressToPortsListenerEnvoyConfigKind {
     CiliumEnvoyConfig,

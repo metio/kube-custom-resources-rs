@@ -16,7 +16,9 @@ pub struct MeshFaultInjectionSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<MeshFaultInjectionFrom>>,
-    /// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+    /// TargetRef is a reference to the resource the policy takes an effect on.
+    /// The resource could be either a real store object or virtual resource
+    /// defined inplace.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshFaultInjectionTargetRef,
     /// To list makes a match between clients and corresponding configurations
@@ -26,15 +28,18 @@ pub struct MeshFaultInjectionSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionFrom {
-    /// Default is a configuration specific to the group of destinations referenced in 'targetRef'
+    /// Default is a configuration specific to the group of destinations referenced in
+    /// 'targetRef'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<MeshFaultInjectionFromDefault>,
-    /// TargetRef is a reference to the resource that represents a group of destinations.
+    /// TargetRef is a reference to the resource that represents a group of
+    /// destinations.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshFaultInjectionFromTargetRef,
 }
 
-/// Default is a configuration specific to the group of destinations referenced in 'targetRef'
+/// Default is a configuration specific to the group of destinations referenced in
+/// 'targetRef'
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionFromDefault {
     /// Http allows to define list of Http faults between dataplanes.
@@ -45,46 +50,57 @@ pub struct MeshFaultInjectionFromDefault {
 /// FaultInjection defines the configuration of faults between dataplanes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionFromDefaultHttp {
-    /// Abort defines a configuration of not delivering requests to destination service and replacing the responses from destination dataplane by predefined status code
+    /// Abort defines a configuration of not delivering requests to destination
+    /// service and replacing the responses from destination dataplane by
+    /// predefined status code
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub abort: Option<MeshFaultInjectionFromDefaultHttpAbort>,
     /// Delay defines configuration of delaying a response from a destination
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delay: Option<MeshFaultInjectionFromDefaultHttpDelay>,
-    /// ResponseBandwidth defines a configuration to limit the speed of responding to the requests
+    /// ResponseBandwidth defines a configuration to limit the speed of
+    /// responding to the requests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseBandwidth")]
     pub response_bandwidth: Option<MeshFaultInjectionFromDefaultHttpResponseBandwidth>,
 }
 
-/// Abort defines a configuration of not delivering requests to destination service and replacing the responses from destination dataplane by predefined status code
+/// Abort defines a configuration of not delivering requests to destination
+/// service and replacing the responses from destination dataplane by
+/// predefined status code
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionFromDefaultHttpAbort {
     /// HTTP status code which will be returned to source side
     #[serde(rename = "httpStatus")]
     pub http_status: i32,
-    /// Percentage of requests on which abort will be injected, has to be either int or decimal represented as string.
+    /// Percentage of requests on which abort will be injected, has to be
+    /// either int or decimal represented as string.
     pub percentage: IntOrString,
 }
 
 /// Delay defines configuration of delaying a response from a destination
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionFromDefaultHttpDelay {
-    /// Percentage of requests on which delay will be injected, has to be either int or decimal represented as string.
+    /// Percentage of requests on which delay will be injected, has to be
+    /// either int or decimal represented as string.
     pub percentage: IntOrString,
     /// The duration during which the response will be delayed
     pub value: String,
 }
 
-/// ResponseBandwidth defines a configuration to limit the speed of responding to the requests
+/// ResponseBandwidth defines a configuration to limit the speed of
+/// responding to the requests
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionFromDefaultHttpResponseBandwidth {
-    /// Limit is represented by value measure in gbps, mbps, kbps or bps, e.g. 10kbps
+    /// Limit is represented by value measure in gbps, mbps, kbps or bps, e.g.
+    /// 10kbps
     pub limit: String,
-    /// Percentage of requests on which response bandwidth limit will be either int or decimal represented as string.
+    /// Percentage of requests on which response bandwidth limit will be
+    /// either int or decimal represented as string.
     pub percentage: IntOrString,
 }
 
-/// TargetRef is a reference to the resource that represents a group of destinations.
+/// TargetRef is a reference to the resource that represents a group of
+/// destinations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionFromTargetRef {
     /// Kind of the referenced resource
@@ -93,15 +109,22 @@ pub struct MeshFaultInjectionFromTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource that represents a group of destinations.
+/// TargetRef is a reference to the resource that represents a group of
+/// destinations.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshFaultInjectionFromTargetRefKind {
     Mesh,
@@ -113,7 +136,9 @@ pub enum MeshFaultInjectionFromTargetRefKind {
     MeshHttpRoute,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionTargetRef {
     /// Kind of the referenced resource
@@ -122,15 +147,23 @@ pub struct MeshFaultInjectionTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshFaultInjectionTargetRefKind {
     Mesh,
@@ -144,15 +177,18 @@ pub enum MeshFaultInjectionTargetRefKind {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionTo {
-    /// Default is a configuration specific to the group of destinations referenced in 'targetRef'
+    /// Default is a configuration specific to the group of destinations referenced in
+    /// 'targetRef'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<MeshFaultInjectionToDefault>,
-    /// TargetRef is a reference to the resource that represents a group of destinations.
+    /// TargetRef is a reference to the resource that represents a group of
+    /// destinations.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshFaultInjectionToTargetRef,
 }
 
-/// Default is a configuration specific to the group of destinations referenced in 'targetRef'
+/// Default is a configuration specific to the group of destinations referenced in
+/// 'targetRef'
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionToDefault {
     /// Http allows to define list of Http faults between dataplanes.
@@ -163,46 +199,57 @@ pub struct MeshFaultInjectionToDefault {
 /// FaultInjection defines the configuration of faults between dataplanes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionToDefaultHttp {
-    /// Abort defines a configuration of not delivering requests to destination service and replacing the responses from destination dataplane by predefined status code
+    /// Abort defines a configuration of not delivering requests to destination
+    /// service and replacing the responses from destination dataplane by
+    /// predefined status code
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub abort: Option<MeshFaultInjectionToDefaultHttpAbort>,
     /// Delay defines configuration of delaying a response from a destination
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delay: Option<MeshFaultInjectionToDefaultHttpDelay>,
-    /// ResponseBandwidth defines a configuration to limit the speed of responding to the requests
+    /// ResponseBandwidth defines a configuration to limit the speed of
+    /// responding to the requests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseBandwidth")]
     pub response_bandwidth: Option<MeshFaultInjectionToDefaultHttpResponseBandwidth>,
 }
 
-/// Abort defines a configuration of not delivering requests to destination service and replacing the responses from destination dataplane by predefined status code
+/// Abort defines a configuration of not delivering requests to destination
+/// service and replacing the responses from destination dataplane by
+/// predefined status code
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionToDefaultHttpAbort {
     /// HTTP status code which will be returned to source side
     #[serde(rename = "httpStatus")]
     pub http_status: i32,
-    /// Percentage of requests on which abort will be injected, has to be either int or decimal represented as string.
+    /// Percentage of requests on which abort will be injected, has to be
+    /// either int or decimal represented as string.
     pub percentage: IntOrString,
 }
 
 /// Delay defines configuration of delaying a response from a destination
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionToDefaultHttpDelay {
-    /// Percentage of requests on which delay will be injected, has to be either int or decimal represented as string.
+    /// Percentage of requests on which delay will be injected, has to be
+    /// either int or decimal represented as string.
     pub percentage: IntOrString,
     /// The duration during which the response will be delayed
     pub value: String,
 }
 
-/// ResponseBandwidth defines a configuration to limit the speed of responding to the requests
+/// ResponseBandwidth defines a configuration to limit the speed of
+/// responding to the requests
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionToDefaultHttpResponseBandwidth {
-    /// Limit is represented by value measure in gbps, mbps, kbps or bps, e.g. 10kbps
+    /// Limit is represented by value measure in gbps, mbps, kbps or bps, e.g.
+    /// 10kbps
     pub limit: String,
-    /// Percentage of requests on which response bandwidth limit will be either int or decimal represented as string.
+    /// Percentage of requests on which response bandwidth limit will be
+    /// either int or decimal represented as string.
     pub percentage: IntOrString,
 }
 
-/// TargetRef is a reference to the resource that represents a group of destinations.
+/// TargetRef is a reference to the resource that represents a group of
+/// destinations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionToTargetRef {
     /// Kind of the referenced resource
@@ -211,15 +258,22 @@ pub struct MeshFaultInjectionToTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource that represents a group of destinations.
+/// TargetRef is a reference to the resource that represents a group of
+/// destinations.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshFaultInjectionToTargetRefKind {
     Mesh,

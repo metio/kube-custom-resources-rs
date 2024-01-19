@@ -15,22 +15,27 @@ pub struct MeshTrafficPermissionSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<MeshTrafficPermissionFrom>>,
-    /// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+    /// TargetRef is a reference to the resource the policy takes an effect on.
+    /// The resource could be either a real store object or virtual resource
+    /// defined inplace.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshTrafficPermissionTargetRef,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshTrafficPermissionFrom {
-    /// Default is a configuration specific to the group of clients referenced in 'targetRef'
+    /// Default is a configuration specific to the group of clients referenced in
+    /// 'targetRef'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<MeshTrafficPermissionFromDefault>,
-    /// TargetRef is a reference to the resource that represents a group of clients.
+    /// TargetRef is a reference to the resource that represents a group of
+    /// clients.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshTrafficPermissionFromTargetRef,
 }
 
-/// Default is a configuration specific to the group of clients referenced in 'targetRef'
+/// Default is a configuration specific to the group of clients referenced in
+/// 'targetRef'
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshTrafficPermissionFromDefault {
     /// Action defines a behavior for the specified group of clients:
@@ -38,7 +43,8 @@ pub struct MeshTrafficPermissionFromDefault {
     pub action: Option<MeshTrafficPermissionFromDefaultAction>,
 }
 
-/// Default is a configuration specific to the group of clients referenced in 'targetRef'
+/// Default is a configuration specific to the group of clients referenced in
+/// 'targetRef'
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshTrafficPermissionFromDefaultAction {
     Allow,
@@ -46,7 +52,8 @@ pub enum MeshTrafficPermissionFromDefaultAction {
     AllowWithShadowDeny,
 }
 
-/// TargetRef is a reference to the resource that represents a group of clients.
+/// TargetRef is a reference to the resource that represents a group of
+/// clients.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshTrafficPermissionFromTargetRef {
     /// Kind of the referenced resource
@@ -55,15 +62,22 @@ pub struct MeshTrafficPermissionFromTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource that represents a group of clients.
+/// TargetRef is a reference to the resource that represents a group of
+/// clients.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshTrafficPermissionFromTargetRefKind {
     Mesh,
@@ -75,7 +89,9 @@ pub enum MeshTrafficPermissionFromTargetRefKind {
     MeshHttpRoute,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshTrafficPermissionTargetRef {
     /// Kind of the referenced resource
@@ -84,15 +100,23 @@ pub struct MeshTrafficPermissionTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshTrafficPermissionTargetRefKind {
     Mesh,

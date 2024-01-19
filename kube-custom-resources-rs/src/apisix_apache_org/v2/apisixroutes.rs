@@ -34,6 +34,8 @@ pub struct ApisixRouteHttp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugin_config_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plugin_config_namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<ApisixRouteHttpPlugins>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,

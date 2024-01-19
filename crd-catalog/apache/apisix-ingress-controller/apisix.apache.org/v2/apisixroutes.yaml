@@ -207,7 +207,6 @@ spec:
                           type: array
                         paths:
                           items:
-                            pattern: ^/[a-zA-Z0-9\-._~%!$&'()+,;=:@/]*\*?$
                             type: string
                           minItems: 1
                           type: array
@@ -223,6 +222,9 @@ spec:
                       minLength: 1
                       type: string
                     plugin_config_name:
+                      minLength: 1
+                      type: string
+                    plugin_config_namespace:
                       minLength: 1
                       type: string
                     plugins:

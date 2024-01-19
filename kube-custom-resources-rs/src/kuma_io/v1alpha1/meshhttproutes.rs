@@ -13,7 +13,9 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct MeshHTTPRouteSpec {
-    /// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+    /// TargetRef is a reference to the resource the policy takes an effect on.
+    /// The resource could be either a real store object or virtual resource
+    /// defined inplace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
     pub target_ref: Option<MeshHTTPRouteTargetRef>,
     /// To matches destination services of requests and holds configuration.
@@ -21,7 +23,9 @@ pub struct MeshHTTPRouteSpec {
     pub to: Option<Vec<MeshHTTPRouteTo>>,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteTargetRef {
     /// Kind of the referenced resource
@@ -30,15 +34,23 @@ pub struct MeshHTTPRouteTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshHTTPRouteTargetRefKind {
     Mesh,
@@ -52,26 +64,34 @@ pub enum MeshHTTPRouteTargetRefKind {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteTo {
-    /// Hostnames is only valid when targeting MeshGateway and limits the effects of the rules to requests to this hostname. Given hostnames must intersect with the hostname of the listeners the route attaches to.
+    /// Hostnames is only valid when targeting MeshGateway and limits the
+    /// effects of the rules to requests to this hostname.
+    /// Given hostnames must intersect with the hostname of the listeners the
+    /// route attaches to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostnames: Option<Vec<String>>,
-    /// Rules contains the routing rules applies to a combination of top-level targetRef and the targetRef in this entry.
+    /// Rules contains the routing rules applies to a combination of top-level
+    /// targetRef and the targetRef in this entry.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<MeshHTTPRouteToRules>>,
-    /// TargetRef is a reference to the resource that represents a group of request destinations.
+    /// TargetRef is a reference to the resource that represents a group of
+    /// request destinations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
     pub target_ref: Option<MeshHTTPRouteToTargetRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRules {
-    /// Default holds routing rules that can be merged with rules from other policies.
+    /// Default holds routing rules that can be merged with rules from other
+    /// policies.
     pub default: MeshHTTPRouteToRulesDefault,
-    /// Matches describes how to match HTTP requests this rule should be applied to.
+    /// Matches describes how to match HTTP requests this rule should be applied
+    /// to.
     pub matches: Vec<MeshHTTPRouteToRulesMatches>,
 }
 
-/// Default holds routing rules that can be merged with rules from other policies.
+/// Default holds routing rules that can be merged with rules from other
+/// policies.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefault {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendRefs")]
@@ -89,10 +109,16 @@ pub struct MeshHTTPRouteToRulesDefaultBackendRefs {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -113,14 +139,18 @@ pub enum MeshHTTPRouteToRulesDefaultBackendRefsKind {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFilters {
-    /// Only one action is supported per header name. Configuration to set or add multiple values for a header must use RFC 7230 header value formatting, separating each value with a comma.
+    /// Only one action is supported per header name.
+    /// Configuration to set or add multiple values for a header must use RFC 7230
+    /// header value formatting, separating each value with a comma.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaderModifier")]
     pub request_header_modifier: Option<MeshHTTPRouteToRulesDefaultFiltersRequestHeaderModifier>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMirror")]
     pub request_mirror: Option<MeshHTTPRouteToRulesDefaultFiltersRequestMirror>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestRedirect")]
     pub request_redirect: Option<MeshHTTPRouteToRulesDefaultFiltersRequestRedirect>,
-    /// Only one action is supported per header name. Configuration to set or add multiple values for a header must use RFC 7230 header value formatting, separating each value with a comma.
+    /// Only one action is supported per header name.
+    /// Configuration to set or add multiple values for a header must use RFC 7230
+    /// header value formatting, separating each value with a comma.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaderModifier")]
     pub response_header_modifier: Option<MeshHTTPRouteToRulesDefaultFiltersResponseHeaderModifier>,
     #[serde(rename = "type")]
@@ -129,7 +159,9 @@ pub struct MeshHTTPRouteToRulesDefaultFilters {
     pub url_rewrite: Option<MeshHTTPRouteToRulesDefaultFiltersUrlRewrite>,
 }
 
-/// Only one action is supported per header name. Configuration to set or add multiple values for a header must use RFC 7230 header value formatting, separating each value with a comma.
+/// Only one action is supported per header name.
+/// Configuration to set or add multiple values for a header must use RFC 7230
+/// header value formatting, separating each value with a comma.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestHeaderModifier {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -157,7 +189,8 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirror {
     /// TargetRef defines structure that allows attaching policy to various objects
     #[serde(rename = "backendRef")]
     pub backend_ref: MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef,
-    /// Percentage of requests to mirror. If not specified, all requests to the target cluster will be mirrored.
+    /// Percentage of requests to mirror. If not specified, all requests
+    /// to the target cluster will be mirrored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percentage: Option<IntOrString>,
 }
@@ -171,10 +204,16 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
@@ -193,14 +232,24 @@ pub enum MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRefKind {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirect {
-    /// PreciseHostname is the fully qualified domain name of a network host. This matches the RFC 1123 definition of a hostname with 1 notable exception that numeric IP addresses are not allowed. 
-    ///  Note that as per RFC1035 and RFC1123, a *label* must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character. No other punctuation is allowed.
+    /// PreciseHostname is the fully qualified domain name of a network host. This
+    /// matches the RFC 1123 definition of a hostname with 1 notable exception that
+    /// numeric IP addresses are not allowed.
+    /// 
+    /// 
+    /// Note that as per RFC1035 and RFC1123, a *label* must consist of lower case
+    /// alphanumeric characters or '-', and must start and end with an alphanumeric
+    /// character. No other punctuation is allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// Path defines parameters used to modify the path of the incoming request. The modified path is then used to construct the location header. When empty, the request path is used as-is.
+    /// Path defines parameters used to modify the path of the incoming request.
+    /// The modified path is then used to construct the location header.
+    /// When empty, the request path is used as-is.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<MeshHTTPRouteToRulesDefaultFiltersRequestRedirectPath>,
-    /// Port is the port to be used in the value of the `Location` header in the response. When empty, port (if specified) of the request is used.
+    /// Port is the port to be used in the value of the `Location`
+    /// header in the response.
+    /// When empty, port (if specified) of the request is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -210,7 +259,9 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirect {
     pub status_code: Option<i64>,
 }
 
-/// Path defines parameters used to modify the path of the incoming request. The modified path is then used to construct the location header. When empty, the request path is used as-is.
+/// Path defines parameters used to modify the path of the incoming request.
+/// The modified path is then used to construct the location header.
+/// When empty, the request path is used as-is.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirectPath {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceFullPath")]
@@ -221,7 +272,9 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirectPath {
     pub r#type: MeshHTTPRouteToRulesDefaultFiltersRequestRedirectPathType,
 }
 
-/// Path defines parameters used to modify the path of the incoming request. The modified path is then used to construct the location header. When empty, the request path is used as-is.
+/// Path defines parameters used to modify the path of the incoming request.
+/// The modified path is then used to construct the location header.
+/// When empty, the request path is used as-is.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshHTTPRouteToRulesDefaultFiltersRequestRedirectPathType {
     ReplaceFullPath,
@@ -250,7 +303,9 @@ pub enum MeshHTTPRouteToRulesDefaultFiltersRequestRedirectStatusCode {
     r#_308,
 }
 
-/// Only one action is supported per header name. Configuration to set or add multiple values for a header must use RFC 7230 header value formatting, separating each value with a comma.
+/// Only one action is supported per header name.
+/// Configuration to set or add multiple values for a header must use RFC 7230
+/// header value formatting, separating each value with a comma.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersResponseHeaderModifier {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -285,7 +340,8 @@ pub enum MeshHTTPRouteToRulesDefaultFiltersType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersUrlRewrite {
-    /// HostToBackendHostname rewrites the hostname to the hostname of the upstream host. This option is only available when targeting MeshGateways.
+    /// HostToBackendHostname rewrites the hostname to the hostname of the
+    /// upstream host. This option is only available when targeting MeshGateways.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostToBackendHostname")]
     pub host_to_backend_hostname: Option<bool>,
     /// Hostname is the value to be used to replace the host header value during forwarding.
@@ -322,15 +378,18 @@ pub struct MeshHTTPRouteToRulesMatches {
     pub method: Option<MeshHTTPRouteToRulesMatchesMethod>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<MeshHTTPRouteToRulesMatchesPath>,
-    /// QueryParams matches based on HTTP URL query parameters. Multiple matches are ANDed together such that all listed matches must succeed.
+    /// QueryParams matches based on HTTP URL query parameters. Multiple matches
+    /// are ANDed together such that all listed matches must succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParams")]
     pub query_params: Option<Vec<MeshHTTPRouteToRulesMatchesQueryParams>>,
 }
 
-/// HeaderMatch describes how to select an HTTP route by matching HTTP request headers.
+/// HeaderMatch describes how to select an HTTP route by matching HTTP request
+/// headers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesMatchesHeaders {
-    /// Name is the name of the HTTP Header to be matched. Name MUST be lower case as they will be handled with case insensitivity (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// Name is the name of the HTTP Header to be matched. Name MUST be lower case
+    /// as they will be handled with case insensitivity (See https://tools.ietf.org/html/rfc7230#section-3.2).
     pub name: String,
     /// Type specifies how to match against the value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -340,7 +399,8 @@ pub struct MeshHTTPRouteToRulesMatchesHeaders {
     pub value: Option<String>,
 }
 
-/// HeaderMatch describes how to select an HTTP route by matching HTTP request headers.
+/// HeaderMatch describes how to select an HTTP route by matching HTTP request
+/// headers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshHTTPRouteToRulesMatchesHeadersType {
     Exact,
@@ -376,7 +436,8 @@ pub enum MeshHTTPRouteToRulesMatchesMethod {
 pub struct MeshHTTPRouteToRulesMatchesPath {
     #[serde(rename = "type")]
     pub r#type: MeshHTTPRouteToRulesMatchesPathType,
-    /// Exact or prefix matches must be an absolute path. A prefix matches only if separated by a slash or the entire path.
+    /// Exact or prefix matches must be an absolute path. A prefix matches only
+    /// if separated by a slash or the entire path.
     pub value: String,
 }
 
@@ -401,7 +462,8 @@ pub enum MeshHTTPRouteToRulesMatchesQueryParamsType {
     RegularExpression,
 }
 
-/// TargetRef is a reference to the resource that represents a group of request destinations.
+/// TargetRef is a reference to the resource that represents a group of
+/// request destinations.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToTargetRef {
     /// Kind of the referenced resource
@@ -410,15 +472,22 @@ pub struct MeshHTTPRouteToTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource that represents a group of request destinations.
+/// TargetRef is a reference to the resource that represents a group of
+/// request destinations.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshHTTPRouteToTargetRefKind {
     Mesh,

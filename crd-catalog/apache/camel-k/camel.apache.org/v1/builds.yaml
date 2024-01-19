@@ -110,7 +110,7 @@ spec:
                   description: Task represents the abstract task. Only one of the task should be configured to represent the specific task chosen.
                   properties:
                     buildah:
-                      description: 'a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib or s2i instead'
+                      description: 'a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead'
                       properties:
                         baseImage:
                           description: base image layer
@@ -662,6 +662,13 @@ spec:
                         name:
                           description: name of the task
                           type: string
+                        publishingImage:
+                          description: the desired image build name
+                          type: string
+                        userId:
+                          description: the user id used to run the container
+                          format: int64
+                          type: integer
                       type: object
                     jib:
                       description: a JibTask, for Jib strategy
@@ -739,7 +746,7 @@ spec:
                           type: object
                       type: object
                     kaniko:
-                      description: 'a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib or s2i instead'
+                      description: 'a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead'
                       properties:
                         baseImage:
                           description: base image layer

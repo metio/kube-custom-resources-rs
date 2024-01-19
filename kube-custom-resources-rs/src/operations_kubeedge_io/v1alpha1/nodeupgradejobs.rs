@@ -12,9 +12,15 @@ use std::collections::BTreeMap;
 #[kube(status = "NodeUpgradeJobStatus")]
 #[kube(schema = "disabled")]
 pub struct NodeUpgradeJobSpec {
+    /// CheckItems specifies the items need to be checked before the task is executed. The default CheckItems value is nil.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkItems")]
+    pub check_items: Option<Vec<String>>,
     /// Concurrency specifies the max number of edge nodes that can be upgraded at the same time. The default Concurrency value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i32>,
+    /// FailureTolerate specifies the task tolerance failure ratio. The default FailureTolerate value is 0.1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureTolerate")]
+    pub failure_tolerate: Option<String>,
     /// Image specifies a container image name, the image contains: keadm and edgecore. keadm is used as upgradetool, to install the new version of edgecore. The image name consists of registry hostname and repository name, if it includes the tag or digest, the tag or digest will be overwritten by Version field above. If the registry hostname is empty, docker.io will be used as default. The default image name is: kubeedge/installation-package.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -27,9 +33,6 @@ pub struct NodeUpgradeJobSpec {
     /// TimeoutSeconds limits the duration of the node upgrade job. Default to 300. If set to 0, we'll use the default value 300.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
-    /// UpgradeTool is a request to decide use which upgrade tool. If it is empty, the upgrade job simply use default upgrade tool keadm to do upgrade operation.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeTool")]
-    pub upgrade_tool: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -60,77 +63,52 @@ pub struct NodeUpgradeJobLabelSelectorMatchExpressions {
 /// Most recently observed status of the NodeUpgradeJob.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeUpgradeJobStatus {
-    /// State represents for the state phase of the NodeUpgradeJob. There are three possible state values: "", upgrading and completed.
+    /// Action represents for the action of the ImagePrePullJob. There are two possible action values: Success, Failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<NodeUpgradeJobStatusState>,
+    pub action: Option<String>,
+    /// CurrentVersion represents for the current status of the EdgeCore.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVersion")]
+    pub current_version: Option<String>,
+    /// Event represents for the event of the ImagePrePullJob. There are six possible event values: Init, Check, BackUp, Upgrade, TimeOut, Rollback.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub event: Option<String>,
+    /// HistoricVersion represents for the historic status of the EdgeCore.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "historicVersion")]
+    pub historic_version: Option<String>,
     /// Status contains upgrade Status for each edge node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStatus")]
+    pub node_status: Option<Vec<NodeUpgradeJobStatusNodeStatus>>,
+    /// Reason represents for the reason of the ImagePrePullJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<Vec<NodeUpgradeJobStatusStatus>>,
+    pub reason: Option<String>,
+    /// State represents for the state phase of the NodeUpgradeJob. There are several possible state values: "", Upgrading, BackingUp, RollingBack and Checking.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    /// Time represents for the running time of the ImagePrePullJob.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub time: Option<String>,
 }
 
-/// Most recently observed status of the NodeUpgradeJob.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum NodeUpgradeJobStatusState {
-    #[serde(rename = "upgrading")]
-    Upgrading,
-    #[serde(rename = "completed")]
-    Completed,
-}
-
-/// UpgradeStatus stores the status of Upgrade for each edge node.
+/// TaskStatus stores the status of Upgrade for each edge node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeUpgradeJobStatusStatus {
-    /// History is the last upgrade result of the edge node.
+pub struct NodeUpgradeJobStatusNodeStatus {
+    /// Action represents for the action of the ImagePrePullJob. There are three possible action values: Success, Failure, TimeOut.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub history: Option<NodeUpgradeJobStatusStatusHistory>,
+    pub action: Option<String>,
+    /// Event represents for the event of the ImagePrePullJob. There are three possible event values: Init, Check, Pull.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub event: Option<String>,
     /// NodeName is the name of edge node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
-    /// State represents for the upgrade state phase of the edge node. There are three possible state values: "", upgrading and completed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<NodeUpgradeJobStatusStatusState>,
-}
-
-/// History is the last upgrade result of the edge node.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeUpgradeJobStatusStatusHistory {
-    /// FromVersion is the version which the edge node is upgraded from.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromVersion")]
-    pub from_version: Option<String>,
-    /// HistoryID is to uniquely identify an Upgrade Operation.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "historyID")]
-    pub history_id: Option<String>,
-    /// Reason is the error reason of Upgrade failure. If the upgrade is successful, this reason is an empty string.
+    /// Reason represents for the reason of the ImagePrePullJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// Result represents the result of upgrade.
+    /// State represents for the upgrade state phase of the edge node. There are several possible state values: "", Upgrading, BackingUp, RollingBack and Checking.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub result: Option<NodeUpgradeJobStatusStatusHistoryResult>,
-    /// ToVersion is the version which the edge node is upgraded to.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toVersion")]
-    pub to_version: Option<String>,
-    /// UpgradeTime is the time of this Upgrade.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeTime")]
-    pub upgrade_time: Option<String>,
-}
-
-/// History is the last upgrade result of the edge node.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum NodeUpgradeJobStatusStatusHistoryResult {
-    #[serde(rename = "upgrade_success")]
-    UpgradeSuccess,
-    #[serde(rename = "upgrade_failed_rollback_success")]
-    UpgradeFailedRollbackSuccess,
-    #[serde(rename = "upgrade_failed_rollback_failed")]
-    UpgradeFailedRollbackFailed,
-}
-
-/// UpgradeStatus stores the status of Upgrade for each edge node.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum NodeUpgradeJobStatusStatusState {
-    #[serde(rename = "upgrading")]
-    Upgrading,
-    #[serde(rename = "completed")]
-    Completed,
+    pub state: Option<String>,
+    /// Time represents for the running time of the ImagePrePullJob.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub time: Option<String>,
 }
 

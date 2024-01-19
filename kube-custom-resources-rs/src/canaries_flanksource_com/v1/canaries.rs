@@ -49,6 +49,8 @@ pub struct CanarySpec {
     pub exec: Option<Vec<CanaryExec>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<Vec<CanaryFolder>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitProtocol")]
+    pub git_protocol: Option<Vec<CanaryGitProtocol>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub github: Option<Vec<CanaryGithub>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3909,6 +3911,188 @@ pub struct CanaryFolderTransform {
     pub json_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocol {
+    /// Description for the check
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub display: Option<CanaryGitProtocolDisplay>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filename: Option<String>,
+    /// Icon for overwriting default icon on the dashboard
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub icon: Option<String>,
+    /// Labels for the check
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Metrics to expose from check results
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<Vec<CanaryGitProtocolMetrics>>,
+    /// Name of the check
+    pub name: String,
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    pub password: CanaryGitProtocolPassword,
+    pub repository: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub test: Option<CanaryGitProtocolTest>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub transform: Option<CanaryGitProtocolTransform>,
+    /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformDeleteStrategy")]
+    pub transform_delete_strategy: Option<String>,
+    pub username: CanaryGitProtocolUsername,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolDisplay {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolMetrics {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<CanaryGitProtocolMetricsLabels>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolMetricsLabels {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueExpr")]
+    pub value_expr: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolPassword {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<CanaryGitProtocolPasswordValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolPasswordValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<CanaryGitProtocolPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryGitProtocolPasswordValueFromHelmRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<CanaryGitProtocolPasswordValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolPasswordValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolPasswordValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolTest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolTransform {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolUsername {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<CanaryGitProtocolUsernameValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolUsernameValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<CanaryGitProtocolUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryGitProtocolUsernameValueFromHelmRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<CanaryGitProtocolUsernameValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolUsernameValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryGitProtocolUsernameValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

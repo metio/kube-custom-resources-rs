@@ -11,6 +11,9 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "ClusterTriggerAuthenticationStatus")]
 #[kube(schema = "disabled")]
 pub struct ClusterTriggerAuthenticationSpec {
+    /// AwsSecretManager is used to authenticate using AwsSecretManager
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSecretManager")]
+    pub aws_secret_manager: Option<ClusterTriggerAuthenticationAwsSecretManager>,
     /// AzureKeyVault is used to authenticate using Azure Key Vault
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureKeyVault")]
     pub azure_key_vault: Option<ClusterTriggerAuthenticationAzureKeyVault>,
@@ -18,6 +21,8 @@ pub struct ClusterTriggerAuthenticationSpec {
     pub config_map_target_ref: Option<Vec<ClusterTriggerAuthenticationConfigMapTargetRef>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterTriggerAuthenticationEnv>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcpSecretManager")]
+    pub gcp_secret_manager: Option<ClusterTriggerAuthenticationGcpSecretManager>,
     /// HashiCorpVault is used to authenticate using Hashicorp Vault
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashiCorpVault")]
     pub hashi_corp_vault: Option<ClusterTriggerAuthenticationHashiCorpVault>,
@@ -26,6 +31,134 @@ pub struct ClusterTriggerAuthenticationSpec {
     pub pod_identity: Option<ClusterTriggerAuthenticationPodIdentity>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTargetRef")]
     pub secret_target_ref: Option<Vec<ClusterTriggerAuthenticationSecretTargetRef>>,
+}
+
+/// AwsSecretManager is used to authenticate using AwsSecretManager
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManager {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<ClusterTriggerAuthenticationAwsSecretManagerCredentials>,
+    /// AuthPodIdentity allows users to select the platform native identity mechanism
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
+    pub pod_identity: Option<ClusterTriggerAuthenticationAwsSecretManagerPodIdentity>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    pub secrets: Vec<ClusterTriggerAuthenticationAwsSecretManagerSecrets>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentials {
+    #[serde(rename = "accessKey")]
+    pub access_key: ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessKey,
+    #[serde(rename = "accessSecretKey")]
+    pub access_secret_key: ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKey,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
+    pub access_token: Option<ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessKey {
+    #[serde(rename = "valueFrom")]
+    pub value_from: ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessKeyValueFrom,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessKeyValueFrom {
+    #[serde(rename = "secretKeyRef")]
+    pub secret_key_ref: ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessKeyValueFromSecretKeyRef,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessKeyValueFromSecretKeyRef {
+    pub key: String,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKey {
+    #[serde(rename = "valueFrom")]
+    pub value_from: ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKeyValueFrom,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKeyValueFrom {
+    #[serde(rename = "secretKeyRef")]
+    pub secret_key_ref: ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKeyValueFromSecretKeyRef,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKeyValueFromSecretKeyRef {
+    pub key: String,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessToken {
+    #[serde(rename = "valueFrom")]
+    pub value_from: ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFrom,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFrom {
+    #[serde(rename = "secretKeyRef")]
+    pub secret_key_ref: ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFromSecretKeyRef,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFromSecretKeyRef {
+    pub key: String,
+    pub name: String,
+}
+
+/// AuthPodIdentity allows users to select the platform native identity mechanism
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerPodIdentity {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
+    pub identity_id: Option<String>,
+    /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
+    pub identity_owner: Option<ClusterTriggerAuthenticationAwsSecretManagerPodIdentityIdentityOwner>,
+    /// PodIdentityProvider contains the list of providers
+    pub provider: ClusterTriggerAuthenticationAwsSecretManagerPodIdentityProvider,
+    /// RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleArn")]
+    pub role_arn: Option<String>,
+}
+
+/// AuthPodIdentity allows users to select the platform native identity mechanism
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterTriggerAuthenticationAwsSecretManagerPodIdentityIdentityOwner {
+    #[serde(rename = "keda")]
+    Keda,
+    #[serde(rename = "workload")]
+    Workload,
+}
+
+/// AuthPodIdentity allows users to select the platform native identity mechanism
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterTriggerAuthenticationAwsSecretManagerPodIdentityProvider {
+    #[serde(rename = "azure")]
+    Azure,
+    #[serde(rename = "azure-workload")]
+    AzureWorkload,
+    #[serde(rename = "gcp")]
+    Gcp,
+    #[serde(rename = "aws")]
+    Aws,
+    #[serde(rename = "aws-eks")]
+    AwsEks,
+    #[serde(rename = "aws-kiam")]
+    AwsKiam,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationAwsSecretManagerSecrets {
+    pub name: String,
+    pub parameter: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionId")]
+    pub version_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionStage")]
+    pub version_stage: Option<String>,
 }
 
 /// AzureKeyVault is used to authenticate using Azure Key Vault
@@ -145,6 +278,89 @@ pub struct ClusterTriggerAuthenticationEnv {
     pub container_name: Option<String>,
     pub name: String,
     pub parameter: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationGcpSecretManager {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<ClusterTriggerAuthenticationGcpSecretManagerCredentials>,
+    /// AuthPodIdentity allows users to select the platform native identity mechanism
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
+    pub pod_identity: Option<ClusterTriggerAuthenticationGcpSecretManagerPodIdentity>,
+    pub secrets: Vec<ClusterTriggerAuthenticationGcpSecretManagerSecrets>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationGcpSecretManagerCredentials {
+    #[serde(rename = "clientSecret")]
+    pub client_secret: ClusterTriggerAuthenticationGcpSecretManagerCredentialsClientSecret,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationGcpSecretManagerCredentialsClientSecret {
+    #[serde(rename = "valueFrom")]
+    pub value_from: ClusterTriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFrom,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFrom {
+    #[serde(rename = "secretKeyRef")]
+    pub secret_key_ref: ClusterTriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFromSecretKeyRef,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFromSecretKeyRef {
+    pub key: String,
+    pub name: String,
+}
+
+/// AuthPodIdentity allows users to select the platform native identity mechanism
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationGcpSecretManagerPodIdentity {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
+    pub identity_id: Option<String>,
+    /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
+    pub identity_owner: Option<ClusterTriggerAuthenticationGcpSecretManagerPodIdentityIdentityOwner>,
+    /// PodIdentityProvider contains the list of providers
+    pub provider: ClusterTriggerAuthenticationGcpSecretManagerPodIdentityProvider,
+    /// RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleArn")]
+    pub role_arn: Option<String>,
+}
+
+/// AuthPodIdentity allows users to select the platform native identity mechanism
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterTriggerAuthenticationGcpSecretManagerPodIdentityIdentityOwner {
+    #[serde(rename = "keda")]
+    Keda,
+    #[serde(rename = "workload")]
+    Workload,
+}
+
+/// AuthPodIdentity allows users to select the platform native identity mechanism
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterTriggerAuthenticationGcpSecretManagerPodIdentityProvider {
+    #[serde(rename = "azure")]
+    Azure,
+    #[serde(rename = "azure-workload")]
+    AzureWorkload,
+    #[serde(rename = "gcp")]
+    Gcp,
+    #[serde(rename = "aws")]
+    Aws,
+    #[serde(rename = "aws-eks")]
+    AwsEks,
+    #[serde(rename = "aws-kiam")]
+    AwsKiam,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTriggerAuthenticationGcpSecretManagerSecrets {
+    pub id: String,
+    pub parameter: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 /// HashiCorpVault is used to authenticate using Hashicorp Vault

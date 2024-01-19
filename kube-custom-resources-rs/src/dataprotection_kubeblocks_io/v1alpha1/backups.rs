@@ -156,12 +156,15 @@ pub struct BackupStatusActionsObjectRef {
 /// timeRange records the time range of backed up data, for PITR, this is the time range of recoverable data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusActionsTimeRange {
-    /// end records the end time of backup.
+    /// end records the end time of backup(Coordinated Universal Time, UTC).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end: Option<String>,
-    /// start records the start time of backup.
+    /// start records the start time of backup(Coordinated Universal Time, UTC).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
+    /// time zone, only support zone offset, value range: "-12:59 ~ +13:00"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
+    pub time_zone: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -577,12 +580,15 @@ pub struct BackupStatusTargetResourcesSelectorMatchExpressions {
 /// timeRange records the time range of backed up data, for PITR, this is the time range of recoverable data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusTimeRange {
-    /// end records the end time of backup.
+    /// end records the end time of backup(Coordinated Universal Time, UTC).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end: Option<String>,
-    /// start records the start time of backup.
+    /// start records the start time of backup(Coordinated Universal Time, UTC).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
+    /// time zone, only support zone offset, value range: "-12:59 ~ +13:00"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
+    pub time_zone: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -16,7 +16,9 @@ pub struct MeshTraceSpec {
     /// MeshTrace configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<MeshTraceDefault>,
-    /// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+    /// TargetRef is a reference to the resource the policy takes an effect on.
+    /// The resource could be either a real store object or virtual resource
+    /// defined inplace.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshTraceTargetRef,
 }
@@ -24,13 +26,20 @@ pub struct MeshTraceSpec {
 /// MeshTrace configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTraceDefault {
-    /// A one element array of backend definition. Envoy allows configuring only 1 backend, so the natural way of representing that would be just one object. Unfortunately due to the reasons explained in MADR 009-tracing-policy this has to be a one element array for now.
+    /// A one element array of backend definition.
+    /// Envoy allows configuring only 1 backend, so the natural way of
+    /// representing that would be just one object. Unfortunately due to the
+    /// reasons explained in MADR 009-tracing-policy this has to be a one element
+    /// array for now.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backends: Option<Vec<MeshTraceDefaultBackends>>,
-    /// Sampling configuration. Sampling is the process by which a decision is made on whether to process/export a span or not.
+    /// Sampling configuration.
+    /// Sampling is the process by which a decision is made on whether to
+    /// process/export a span or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<MeshTraceDefaultSampling>,
-    /// Custom tags configuration. You can add custom tags to traces based on headers or literal values.
+    /// Custom tags configuration. You can add custom tags to traces based on
+    /// headers or literal values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<MeshTraceDefaultTags>>,
 }
@@ -54,10 +63,15 @@ pub struct MeshTraceDefaultBackends {
 /// Datadog backend configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTraceDefaultBackendsDatadog {
-    /// Determines if datadog service name should be split based on traffic direction and destination. For example, with `splitService: true` and a `backend` service that communicates with a couple of databases, you would get service names like `backend_INBOUND`, `backend_OUTBOUND_db1`, and `backend_OUTBOUND_db2` in Datadog.
+    /// Determines if datadog service name should be split based on traffic
+    /// direction and destination. For example, with `splitService: true` and a
+    /// `backend` service that communicates with a couple of databases, you would
+    /// get service names like `backend_INBOUND`, `backend_OUTBOUND_db1`, and
+    /// `backend_OUTBOUND_db2` in Datadog.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitService")]
     pub split_service: Option<bool>,
-    /// Address of Datadog collector, only host and port are allowed (no paths, fragments etc.)
+    /// Address of Datadog collector, only host and port are allowed (no paths,
+    /// fragments etc.)
     pub url: String,
 }
 
@@ -79,10 +93,13 @@ pub enum MeshTraceDefaultBackendsType {
 /// Zipkin backend configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTraceDefaultBackendsZipkin {
-    /// Version of the API. https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/trace/v3/zipkin.proto#L66
+    /// Version of the API.
+    /// https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/trace/v3/zipkin.proto#L66
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<MeshTraceDefaultBackendsZipkinApiVersion>,
-    /// Determines whether client and server spans will share the same span context. https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/trace/v3/zipkin.proto#L63
+    /// Determines whether client and server spans will share the same span
+    /// context.
+    /// https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/trace/v3/zipkin.proto#L63
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedSpanContext")]
     pub shared_span_context: Option<bool>,
     /// Generate 128bit traces.
@@ -101,21 +118,39 @@ pub enum MeshTraceDefaultBackendsZipkinApiVersion {
     HttpProto,
 }
 
-/// Sampling configuration. Sampling is the process by which a decision is made on whether to process/export a span or not.
+/// Sampling configuration.
+/// Sampling is the process by which a decision is made on whether to
+/// process/export a span or not.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTraceDefaultSampling {
-    /// Target percentage of requests that will be force traced if the 'x-client-trace-id' header is set. Mirror of client_sampling in Envoy https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L127-L133 Either int or decimal represented as string.
+    /// Target percentage of requests that will be force traced if the
+    /// 'x-client-trace-id' header is set. Mirror of client_sampling in Envoy
+    /// https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L127-L133
+    /// Either int or decimal represented as string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client: Option<IntOrString>,
-    /// Target percentage of requests will be traced after all other sampling checks have been applied (client, force tracing, random sampling). This field functions as an upper limit on the total configured sampling rate. For instance, setting client_sampling to 100% but overall_sampling to 1% will result in only 1% of client requests with the appropriate headers to be force traced. Mirror of overall_sampling in Envoy https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L142-L150 Either int or decimal represented as string.
+    /// Target percentage of requests will be traced
+    /// after all other sampling checks have been applied (client, force tracing,
+    /// random sampling). This field functions as an upper limit on the total
+    /// configured sampling rate. For instance, setting client_sampling to 100%
+    /// but overall_sampling to 1% will result in only 1% of client requests with
+    /// the appropriate headers to be force traced. Mirror of
+    /// overall_sampling in Envoy
+    /// https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L142-L150
+    /// Either int or decimal represented as string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overall: Option<IntOrString>,
-    /// Target percentage of requests that will be randomly selected for trace generation, if not requested by the client or not forced. Mirror of random_sampling in Envoy https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L135-L140 Either int or decimal represented as string.
+    /// Target percentage of requests that will be randomly selected for trace
+    /// generation, if not requested by the client or not forced.
+    /// Mirror of random_sampling in Envoy
+    /// https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L135-L140
+    /// Either int or decimal represented as string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub random: Option<IntOrString>,
 }
 
-/// Custom tags configuration. Only one of literal or header can be used.
+/// Custom tags configuration.
+/// Only one of literal or header can be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTraceDefaultTags {
     /// Tag taken from a header.
@@ -131,14 +166,18 @@ pub struct MeshTraceDefaultTags {
 /// Tag taken from a header.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTraceDefaultTagsHeader {
-    /// Default value to use if header is missing. If the default is missing and there is no value the tag will not be included.
+    /// Default value to use if header is missing.
+    /// If the default is missing and there is no value the tag will not be
+    /// included.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<String>,
     /// Name of the header.
     pub name: String,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTraceTargetRef {
     /// Kind of the referenced resource
@@ -147,15 +186,23 @@ pub struct MeshTraceTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshTraceTargetRefKind {
     Mesh,
