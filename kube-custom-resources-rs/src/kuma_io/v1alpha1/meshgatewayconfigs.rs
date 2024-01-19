@@ -13,25 +13,36 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "MeshGatewayConfigStatus")]
 #[kube(schema = "disabled")]
 pub struct MeshGatewayConfigSpec {
-    /// CrossMesh specifies whether listeners configured by this gateway are cross mesh listeners.
+    /// CrossMesh specifies whether listeners configured by this gateway are
+    /// cross mesh listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crossMesh")]
     pub cross_mesh: Option<bool>,
     /// PodTemplate configures the Pod owned by this config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplate")]
     pub pod_template: Option<MeshGatewayConfigPodTemplate>,
-    /// Replicas is the number of dataplane proxy replicas to create. For now this is a fixed number, but in the future it could be automatically scaled based on metrics.
+    /// Replicas is the number of dataplane proxy replicas to create. For
+    /// now this is a fixed number, but in the future it could be
+    /// automatically scaled based on metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources specifies the compute resources for the proxy container. The default can be set in the control plane config.
+    /// Resources specifies the compute resources for the proxy container.
+    /// The default can be set in the control plane config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MeshGatewayConfigResources>,
     /// ServiceTemplate configures the Service owned by this config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceTemplate")]
     pub service_template: Option<MeshGatewayConfigServiceTemplate>,
-    /// ServiceType specifies the type of managed Service that will be created to expose the dataplane proxies to traffic from outside the cluster. The ports to expose will be taken from the matching Gateway resource. If there is no matching Gateway, the managed Service will be deleted.
+    /// ServiceType specifies the type of managed Service that will be
+    /// created to expose the dataplane proxies to traffic from outside
+    /// the cluster. The ports to expose will be taken from the matching Gateway
+    /// resource. If there is no matching Gateway, the managed Service will
+    /// be deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<MeshGatewayConfigServiceType>,
-    /// Tags specifies a set of Kuma tags that are included in the MeshGatewayInstance and thus propagated to every Dataplane generated to serve the MeshGateway. These tags should include a maximum of one `kuma.io/service` tag.
+    /// Tags specifies a set of Kuma tags that are included in the
+    /// MeshGatewayInstance and thus propagated to every Dataplane generated to
+    /// serve the MeshGateway.
+    /// These tags should include a maximum of one `kuma.io/service` tag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
@@ -96,18 +107,29 @@ pub struct MeshGatewayConfigPodTemplateSpecSecurityContext {
     pub fs_group: Option<i64>,
 }
 
-/// Resources specifies the compute resources for the proxy container. The default can be set in the control plane config.
+/// Resources specifies the compute resources for the proxy container.
+/// The default can be set in the control plane config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshGatewayConfigResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<MeshGatewayConfigResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -115,7 +137,9 @@ pub struct MeshGatewayConfigResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshGatewayConfigResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -158,7 +182,8 @@ pub enum MeshGatewayConfigServiceType {
     NodePort,
 }
 
-/// MeshGatewayConfigStatus holds information about the status of the gateway instance.
+/// MeshGatewayConfigStatus holds information about the status of the gateway
+/// instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshGatewayConfigStatus {
 }

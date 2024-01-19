@@ -15,7 +15,9 @@ pub struct MeshRateLimitSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<MeshRateLimitFrom>>,
-    /// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+    /// TargetRef is a reference to the resource the policy takes an effect on.
+    /// The resource could be either a real store object or virtual resource
+    /// defined inplace.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshRateLimitTargetRef,
     /// To list makes a match between clients and corresponding configurations
@@ -25,15 +27,18 @@ pub struct MeshRateLimitSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitFrom {
-    /// Default is a configuration specific to the group of clients referenced in 'targetRef'
+    /// Default is a configuration specific to the group of clients referenced in
+    /// 'targetRef'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<MeshRateLimitFromDefault>,
-    /// TargetRef is a reference to the resource that represents a group of clients.
+    /// TargetRef is a reference to the resource that represents a group of
+    /// clients.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshRateLimitFromTargetRef,
 }
 
-/// Default is a configuration specific to the group of clients referenced in 'targetRef'
+/// Default is a configuration specific to the group of clients referenced in
+/// 'targetRef'
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitFromDefault {
     /// LocalConf defines local http or/and tcp rate limit configuration
@@ -44,15 +49,18 @@ pub struct MeshRateLimitFromDefault {
 /// LocalConf defines local http or/and tcp rate limit configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitFromDefaultLocal {
-    /// LocalHTTP defines confguration of local HTTP rate limiting https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter
+    /// LocalHTTP defines confguration of local HTTP rate limiting
+    /// https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<MeshRateLimitFromDefaultLocalHttp>,
-    /// LocalTCP defines confguration of local TCP rate limiting https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/local_rate_limit_filter
+    /// LocalTCP defines confguration of local TCP rate limiting
+    /// https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/local_rate_limit_filter
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tcp: Option<MeshRateLimitFromDefaultLocalTcp>,
 }
 
-/// LocalHTTP defines confguration of local HTTP rate limiting https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter
+/// LocalHTTP defines confguration of local HTTP rate limiting
+/// https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitFromDefaultLocalHttp {
     /// Define if rate limiting should be disabled.
@@ -103,17 +111,20 @@ pub struct MeshRateLimitFromDefaultLocalHttpOnRateLimitHeadersSet {
 pub struct MeshRateLimitFromDefaultLocalHttpRequestRate {
     /// The interval the number of units is accounted for.
     pub interval: String,
-    /// Number of units per interval (depending on usage it can be a number of requests, or a number of connections).
+    /// Number of units per interval (depending on usage it can be a number of requests,
+    /// or a number of connections).
     pub num: i32,
 }
 
-/// LocalTCP defines confguration of local TCP rate limiting https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/local_rate_limit_filter
+/// LocalTCP defines confguration of local TCP rate limiting
+/// https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/local_rate_limit_filter
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitFromDefaultLocalTcp {
     /// Defines how many connections are allowed per interval.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionRate")]
     pub connection_rate: Option<MeshRateLimitFromDefaultLocalTcpConnectionRate>,
-    /// Define if rate limiting should be disabled. Default: false
+    /// Define if rate limiting should be disabled.
+    /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
 }
@@ -123,11 +134,13 @@ pub struct MeshRateLimitFromDefaultLocalTcp {
 pub struct MeshRateLimitFromDefaultLocalTcpConnectionRate {
     /// The interval the number of units is accounted for.
     pub interval: String,
-    /// Number of units per interval (depending on usage it can be a number of requests, or a number of connections).
+    /// Number of units per interval (depending on usage it can be a number of requests,
+    /// or a number of connections).
     pub num: i32,
 }
 
-/// TargetRef is a reference to the resource that represents a group of clients.
+/// TargetRef is a reference to the resource that represents a group of
+/// clients.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitFromTargetRef {
     /// Kind of the referenced resource
@@ -136,15 +149,22 @@ pub struct MeshRateLimitFromTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource that represents a group of clients.
+/// TargetRef is a reference to the resource that represents a group of
+/// clients.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshRateLimitFromTargetRefKind {
     Mesh,
@@ -156,7 +176,9 @@ pub enum MeshRateLimitFromTargetRefKind {
     MeshHttpRoute,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitTargetRef {
     /// Kind of the referenced resource
@@ -165,15 +187,23 @@ pub struct MeshRateLimitTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshRateLimitTargetRefKind {
     Mesh,
@@ -187,15 +217,18 @@ pub enum MeshRateLimitTargetRefKind {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitTo {
-    /// Default is a configuration specific to the group of clients referenced in 'targetRef'
+    /// Default is a configuration specific to the group of clients referenced in
+    /// 'targetRef'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<MeshRateLimitToDefault>,
-    /// TargetRef is a reference to the resource that represents a group of clients.
+    /// TargetRef is a reference to the resource that represents a group of
+    /// clients.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshRateLimitToTargetRef,
 }
 
-/// Default is a configuration specific to the group of clients referenced in 'targetRef'
+/// Default is a configuration specific to the group of clients referenced in
+/// 'targetRef'
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitToDefault {
     /// LocalConf defines local http or/and tcp rate limit configuration
@@ -206,15 +239,18 @@ pub struct MeshRateLimitToDefault {
 /// LocalConf defines local http or/and tcp rate limit configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitToDefaultLocal {
-    /// LocalHTTP defines confguration of local HTTP rate limiting https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter
+    /// LocalHTTP defines confguration of local HTTP rate limiting
+    /// https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<MeshRateLimitToDefaultLocalHttp>,
-    /// LocalTCP defines confguration of local TCP rate limiting https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/local_rate_limit_filter
+    /// LocalTCP defines confguration of local TCP rate limiting
+    /// https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/local_rate_limit_filter
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tcp: Option<MeshRateLimitToDefaultLocalTcp>,
 }
 
-/// LocalHTTP defines confguration of local HTTP rate limiting https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter
+/// LocalHTTP defines confguration of local HTTP rate limiting
+/// https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitToDefaultLocalHttp {
     /// Define if rate limiting should be disabled.
@@ -265,17 +301,20 @@ pub struct MeshRateLimitToDefaultLocalHttpOnRateLimitHeadersSet {
 pub struct MeshRateLimitToDefaultLocalHttpRequestRate {
     /// The interval the number of units is accounted for.
     pub interval: String,
-    /// Number of units per interval (depending on usage it can be a number of requests, or a number of connections).
+    /// Number of units per interval (depending on usage it can be a number of requests,
+    /// or a number of connections).
     pub num: i32,
 }
 
-/// LocalTCP defines confguration of local TCP rate limiting https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/local_rate_limit_filter
+/// LocalTCP defines confguration of local TCP rate limiting
+/// https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/local_rate_limit_filter
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitToDefaultLocalTcp {
     /// Defines how many connections are allowed per interval.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionRate")]
     pub connection_rate: Option<MeshRateLimitToDefaultLocalTcpConnectionRate>,
-    /// Define if rate limiting should be disabled. Default: false
+    /// Define if rate limiting should be disabled.
+    /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
 }
@@ -285,11 +324,13 @@ pub struct MeshRateLimitToDefaultLocalTcp {
 pub struct MeshRateLimitToDefaultLocalTcpConnectionRate {
     /// The interval the number of units is accounted for.
     pub interval: String,
-    /// Number of units per interval (depending on usage it can be a number of requests, or a number of connections).
+    /// Number of units per interval (depending on usage it can be a number of requests,
+    /// or a number of connections).
     pub num: i32,
 }
 
-/// TargetRef is a reference to the resource that represents a group of clients.
+/// TargetRef is a reference to the resource that represents a group of
+/// clients.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRateLimitToTargetRef {
     /// Kind of the referenced resource
@@ -298,15 +339,22 @@ pub struct MeshRateLimitToTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource that represents a group of clients.
+/// TargetRef is a reference to the resource that represents a group of
+/// clients.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshRateLimitToTargetRefKind {
     Mesh,

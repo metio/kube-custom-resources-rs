@@ -158,9 +158,6 @@ pub struct ClusterComponentSpecs {
     pub monitor: Option<bool>,
     /// name defines cluster's component name, this name is also part of Service DNS name, so this name will comply with IANA Service Naming rule.
     pub name: String,
-    /// noCreatePDB defines the PodDisruptionBudget creation behavior and is set to true if creation of PodDisruptionBudget for this component is not needed. It defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noCreatePDB")]
-    pub no_create_pdb: Option<bool>,
     /// Nodes defines the list of nodes that pods can schedule If the RsmTransformPolicy is specified as ToPod,the list of nodes will be used. If the list of nodes is empty, no specific node will be assigned. However, if the list of node is filled, all pods will be evenly scheduled across the nodes in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
@@ -190,7 +187,7 @@ pub struct ClusterComponentSpecs {
     /// Component tolerations will override ClusterSpec.Tolerations if specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ClusterComponentSpecsTolerations>>,
-    /// updateStrategy defines the update strategy for the component.
+    /// updateStrategy defines the update strategy for the component. Not supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterComponentSpecsUpdateStrategy>,
     /// userResourceRefs defines the user-defined volumes.

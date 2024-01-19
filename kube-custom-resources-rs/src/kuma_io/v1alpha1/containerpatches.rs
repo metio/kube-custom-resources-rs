@@ -29,7 +29,8 @@ pub struct ContainerPatchInitPatch {
     pub op: ContainerPatchInitPatchOp,
     /// Path is a jsonpatch path string.
     pub path: String,
-    /// Value must be a string representing a valid json object used by replace and add operations. String has to be escaped with " to be valid a json object.
+    /// Value must be a string representing a valid json object used
+    /// by replace and add operations. String has to be escaped with " to be valid a json object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -59,7 +60,8 @@ pub struct ContainerPatchSidecarPatch {
     pub op: ContainerPatchSidecarPatchOp,
     /// Path is a jsonpatch path string.
     pub path: String,
-    /// Value must be a string representing a valid json object used by replace and add operations. String has to be escaped with " to be valid a json object.
+    /// Value must be a string representing a valid json object used
+    /// by replace and add operations. String has to be escaped with " to be valid a json object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }

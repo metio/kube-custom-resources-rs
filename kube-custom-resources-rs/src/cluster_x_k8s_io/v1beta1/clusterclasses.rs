@@ -15,103 +15,170 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ClusterClassStatus")]
 #[kube(schema = "disabled")]
 pub struct ClusterClassSpec {
-    /// ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+    /// ControlPlane is a reference to a local struct that holds the details
+    /// for provisioning the Control Plane for the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterClassControlPlane>,
-    /// Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+    /// Infrastructure is a reference to a provider-specific template that holds
+    /// the details for provisioning infrastructure specific cluster
+    /// for the underlying provider.
+    /// The underlying provider is responsible for the implementation
+    /// of the template to an infrastructure cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub infrastructure: Option<ClusterClassInfrastructure>,
-    /// Patches defines the patches which are applied to customize referenced templates of a ClusterClass. Note: Patches will be applied in the order of the array.
+    /// Patches defines the patches which are applied to customize
+    /// referenced templates of a ClusterClass.
+    /// Note: Patches will be applied in the order of the array.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patches: Option<Vec<ClusterClassPatches>>,
-    /// Variables defines the variables which can be configured in the Cluster topology and are then used in patches.
+    /// Variables defines the variables which can be configured
+    /// in the Cluster topology and are then used in patches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<ClusterClassVariables>>,
-    /// Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+    /// Workers describes the worker nodes for the cluster.
+    /// It is a collection of node types which can be used to create
+    /// the worker nodes of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<ClusterClassWorkers>,
 }
 
-/// ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+/// ControlPlane is a reference to a local struct that holds the details
+/// for provisioning the Control Plane for the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlane {
-    /// MachineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass. This field is supported if and only if the ControlPlane provider template referenced above is Machine based and supports setting replicas.
+    /// MachineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass.
+    /// This field is supported if and only if the ControlPlane provider template
+    /// referenced above is Machine based and supports setting replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterClassControlPlaneMachineHealthCheck>,
-    /// MachineInfrastructure defines the metadata and infrastructure information for control plane machines. 
-    ///  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+    /// MachineInfrastructure defines the metadata and infrastructure information
+    /// for control plane machines.
+    /// 
+    /// 
+    /// This field is supported if and only if the control plane provider template
+    /// referenced above is Machine based and supports setting replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineInfrastructure")]
     pub machine_infrastructure: Option<ClusterClassControlPlaneMachineInfrastructure>,
-    /// Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
-    ///  This field is supported if and only if the control plane provider template referenced is Machine based.
+    /// Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
+    /// if the ControlPlaneTemplate referenced is machine based. If not, it is applied only to the
+    /// ControlPlane.
+    /// At runtime this metadata is merged with the corresponding metadata from the topology.
+    /// 
+    /// 
+    /// This field is supported if and only if the control plane provider template
+    /// referenced is Machine based.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterClassControlPlaneMetadata>,
     /// NamingStrategy allows changing the naming pattern used when creating the control plane provider object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
     pub naming_strategy: Option<ClusterClassControlPlaneNamingStrategy>,
-    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds. NOTE: This value can be overridden while defining a Cluster.Topology.
+    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
+    /// Defaults to 10 seconds.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
-    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout` NOTE: This value can be overridden while defining a Cluster.Topology.
+    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    /// The default value is 0, meaning that the node can be drained without any time limitations.
+    /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+    /// NOTE: This value can be overridden while defining a Cluster.Topology.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
-    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations. NOTE: This value can be overridden while defining a Cluster.Topology.
+    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
-    /// Ref is a required reference to a custom resource offered by a provider.
+    /// Ref is a required reference to a custom resource
+    /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ClusterClassControlPlaneRef,
 }
 
-/// MachineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass. This field is supported if and only if the ControlPlane provider template referenced above is Machine based and supports setting replicas.
+/// MachineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass.
+/// This field is supported if and only if the ControlPlane provider template
+/// referenced above is Machine based and supports setting replicas.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineHealthCheck {
-    /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+    /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
+    /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+    /// Machines older than this duration without a node will be considered to have
+    /// failed and will be remediated.
+    /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
-    /// RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
-    ///  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+    /// RemediationTemplate is a reference to a remediation template
+    /// provided by an infrastructure provider.
+    /// 
+    /// 
+    /// This field is completely optional, when filled, the MachineHealthCheck controller
+    /// creates a new object from the template referenced and hands off remediation of the machine to
+    /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ClusterClassControlPlaneMachineHealthCheckRemediationTemplate>,
-    /// UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+    /// UnhealthyConditions contains a list of the conditions that determine
+    /// whether a node is considered unhealthy. The conditions are combined in a
+    /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
     pub unhealthy_conditions: Option<Vec<ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions>>,
-    /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+    /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
+    /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
+    /// Eg. "[3-5]" - This means that remediation will be allowed only when:
+    /// (a) there are at least 3 unhealthy machines (and)
+    /// (b) there are at most 5 unhealthy machines
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyRange")]
     pub unhealthy_range: Option<String>,
 }
 
-/// RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
-///  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+/// RemediationTemplate is a reference to a remediation template
+/// provided by an infrastructure provider.
+/// 
+/// 
+/// This field is completely optional, when filled, the MachineHealthCheck controller
+/// creates a new object from the template referenced and hands off remediation of the machine to
+/// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineHealthCheckRemediationTemplate {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+/// UnhealthyCondition represents a Node condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions {
     pub status: String,
@@ -120,49 +187,79 @@ pub struct ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions {
     pub r#type: String,
 }
 
-/// MachineInfrastructure defines the metadata and infrastructure information for control plane machines. 
-///  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+/// MachineInfrastructure defines the metadata and infrastructure information
+/// for control plane machines.
+/// 
+/// 
+/// This field is supported if and only if the control plane provider template
+/// referenced above is Machine based and supports setting replicas.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineInfrastructure {
-    /// Ref is a required reference to a custom resource offered by a provider.
+    /// Ref is a required reference to a custom resource
+    /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ClusterClassControlPlaneMachineInfrastructureRef,
 }
 
-/// Ref is a required reference to a custom resource offered by a provider.
+/// Ref is a required reference to a custom resource
+/// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineInfrastructureRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
-///  This field is supported if and only if the control plane provider template referenced is Machine based.
+/// Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
+/// if the ControlPlaneTemplate referenced is machine based. If not, it is applied only to the
+/// ControlPlane.
+/// At runtime this metadata is merged with the corresponding metadata from the topology.
+/// 
+/// 
+/// This field is supported if and only if the control plane provider template
+/// referenced is Machine based.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// and services.
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
@@ -170,67 +267,104 @@ pub struct ClusterClassControlPlaneMetadata {
 /// NamingStrategy allows changing the naming pattern used when creating the control plane provider object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneNamingStrategy {
-    /// Template defines the template to use for generating the name of the ControlPlane object. If not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`. If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will get concatenated with a random suffix of length 5. The templating mechanism provides the following arguments: * `.cluster.name`: The name of the cluster object. * `.random`: A random alphanumeric string, without vowels, of length 5.
+    /// Template defines the template to use for generating the name of the ControlPlane object.
+    /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`.
+    /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
+    /// get concatenated with a random suffix of length 5.
+    /// The templating mechanism provides the following arguments:
+    /// * `.cluster.name`: The name of the cluster object.
+    /// * `.random`: A random alphanumeric string, without vowels, of length 5.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
 }
 
-/// Ref is a required reference to a custom resource offered by a provider.
+/// Ref is a required reference to a custom resource
+/// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+/// Infrastructure is a reference to a provider-specific template that holds
+/// the details for provisioning infrastructure specific cluster
+/// for the underlying provider.
+/// The underlying provider is responsible for the implementation
+/// of the template to an infrastructure cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassInfrastructure {
-    /// Ref is a required reference to a custom resource offered by a provider.
+    /// Ref is a required reference to a custom resource
+    /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ClusterClassInfrastructureRef,
 }
 
-/// Ref is a required reference to a custom resource offered by a provider.
+/// Ref is a required reference to a custom resource
+/// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassInfrastructureRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
@@ -238,16 +372,23 @@ pub struct ClusterClassInfrastructureRef {
 /// ClusterClassPatch defines a patch which is applied to customize the referenced templates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatches {
-    /// Definitions define inline patches. Note: Patches will be applied in the order of the array. Note: Exactly one of Definitions or External must be set.
+    /// Definitions define inline patches.
+    /// Note: Patches will be applied in the order of the array.
+    /// Note: Exactly one of Definitions or External must be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub definitions: Option<Vec<ClusterClassPatchesDefinitions>>,
     /// Description is a human-readable description of this patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// EnabledIf is a Go template to be used to calculate if a patch should be enabled. It can reference variables defined in .spec.variables and builtin variables. The patch will be enabled if the template evaluates to `true`, otherwise it will be disabled. If EnabledIf is not set, the patch will be enabled per default.
+    /// EnabledIf is a Go template to be used to calculate if a patch should be enabled.
+    /// It can reference variables defined in .spec.variables and builtin variables.
+    /// The patch will be enabled if the template evaluates to `true`, otherwise it will
+    /// be disabled.
+    /// If EnabledIf is not set, the patch will be enabled per default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledIf")]
     pub enabled_if: Option<String>,
-    /// External defines an external patch. Note: Exactly one of Definitions or External must be set.
+    /// External defines an external patch.
+    /// Note: Exactly one of Definitions or External must be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub external: Option<ClusterClassPatchesExternal>,
     /// Name of the patch.
@@ -257,7 +398,9 @@ pub struct ClusterClassPatches {
 /// PatchDefinition defines a patch which is applied to customize the referenced templates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatchesDefinitions {
-    /// JSONPatches defines the patches which should be applied on the templates matching the selector. Note: Patches will be applied in the order of the array.
+    /// JSONPatches defines the patches which should be applied on the templates
+    /// matching the selector.
+    /// Note: Patches will be applied in the order of the array.
     #[serde(rename = "jsonPatches")]
     pub json_patches: Vec<ClusterClassPatchesDefinitionsJsonPatches>,
     /// Selector defines on which templates the patch should be applied.
@@ -267,25 +410,43 @@ pub struct ClusterClassPatchesDefinitions {
 /// JSONPatch defines a JSON patch.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatchesDefinitionsJsonPatches {
-    /// Op defines the operation of the patch. Note: Only `add`, `replace` and `remove` are supported.
+    /// Op defines the operation of the patch.
+    /// Note: Only `add`, `replace` and `remove` are supported.
     pub op: String,
-    /// Path defines the path of the patch. Note: Only the spec of a template can be patched, thus the path has to start with /spec/. Note: For now the only allowed array modifications are `append` and `prepend`, i.e.: * for op: `add`: only index 0 (prepend) and - (append) are allowed * for op: `replace` or `remove`: no indexes are allowed
+    /// Path defines the path of the patch.
+    /// Note: Only the spec of a template can be patched, thus the path has to start with /spec/.
+    /// Note: For now the only allowed array modifications are `append` and `prepend`, i.e.:
+    /// * for op: `add`: only index 0 (prepend) and - (append) are allowed
+    /// * for op: `replace` or `remove`: no indexes are allowed
     pub path: String,
-    /// Value defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time. Note: We have to use apiextensionsv1.JSON instead of our JSON type, because controller-tools has a hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type (unset type field). Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
+    /// Value defines the value of the patch.
+    /// Note: Either Value or ValueFrom is required for add and replace
+    /// operations. Only one of them is allowed to be set at the same time.
+    /// Note: We have to use apiextensionsv1.JSON instead of our JSON type,
+    /// because controller-tools has a hard-coded schema for apiextensionsv1.JSON
+    /// which cannot be produced by another type (unset type field).
+    /// Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<HashMap<String, serde_json::Value>>,
-    /// ValueFrom defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time.
+    /// ValueFrom defines the value of the patch.
+    /// Note: Either Value or ValueFrom is required for add and replace
+    /// operations. Only one of them is allowed to be set at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<ClusterClassPatchesDefinitionsJsonPatchesValueFrom>,
 }
 
-/// ValueFrom defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time.
+/// ValueFrom defines the value of the patch.
+/// Note: Either Value or ValueFrom is required for add and replace
+/// operations. Only one of them is allowed to be set at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatchesDefinitionsJsonPatchesValueFrom {
-    /// Template is the Go template to be used to calculate the value. A template can reference variables defined in .spec.variables and builtin variables. Note: The template must evaluate to a valid YAML or JSON value.
+    /// Template is the Go template to be used to calculate the value.
+    /// A template can reference variables defined in .spec.variables and builtin variables.
+    /// Note: The template must evaluate to a valid YAML or JSON value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
-    /// Variable is the variable to be used as value. Variable can be one of the variables defined in .spec.variables or a builtin variable.
+    /// Variable is the variable to be used as value.
+    /// Variable can be one of the variables defined in .spec.variables or a builtin variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<String>,
 }
@@ -306,21 +467,26 @@ pub struct ClusterClassPatchesDefinitionsSelector {
 /// MatchResources selects templates based on where they are referenced.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatchesDefinitionsSelectorMatchResources {
-    /// ControlPlane selects templates referenced in .spec.ControlPlane. Note: this will match the controlPlane and also the controlPlane machineInfrastructure (depending on the kind and apiVersion).
+    /// ControlPlane selects templates referenced in .spec.ControlPlane.
+    /// Note: this will match the controlPlane and also the controlPlane
+    /// machineInfrastructure (depending on the kind and apiVersion).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
     /// InfrastructureCluster selects templates referenced in .spec.infrastructure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureCluster")]
     pub infrastructure_cluster: Option<bool>,
-    /// MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in .spec.workers.machineDeployments.
+    /// MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in
+    /// .spec.workers.machineDeployments.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineDeploymentClass")]
     pub machine_deployment_class: Option<ClusterClassPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClass>,
-    /// MachinePoolClass selects templates referenced in specific MachinePoolClasses in .spec.workers.machinePools.
+    /// MachinePoolClass selects templates referenced in specific MachinePoolClasses in
+    /// .spec.workers.machinePools.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machinePoolClass")]
     pub machine_pool_class: Option<ClusterClassPatchesDefinitionsSelectorMatchResourcesMachinePoolClass>,
 }
 
-/// MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in .spec.workers.machineDeployments.
+/// MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in
+/// .spec.workers.machineDeployments.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClass {
     /// Names selects templates by class names.
@@ -328,7 +494,8 @@ pub struct ClusterClassPatchesDefinitionsSelectorMatchResourcesMachineDeployment
     pub names: Option<Vec<String>>,
 }
 
-/// MachinePoolClass selects templates referenced in specific MachinePoolClasses in .spec.workers.machinePools.
+/// MachinePoolClass selects templates referenced in specific MachinePoolClasses in
+/// .spec.workers.machinePools.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatchesDefinitionsSelectorMatchResourcesMachinePoolClass {
     /// Names selects templates by class names.
@@ -336,7 +503,8 @@ pub struct ClusterClassPatchesDefinitionsSelectorMatchResourcesMachinePoolClass 
     pub names: Option<Vec<String>>,
 }
 
-/// External defines an external patch. Note: Exactly one of Definitions or External must be set.
+/// External defines an external patch.
+/// Note: Exactly one of Definitions or External must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatchesExternal {
     /// DiscoverVariablesExtension references an extension which is called to discover variables.
@@ -345,7 +513,9 @@ pub struct ClusterClassPatchesExternal {
     /// GenerateExtension references an extension which is called to generate patches.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExtension")]
     pub generate_extension: Option<String>,
-    /// Settings defines key value pairs to be passed to the extensions. Values defined here take precedence over the values defined in the corresponding ExtensionConfig.
+    /// Settings defines key value pairs to be passed to the extensions.
+    /// Values defined here take precedence over the values defined in the
+    /// corresponding ExtensionConfig.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub settings: Option<BTreeMap<String, String>>,
     /// ValidateExtension references an extension which is called to validate the topology.
@@ -353,12 +523,16 @@ pub struct ClusterClassPatchesExternal {
     pub validate_extension: Option<String>,
 }
 
-/// ClusterClassVariable defines a variable which can be configured in the Cluster topology and used in patches.
+/// ClusterClassVariable defines a variable which can
+/// be configured in the Cluster topology and used in patches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassVariables {
     /// Name of the variable.
     pub name: String,
-    /// Required specifies if the variable is required. Note: this applies to the variable as a whole and thus the top-level object defined in the schema. If nested fields are required, this will be specified inside the schema.
+    /// Required specifies if the variable is required.
+    /// Note: this applies to the variable as a whole and thus the
+    /// top-level object defined in the schema. If nested fields are
+    /// required, this will be specified inside the schema.
     pub required: bool,
     /// Schema defines the schema of the variable.
     pub schema: ClusterClassVariablesSchema,
@@ -367,172 +541,267 @@ pub struct ClusterClassVariables {
 /// Schema defines the schema of the variable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassVariablesSchema {
-    /// OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+    /// OpenAPIV3Schema defines the schema of a variable via OpenAPI v3
+    /// schema. The schema is a subset of the schema used in
+    /// Kubernetes CRDs.
     #[serde(rename = "openAPIV3Schema")]
     pub open_apiv3_schema: ClusterClassVariablesSchemaOpenApiv3Schema,
 }
 
-/// OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+/// OpenAPIV3Schema defines the schema of a variable via OpenAPI v3
+/// schema. The schema is a subset of the schema used in
+/// Kubernetes CRDs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
-    /// AdditionalProperties specifies the schema of values in a map (keys are always strings). NOTE: Can only be set if type is object. NOTE: AdditionalProperties is mutually exclusive with Properties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+    /// AdditionalProperties specifies the schema of values in a map (keys are always strings).
+    /// NOTE: Can only be set if type is object.
+    /// NOTE: AdditionalProperties is mutually exclusive with Properties.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<HashMap<String, serde_json::Value>>,
-    /// Default is the default value of the variable. NOTE: Can be set for all types.
+    /// Default is the default value of the variable.
+    /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<HashMap<String, serde_json::Value>>,
     /// Description is a human-readable description of this variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Enum is the list of valid values of the variable. NOTE: Can be set for all types.
+    /// Enum is the list of valid values of the variable.
+    /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enum")]
     pub r#enum: Option<Vec<HashMap<String, serde_json::Value>>>,
     /// Example is an example for this variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<HashMap<String, serde_json::Value>>,
-    /// ExclusiveMaximum specifies if the Maximum is exclusive. NOTE: Can only be set if type is integer or number.
+    /// ExclusiveMaximum specifies if the Maximum is exclusive.
+    /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
-    /// ExclusiveMinimum specifies if the Minimum is exclusive. NOTE: Can only be set if type is integer or number.
+    /// ExclusiveMinimum specifies if the Minimum is exclusive.
+    /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
-    /// Format is an OpenAPI v3 format string. Unknown formats are ignored. For a list of supported formats please see: (of the k8s.io/apiextensions-apiserver version we're currently using) https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apiserver/validation/formats.go NOTE: Can only be set if type is string.
+    /// Format is an OpenAPI v3 format string. Unknown formats are ignored.
+    /// For a list of supported formats please see: (of the k8s.io/apiextensions-apiserver version we're currently using)
+    /// https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apiserver/validation/formats.go
+    /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Items specifies fields of an array. NOTE: Can only be set if type is array. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+    /// Items specifies fields of an array.
+    /// NOTE: Can only be set if type is array.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<HashMap<String, serde_json::Value>>,
-    /// MaxItems is the max length of an array variable. NOTE: Can only be set if type is array.
+    /// MaxItems is the max length of an array variable.
+    /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxItems")]
     pub max_items: Option<i64>,
-    /// MaxLength is the max length of a string variable. NOTE: Can only be set if type is string.
+    /// MaxLength is the max length of a string variable.
+    /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
-    /// Maximum is the maximum of an integer or number variable. If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum. If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum. NOTE: Can only be set if type is integer or number.
+    /// Maximum is the maximum of an integer or number variable.
+    /// If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum.
+    /// If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum.
+    /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
-    /// MinItems is the min length of an array variable. NOTE: Can only be set if type is array.
+    /// MinItems is the min length of an array variable.
+    /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minItems")]
     pub min_items: Option<i64>,
-    /// MinLength is the min length of a string variable. NOTE: Can only be set if type is string.
+    /// MinLength is the min length of a string variable.
+    /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
-    /// Minimum is the minimum of an integer or number variable. If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum. If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum. NOTE: Can only be set if type is integer or number.
+    /// Minimum is the minimum of an integer or number variable.
+    /// If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum.
+    /// If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum.
+    /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
-    /// Pattern is the regex which a string variable must match. NOTE: Can only be set if type is string.
+    /// Pattern is the regex which a string variable must match.
+    /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
-    /// Properties specifies fields of an object. NOTE: Can only be set if type is object. NOTE: Properties is mutually exclusive with AdditionalProperties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+    /// Properties specifies fields of an object.
+    /// NOTE: Can only be set if type is object.
+    /// NOTE: Properties is mutually exclusive with AdditionalProperties.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<HashMap<String, serde_json::Value>>,
-    /// Required specifies which fields of an object are required. NOTE: Can only be set if type is object.
+    /// Required specifies which fields of an object are required.
+    /// NOTE: Can only be set if type is object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<Vec<String>>,
-    /// Type is the type of the variable. Valid values are: object, array, string, integer, number or boolean.
+    /// Type is the type of the variable.
+    /// Valid values are: object, array, string, integer, number or boolean.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// UniqueItems specifies if items in an array must be unique. NOTE: Can only be set if type is array.
+    /// UniqueItems specifies if items in an array must be unique.
+    /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
-    /// XPreserveUnknownFields allows setting fields in a variable object which are not defined in the variable schema. This affects fields recursively, except if nested properties or additionalProperties are specified in the schema.
+    /// XPreserveUnknownFields allows setting fields in a variable object
+    /// which are not defined in the variable schema. This affects fields recursively,
+    /// except if nested properties or additionalProperties are specified in the schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-preserve-unknown-fields")]
     pub x_kubernetes_preserve_unknown_fields: Option<bool>,
 }
 
-/// Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+/// Workers describes the worker nodes for the cluster.
+/// It is a collection of node types which can be used to create
+/// the worker nodes of the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkers {
-    /// MachineDeployments is a list of machine deployment classes that can be used to create a set of worker nodes.
+    /// MachineDeployments is a list of machine deployment classes that can be used to create
+    /// a set of worker nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineDeployments")]
     pub machine_deployments: Option<Vec<ClusterClassWorkersMachineDeployments>>,
-    /// MachinePools is a list of machine pool classes that can be used to create a set of worker nodes.
+    /// MachinePools is a list of machine pool classes that can be used to create
+    /// a set of worker nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machinePools")]
     pub machine_pools: Option<Vec<ClusterClassWorkersMachinePools>>,
 }
 
-/// MachineDeploymentClass serves as a template to define a set of worker nodes of the cluster provisioned using the `ClusterClass`.
+/// MachineDeploymentClass serves as a template to define a set of worker nodes of the cluster
+/// provisioned using the `ClusterClass`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeployments {
-    /// Class denotes a type of worker node present in the cluster, this name MUST be unique within a ClusterClass and can be referenced in the Cluster to create a managed MachineDeployment.
+    /// Class denotes a type of worker node present in the cluster,
+    /// this name MUST be unique within a ClusterClass and can be referenced
+    /// in the Cluster to create a managed MachineDeployment.
     pub class: String,
-    /// FailureDomain is the failure domain the machines will be created in. Must match a key in the FailureDomains map stored on the cluster object. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+    /// FailureDomain is the failure domain the machines will be created in.
+    /// Must match a key in the FailureDomains map stored on the cluster object.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// MachineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterClassWorkersMachineDeploymentsMachineHealthCheck>,
-    /// Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready) NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+    /// Minimum number of seconds for which a newly created machine should
+    /// be ready.
+    /// Defaults to 0 (machine will be considered available as soon as it
+    /// is ready)
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// NamingStrategy allows changing the naming pattern used when creating the MachineDeployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
     pub naming_strategy: Option<ClusterClassWorkersMachineDeploymentsNamingStrategy>,
-    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
+    /// Defaults to 10 seconds.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
-    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout` NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    /// The default value is 0, meaning that the node can be drained without any time limitations.
+    /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
-    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
-    /// The deployment strategy to use to replace existing machines with new ones. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+    /// The deployment strategy to use to replace existing machines with
+    /// new ones.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<ClusterClassWorkersMachineDeploymentsStrategy>,
-    /// Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+    /// Template is a local struct containing a collection of templates for creation of
+    /// MachineDeployment objects representing a set of worker nodes.
     pub template: ClusterClassWorkersMachineDeploymentsTemplate,
 }
 
 /// MachineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheck {
-    /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+    /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
+    /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+    /// Machines older than this duration without a node will be considered to have
+    /// failed and will be remediated.
+    /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
-    /// RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
-    ///  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+    /// RemediationTemplate is a reference to a remediation template
+    /// provided by an infrastructure provider.
+    /// 
+    /// 
+    /// This field is completely optional, when filled, the MachineHealthCheck controller
+    /// creates a new object from the template referenced and hands off remediation of the machine to
+    /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ClusterClassWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate>,
-    /// UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+    /// UnhealthyConditions contains a list of the conditions that determine
+    /// whether a node is considered unhealthy. The conditions are combined in a
+    /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
     pub unhealthy_conditions: Option<Vec<ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions>>,
-    /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+    /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
+    /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
+    /// Eg. "[3-5]" - This means that remediation will be allowed only when:
+    /// (a) there are at least 3 unhealthy machines (and)
+    /// (b) there are at most 5 unhealthy machines
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyRange")]
     pub unhealthy_range: Option<String>,
 }
 
-/// RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
-///  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+/// RemediationTemplate is a reference to a remediation template
+/// provided by an infrastructure provider.
+/// 
+/// 
+/// This field is completely optional, when filled, the MachineHealthCheck controller
+/// creates a new object from the template referenced and hands off remediation of the machine to
+/// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+/// UnhealthyCondition represents a Node condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions {
     pub status: String,
@@ -544,37 +813,75 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyCondi
 /// NamingStrategy allows changing the naming pattern used when creating the MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsNamingStrategy {
-    /// Template defines the template to use for generating the name of the MachineDeployment object. If not defined, it will fallback to `{{ .cluster.name }}-{{ .machineDeployment.topologyName }}-{{ .random }}`. If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will get concatenated with a random suffix of length 5. The templating mechanism provides the following arguments: * `.cluster.name`: The name of the cluster object. * `.random`: A random alphanumeric string, without vowels, of length 5. * `.machineDeployment.topologyName`: The name of the MachineDeployment topology (Cluster.spec.topology.workers.machineDeployments[].name).
+    /// Template defines the template to use for generating the name of the MachineDeployment object.
+    /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .machineDeployment.topologyName }}-{{ .random }}`.
+    /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
+    /// get concatenated with a random suffix of length 5.
+    /// The templating mechanism provides the following arguments:
+    /// * `.cluster.name`: The name of the cluster object.
+    /// * `.random`: A random alphanumeric string, without vowels, of length 5.
+    /// * `.machineDeployment.topologyName`: The name of the MachineDeployment topology (Cluster.spec.topology.workers.machineDeployments[].name).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
 }
 
-/// The deployment strategy to use to replace existing machines with new ones. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+/// The deployment strategy to use to replace existing machines with
+/// new ones.
+/// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsStrategy {
-    /// Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+    /// Rolling update config params. Present only if
+    /// MachineDeploymentStrategyType = RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ClusterClassWorkersMachineDeploymentsStrategyRollingUpdate>,
-    /// Type of deployment. Allowed values are RollingUpdate and OnDelete. The default is RollingUpdate.
+    /// Type of deployment. Allowed values are RollingUpdate and OnDelete.
+    /// The default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ClusterClassWorkersMachineDeploymentsStrategyType>,
 }
 
-/// Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+/// Rolling update config params. Present only if
+/// MachineDeploymentStrategyType = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsStrategyRollingUpdate {
-    /// DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+    /// DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.
+    /// Valid values are "Random, "Newest", "Oldest"
+    /// When no value is supplied, the default DeletePolicy of MachineSet is used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
     pub delete_policy: Option<ClusterClassWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy>,
-    /// The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+    /// The maximum number of machines that can be scheduled above the
+    /// desired number of machines.
+    /// Value can be an absolute number (ex: 5) or a percentage of
+    /// desired machines (ex: 10%).
+    /// This can not be 0 if MaxUnavailable is 0.
+    /// Absolute number is calculated from percentage by rounding up.
+    /// Defaults to 1.
+    /// Example: when this is set to 30%, the new MachineSet can be scaled
+    /// up immediately when the rolling update starts, such that the total
+    /// number of old and new machines do not exceed 130% of desired
+    /// machines. Once old machines have been killed, new MachineSet can
+    /// be scaled up further, ensuring that total number of machines running
+    /// at any time during the update is at most 130% of desired machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<IntOrString>,
-    /// The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+    /// The maximum number of machines that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired
+    /// machines (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding down.
+    /// This can not be 0 if MaxSurge is 0.
+    /// Defaults to 0.
+    /// Example: when this is set to 30%, the old MachineSet can be scaled
+    /// down to 70% of desired machines immediately when the rolling update
+    /// starts. Once new machines are ready, old MachineSet can be scaled
+    /// down further, followed by scaling up the new MachineSet, ensuring
+    /// that the total number of machines available at all times
+    /// during the update is at least 70% of desired machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
-/// Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+/// Rolling update config params. Present only if
+/// MachineDeploymentStrategyType = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterClassWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy {
     Random,
@@ -582,226 +889,335 @@ pub enum ClusterClassWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy 
     Oldest,
 }
 
-/// The deployment strategy to use to replace existing machines with new ones. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+/// The deployment strategy to use to replace existing machines with
+/// new ones.
+/// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterClassWorkersMachineDeploymentsStrategyType {
     RollingUpdate,
     OnDelete,
 }
 
-/// Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+/// Template is a local struct containing a collection of templates for creation of
+/// MachineDeployment objects representing a set of worker nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplate {
-    /// Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+    /// Bootstrap contains the bootstrap template reference to be used
+    /// for the creation of worker Machines.
     pub bootstrap: ClusterClassWorkersMachineDeploymentsTemplateBootstrap,
-    /// Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+    /// Infrastructure contains the infrastructure template reference to be used
+    /// for the creation of worker Machines.
     pub infrastructure: ClusterClassWorkersMachineDeploymentsTemplateInfrastructure,
-    /// Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+    /// Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
+    /// At runtime this metadata is merged with the corresponding metadata from the topology.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterClassWorkersMachineDeploymentsTemplateMetadata>,
 }
 
-/// Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+/// Bootstrap contains the bootstrap template reference to be used
+/// for the creation of worker Machines.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrap {
-    /// Ref is a required reference to a custom resource offered by a provider.
+    /// Ref is a required reference to a custom resource
+    /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef,
 }
 
-/// Ref is a required reference to a custom resource offered by a provider.
+/// Ref is a required reference to a custom resource
+/// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+/// Infrastructure contains the infrastructure template reference to be used
+/// for the creation of worker Machines.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructure {
-    /// Ref is a required reference to a custom resource offered by a provider.
+    /// Ref is a required reference to a custom resource
+    /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef,
 }
 
-/// Ref is a required reference to a custom resource offered by a provider.
+/// Ref is a required reference to a custom resource
+/// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+/// Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
+/// At runtime this metadata is merged with the corresponding metadata from the topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// and services.
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// MachinePoolClass serves as a template to define a pool of worker nodes of the cluster provisioned using `ClusterClass`.
+/// MachinePoolClass serves as a template to define a pool of worker nodes of the cluster
+/// provisioned using `ClusterClass`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePools {
-    /// Class denotes a type of machine pool present in the cluster, this name MUST be unique within a ClusterClass and can be referenced in the Cluster to create a managed MachinePool.
+    /// Class denotes a type of machine pool present in the cluster,
+    /// this name MUST be unique within a ClusterClass and can be referenced
+    /// in the Cluster to create a managed MachinePool.
     pub class: String,
-    /// FailureDomains is the list of failure domains the MachinePool should be attached to. Must match a key in the FailureDomains map stored on the cluster object. NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
+    /// FailureDomains is the list of failure domains the MachinePool should be attached to.
+    /// Must match a key in the FailureDomains map stored on the cluster object.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<String>>,
-    /// Minimum number of seconds for which a newly created machine pool should be ready. Defaults to 0 (machine will be considered available as soon as it is ready) NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
+    /// Minimum number of seconds for which a newly created machine pool should
+    /// be ready.
+    /// Defaults to 0 (machine will be considered available as soon as it
+    /// is ready)
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// NamingStrategy allows changing the naming pattern used when creating the MachinePool.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
     pub naming_strategy: Option<ClusterClassWorkersMachinePoolsNamingStrategy>,
-    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine Pool is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds. NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
+    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// hosts after the Machine Pool is marked for deletion. A duration of 0 will retry deletion indefinitely.
+    /// Defaults to 10 seconds.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
-    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout` NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
+    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    /// The default value is 0, meaning that the node can be drained without any time limitations.
+    /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
-    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations. NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
+    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
-    /// Template is a local struct containing a collection of templates for creation of MachinePools objects representing a pool of worker nodes.
+    /// Template is a local struct containing a collection of templates for creation of
+    /// MachinePools objects representing a pool of worker nodes.
     pub template: ClusterClassWorkersMachinePoolsTemplate,
 }
 
 /// NamingStrategy allows changing the naming pattern used when creating the MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsNamingStrategy {
-    /// Template defines the template to use for generating the name of the MachinePool object. If not defined, it will fallback to `{{ .cluster.name }}-{{ .machinePool.topologyName }}-{{ .random }}`. If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will get concatenated with a random suffix of length 5. The templating mechanism provides the following arguments: * `.cluster.name`: The name of the cluster object. * `.random`: A random alphanumeric string, without vowels, of length 5. * `.machinePool.topologyName`: The name of the MachinePool topology (Cluster.spec.topology.workers.machinePools[].name).
+    /// Template defines the template to use for generating the name of the MachinePool object.
+    /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .machinePool.topologyName }}-{{ .random }}`.
+    /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
+    /// get concatenated with a random suffix of length 5.
+    /// The templating mechanism provides the following arguments:
+    /// * `.cluster.name`: The name of the cluster object.
+    /// * `.random`: A random alphanumeric string, without vowels, of length 5.
+    /// * `.machinePool.topologyName`: The name of the MachinePool topology (Cluster.spec.topology.workers.machinePools[].name).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
 }
 
-/// Template is a local struct containing a collection of templates for creation of MachinePools objects representing a pool of worker nodes.
+/// Template is a local struct containing a collection of templates for creation of
+/// MachinePools objects representing a pool of worker nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplate {
-    /// Bootstrap contains the bootstrap template reference to be used for the creation of the Machines in the MachinePool.
+    /// Bootstrap contains the bootstrap template reference to be used
+    /// for the creation of the Machines in the MachinePool.
     pub bootstrap: ClusterClassWorkersMachinePoolsTemplateBootstrap,
-    /// Infrastructure contains the infrastructure template reference to be used for the creation of the MachinePool.
+    /// Infrastructure contains the infrastructure template reference to be used
+    /// for the creation of the MachinePool.
     pub infrastructure: ClusterClassWorkersMachinePoolsTemplateInfrastructure,
-    /// Metadata is the metadata applied to the MachinePool. At runtime this metadata is merged with the corresponding metadata from the topology.
+    /// Metadata is the metadata applied to the MachinePool.
+    /// At runtime this metadata is merged with the corresponding metadata from the topology.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterClassWorkersMachinePoolsTemplateMetadata>,
 }
 
-/// Bootstrap contains the bootstrap template reference to be used for the creation of the Machines in the MachinePool.
+/// Bootstrap contains the bootstrap template reference to be used
+/// for the creation of the Machines in the MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateBootstrap {
-    /// Ref is a required reference to a custom resource offered by a provider.
+    /// Ref is a required reference to a custom resource
+    /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ClusterClassWorkersMachinePoolsTemplateBootstrapRef,
 }
 
-/// Ref is a required reference to a custom resource offered by a provider.
+/// Ref is a required reference to a custom resource
+/// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateBootstrapRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// Infrastructure contains the infrastructure template reference to be used for the creation of the MachinePool.
+/// Infrastructure contains the infrastructure template reference to be used
+/// for the creation of the MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructure {
-    /// Ref is a required reference to a custom resource offered by a provider.
+    /// Ref is a required reference to a custom resource
+    /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ClusterClassWorkersMachinePoolsTemplateInfrastructureRef,
 }
 
-/// Ref is a required reference to a custom resource offered by a provider.
+/// Ref is a required reference to a custom resource
+/// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructureRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// Metadata is the metadata applied to the MachinePool. At runtime this metadata is merged with the corresponding metadata from the topology.
+/// Metadata is the metadata applied to the MachinePool.
+/// At runtime this metadata is merged with the corresponding metadata from the topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// and services.
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
@@ -823,21 +1239,30 @@ pub struct ClusterClassStatus {
 /// Condition defines an observation of a Cluster API resource operational state.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassStatusConditions {
-    /// Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+    /// Last time the condition transitioned from one status to another.
+    /// This should be when the underlying condition changed. If that is not known, then using the time when
+    /// the API field changed is acceptable.
     #[serde(rename = "lastTransitionTime")]
     pub last_transition_time: String,
-    /// A human readable message indicating details about the transition. This field may be empty.
+    /// A human readable message indicating details about the transition.
+    /// This field may be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+    /// The reason for the condition's last transition in CamelCase.
+    /// The specific API may choose whether or not this field is considered a guaranteed API.
+    /// This field may not be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+    /// Severity provides an explicit classification of Reason code, so the users or machines can immediately
+    /// understand the current situation and act accordingly.
+    /// The Severity field MUST be set only when Status=False.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
     /// Status of the condition, one of True, False, Unknown.
     pub status: String,
-    /// Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+    /// Type of condition in CamelCase or in foo.example.com/CamelCase.
+    /// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions
+    /// can be useful (see .node.status.conditions), the ability to deconflict is important.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -857,9 +1282,14 @@ pub struct ClusterClassStatusVariables {
 /// ClusterClassStatusVariableDefinition defines a variable which appears in the status of a ClusterClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassStatusVariablesDefinitions {
-    /// From specifies the origin of the variable definition. This will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass for variables discovered from a DiscoverVariables runtime extensions.
+    /// From specifies the origin of the variable definition.
+    /// This will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass
+    /// for variables discovered from a DiscoverVariables runtime extensions.
     pub from: String,
-    /// Required specifies if the variable is required. Note: this applies to the variable as a whole and thus the top-level object defined in the schema. If nested fields are required, this will be specified inside the schema.
+    /// Required specifies if the variable is required.
+    /// Note: this applies to the variable as a whole and thus the
+    /// top-level object defined in the schema. If nested fields are
+    /// required, this will be specified inside the schema.
     pub required: bool,
     /// Schema defines the schema of the variable.
     pub schema: ClusterClassStatusVariablesDefinitionsSchema,
@@ -868,75 +1298,113 @@ pub struct ClusterClassStatusVariablesDefinitions {
 /// Schema defines the schema of the variable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassStatusVariablesDefinitionsSchema {
-    /// OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+    /// OpenAPIV3Schema defines the schema of a variable via OpenAPI v3
+    /// schema. The schema is a subset of the schema used in
+    /// Kubernetes CRDs.
     #[serde(rename = "openAPIV3Schema")]
     pub open_apiv3_schema: ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema,
 }
 
-/// OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+/// OpenAPIV3Schema defines the schema of a variable via OpenAPI v3
+/// schema. The schema is a subset of the schema used in
+/// Kubernetes CRDs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
-    /// AdditionalProperties specifies the schema of values in a map (keys are always strings). NOTE: Can only be set if type is object. NOTE: AdditionalProperties is mutually exclusive with Properties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+    /// AdditionalProperties specifies the schema of values in a map (keys are always strings).
+    /// NOTE: Can only be set if type is object.
+    /// NOTE: AdditionalProperties is mutually exclusive with Properties.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<HashMap<String, serde_json::Value>>,
-    /// Default is the default value of the variable. NOTE: Can be set for all types.
+    /// Default is the default value of the variable.
+    /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<HashMap<String, serde_json::Value>>,
     /// Description is a human-readable description of this variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Enum is the list of valid values of the variable. NOTE: Can be set for all types.
+    /// Enum is the list of valid values of the variable.
+    /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enum")]
     pub r#enum: Option<Vec<HashMap<String, serde_json::Value>>>,
     /// Example is an example for this variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<HashMap<String, serde_json::Value>>,
-    /// ExclusiveMaximum specifies if the Maximum is exclusive. NOTE: Can only be set if type is integer or number.
+    /// ExclusiveMaximum specifies if the Maximum is exclusive.
+    /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
-    /// ExclusiveMinimum specifies if the Minimum is exclusive. NOTE: Can only be set if type is integer or number.
+    /// ExclusiveMinimum specifies if the Minimum is exclusive.
+    /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
-    /// Format is an OpenAPI v3 format string. Unknown formats are ignored. For a list of supported formats please see: (of the k8s.io/apiextensions-apiserver version we're currently using) https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apiserver/validation/formats.go NOTE: Can only be set if type is string.
+    /// Format is an OpenAPI v3 format string. Unknown formats are ignored.
+    /// For a list of supported formats please see: (of the k8s.io/apiextensions-apiserver version we're currently using)
+    /// https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apiserver/validation/formats.go
+    /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Items specifies fields of an array. NOTE: Can only be set if type is array. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+    /// Items specifies fields of an array.
+    /// NOTE: Can only be set if type is array.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<HashMap<String, serde_json::Value>>,
-    /// MaxItems is the max length of an array variable. NOTE: Can only be set if type is array.
+    /// MaxItems is the max length of an array variable.
+    /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxItems")]
     pub max_items: Option<i64>,
-    /// MaxLength is the max length of a string variable. NOTE: Can only be set if type is string.
+    /// MaxLength is the max length of a string variable.
+    /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
-    /// Maximum is the maximum of an integer or number variable. If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum. If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum. NOTE: Can only be set if type is integer or number.
+    /// Maximum is the maximum of an integer or number variable.
+    /// If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum.
+    /// If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum.
+    /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
-    /// MinItems is the min length of an array variable. NOTE: Can only be set if type is array.
+    /// MinItems is the min length of an array variable.
+    /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minItems")]
     pub min_items: Option<i64>,
-    /// MinLength is the min length of a string variable. NOTE: Can only be set if type is string.
+    /// MinLength is the min length of a string variable.
+    /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
-    /// Minimum is the minimum of an integer or number variable. If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum. If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum. NOTE: Can only be set if type is integer or number.
+    /// Minimum is the minimum of an integer or number variable.
+    /// If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum.
+    /// If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum.
+    /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
-    /// Pattern is the regex which a string variable must match. NOTE: Can only be set if type is string.
+    /// Pattern is the regex which a string variable must match.
+    /// NOTE: Can only be set if type is string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
-    /// Properties specifies fields of an object. NOTE: Can only be set if type is object. NOTE: Properties is mutually exclusive with AdditionalProperties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+    /// Properties specifies fields of an object.
+    /// NOTE: Can only be set if type is object.
+    /// NOTE: Properties is mutually exclusive with AdditionalProperties.
+    /// NOTE: This field uses PreserveUnknownFields and Schemaless,
+    /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<HashMap<String, serde_json::Value>>,
-    /// Required specifies which fields of an object are required. NOTE: Can only be set if type is object.
+    /// Required specifies which fields of an object are required.
+    /// NOTE: Can only be set if type is object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<Vec<String>>,
-    /// Type is the type of the variable. Valid values are: object, array, string, integer, number or boolean.
+    /// Type is the type of the variable.
+    /// Valid values are: object, array, string, integer, number or boolean.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// UniqueItems specifies if items in an array must be unique. NOTE: Can only be set if type is array.
+    /// UniqueItems specifies if items in an array must be unique.
+    /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
-    /// XPreserveUnknownFields allows setting fields in a variable object which are not defined in the variable schema. This affects fields recursively, except if nested properties or additionalProperties are specified in the schema.
+    /// XPreserveUnknownFields allows setting fields in a variable object
+    /// which are not defined in the variable schema. This affects fields recursively,
+    /// except if nested properties or additionalProperties are specified in the schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-kubernetes-preserve-unknown-fields")]
     pub x_kubernetes_preserve_unknown_fields: Option<bool>,
 }

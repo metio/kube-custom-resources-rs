@@ -5,7 +5,9 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// PolicySpec is the spec of the Policy resource. The spec includes multiple fields, where each field represents a different policy. Only one policy (field) is allowed.
+/// PolicySpec is the spec of the Policy resource.
+/// The spec includes multiple fields, where each field represents a different policy.
+/// Only one policy (field) is allowed.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "k8s.nginx.org", version = "v1", kind = "Policy", plural = "policies")]
 #[kube(namespaced)]
@@ -15,7 +17,8 @@ pub struct PolicySpec {
     /// AccessControl defines an access policy based on the source IP of a request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessControl")]
     pub access_control: Option<PolicyAccessControl>,
-    /// BasicAuth holds HTTP Basic authentication configuration policy status: preview
+    /// BasicAuth holds HTTP Basic authentication configuration
+    /// policy status: preview
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PolicyBasicAuth>,
     /// EgressMTLS defines an Egress MTLS policy.
@@ -49,7 +52,8 @@ pub struct PolicyAccessControl {
     pub deny: Option<Vec<String>>,
 }
 
-/// BasicAuth holds HTTP Basic authentication configuration policy status: preview
+/// BasicAuth holds HTTP Basic authentication configuration
+/// policy status: preview
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyBasicAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]

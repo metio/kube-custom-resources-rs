@@ -88,7 +88,7 @@ pub enum BuildConfigurationStrategy {
 /// Task represents the abstract task. Only one of the task should be configured to represent the specific task chosen.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasks {
-    /// a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib or s2i instead
+    /// a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buildah: Option<BuildTasksBuildah>,
     /// a BuilderTask, used to generate and build the project
@@ -100,7 +100,7 @@ pub struct BuildTasks {
     /// a JibTask, for Jib strategy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jib: Option<BuildTasksJib>,
-    /// a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib or s2i instead
+    /// a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kaniko: Option<BuildTasksKaniko>,
     /// Application pre publishing a PackageTask, used to package the project
@@ -114,7 +114,7 @@ pub struct BuildTasks {
     pub spectrum: Option<BuildTasksSpectrum>,
 }
 
-/// a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib or s2i instead
+/// a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuildah {
     /// base image layer
@@ -653,6 +653,12 @@ pub struct BuildTasksCustom {
     /// name of the task
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// the desired image build name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishingImage")]
+    pub publishing_image: Option<String>,
+    /// the user id used to run the container
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userId")]
+    pub user_id: Option<i64>,
 }
 
 /// The configuration that should be used to perform the Build.
@@ -802,7 +808,7 @@ pub struct BuildTasksJibRegistry {
     pub secret: Option<String>,
 }
 
-/// a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib or s2i instead
+/// a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksKaniko {
     /// base image layer

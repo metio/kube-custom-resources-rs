@@ -13,14 +13,18 @@ use std::collections::HashMap;
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct MeshProxyPatchSpec {
-    /// Default is a configuration specific to the group of destinations referenced in 'targetRef'.
+    /// Default is a configuration specific to the group of destinations
+    /// referenced in 'targetRef'.
     pub default: MeshProxyPatchDefault,
-    /// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+    /// TargetRef is a reference to the resource the policy takes an effect on.
+    /// The resource could be either a real store object or virtual resource
+    /// defined inplace.
     #[serde(rename = "targetRef")]
     pub target_ref: MeshProxyPatchTargetRef,
 }
 
-/// Default is a configuration specific to the group of destinations referenced in 'targetRef'.
+/// Default is a configuration specific to the group of destinations
+/// referenced in 'targetRef'.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshProxyPatchDefault {
     /// AppendModifications is a list of modifications applied on the selected proxy.
@@ -33,7 +37,8 @@ pub struct MeshProxyPatchDefaultAppendModifications {
     /// Cluster is a modification of Envoy's Cluster resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<MeshProxyPatchDefaultAppendModificationsCluster>,
-    /// HTTPFilter is a modification of Envoy HTTP Filter available in HTTP Connection Manager in a Listener resource.
+    /// HTTPFilter is a modification of Envoy HTTP Filter
+    /// available in HTTP Connection Manager in a Listener resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpFilter")]
     pub http_filter: Option<MeshProxyPatchDefaultAppendModificationsHttpFilter>,
     /// Listener is a modification of Envoy's Listener resource.
@@ -42,7 +47,8 @@ pub struct MeshProxyPatchDefaultAppendModifications {
     /// NetworkFilter is a modification of Envoy Listener's filter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkFilter")]
     pub network_filter: Option<MeshProxyPatchDefaultAppendModificationsNetworkFilter>,
-    /// VirtualHost is a modification of Envoy's VirtualHost referenced in HTTP Connection Manager in a Listener resource.
+    /// VirtualHost is a modification of Envoy's VirtualHost
+    /// referenced in HTTP Connection Manager in a Listener resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualHost")]
     pub virtual_host: Option<MeshProxyPatchDefaultAppendModificationsVirtualHost>,
 }
@@ -50,7 +56,8 @@ pub struct MeshProxyPatchDefaultAppendModifications {
 /// Cluster is a modification of Envoy's Cluster resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshProxyPatchDefaultAppendModificationsCluster {
-    /// JsonPatches specifies list of jsonpatches to apply to on Envoy's Cluster resource
+    /// JsonPatches specifies list of jsonpatches to apply to on Envoy's Cluster
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsClusterJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
@@ -99,9 +106,22 @@ pub struct MeshProxyPatchDefaultAppendModificationsClusterMatch {
     /// Name of the cluster to match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Origin is the name of the component or plugin that generated the resource. 
-    ///  Here is the list of well-known origins: inbound - resources generated for handling incoming traffic. outbound - resources generated for handling outgoing traffic. transparent - resources generated for transparent proxy functionality. prometheus - resources generated when Prometheus metrics are enabled. direct-access - resources generated for Direct Access functionality. ingress - resources generated for Zone Ingress. egress - resources generated for Zone Egress. gateway - resources generated for MeshGateway. 
-    ///  The list is not complete, because policy plugins can introduce new resources. For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
+    /// Origin is the name of the component or plugin that generated the resource.
+    /// 
+    /// 
+    /// Here is the list of well-known origins:
+    /// inbound - resources generated for handling incoming traffic.
+    /// outbound - resources generated for handling outgoing traffic.
+    /// transparent - resources generated for transparent proxy functionality.
+    /// prometheus - resources generated when Prometheus metrics are enabled.
+    /// direct-access - resources generated for Direct Access functionality.
+    /// ingress - resources generated for Zone Ingress.
+    /// egress - resources generated for Zone Egress.
+    /// gateway - resources generated for MeshGateway.
+    /// 
+    /// 
+    /// The list is not complete, because policy plugins can introduce new resources.
+    /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origin: Option<String>,
 }
@@ -114,10 +134,12 @@ pub enum MeshProxyPatchDefaultAppendModificationsClusterOperation {
     Patch,
 }
 
-/// HTTPFilter is a modification of Envoy HTTP Filter available in HTTP Connection Manager in a Listener resource.
+/// HTTPFilter is a modification of Envoy HTTP Filter
+/// available in HTTP Connection Manager in a Listener resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshProxyPatchDefaultAppendModificationsHttpFilter {
-    /// JsonPatches specifies list of jsonpatches to apply to on Envoy's HTTP Filter available in HTTP Connection Manager in a Listener resource.
+    /// JsonPatches specifies list of jsonpatches to apply to on Envoy's
+    /// HTTP Filter available in HTTP Connection Manager in a Listener resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsHttpFilterJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
@@ -172,14 +194,28 @@ pub struct MeshProxyPatchDefaultAppendModificationsHttpFilterMatch {
     /// Name of the HTTP filter. For example "envoy.filters.http.local_ratelimit"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Origin is the name of the component or plugin that generated the resource. 
-    ///  Here is the list of well-known origins: inbound - resources generated for handling incoming traffic. outbound - resources generated for handling outgoing traffic. transparent - resources generated for transparent proxy functionality. prometheus - resources generated when Prometheus metrics are enabled. direct-access - resources generated for Direct Access functionality. ingress - resources generated for Zone Ingress. egress - resources generated for Zone Egress. gateway - resources generated for MeshGateway. 
-    ///  The list is not complete, because policy plugins can introduce new resources. For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
+    /// Origin is the name of the component or plugin that generated the resource.
+    /// 
+    /// 
+    /// Here is the list of well-known origins:
+    /// inbound - resources generated for handling incoming traffic.
+    /// outbound - resources generated for handling outgoing traffic.
+    /// transparent - resources generated for transparent proxy functionality.
+    /// prometheus - resources generated when Prometheus metrics are enabled.
+    /// direct-access - resources generated for Direct Access functionality.
+    /// ingress - resources generated for Zone Ingress.
+    /// egress - resources generated for Zone Egress.
+    /// gateway - resources generated for MeshGateway.
+    /// 
+    /// 
+    /// The list is not complete, because policy plugins can introduce new resources.
+    /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origin: Option<String>,
 }
 
-/// HTTPFilter is a modification of Envoy HTTP Filter available in HTTP Connection Manager in a Listener resource.
+/// HTTPFilter is a modification of Envoy HTTP Filter
+/// available in HTTP Connection Manager in a Listener resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshProxyPatchDefaultAppendModificationsHttpFilterOperation {
     Remove,
@@ -193,7 +229,8 @@ pub enum MeshProxyPatchDefaultAppendModificationsHttpFilterOperation {
 /// Listener is a modification of Envoy's Listener resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshProxyPatchDefaultAppendModificationsListener {
-    /// JsonPatches specifies list of jsonpatches to apply to on Envoy's Listener resource
+    /// JsonPatches specifies list of jsonpatches to apply to on Envoy's Listener
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsListenerJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
@@ -242,9 +279,22 @@ pub struct MeshProxyPatchDefaultAppendModificationsListenerMatch {
     /// Name of the listener to match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Origin is the name of the component or plugin that generated the resource. 
-    ///  Here is the list of well-known origins: inbound - resources generated for handling incoming traffic. outbound - resources generated for handling outgoing traffic. transparent - resources generated for transparent proxy functionality. prometheus - resources generated when Prometheus metrics are enabled. direct-access - resources generated for Direct Access functionality. ingress - resources generated for Zone Ingress. egress - resources generated for Zone Egress. gateway - resources generated for MeshGateway. 
-    ///  The list is not complete, because policy plugins can introduce new resources. For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
+    /// Origin is the name of the component or plugin that generated the resource.
+    /// 
+    /// 
+    /// Here is the list of well-known origins:
+    /// inbound - resources generated for handling incoming traffic.
+    /// outbound - resources generated for handling outgoing traffic.
+    /// transparent - resources generated for transparent proxy functionality.
+    /// prometheus - resources generated when Prometheus metrics are enabled.
+    /// direct-access - resources generated for Direct Access functionality.
+    /// ingress - resources generated for Zone Ingress.
+    /// egress - resources generated for Zone Egress.
+    /// gateway - resources generated for MeshGateway.
+    /// 
+    /// 
+    /// The list is not complete, because policy plugins can introduce new resources.
+    /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origin: Option<String>,
     /// Tags available in Listener#Metadata#FilterMetadata[io.kuma.tags]
@@ -263,7 +313,8 @@ pub enum MeshProxyPatchDefaultAppendModificationsListenerOperation {
 /// NetworkFilter is a modification of Envoy Listener's filter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshProxyPatchDefaultAppendModificationsNetworkFilter {
-    /// JsonPatches specifies list of jsonpatches to apply to on Envoy Listener's filter.
+    /// JsonPatches specifies list of jsonpatches to apply to on Envoy Listener's
+    /// filter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsNetworkFilterJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
@@ -318,9 +369,22 @@ pub struct MeshProxyPatchDefaultAppendModificationsNetworkFilterMatch {
     /// Name of the network filter. For example "envoy.filters.network.ratelimit"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Origin is the name of the component or plugin that generated the resource. 
-    ///  Here is the list of well-known origins: inbound - resources generated for handling incoming traffic. outbound - resources generated for handling outgoing traffic. transparent - resources generated for transparent proxy functionality. prometheus - resources generated when Prometheus metrics are enabled. direct-access - resources generated for Direct Access functionality. ingress - resources generated for Zone Ingress. egress - resources generated for Zone Egress. gateway - resources generated for MeshGateway. 
-    ///  The list is not complete, because policy plugins can introduce new resources. For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
+    /// Origin is the name of the component or plugin that generated the resource.
+    /// 
+    /// 
+    /// Here is the list of well-known origins:
+    /// inbound - resources generated for handling incoming traffic.
+    /// outbound - resources generated for handling outgoing traffic.
+    /// transparent - resources generated for transparent proxy functionality.
+    /// prometheus - resources generated when Prometheus metrics are enabled.
+    /// direct-access - resources generated for Direct Access functionality.
+    /// ingress - resources generated for Zone Ingress.
+    /// egress - resources generated for Zone Egress.
+    /// gateway - resources generated for MeshGateway.
+    /// 
+    /// 
+    /// The list is not complete, because policy plugins can introduce new resources.
+    /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origin: Option<String>,
 }
@@ -336,10 +400,12 @@ pub enum MeshProxyPatchDefaultAppendModificationsNetworkFilterOperation {
     AddLast,
 }
 
-/// VirtualHost is a modification of Envoy's VirtualHost referenced in HTTP Connection Manager in a Listener resource.
+/// VirtualHost is a modification of Envoy's VirtualHost
+/// referenced in HTTP Connection Manager in a Listener resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshProxyPatchDefaultAppendModificationsVirtualHost {
-    /// JsonPatches specifies list of jsonpatches to apply to on Envoy's VirtualHost resource
+    /// JsonPatches specifies list of jsonpatches to apply to on Envoy's
+    /// VirtualHost resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsVirtualHostJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
@@ -388,9 +454,22 @@ pub struct MeshProxyPatchDefaultAppendModificationsVirtualHostMatch {
     /// Name of the VirtualHost to match.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Origin is the name of the component or plugin that generated the resource. 
-    ///  Here is the list of well-known origins: inbound - resources generated for handling incoming traffic. outbound - resources generated for handling outgoing traffic. transparent - resources generated for transparent proxy functionality. prometheus - resources generated when Prometheus metrics are enabled. direct-access - resources generated for Direct Access functionality. ingress - resources generated for Zone Ingress. egress - resources generated for Zone Egress. gateway - resources generated for MeshGateway. 
-    ///  The list is not complete, because policy plugins can introduce new resources. For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
+    /// Origin is the name of the component or plugin that generated the resource.
+    /// 
+    /// 
+    /// Here is the list of well-known origins:
+    /// inbound - resources generated for handling incoming traffic.
+    /// outbound - resources generated for handling outgoing traffic.
+    /// transparent - resources generated for transparent proxy functionality.
+    /// prometheus - resources generated when Prometheus metrics are enabled.
+    /// direct-access - resources generated for Direct Access functionality.
+    /// ingress - resources generated for Zone Ingress.
+    /// egress - resources generated for Zone Egress.
+    /// gateway - resources generated for MeshGateway.
+    /// 
+    /// 
+    /// The list is not complete, because policy plugins can introduce new resources.
+    /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origin: Option<String>,
     /// Name of the RouteConfiguration resource to match.
@@ -398,7 +477,8 @@ pub struct MeshProxyPatchDefaultAppendModificationsVirtualHostMatch {
     pub route_configuration_name: Option<String>,
 }
 
-/// VirtualHost is a modification of Envoy's VirtualHost referenced in HTTP Connection Manager in a Listener resource.
+/// VirtualHost is a modification of Envoy's VirtualHost
+/// referenced in HTTP Connection Manager in a Listener resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshProxyPatchDefaultAppendModificationsVirtualHostOperation {
     Add,
@@ -406,7 +486,9 @@ pub enum MeshProxyPatchDefaultAppendModificationsVirtualHostOperation {
     Patch,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshProxyPatchTargetRef {
     /// Kind of the referenced resource
@@ -415,15 +497,23 @@ pub struct MeshProxyPatchTargetRef {
     /// Mesh is reserved for future use to identify cross mesh resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mesh: Option<String>,
-    /// Name of the referenced resource. Can only be used with kinds: `MeshService`, `MeshServiceSubset` and `MeshGatewayRoute`
+    /// Name of the referenced resource. Can only be used with kinds: `MeshService`,
+    /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags used to select a subset of proxies by tags. Can only be used with kinds `MeshSubset` and `MeshServiceSubset`
+    /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
+    /// all data plane types are targeted by the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
+    pub proxy_types: Option<Vec<String>>,
+    /// Tags used to select a subset of proxies by tags. Can only be used with kinds
+    /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// TargetRef is a reference to the resource the policy takes an effect on. The resource could be either a real store object or virtual resource defined inplace.
+/// TargetRef is a reference to the resource the policy takes an effect on.
+/// The resource could be either a real store object or virtual resource
+/// defined inplace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshProxyPatchTargetRefKind {
     Mesh,

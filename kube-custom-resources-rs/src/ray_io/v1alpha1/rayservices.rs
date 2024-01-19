@@ -6318,8 +6318,6 @@ pub struct RayServiceStatus {
 pub struct RayServiceStatusActiveServiceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationStatuses")]
     pub application_statuses: Option<BTreeMap<String, RayServiceStatusActiveServiceStatusApplicationStatuses>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dashboardStatus")]
-    pub dashboard_status: Option<RayServiceStatusActiveServiceStatusDashboardStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterName")]
     pub ray_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterStatus")]
@@ -6346,14 +6344,6 @@ pub struct RayServiceStatusActiveServiceStatusApplicationStatusesServeDeployment
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct RayServiceStatusActiveServiceStatusDashboardStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthLastUpdateTime")]
-    pub health_last_update_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isHealthy")]
-    pub is_healthy: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6400,8 +6390,6 @@ pub struct RayServiceStatusActiveServiceStatusRayClusterStatusHead {
 pub struct RayServiceStatusPendingServiceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationStatuses")]
     pub application_statuses: Option<BTreeMap<String, RayServiceStatusPendingServiceStatusApplicationStatuses>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dashboardStatus")]
-    pub dashboard_status: Option<RayServiceStatusPendingServiceStatusDashboardStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterName")]
     pub ray_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterStatus")]
@@ -6428,14 +6416,6 @@ pub struct RayServiceStatusPendingServiceStatusApplicationStatusesServeDeploymen
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct RayServiceStatusPendingServiceStatusDashboardStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthLastUpdateTime")]
-    pub health_last_update_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isHealthy")]
-    pub is_healthy: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

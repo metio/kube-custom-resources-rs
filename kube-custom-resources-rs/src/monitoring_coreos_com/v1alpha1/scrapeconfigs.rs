@@ -30,6 +30,11 @@ pub struct ScrapeConfigSpec {
     /// EC2SDConfigs defines a list of EC2 service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2SDConfigs")]
     pub ec2_sd_configs: Option<Vec<ScrapeConfigEc2SdConfigs>>,
+    /// When false, Prometheus will request uncompressed response from the scraped target. 
+    ///  It requires Prometheus >= v2.49.0. 
+    ///  If unset, Prometheus uses true by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCompression")]
+    pub enable_compression: Option<bool>,
     /// FileSDConfigs defines a list of file service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSDConfigs")]
     pub file_sd_configs: Option<Vec<ScrapeConfigFileSdConfigs>>,

@@ -159,12 +159,16 @@ spec:
                       description: timeRange records the time range of backed up data, for PITR, this is the time range of recoverable data.
                       properties:
                         end:
-                          description: end records the end time of backup.
+                          description: end records the end time of backup(Coordinated Universal Time, UTC).
                           format: date-time
                           type: string
                         start:
-                          description: start records the start time of backup.
+                          description: start records the start time of backup(Coordinated Universal Time, UTC).
                           format: date-time
+                          type: string
+                        timeZone:
+                          description: 'time zone, only support zone offset, value range: "-12:59 ~ +13:00"'
+                          pattern: ^(\+|\-)(0[0-9]|1[0-3]):([0-5][0-9])$
                           type: string
                       type: object
                     totalSize:
@@ -655,12 +659,16 @@ spec:
                 description: timeRange records the time range of backed up data, for PITR, this is the time range of recoverable data.
                 properties:
                   end:
-                    description: end records the end time of backup.
+                    description: end records the end time of backup(Coordinated Universal Time, UTC).
                     format: date-time
                     type: string
                   start:
-                    description: start records the start time of backup.
+                    description: start records the start time of backup(Coordinated Universal Time, UTC).
                     format: date-time
+                    type: string
+                  timeZone:
+                    description: 'time zone, only support zone offset, value range: "-12:59 ~ +13:00"'
+                    pattern: ^(\+|\-)(0[0-9]|1[0-3]):([0-5][0-9])$
                     type: string
                 type: object
               totalSize:

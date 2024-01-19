@@ -168,10 +168,10 @@ pub struct ChallengeSolverDns01AkamaiClientTokenSecretRef {
 /// Use the Microsoft Azure DNS API to manage DNS01 challenge records.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ChallengeSolverDns01AzureDns {
-    /// if both this and ClientSecret are left unset MSI will be used
+    /// Auth: Azure Service Principal: The ClientID of the Azure Service Principal used to authenticate with Azure DNS. If set, ClientSecret and TenantID must also be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
-    /// if both this and ClientID are left unset MSI will be used
+    /// Auth: Azure Service Principal: A reference to a Secret containing the password associated with the Service Principal. If set, ClientID and TenantID must also be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecretSecretRef")]
     pub client_secret_secret_ref: Option<ChallengeSolverDns01AzureDnsClientSecretSecretRef>,
     /// name of the Azure environment (default AzurePublicCloud)
@@ -180,7 +180,7 @@ pub struct ChallengeSolverDns01AzureDns {
     /// name of the DNS zone that should be used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneName")]
     pub hosted_zone_name: Option<String>,
-    /// managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+    /// Auth: Azure Workload Identity or Azure Managed Service Identity: Settings to enable Azure Workload Identity or Azure Managed Service Identity If set, ClientID, ClientSecret and TenantID must not be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedIdentity")]
     pub managed_identity: Option<ChallengeSolverDns01AzureDnsManagedIdentity>,
     /// resource group the DNS zone is located in
@@ -189,12 +189,12 @@ pub struct ChallengeSolverDns01AzureDns {
     /// ID of the Azure subscription
     #[serde(rename = "subscriptionID")]
     pub subscription_id: String,
-    /// when specifying ClientID and ClientSecret then this field is also needed
+    /// Auth: Azure Service Principal: The TenantID of the Azure Service Principal used to authenticate with Azure DNS. If set, ClientID and ClientSecret must also be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<String>,
 }
 
-/// if both this and ClientID are left unset MSI will be used
+/// Auth: Azure Service Principal: A reference to a Secret containing the password associated with the Service Principal. If set, ClientID and TenantID must also be set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ChallengeSolverDns01AzureDnsClientSecretSecretRef {
     /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
@@ -214,13 +214,13 @@ pub enum ChallengeSolverDns01AzureDnsEnvironment {
     AzureUsGovernmentCloud,
 }
 
-/// managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+/// Auth: Azure Workload Identity or Azure Managed Service Identity: Settings to enable Azure Workload Identity or Azure Managed Service Identity If set, ClientID, ClientSecret and TenantID must not be set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ChallengeSolverDns01AzureDnsManagedIdentity {
     /// client ID of the managed identity, can not be used at the same time as resourceID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
-    /// resource ID of the managed identity, can not be used at the same time as clientID
+    /// resource ID of the managed identity, can not be used at the same time as clientID Cannot be used for Azure Managed Service Identity
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
     pub resource_id: Option<String>,
 }

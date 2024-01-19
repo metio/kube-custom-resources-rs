@@ -29,7 +29,9 @@ pub struct IPAddressSpec {
 /// ClaimRef is a reference to the claim this IPAddress was created for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressClaimRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -37,7 +39,9 @@ pub struct IPAddressClaimRef {
 /// PoolRef is a reference to the pool that this IPAddress was created from.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressPoolRef {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
