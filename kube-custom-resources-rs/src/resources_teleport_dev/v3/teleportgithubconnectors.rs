@@ -48,7 +48,7 @@ pub struct TeleportGithubConnectorTeamsToRoles {
     pub team: Option<String>,
 }
 
-/// TeleportGithubConnectorStatus defines the observed state of TeleportGithubConnector
+/// Status defines the observed state of the Teleport resource
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TeleportGithubConnectorStatus {
     /// Conditions represent the latest available observations of an object's state

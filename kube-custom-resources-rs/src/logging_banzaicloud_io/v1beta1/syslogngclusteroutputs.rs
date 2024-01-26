@@ -1478,6 +1478,8 @@ pub struct SyslogNGClusterOutputOpenobserve {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub record: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-action")]
     pub response_action: Option<BTreeMap<String, String>>,

@@ -47,7 +47,7 @@ pub struct VaultAuthSpec {
     /// StorageEncryption provides the necessary configuration to encrypt the client storage cache. This should only be configured when client cache persistence with encryption is enabled. This is done by passing setting the manager's commandline argument --client-cache-persistence-model=direct-encrypted. Typically, there should only ever be one VaultAuth configured with StorageEncryption in the Cluster, and it should have the label: cacheStorageEncryption=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageEncryption")]
     pub storage_encryption: Option<VaultAuthStorageEncryption>,
-    /// VaultConnectionRef to the VaultConnection resource, can be prefixed with a namespace, eg: `namespaceA/vaultConnectionRefB`. If no namespace prefix is provided it will default to namespace of the VaultConnection CR. If no value is specified for VaultConnectionRef the Operator will default to	`default` VaultConnection, configured in its own Kubernetes namespace.
+    /// VaultConnectionRef to the VaultConnection resource, can be prefixed with a namespace, eg: `namespaceA/vaultConnectionRefB`. If no namespace prefix is provided it will default to namespace of the VaultConnection CR. If no value is specified for VaultConnectionRef the Operator will default to the `default` VaultConnection, configured in the operator's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultConnectionRef")]
     pub vault_connection_ref: Option<String>,
 }
@@ -80,7 +80,7 @@ pub struct VaultAuthAws {
     pub region: Option<String>,
     /// Vault role to use for authenticating
     pub role: String,
-    /// SecretRef is the name of a Kubernetes Secret which holds credentials for AWS. Expected keys include `access_key_id`, `secret_access_key`, `session_token`
+    /// SecretRef is the name of a Kubernetes Secret in the consumer's (VDS/VSS/PKI) namespace which holds credentials for AWS. Expected keys include `access_key_id`, `secret_access_key`, `session_token`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<String>,
     /// The role session name to use when creating a webidentity provider
@@ -137,7 +137,7 @@ pub struct VaultAuthKubernetes {
     pub audiences: Option<Vec<String>>,
     /// Role to use for authenticating to Vault.
     pub role: String,
-    /// ServiceAccount to use when authenticating to Vault's kubernetes authentication backend.
+    /// ServiceAccount to use when authenticating to Vault's authentication backend. This must reside in the consuming secret's (VDS/VSS/PKI) namespace.
     #[serde(rename = "serviceAccount")]
     pub service_account: String,
     /// TokenExpirationSeconds to set the ServiceAccount token.

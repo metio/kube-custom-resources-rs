@@ -15,7 +15,9 @@ pub struct SeccompProfileSpec {
     /// the architecture used for system calls
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub architectures: Option<Vec<String>>,
-    /// BaseProfileName is the name of base profile (in the same namespace) that will be unioned into this profile. Base profiles can be references as remote OCI artifacts as well when prefixed with `oci://`.
+    /// BaseProfileName is the name of base profile (in the same namespace) that
+    /// will be unioned into this profile. Base profiles can be references as
+    /// remote OCI artifacts as well when prefixed with `oci://`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseProfileName")]
     pub base_profile_name: Option<String>,
     /// the default action for seccomp
@@ -33,7 +35,10 @@ pub struct SeccompProfileSpec {
     /// path of UNIX domain socket to contact a seccomp agent for SCMP_ACT_NOTIFY
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerPath")]
     pub listener_path: Option<String>,
-    /// match a syscall in seccomp. While this property is OPTIONAL, some values of defaultAction are not useful without syscalls entries. For example, if defaultAction is SCMP_ACT_KILL and syscalls is empty or unset, the kernel will kill the container process on its first syscall
+    /// match a syscall in seccomp. While this property is OPTIONAL, some values
+    /// of defaultAction are not useful without syscalls entries. For example,
+    /// if defaultAction is SCMP_ACT_KILL and syscalls is empty or unset, the
+    /// kernel will kill the container process on its first syscall
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syscalls: Option<Vec<SeccompProfileSyscalls>>,
 }
@@ -69,7 +74,8 @@ pub struct SeccompProfileSyscalls {
     /// the specific syscall in seccomp
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<SeccompProfileSyscallsArgs>>,
-    /// the errno return code to use. Some actions like SCMP_ACT_ERRNO and SCMP_ACT_TRACE allow to specify the errno code to return
+    /// the errno return code to use. Some actions like SCMP_ACT_ERRNO and
+    /// SCMP_ACT_TRACE allow to specify the errno code to return
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errnoRet")]
     pub errno_ret: Option<i64>,
     /// the names of the syscalls
@@ -141,12 +147,15 @@ pub struct SeccompProfileStatus {
     /// Conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<SeccompProfileStatusConditions>>,
-    /// The path that should be provided to the `securityContext.seccompProfile.localhostProfile` field of a Pod or container spec
+    /// The path that should be provided to the `securityContext.seccompProfile.localhostProfile`
+    /// field of a Pod or container spec
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// ProfileState defines the state that the profile is in. A profile in this context refers to a SeccompProfile or a SELinux profile, the states are shared between them as well as the management API.
+    /// ProfileState defines the state that the profile is in. A profile in this context
+    /// refers to a SeccompProfile or a SELinux profile, the states are shared between them
+    /// as well as the management API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
@@ -154,17 +163,20 @@ pub struct SeccompProfileStatus {
 /// A Condition that may apply to a resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SeccompProfileStatusConditions {
-    /// LastTransitionTime is the last time this condition transitioned from one status to another.
+    /// LastTransitionTime is the last time this condition transitioned from one
+    /// status to another.
     #[serde(rename = "lastTransitionTime")]
     pub last_transition_time: String,
-    /// A Message containing details about this condition's last transition from one status to another, if any.
+    /// A Message containing details about this condition's last transition from
+    /// one status to another, if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// A Reason for this condition's last transition from one status to another.
     pub reason: String,
     /// Status of this condition; is it currently True, False, or Unknown?
     pub status: String,
-    /// Type of this condition. At most one of each condition type may apply to a resource at any point in time.
+    /// Type of this condition. At most one of each condition type may apply to
+    /// a resource at any point in time.
     #[serde(rename = "type")]
     pub r#type: String,
 }

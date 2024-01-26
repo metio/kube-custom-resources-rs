@@ -735,6 +735,10 @@ pub struct HostTailerWorkloadOverridesAffinityPodAffinityPreferredDuringScheduli
 pub struct HostTailerWorkloadOverridesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<HostTailerWorkloadOverridesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<HostTailerWorkloadOverridesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -779,6 +783,10 @@ pub struct HostTailerWorkloadOverridesAffinityPodAffinityPreferredDuringScheduli
 pub struct HostTailerWorkloadOverridesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<HostTailerWorkloadOverridesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<HostTailerWorkloadOverridesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -838,6 +846,10 @@ pub struct HostTailerWorkloadOverridesAffinityPodAntiAffinityPreferredDuringSche
 pub struct HostTailerWorkloadOverridesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<HostTailerWorkloadOverridesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<HostTailerWorkloadOverridesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -882,6 +894,10 @@ pub struct HostTailerWorkloadOverridesAffinityPodAntiAffinityPreferredDuringSche
 pub struct HostTailerWorkloadOverridesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<HostTailerWorkloadOverridesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<HostTailerWorkloadOverridesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1746,6 +1762,8 @@ pub struct HostTailerWorkloadOverridesVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<HostTailerWorkloadOverridesVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -1773,16 +1791,9 @@ pub struct HostTailerWorkloadOverridesVolumesEphemeralVolumeClaimTemplateSpecDat
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostTailerWorkloadOverridesVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<HostTailerWorkloadOverridesVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HostTailerWorkloadOverridesVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1952,6 +1963,8 @@ pub struct HostTailerWorkloadOverridesVolumesProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostTailerWorkloadOverridesVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -1960,6 +1973,35 @@ pub struct HostTailerWorkloadOverridesVolumesProjectedSources {
     pub secret: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HostTailerWorkloadOverridesVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HostTailerWorkloadOverridesVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<HostTailerWorkloadOverridesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HostTailerWorkloadOverridesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

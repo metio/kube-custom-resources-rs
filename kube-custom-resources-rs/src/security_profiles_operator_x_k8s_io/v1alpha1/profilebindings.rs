@@ -13,6 +13,7 @@ use serde::{Serialize, Deserialize};
 #[kube(schema = "disabled")]
 pub struct ProfileBindingSpec {
     /// Image name within pod containers to match to the profile.
+    /// Use the "*" string to bind the profile to all pods.
     pub image: String,
     /// ProfileRef references a SeccompProfile or other profile type in the current namespace.
     #[serde(rename = "profileRef")]

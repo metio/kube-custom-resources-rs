@@ -28,6 +28,9 @@ pub struct IBMPowerVSMachineTemplateTemplate {
 /// IBMPowerVSMachineSpec defines the desired state of IBMPowerVSMachine.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSMachineTemplateTemplateSpec {
+    /// Ignition defined options related to the bootstrapping systems where Ignition is used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ignition: Option<IBMPowerVSMachineTemplateTemplateSpecIgnition>,
     /// Image the reference to the image which is used to create the instance. supported image identifier in IBMPowerVSResourceReference are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<IBMPowerVSMachineTemplateTemplateSpecImage>,
@@ -48,7 +51,10 @@ pub struct IBMPowerVSMachineTemplateTemplateSpec {
     /// ProviderID is the unique identifier as specified by the cloud provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
-    /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
+    /// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created. Power VS workspace is a container for all Power VS instances at a specific geographic region. serviceInstance can be created via IBM Cloud catalog or CLI. supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli. More detail about Power VS service instance. https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server when omitted system will dynamically create the service instance
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
+    pub service_instance: Option<IBMPowerVSMachineTemplateTemplateSpecServiceInstance>,
+    /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed. Deprecated: use ServiceInstance instead
     #[serde(rename = "serviceInstanceID")]
     pub service_instance_id: String,
     /// SSHKey is the name of the SSH key pair provided to the vsi for authenticating users.
@@ -57,6 +63,31 @@ pub struct IBMPowerVSMachineTemplateTemplateSpec {
     /// systemType is the System type used to host the instance. systemType determines the number of cores and memory that is available. Few of the supported SystemTypes are s922,e880,e980. e880 systemType available only in Dallas Datacenters. e980 systemType available in Datacenters except Dallas and Washington. When omitted, this means that the user has no opinion and the platform is left to choose a reasonable default, which is subject to change over time. The current default is s922 which is generally available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemType")]
     pub system_type: Option<IBMPowerVSMachineTemplateTemplateSpecSystemType>,
+}
+
+/// Ignition defined options related to the bootstrapping systems where Ignition is used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSMachineTemplateTemplateSpecIgnition {
+    /// Version defines which version of Ignition will be used to generate bootstrap data.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<IBMPowerVSMachineTemplateTemplateSpecIgnitionVersion>,
+}
+
+/// Ignition defined options related to the bootstrapping systems where Ignition is used.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IBMPowerVSMachineTemplateTemplateSpecIgnitionVersion {
+    #[serde(rename = "2.3")]
+    r#_23,
+    #[serde(rename = "3.0")]
+    r#_30,
+    #[serde(rename = "3.1")]
+    r#_31,
+    #[serde(rename = "3.2")]
+    r#_32,
+    #[serde(rename = "3.3")]
+    r#_33,
+    #[serde(rename = "3.4")]
+    r#_34,
 }
 
 /// Image the reference to the image which is used to create the instance. supported image identifier in IBMPowerVSResourceReference are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
@@ -103,6 +134,20 @@ pub enum IBMPowerVSMachineTemplateTemplateSpecProcessorType {
     Capped,
     #[serde(rename = "")]
     KopiumEmpty,
+}
+
+/// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created. Power VS workspace is a container for all Power VS instances at a specific geographic region. serviceInstance can be created via IBM Cloud catalog or CLI. supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli. More detail about Power VS service instance. https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server when omitted system will dynamically create the service instance
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSMachineTemplateTemplateSpecServiceInstance {
+    /// ID of resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Name of resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<String>,
 }
 
 /// IBMPowerVSMachineSpec defines the desired state of IBMPowerVSMachine.

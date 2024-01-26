@@ -24,6 +24,7 @@ pub struct TeleportLoginRuleSpec {
     pub traits_map: Option<BTreeMap<String, String>>,
 }
 
+/// Status defines the observed state of the Teleport resource
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TeleportLoginRuleStatus {
     /// Conditions represent the latest available observations of an object's state

@@ -91,7 +91,7 @@ pub struct MeshFaultInjectionFromDefaultHttpDelay {
 /// responding to the requests
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionFromDefaultHttpResponseBandwidth {
-    /// Limit is represented by value measure in gbps, mbps, kbps or bps, e.g.
+    /// Limit is represented by value measure in Gbps, Mbps, kbps, e.g.
     /// 10kbps
     pub limit: String,
     /// Percentage of requests on which response bandwidth limit will be
@@ -240,7 +240,7 @@ pub struct MeshFaultInjectionToDefaultHttpDelay {
 /// responding to the requests
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshFaultInjectionToDefaultHttpResponseBandwidth {
-    /// Limit is represented by value measure in gbps, mbps, kbps or bps, e.g.
+    /// Limit is represented by value measure in Gbps, Mbps, kbps, e.g.
     /// 10kbps
     pub limit: String,
     /// Percentage of requests on which response bandwidth limit will be

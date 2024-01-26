@@ -43,7 +43,7 @@ pub struct OpsRequestSpec {
     /// cluster RestoreFrom backup or point in time
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreFrom")]
     pub restore_from: Option<OpsRequestRestoreFrom>,
-    /// restoreSpec defines how to restore the cluster.
+    /// restoreSpec defines how to restore the cluster. note that this restore operation will roll back cluster services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSpec")]
     pub restore_spec: Option<OpsRequestRestoreSpec>,
     /// scriptSpec defines the script to be executed.
@@ -365,7 +365,7 @@ pub struct OpsRequestRestoreFromPointInTimeRef {
     pub namespace: Option<String>,
 }
 
-/// restoreSpec defines how to restore the cluster.
+/// restoreSpec defines how to restore the cluster. note that this restore operation will roll back cluster services.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestoreSpec {
     /// backupName is the name of the backup.
@@ -382,7 +382,7 @@ pub struct OpsRequestRestoreSpec {
     pub volume_restore_policy: Option<OpsRequestRestoreSpecVolumeRestorePolicy>,
 }
 
-/// restoreSpec defines how to restore the cluster.
+/// restoreSpec defines how to restore the cluster. note that this restore operation will roll back cluster services.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestRestoreSpecVolumeRestorePolicy {
     Serial,

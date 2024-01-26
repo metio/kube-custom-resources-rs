@@ -306,6 +306,21 @@ spec:
                             - Nutanix
                             - External
                             type: string
+                          vsphere:
+                            description: vsphere configures failure domain information for the VSphere platform.
+                            items:
+                              description: VSphereFailureDomain configures failure domain information for the vSphere platform
+                              properties:
+                                name:
+                                  description: name of the failure domain in which the vSphere machine provider will create the VM. Failure domains are defined in a cluster's config.openshift.io/Infrastructure resource. When balancing machines across failure domains, the control plane machine set will inject configuration from the Infrastructure resource into the machine providerSpec to allocate the machine to a failure domain.
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
                         required:
                         - platform
                         type: object
@@ -318,6 +333,8 @@ spec:
                           rule: 'has(self.platform) && self.platform == ''GCP'' ?  has(self.gcp) : !has(self.gcp)'
                         - message: openstack configuration is required when platform is OpenStack, and forbidden otherwise
                           rule: 'has(self.platform) && self.platform == ''OpenStack'' ?  has(self.openstack) : !has(self.openstack)'
+                        - message: vsphere configuration is required when platform is VSphere, and forbidden otherwise
+                          rule: 'has(self.platform) && self.platform == ''VSphere'' ?  has(self.vsphere) : !has(self.vsphere)'
                         - message: nutanix configuration is required when platform is Nutanix, and forbidden otherwise
                           rule: 'has(self.platform) && self.platform == ''Nutanix'' ?  has(self.nutanix) : !has(self.nutanix)'
                       metadata:

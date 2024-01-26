@@ -233,6 +233,11 @@ pub struct PrometheusAgentSpec {
     ///  Default: "30s"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
+    /// The protocols to negotiate during a scrape. It tells clients the protocols supported by Prometheus in order of preference (from most to least preferred). 
+    ///  If unset, Prometheus uses its default value. 
+    ///  It requires Prometheus >= v2.49.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
+    pub scrape_protocols: Option<Vec<String>>,
     /// Number of seconds to wait until a scrape request times out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,

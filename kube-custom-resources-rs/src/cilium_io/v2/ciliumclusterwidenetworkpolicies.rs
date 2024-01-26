@@ -240,6 +240,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsListener {
     pub envoy_config: CiliumClusterwideNetworkPolicyEgressToPortsListenerEnvoyConfig,
     /// Name is the name of the listener.
     pub name: String,
+    /// Priority for this Listener that is used when multiple rules would apply different listeners to a policy map entry. Behavior of this is implementation dependent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i64>,
 }
 
 /// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
@@ -1048,6 +1051,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsListener {
     pub envoy_config: CiliumClusterwideNetworkPolicyIngressToPortsListenerEnvoyConfig,
     /// Name is the name of the listener.
     pub name: String,
+    /// Priority for this Listener that is used when multiple rules would apply different listeners to a policy map entry. Behavior of this is implementation dependent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i64>,
 }
 
 /// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
@@ -1726,6 +1732,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsListener {
     pub envoy_config: CiliumClusterwideNetworkPolicysEgressToPortsListenerEnvoyConfig,
     /// Name is the name of the listener.
     pub name: String,
+    /// Priority for this Listener that is used when multiple rules would apply different listeners to a policy map entry. Behavior of this is implementation dependent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i64>,
 }
 
 /// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.
@@ -2534,6 +2543,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsListener {
     pub envoy_config: CiliumClusterwideNetworkPolicysIngressToPortsListenerEnvoyConfig,
     /// Name is the name of the listener.
     pub name: String,
+    /// Priority for this Listener that is used when multiple rules would apply different listeners to a policy map entry. Behavior of this is implementation dependent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i64>,
 }
 
 /// EnvoyConfig is a reference to the CEC or CCEC resource in which the listener is defined.

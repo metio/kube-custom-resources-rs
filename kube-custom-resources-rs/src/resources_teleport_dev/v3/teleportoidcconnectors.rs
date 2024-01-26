@@ -75,7 +75,7 @@ pub struct TeleportOIDCConnectorClaimsToRoles {
     pub value: Option<String>,
 }
 
-/// TeleportOIDCConnectorStatus defines the observed state of TeleportOIDCConnector
+/// Status defines the observed state of the Teleport resource
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TeleportOIDCConnectorStatus {
     /// Conditions represent the latest available observations of an object's state

@@ -11,6 +11,11 @@ use std::collections::BTreeMap;
 #[kube(group = "policy.karmada.io", version = "v1alpha1", kind = "ClusterPropagationPolicy", plural = "clusterpropagationpolicies")]
 #[kube(schema = "disabled")]
 pub struct ClusterPropagationPolicySpec {
+    /// ActivationPreference indicates how the referencing resource template will be propagated, in case of policy changes. 
+    ///  If empty, the resource template will respond to policy changes immediately, in other words, any policy changes will drive the resource template to be propagated immediately as per the current propagation rules. 
+    ///  If the value is 'Lazy' means the policy changes will not take effect for now but defer to the resource template changes, in other words, the resource template will not be propagated as per the current propagation rules until there is an update on it. This is an experimental feature that might help in a scenario where a policy manages huge amount of resource templates, changes to a policy typically affect numerous applications simultaneously. A minor misconfiguration could lead to widespread failures. With this feature, the change can be gradually rolled out through iterative modifications of resource templates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activationPreference")]
+    pub activation_preference: Option<ClusterPropagationPolicyActivationPreference>,
     /// Association tells if relevant resources should be selected automatically. e.g. a ConfigMap referred by a Deployment. default false. Deprecated: in favor of PropagateDeps.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub association: Option<bool>,
@@ -47,6 +52,12 @@ pub struct ClusterPropagationPolicySpec {
     /// SchedulerName represents which scheduler to proceed the scheduling. If specified, the policy will be dispatched by specified scheduler. If not specified, the policy will be dispatched by default scheduler.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
+}
+
+/// Spec represents the desired behavior of ClusterPropagationPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPropagationPolicyActivationPreference {
+    Lazy,
 }
 
 /// Spec represents the desired behavior of ClusterPropagationPolicy.

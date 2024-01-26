@@ -56,15 +56,15 @@ pub struct FlowCollectorAgent {
 /// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `eBPF`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpf {
+    /// `advanced` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub advanced: Option<FlowCollectorAgentEbpfAdvanced>,
     /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending. Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load, however you can expect higher memory consumption and an increased latency in the flow collection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheActiveTimeout")]
     pub cache_active_timeout: Option<String>,
     /// `cacheMaxFlows` is the max number of flows in an aggregate; when reached, the reporter sends the flows. Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load, however you can expect higher memory consumption and an increased latency in the flow collection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheMaxFlows")]
     pub cache_max_flows: Option<i32>,
-    /// `debug` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub debug: Option<FlowCollectorAgentEbpfDebug>,
     /// `excludeInterfaces` contains the interface names that are excluded from flow tracing. An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression. Otherwise it is matched as a case-sensitive string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
@@ -83,7 +83,7 @@ pub struct FlowCollectorAgentEbpf {
     /// `logLevel` defines the log level for the NetObserv eBPF Agent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorAgentEbpfLogLevel>,
-    /// Privileged mode for the eBPF Agent container. In general this setting can be ignored or set to `false`: in that case, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container, to enable its correct operation. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges.
+    /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges. Some agent features require the privileged mode, such as packet drops tracking (see `features`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -94,9 +94,9 @@ pub struct FlowCollectorAgentEbpf {
     pub sampling: Option<i32>,
 }
 
-/// `debug` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+/// `advanced` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct FlowCollectorAgentEbpfDebug {
+pub struct FlowCollectorAgentEbpfAdvanced {
     /// `env` allows passing custom environment variables to underlying components. Useful for passing some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
@@ -209,6 +209,9 @@ pub enum FlowCollectorAgentType {
 /// `consolePlugin` defines the settings related to the OpenShift Console plugin, when available.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorConsolePlugin {
+    /// `advanced` allows setting some aspects of the internal configuration of the console plugin. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub advanced: Option<FlowCollectorConsolePluginAdvanced>,
     /// `autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaler: Option<FlowCollectorConsolePluginAutoscaler>,
@@ -221,24 +224,35 @@ pub struct FlowCollectorConsolePlugin {
     /// `logLevel` for the console plugin backend
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorConsolePluginLogLevel>,
-    /// `port` is the plugin service port. Do not use 9002, which is reserved for metrics.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port: Option<i32>,
     /// `portNaming` defines the configuration of the port-to-service name translation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNaming")]
     pub port_naming: Option<FlowCollectorConsolePluginPortNaming>,
     /// `quickFilters` configures quick filter presets for the Console plugin
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "quickFilters")]
     pub quick_filters: Option<Vec<FlowCollectorConsolePluginQuickFilters>>,
-    /// `register` allows, when set to `true`, to automatically register the provided console plugin with the OpenShift Console operator. When set to `false`, you can still register it manually by editing console.operator.openshift.io/cluster with the following command: `oc patch console.operator.openshift.io cluster --type='json' -p '[{"op": "add", "path": "/spec/plugins/-", "value": "netobserv-plugin"}]'`
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub register: Option<bool>,
     /// `replicas` defines the number of replicas (pods) to start.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// `resources`, in terms of compute resources, required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorConsolePluginResources>,
+}
+
+/// `advanced` allows setting some aspects of the internal configuration of the console plugin. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorConsolePluginAdvanced {
+    /// `args` allows passing custom arguments to underlying components. Useful for overriding some parameters, such as an url or a configuration path, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// `env` allows passing custom environment variables to underlying components. Useful for passing some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<BTreeMap<String, String>>,
+    /// `port` is the plugin service port. Do not use 9002, which is reserved for metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// `register` allows, when set to `true`, to automatically register the provided console plugin with the OpenShift Console operator. When set to `false`, you can still register it manually by editing console.operator.openshift.io/cluster with the following command: `oc patch console.operator.openshift.io cluster --type='json' -p '[{"op": "add", "path": "/spec/plugins/-", "value": "netobserv-plugin"}]'`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub register: Option<bool>,
 }
 
 /// `autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment.
@@ -992,12 +1006,9 @@ pub enum FlowCollectorKafkaTlsUserCertType {
 /// `loki`, the flow store, client settings.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorLoki {
-    /// `batchSize` is the maximum batch size (in bytes) of logs to accumulate before sending.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSize")]
-    pub batch_size: Option<i64>,
-    /// `batchWait` is the maximum time to wait before sending a batch.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchWait")]
-    pub batch_wait: Option<String>,
+    /// `advanced` allows setting some aspects of the internal configuration of the Loki clients. This section is aimed mostly for debugging and fine-grained performance optimizations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub advanced: Option<FlowCollectorLokiAdvanced>,
     /// Set `enable` to `true` to store flows in Loki. It is required for the OpenShift Console plugin installation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
@@ -1007,30 +1018,44 @@ pub struct FlowCollectorLoki {
     /// Loki configuration for "Manual" mode. This is the most flexible configuration. It is ignored for other modes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manual: Option<FlowCollectorLokiManual>,
-    /// `maxBackoff` is the maximum backoff time for client connection between retries.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBackoff")]
-    pub max_backoff: Option<String>,
-    /// `maxRetries` is the maximum number of retries for client connections.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
-    pub max_retries: Option<i32>,
     /// Loki configuration for "Microservices" mode. Use this option when Loki is installed using the microservices deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#microservices-mode). It is ignored for other modes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub microservices: Option<FlowCollectorLokiMicroservices>,
-    /// `minBackoff` is the initial backoff time for client connection between retries.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minBackoff")]
-    pub min_backoff: Option<String>,
     /// `mode` must be set according to the installation mode of Loki:<br> - Use "LokiStack" when Loki is managed using the Loki Operator<br> - Use "Monolithic" when Loki is installed as a monolithic workload<br> - Use "Microservices" when Loki is installed as microservices, but without Loki Operator<br> - Use "Manual" if none of the options above match your setup<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<FlowCollectorLokiMode>,
     /// Loki configuration for "Monolithic" mode. Use this option when Loki is installed using the monolithic deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#monolithic-mode). It is ignored for other modes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monolithic: Option<FlowCollectorLokiMonolithic>,
-    /// `staticLabels` is a map of common labels to set on each flow.
+    /// `readTimeout` is the maximum console plugin loki query total time limit. A timeout of zero means no timeout.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeout")]
+    pub read_timeout: Option<String>,
+    /// `writeBatchSize` is the maximum batch size (in bytes) of Loki logs to accumulate before sending.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBatchSize")]
+    pub write_batch_size: Option<i64>,
+    /// `writeBatchWait` is the maximum time to wait before sending a Loki batch.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBatchWait")]
+    pub write_batch_wait: Option<String>,
+    /// `writeTimeout` is the maximum Loki time connection / request limit. A timeout of zero means no timeout.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeTimeout")]
+    pub write_timeout: Option<String>,
+}
+
+/// `advanced` allows setting some aspects of the internal configuration of the Loki clients. This section is aimed mostly for debugging and fine-grained performance optimizations.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorLokiAdvanced {
+    /// `staticLabels` is a map of common labels to set on each flow in Loki storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticLabels")]
     pub static_labels: Option<BTreeMap<String, String>>,
-    /// `timeout` is the maximum time connection / request limit. A timeout of zero means no timeout.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<String>,
+    /// `writeMaxBackoff` is the maximum backoff time for Loki client connection between retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeMaxBackoff")]
+    pub write_max_backoff: Option<String>,
+    /// `writeMaxRetries` is the maximum number of retries for Loki client connections.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeMaxRetries")]
+    pub write_max_retries: Option<i32>,
+    /// `writeMinBackoff` is the initial backoff time for Loki client connection between retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeMinBackoff")]
+    pub write_min_backoff: Option<String>,
 }
 
 /// Loki configuration for "LokiStack" mode. This is useful for an easy loki-operator configuration. It is ignored for other modes.
@@ -1421,30 +1446,15 @@ pub enum FlowCollectorLokiMonolithicTlsUserCertType {
 /// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessor {
+    /// `addZone` when set to `true`, the source and destination of flow will their zone added to the flow
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addZone")]
+    pub add_zone: Option<bool>,
+    /// `advanced` allows setting some aspects of the internal configuration of the flow processor. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub advanced: Option<FlowCollectorProcessorAdvanced>,
     /// `clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
-    /// `conversationEndTimeout` is the time to wait after a network flow is received, to consider the conversation ended. This delay is ignored when a FIN packet is collected for TCP flows (see `conversationTerminatingTimeout` instead).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationEndTimeout")]
-    pub conversation_end_timeout: Option<String>,
-    /// `conversationHeartbeatInterval` is the time to wait between "tick" events of a conversation
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationHeartbeatInterval")]
-    pub conversation_heartbeat_interval: Option<String>,
-    /// `conversationTerminatingTimeout` is the time to wait from detected FIN flag to end a conversation. Only relevant for TCP flows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationTerminatingTimeout")]
-    pub conversation_terminating_timeout: Option<String>,
-    /// `debug` allows setting some aspects of the internal configuration of the flow processor. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub debug: Option<FlowCollectorProcessorDebug>,
-    /// `dropUnusedFields` allows, when set to `true`, to drop fields that are known to be unused by OVS, to save storage space.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dropUnusedFields")]
-    pub drop_unused_fields: Option<bool>,
-    /// `enableKubeProbes` is a flag to enable or disable Kubernetes liveness and readiness probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableKubeProbes")]
-    pub enable_kube_probes: Option<bool>,
-    /// `healthPort` is a collector HTTP port in the Pod that exposes the health check API
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthPort")]
-    pub health_port: Option<i32>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorProcessorImagePullPolicy>,
@@ -1472,23 +1482,41 @@ pub struct FlowCollectorProcessor {
     /// Set `multiClusterDeployment` to `true` to enable multi clusters feature. This will add clusterName label to flows data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterDeployment")]
     pub multi_cluster_deployment: Option<bool>,
+    /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<FlowCollectorProcessorResources>,
+}
+
+/// `advanced` allows setting some aspects of the internal configuration of the flow processor. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorProcessorAdvanced {
+    /// `conversationEndTimeout` is the time to wait after a network flow is received, to consider the conversation ended. This delay is ignored when a FIN packet is collected for TCP flows (see `conversationTerminatingTimeout` instead).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationEndTimeout")]
+    pub conversation_end_timeout: Option<String>,
+    /// `conversationHeartbeatInterval` is the time to wait between "tick" events of a conversation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationHeartbeatInterval")]
+    pub conversation_heartbeat_interval: Option<String>,
+    /// `conversationTerminatingTimeout` is the time to wait from detected FIN flag to end a conversation. Only relevant for TCP flows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationTerminatingTimeout")]
+    pub conversation_terminating_timeout: Option<String>,
+    /// `dropUnusedFields` allows, when set to `true`, to drop fields that are known to be unused by OVS, to save storage space.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dropUnusedFields")]
+    pub drop_unused_fields: Option<bool>,
+    /// `enableKubeProbes` is a flag to enable or disable Kubernetes liveness and readiness probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableKubeProbes")]
+    pub enable_kube_probes: Option<bool>,
+    /// `env` allows passing custom environment variables to underlying components. Useful for passing some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<BTreeMap<String, String>>,
+    /// `healthPort` is a collector HTTP port in the Pod that exposes the health check API
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthPort")]
+    pub health_port: Option<i32>,
     /// Port of the flow collector (host port). By convention, some values are forbidden. It must be greater than 1024 and different from 4500, 4789 and 6081.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// `profilePort` allows setting up a Go pprof profiler listening to this port
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilePort")]
     pub profile_port: Option<i32>,
-    /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<FlowCollectorProcessorResources>,
-}
-
-/// `debug` allows setting some aspects of the internal configuration of the flow processor. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct FlowCollectorProcessorDebug {
-    /// `env` allows passing custom environment variables to underlying components. Useful for passing some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<BTreeMap<String, String>>,
 }
 
 /// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.

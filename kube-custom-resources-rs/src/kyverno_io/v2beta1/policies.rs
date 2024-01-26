@@ -2097,6 +2097,9 @@ pub struct PolicyRulesVerifyImages {
     /// Required validates that images are verified i.e. have matched passed a signature or attestation check.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<bool>,
+    /// SkipImageReferences is a list of matching image reference patterns that should be skipped. At least one pattern in the list must match the image for the rule to be skipped. Each image reference consists of a registry address (defaults to docker.io), repository, image, and tag (defaults to latest). Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipImageReferences")]
+    pub skip_image_references: Option<Vec<String>>,
     /// Type specifies the method of signature validation. The allowed options are Cosign and Notary. By default Cosign is used if a type is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<PolicyRulesVerifyImagesType>,
@@ -4751,6 +4754,9 @@ pub struct PolicyStatusAutogenRulesVerifyImages {
     /// Deprecated. Use KeylessAttestor instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roots: Option<String>,
+    /// SkipImageReferences is a list of matching image reference patterns that should be skipped. At least one pattern in the list must match the image for the rule to be skipped. Each image reference consists of a registry address (defaults to docker.io), repository, image, and tag (defaults to latest). Wildcards ('*' and '?') are allowed. See: https://kubernetes.io/docs/concepts/containers/images.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipImageReferences")]
+    pub skip_image_references: Option<Vec<String>>,
     /// Deprecated. Use KeylessAttestor instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,

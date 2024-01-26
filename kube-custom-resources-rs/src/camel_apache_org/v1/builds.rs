@@ -36,6 +36,9 @@ pub struct BuildSpec {
 /// The configuration that should be used to perform the Build. Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
@@ -149,6 +152,9 @@ pub struct BuildTasksBuildah {
 /// The configuration that should be used to perform the Build.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuildahConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
@@ -253,6 +259,9 @@ pub struct BuildTasksBuilder {
 /// The configuration that should be used to perform the Build.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
@@ -664,6 +673,9 @@ pub struct BuildTasksCustom {
 /// The configuration that should be used to perform the Build.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksCustomConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
@@ -739,6 +751,9 @@ pub struct BuildTasksJib {
 /// The configuration that should be used to perform the Build.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksJibConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
@@ -854,6 +869,9 @@ pub struct BuildTasksKanikoCache {
 /// The configuration that should be used to perform the Build.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksKanikoConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
@@ -958,6 +976,9 @@ pub struct BuildTasksPackage {
 /// The configuration that should be used to perform the Build.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
@@ -1360,6 +1381,9 @@ pub struct BuildTasksS2i {
 /// The configuration that should be used to perform the Build.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksS2iConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
@@ -1435,6 +1459,9 @@ pub struct BuildTasksSpectrum {
 /// The configuration that should be used to perform the Build.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksSpectrumConfiguration {
+    /// Annotation to use for the builder pod. Only used for `pod` strategy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// The maximum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,

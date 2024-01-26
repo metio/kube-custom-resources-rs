@@ -22,10 +22,11 @@ spec:
     - jsonPath: .status.conditions[?(@.type=='Ready')].status
       name: Ready
       type: string
+    deprecated: true
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: CoreProvider is the Schema for the coreproviders API.
+        description: "CoreProvider is the Schema for the coreproviders API. \n Deprecated: This type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'

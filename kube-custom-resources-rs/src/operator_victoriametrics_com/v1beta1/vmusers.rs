@@ -4,6 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
 
 /// VMUserSpec defines the desired state of VMUser
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -21,6 +22,9 @@ pub struct VMUserSpec {
     /// DisableSecretCreation skips related secret creation for vmuser
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_secret_creation: Option<bool>,
+    /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend. See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop_src_path_prefix_parts: Option<i64>,
     /// GeneratePassword instructs operator to generate password for user if spec.password if empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatePassword")]
     pub generate_password: Option<bool>,
@@ -30,9 +34,15 @@ pub struct VMUserSpec {
     /// IPFilters defines per target src ip filters supported only with enterprise version of vmauth https://docs.victoriametrics.com/vmauth.html#ip-filters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_filters: Option<VMUserIpFilters>,
+    /// LoadBalancingPolicy defines load balancing policy to use for backend urls. Supported policies: least_loaded, first_available. See https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default "least_loaded")
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub load_balancing_policy: Option<VMUserLoadBalancingPolicy>,
     /// MaxConcurrentRequests defines max concurrent requests per user 300 is default value for vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_concurrent_requests: Option<i64>,
+    /// MetricLabels - additional labels for metrics exported by vmauth for given user.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metric_labels: Option<BTreeMap<String, String>>,
     /// Name of the VMUser object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -51,6 +61,9 @@ pub struct VMUserSpec {
     /// TargetRefs - reference to endpoints, which user may access.
     #[serde(rename = "targetRefs")]
     pub target_refs: Vec<VMUserTargetRefs>,
+    /// TLSInsecureSkipVerify - whether to skip TLS verification when connecting to backend over HTTPS. See https://docs.victoriametrics.com/vmauth.html#backend-tls-setup
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls_insecure_skip_verify: Option<bool>,
     /// TokenRef allows fetching token from user-created secrets by its name and key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenRef")]
     pub token_ref: Option<VMUserTokenRef>,
@@ -66,6 +79,15 @@ pub struct VMUserIpFilters {
     pub allow_list: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deny_list: Option<Vec<String>>,
+}
+
+/// VMUserSpec defines the desired state of VMUser
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VMUserLoadBalancingPolicy {
+    #[serde(rename = "least_loaded")]
+    LeastLoaded,
+    #[serde(rename = "first_available")]
+    FirstAvailable,
 }
 
 /// PasswordRef allows fetching password from user-create secret by its name and key.
@@ -87,9 +109,17 @@ pub struct VMUserTargetRefs {
     /// CRD describes exist operator's CRD object, operator generates access url based on CRD params.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub crd: Option<VMUserTargetRefsCrd>,
+    /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend. See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop_src_path_prefix_parts: Option<i64>,
     /// Headers represent additional http headers, that vmauth uses in form of ["header_key: header_value"] multiple values for header key: ["header_key: value1,value2"] it's available since 1.68.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hosts: Option<Vec<String>>,
+    /// LoadBalancingPolicy defines load balancing policy to use for backend urls. Supported policies: least_loaded, first_available. See https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default "least_loaded")
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub load_balancing_policy: Option<VMUserTargetRefsLoadBalancingPolicy>,
     /// Paths - matched path to route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paths: Option<Vec<String>>,
@@ -116,6 +146,15 @@ pub struct VMUserTargetRefsCrd {
     pub name: String,
     /// Namespace target CRD object namespace.
     pub namespace: String,
+}
+
+/// TargetRef describes target for user traffic forwarding. one of target types can be chosen: crd or static per targetRef. user can define multiple targetRefs with different ref Types.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VMUserTargetRefsLoadBalancingPolicy {
+    #[serde(rename = "least_loaded")]
+    LeastLoaded,
+    #[serde(rename = "first_available")]
+    FirstAvailable,
 }
 
 /// Static - user defined url for traffic forward, for instance http://vmsingle:8429

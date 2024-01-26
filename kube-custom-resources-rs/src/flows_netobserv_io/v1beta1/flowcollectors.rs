@@ -83,7 +83,7 @@ pub struct FlowCollectorAgentEbpf {
     /// `logLevel` defines the log level for the NetObserv eBPF Agent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorAgentEbpfLogLevel>,
-    /// Privileged mode for the eBPF Agent container. In general this setting can be ignored or set to `false`: in that case, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container, to enable its correct operation. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges.
+    /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges. Some agent features require the privileged mode, such as packet drops tracking (see `features`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -1025,6 +1025,9 @@ pub struct FlowCollectorLoki {
     /// `querierURL` specifies the address of the Loki querier service, in case it is different from the Loki ingester URL. If empty, the URL value is used (assuming that the Loki ingester and querier are in the same server). When using the Loki Operator, do not set it, since ingestion and queries use the Loki gateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "querierUrl")]
     pub querier_url: Option<String>,
+    /// `readTimeout` is the maximum loki query total time limit. A timeout of zero means no timeout.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeout")]
+    pub read_timeout: Option<String>,
     /// `staticLabels` is a map of common labels to set on each flow.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticLabels")]
     pub static_labels: Option<BTreeMap<String, String>>,
@@ -1037,7 +1040,7 @@ pub struct FlowCollectorLoki {
     /// `tenantID` is the Loki `X-Scope-OrgID` that identifies the tenant for each request. When using the Loki Operator, set it to `network`, which corresponds to a special tenant mode.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<String>,
-    /// `timeout` is the maximum time connection / request limit. A timeout of zero means no timeout.
+    /// `timeout` is the maximum processor time connection / request limit. A timeout of zero means no timeout.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
     /// TLS client configuration for Loki URL.

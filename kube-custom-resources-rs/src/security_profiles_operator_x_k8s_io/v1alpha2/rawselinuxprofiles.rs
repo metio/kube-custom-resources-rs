@@ -27,10 +27,13 @@ pub struct RawSelinuxProfileStatus {
     /// Conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<RawSelinuxProfileStatusConditions>>,
-    /// ProfileState defines the state that the profile is in. A profile in this context refers to a SeccompProfile or a SELinux profile, the states are shared between them as well as the management API.
+    /// ProfileState defines the state that the profile is in. A profile in this context
+    /// refers to a SeccompProfile or a SELinux profile, the states are shared between them
+    /// as well as the management API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    /// Represents the string that the SelinuxProfile object can be referenced as in a pod seLinuxOptions section.
+    /// Represents the string that the SelinuxProfile object can be
+    /// referenced as in a pod seLinuxOptions section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usage: Option<String>,
 }
@@ -38,17 +41,20 @@ pub struct RawSelinuxProfileStatus {
 /// A Condition that may apply to a resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RawSelinuxProfileStatusConditions {
-    /// LastTransitionTime is the last time this condition transitioned from one status to another.
+    /// LastTransitionTime is the last time this condition transitioned from one
+    /// status to another.
     #[serde(rename = "lastTransitionTime")]
     pub last_transition_time: String,
-    /// A Message containing details about this condition's last transition from one status to another, if any.
+    /// A Message containing details about this condition's last transition from
+    /// one status to another, if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// A Reason for this condition's last transition from one status to another.
     pub reason: String,
     /// Status of this condition; is it currently True, False, or Unknown?
     pub status: String,
-    /// Type of this condition. At most one of each condition type may apply to a resource at any point in time.
+    /// Type of this condition. At most one of each condition type may apply to
+    /// a resource at any point in time.
     #[serde(rename = "type")]
     pub r#type: String,
 }
