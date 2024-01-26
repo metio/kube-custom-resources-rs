@@ -13,7 +13,8 @@ use std::collections::BTreeMap;
 #[kube(status = "SecretStoreStatus")]
 #[kube(schema = "disabled")]
 pub struct SecretStoreSpec {
-    /// Used to select the correct ESO controller (think: ingress.ingressClassName) The ESO controller is instantiated with a specific controller name and filters ES based on this property
+    /// Used to select the correct ESO controller (think: ingress.ingressClassName)
+    /// The ESO controller is instantiated with a specific controller name and filters ES based on this property
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller: Option<String>,
     /// Used to configure the provider. Only one provider may be set
@@ -76,7 +77,9 @@ pub struct SecretStoreProviderAkeyless {
     /// Auth configures how the operator authenticates with Akeyless.
     #[serde(rename = "authSecretRef")]
     pub auth_secret_ref: SecretStoreProviderAkeylessAuthSecretRef,
-    /// PEM/base64 encoded CA bundle used to validate Akeyless Gateway certificate. Only used if the AkeylessGWApiURL URL is using HTTPS protocol. If not set the system root certificates are used to validate the TLS connection.
+    /// PEM/base64 encoded CA bundle used to validate Akeyless Gateway certificate. Only used
+    /// if the AkeylessGWApiURL URL is using HTTPS protocol. If not set the system root certificates
+    /// are used to validate the TLS connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// The provider for the CA bundle to use to validate Akeyless Gateway certificate.
@@ -87,15 +90,18 @@ pub struct SecretStoreProviderAkeyless {
 /// Auth configures how the operator authenticates with Akeyless.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRef {
-    /// Kubernetes authenticates with Akeyless by passing the ServiceAccount token stored in the named Secret resource.
+    /// Kubernetes authenticates with Akeyless by passing the ServiceAccount
+    /// token stored in the named Secret resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuth")]
     pub kubernetes_auth: Option<SecretStoreProviderAkeylessAuthSecretRefKubernetesAuth>,
-    /// Reference to a Secret that contains the details to authenticate with Akeyless.
+    /// Reference to a Secret that contains the details
+    /// to authenticate with Akeyless.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderAkeylessAuthSecretRefSecretRef>,
 }
 
-/// Kubernetes authenticates with Akeyless by passing the ServiceAccount token stored in the named Secret resource.
+/// Kubernetes authenticates with Akeyless by passing the ServiceAccount
+/// token stored in the named Secret resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefKubernetesAuth {
     /// the Akeyless Kubernetes auth-method access-id
@@ -104,51 +110,71 @@ pub struct SecretStoreProviderAkeylessAuthSecretRefKubernetesAuth {
     /// Kubernetes-auth configuration name in Akeyless-Gateway
     #[serde(rename = "k8sConfName")]
     pub k8s_conf_name: String,
-    /// Optional secret field containing a Kubernetes ServiceAccount JWT used for authenticating with Akeyless. If a name is specified without a key, `token` is the default. If one is not specified, the one bound to the controller will be used.
+    /// Optional secret field containing a Kubernetes ServiceAccount JWT used
+    /// for authenticating with Akeyless. If a name is specified without a key,
+    /// `token` is the default. If one is not specified, the one bound to
+    /// the controller will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderAkeylessAuthSecretRefKubernetesAuthSecretRef>,
-    /// Optional service account field containing the name of a kubernetes ServiceAccount. If the service account is specified, the service account secret token JWT will be used for authenticating with Akeyless. If the service account selector is not supplied, the secretRef will be used instead.
+    /// Optional service account field containing the name of a kubernetes ServiceAccount.
+    /// If the service account is specified, the service account secret token JWT will be used
+    /// for authenticating with Akeyless. If the service account selector is not supplied,
+    /// the secretRef will be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<SecretStoreProviderAkeylessAuthSecretRefKubernetesAuthServiceAccountRef>,
 }
 
-/// Optional secret field containing a Kubernetes ServiceAccount JWT used for authenticating with Akeyless. If a name is specified without a key, `token` is the default. If one is not specified, the one bound to the controller will be used.
+/// Optional secret field containing a Kubernetes ServiceAccount JWT used
+/// for authenticating with Akeyless. If a name is specified without a key,
+/// `token` is the default. If one is not specified, the one bound to
+/// the controller will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefKubernetesAuthSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Optional service account field containing the name of a kubernetes ServiceAccount. If the service account is specified, the service account secret token JWT will be used for authenticating with Akeyless. If the service account selector is not supplied, the secretRef will be used instead.
+/// Optional service account field containing the name of a kubernetes ServiceAccount.
+/// If the service account is specified, the service account secret token JWT will be used
+/// for authenticating with Akeyless. If the service account selector is not supplied,
+/// the secretRef will be used instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefKubernetesAuthServiceAccountRef {
-    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Reference to a Secret that contains the details to authenticate with Akeyless.
+/// Reference to a Secret that contains the details
+/// to authenticate with Akeyless.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRef {
     /// The SecretAccessID is used for authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessID")]
     pub access_id: Option<SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessId>,
-    /// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+    /// A reference to a specific 'key' within a Secret resource,
+    /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessType")]
     pub access_type: Option<SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessType>,
-    /// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+    /// A reference to a specific 'key' within a Secret resource,
+    /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTypeParam")]
     pub access_type_param: Option<SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessTypeParam>,
 }
@@ -156,41 +182,49 @@ pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRef {
 /// The SecretAccessID is used for authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessId {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+/// A reference to a specific 'key' within a Secret resource,
+/// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessType {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+/// A reference to a specific 'key' within a Secret resource,
+/// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessTypeParam {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -266,13 +300,15 @@ pub struct SecretStoreProviderAlibabaAuthSecretRef {
 /// The AccessKeyID is used for authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAlibabaAuthSecretRefAccessKeyIdSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -280,13 +316,15 @@ pub struct SecretStoreProviderAlibabaAuthSecretRefAccessKeyIdSecretRef {
 /// The AccessKeySecret is used for authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAlibabaAuthSecretRefAccessKeySecretSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -294,7 +332,9 @@ pub struct SecretStoreProviderAlibabaAuthSecretRefAccessKeySecretSecretRef {
 /// AWS configures this store to sync secrets using AWS Secret Manager provider
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAws {
-    /// Auth defines the information necessary to authenticate against AWS if not set aws sdk will infer credentials from your environment see: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials
+    /// Auth defines the information necessary to authenticate against AWS
+    /// if not set aws sdk will infer credentials from your environment
+    /// see: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<SecretStoreProviderAwsAuth>,
     /// AWS Region to be used for the provider
@@ -306,13 +346,16 @@ pub struct SecretStoreProviderAws {
     pub service: SecretStoreProviderAwsService,
 }
 
-/// Auth defines the information necessary to authenticate against AWS if not set aws sdk will infer credentials from your environment see: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials
+/// Auth defines the information necessary to authenticate against AWS
+/// if not set aws sdk will infer credentials from your environment
+/// see: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAwsAuth {
     /// Authenticate against AWS using service account tokens.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<SecretStoreProviderAwsAuthJwt>,
-    /// AWSAuthSecretRef holds secret references for AWS credentials both AccessKeyID and SecretAccessKey must be defined in order to properly authenticate.
+    /// AWSAuthSecretRef holds secret references for AWS credentials
+    /// both AccessKeyID and SecretAccessKey must be defined in order to properly authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderAwsAuthSecretRef>,
 }
@@ -328,17 +371,21 @@ pub struct SecretStoreProviderAwsAuthJwt {
 /// A reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAwsAuthJwtServiceAccountRef {
-    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// AWSAuthSecretRef holds secret references for AWS credentials both AccessKeyID and SecretAccessKey must be defined in order to properly authenticate.
+/// AWSAuthSecretRef holds secret references for AWS credentials
+/// both AccessKeyID and SecretAccessKey must be defined in order to properly authenticate.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAwsAuthSecretRef {
     /// The AccessKeyID is used for authentication
@@ -352,13 +399,15 @@ pub struct SecretStoreProviderAwsAuthSecretRef {
 /// The AccessKeyID is used for authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAwsAuthSecretRefAccessKeyIdSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -366,13 +415,15 @@ pub struct SecretStoreProviderAwsAuthSecretRefAccessKeyIdSecretRef {
 /// The SecretAccessKey is used for authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAwsAuthSecretRefSecretAccessKeySecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -390,13 +441,17 @@ pub struct SecretStoreProviderAzurekv {
     /// Auth configures how the operator authenticates with Azure. Required for ServicePrincipal auth type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authSecretRef")]
     pub auth_secret_ref: Option<SecretStoreProviderAzurekvAuthSecretRef>,
-    /// Auth type defines how to authenticate to the keyvault service. Valid values are: - "ServicePrincipal" (default): Using a service principal (tenantId, clientId, clientSecret) - "ManagedIdentity": Using Managed Identity assigned to the pod (see aad-pod-identity)
+    /// Auth type defines how to authenticate to the keyvault service.
+    /// Valid values are:
+    /// - "ServicePrincipal" (default): Using a service principal (tenantId, clientId, clientSecret)
+    /// - "ManagedIdentity": Using Managed Identity assigned to the pod (see aad-pod-identity)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
     pub auth_type: Option<SecretStoreProviderAzurekvAuthType>,
     /// If multiple Managed Identity is assigned to the pod, you can select the one to be used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
-    /// ServiceAccountRef specified the service account that should be used when authenticating with WorkloadIdentity.
+    /// ServiceAccountRef specified the service account
+    /// that should be used when authenticating with WorkloadIdentity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<SecretStoreProviderAzurekvServiceAccountRef>,
     /// TenantID configures the Azure Tenant to send requests to. Required for ServicePrincipal auth type.
@@ -421,13 +476,15 @@ pub struct SecretStoreProviderAzurekvAuthSecretRef {
 /// The Azure clientId of the service principle used for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAzurekvAuthSecretRefClientId {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -435,13 +492,15 @@ pub struct SecretStoreProviderAzurekvAuthSecretRefClientId {
 /// The Azure ClientSecret of the service principle used for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAzurekvAuthSecretRefClientSecret {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -454,15 +513,19 @@ pub enum SecretStoreProviderAzurekvAuthType {
     WorkloadIdentity,
 }
 
-/// ServiceAccountRef specified the service account that should be used when authenticating with WorkloadIdentity.
+/// ServiceAccountRef specified the service account
+/// that should be used when authenticating with WorkloadIdentity.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderAzurekvServiceAccountRef {
-    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -514,13 +577,15 @@ pub struct SecretStoreProviderGcpsmAuthSecretRef {
 /// The SecretAccessKey is used for authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderGcpsmAuthSecretRefSecretAccessKeySecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -541,12 +606,15 @@ pub struct SecretStoreProviderGcpsmAuthWorkloadIdentity {
 /// A reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderGcpsmAuthWorkloadIdentityServiceAccountRef {
-    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -581,13 +649,15 @@ pub struct SecretStoreProviderGitlabAuthSecretRef {
 /// AccessToken is used for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderGitlabAuthSecretRefAccessToken {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -619,13 +689,15 @@ pub struct SecretStoreProviderIbmAuthSecretRef {
 /// The SecretAccessKey is used for authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderIbmAuthSecretRefSecretApiKeySecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -660,38 +732,46 @@ pub struct SecretStoreProviderKubernetesAuth {
 /// has both clientCert and clientKey as secretKeySelector
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthCert {
-    /// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+    /// A reference to a specific 'key' within a Secret resource,
+    /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<SecretStoreProviderKubernetesAuthCertClientCert>,
-    /// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+    /// A reference to a specific 'key' within a Secret resource,
+    /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKey")]
     pub client_key: Option<SecretStoreProviderKubernetesAuthCertClientKey>,
 }
 
-/// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+/// A reference to a specific 'key' within a Secret resource,
+/// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthCertClientCert {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+/// A reference to a specific 'key' within a Secret resource,
+/// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthCertClientKey {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -707,12 +787,15 @@ pub struct SecretStoreProviderKubernetesAuthServiceAccount {
 /// A reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthServiceAccountServiceAccount {
-    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -720,21 +803,25 @@ pub struct SecretStoreProviderKubernetesAuthServiceAccountServiceAccount {
 /// use static token to authenticate with
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthToken {
-    /// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+    /// A reference to a specific 'key' within a Secret resource,
+    /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<SecretStoreProviderKubernetesAuthTokenBearerToken>,
 }
 
-/// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+/// A reference to a specific 'key' within a Secret resource,
+/// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthTokenBearerToken {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -779,28 +866,37 @@ pub enum SecretStoreProviderKubernetesServerCaProviderType {
 /// Oracle configures this store to sync secrets using Oracle Vault provider
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderOracle {
-    /// Auth configures how secret-manager authenticates with the Oracle Vault. If empty, instance principal is used. Optionally, the authenticating principal type and/or user data may be supplied for the use of workload identity and user principal.
+    /// Auth configures how secret-manager authenticates with the Oracle Vault.
+    /// If empty, instance principal is used. Optionally, the authenticating principal type
+    /// and/or user data may be supplied for the use of workload identity and user principal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<SecretStoreProviderOracleAuth>,
-    /// Compartment is the vault compartment OCID. Required for PushSecret
+    /// Compartment is the vault compartment OCID.
+    /// Required for PushSecret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compartment: Option<String>,
-    /// EncryptionKey is the OCID of the encryption key within the vault. Required for PushSecret
+    /// EncryptionKey is the OCID of the encryption key within the vault.
+    /// Required for PushSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKey")]
     pub encryption_key: Option<String>,
-    /// The type of principal to use for authentication. If left blank, the Auth struct will determine the principal type. This optional field must be specified if using workload identity.
+    /// The type of principal to use for authentication. If left blank, the Auth struct will
+    /// determine the principal type. This optional field must be specified if using
+    /// workload identity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "principalType")]
     pub principal_type: Option<SecretStoreProviderOraclePrincipalType>,
     /// Region is the region where vault is located.
     pub region: String,
-    /// ServiceAccountRef specified the service account that should be used when authenticating with WorkloadIdentity.
+    /// ServiceAccountRef specified the service account
+    /// that should be used when authenticating with WorkloadIdentity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<SecretStoreProviderOracleServiceAccountRef>,
     /// Vault is the vault's OCID of the specific vault where secret is located.
     pub vault: String,
 }
 
-/// Auth configures how secret-manager authenticates with the Oracle Vault. If empty, instance principal is used. Optionally, the authenticating principal type and/or user data may be supplied for the use of workload identity and user principal.
+/// Auth configures how secret-manager authenticates with the Oracle Vault.
+/// If empty, instance principal is used. Optionally, the authenticating principal type
+/// and/or user data may be supplied for the use of workload identity and user principal.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderOracleAuth {
     /// SecretRef to pass through sensitive information.
@@ -824,13 +920,15 @@ pub struct SecretStoreProviderOracleAuthSecretRef {
 /// Fingerprint is the fingerprint of the API private key.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderOracleAuthSecretRefFingerprint {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -838,13 +936,15 @@ pub struct SecretStoreProviderOracleAuthSecretRefFingerprint {
 /// PrivateKey is the user's API Signing Key in PEM format, used for authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderOracleAuthSecretRefPrivatekey {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -859,15 +959,19 @@ pub enum SecretStoreProviderOraclePrincipalType {
     Workload,
 }
 
-/// ServiceAccountRef specified the service account that should be used when authenticating with WorkloadIdentity.
+/// ServiceAccountRef specified the service account
+/// that should be used when authenticating with WorkloadIdentity.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderOracleServiceAccountRef {
-    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -877,27 +981,42 @@ pub struct SecretStoreProviderOracleServiceAccountRef {
 pub struct SecretStoreProviderVault {
     /// Auth configures how secret-manager authenticates with the Vault server.
     pub auth: SecretStoreProviderVaultAuth,
-    /// PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+    /// PEM encoded CA bundle used to validate Vault server certificate. Only used
+    /// if the Server URL is using HTTPS protocol. This parameter is ignored for
+    /// plain HTTP protocol connection. If not set the system root certificates
+    /// are used to validate the TLS connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// The provider for the CA bundle to use to validate Vault server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<SecretStoreProviderVaultCaProvider>,
-    /// ForwardInconsistent tells Vault to forward read-after-write requests to the Vault leader instead of simply retrying within a loop. This can increase performance if the option is enabled serverside. https://www.vaultproject.io/docs/configuration/replication#allow_forwarding_via_header
+    /// ForwardInconsistent tells Vault to forward read-after-write requests to the Vault
+    /// leader instead of simply retrying within a loop. This can increase performance if
+    /// the option is enabled serverside.
+    /// https://www.vaultproject.io/docs/configuration/replication#allow_forwarding_via_header
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardInconsistent")]
     pub forward_inconsistent: Option<bool>,
-    /// Name of the vault namespace. Namespaces is a set of features within Vault Enterprise that allows Vault environments to support Secure Multi-tenancy. e.g: "ns1". More about namespaces can be found here https://www.vaultproject.io/docs/enterprise/namespaces
+    /// Name of the vault namespace. Namespaces is a set of features within Vault Enterprise that allows
+    /// Vault environments to support Secure Multi-tenancy. e.g: "ns1".
+    /// More about namespaces can be found here https://www.vaultproject.io/docs/enterprise/namespaces
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Path is the mount path of the Vault KV backend endpoint, e.g: "secret". The v2 KV secret engine version specific "/data" path suffix for fetching secrets from Vault is optional and will be appended if not present in specified path.
+    /// Path is the mount path of the Vault KV backend endpoint, e.g:
+    /// "secret". The v2 KV secret engine version specific "/data" path suffix
+    /// for fetching secrets from Vault is optional and will be appended
+    /// if not present in specified path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// ReadYourWrites ensures isolated read-after-write semantics by providing discovered cluster replication states in each request. More information about eventual consistency in Vault can be found here https://www.vaultproject.io/docs/enterprise/consistency
+    /// ReadYourWrites ensures isolated read-after-write semantics by
+    /// providing discovered cluster replication states in each request.
+    /// More information about eventual consistency in Vault can be found here
+    /// https://www.vaultproject.io/docs/enterprise/consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readYourWrites")]
     pub read_your_writes: Option<bool>,
     /// Server is the connection address for the Vault server, e.g: "https://vault.example.com:8200".
     pub server: String,
-    /// Version is the Vault KV secret engine version. This can be either "v1" or "v2". Version defaults to "v2".
+    /// Version is the Vault KV secret engine version. This can be either "v1" or
+    /// "v2". Version defaults to "v2".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<SecretStoreProviderVaultVersion>,
 }
@@ -905,19 +1024,24 @@ pub struct SecretStoreProviderVault {
 /// Auth configures how secret-manager authenticates with the Vault server.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuth {
-    /// AppRole authenticates with Vault using the App Role auth mechanism, with the role and secret stored in a Kubernetes Secret resource.
+    /// AppRole authenticates with Vault using the App Role auth mechanism,
+    /// with the role and secret stored in a Kubernetes Secret resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appRole")]
     pub app_role: Option<SecretStoreProviderVaultAuthAppRole>,
-    /// Cert authenticates with TLS Certificates by passing client certificate, private key and ca certificate Cert authentication method
+    /// Cert authenticates with TLS Certificates by passing client certificate, private key and ca certificate
+    /// Cert authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<SecretStoreProviderVaultAuthCert>,
-    /// Jwt authenticates with Vault by passing role and JWT token using the JWT/OIDC authentication method
+    /// Jwt authenticates with Vault by passing role and JWT token using the
+    /// JWT/OIDC authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<SecretStoreProviderVaultAuthJwt>,
-    /// Kubernetes authenticates with Vault by passing the ServiceAccount token stored in the named Secret resource to the Vault server.
+    /// Kubernetes authenticates with Vault by passing the ServiceAccount
+    /// token stored in the named Secret resource to the Vault server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<SecretStoreProviderVaultAuthKubernetes>,
-    /// Ldap authenticates with Vault by passing username/password pair using the LDAP authentication method
+    /// Ldap authenticates with Vault by passing username/password pair using
+    /// the LDAP authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap: Option<SecretStoreProviderVaultAuthLdap>,
     /// TokenSecretRef authenticates with Vault by presenting a token.
@@ -925,95 +1049,126 @@ pub struct SecretStoreProviderVaultAuth {
     pub token_secret_ref: Option<SecretStoreProviderVaultAuthTokenSecretRef>,
 }
 
-/// AppRole authenticates with Vault using the App Role auth mechanism, with the role and secret stored in a Kubernetes Secret resource.
+/// AppRole authenticates with Vault using the App Role auth mechanism,
+/// with the role and secret stored in a Kubernetes Secret resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthAppRole {
-    /// Path where the App Role authentication backend is mounted in Vault, e.g: "approle"
+    /// Path where the App Role authentication backend is mounted
+    /// in Vault, e.g: "approle"
     pub path: String,
-    /// RoleID configured in the App Role authentication backend when setting up the authentication backend in Vault.
+    /// RoleID configured in the App Role authentication backend when setting
+    /// up the authentication backend in Vault.
     #[serde(rename = "roleId")]
     pub role_id: String,
-    /// Reference to a key in a Secret that contains the App Role secret used to authenticate with Vault. The `key` field must be specified and denotes which entry within the Secret resource is used as the app role secret.
+    /// Reference to a key in a Secret that contains the App Role secret used
+    /// to authenticate with Vault.
+    /// The `key` field must be specified and denotes which entry within the Secret
+    /// resource is used as the app role secret.
     #[serde(rename = "secretRef")]
     pub secret_ref: SecretStoreProviderVaultAuthAppRoleSecretRef,
 }
 
-/// Reference to a key in a Secret that contains the App Role secret used to authenticate with Vault. The `key` field must be specified and denotes which entry within the Secret resource is used as the app role secret.
+/// Reference to a key in a Secret that contains the App Role secret used
+/// to authenticate with Vault.
+/// The `key` field must be specified and denotes which entry within the Secret
+/// resource is used as the app role secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthAppRoleSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Cert authenticates with TLS Certificates by passing client certificate, private key and ca certificate Cert authentication method
+/// Cert authenticates with TLS Certificates by passing client certificate, private key and ca certificate
+/// Cert authentication method
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthCert {
-    /// ClientCert is a certificate to authenticate using the Cert Vault authentication method
+    /// ClientCert is a certificate to authenticate using the Cert Vault
+    /// authentication method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<SecretStoreProviderVaultAuthCertClientCert>,
-    /// SecretRef to a key in a Secret resource containing client private key to authenticate with Vault using the Cert authentication method
+    /// SecretRef to a key in a Secret resource containing client private key to
+    /// authenticate with Vault using the Cert authentication method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderVaultAuthCertSecretRef>,
 }
 
-/// ClientCert is a certificate to authenticate using the Cert Vault authentication method
+/// ClientCert is a certificate to authenticate using the Cert Vault
+/// authentication method
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthCertClientCert {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// SecretRef to a key in a Secret resource containing client private key to authenticate with Vault using the Cert authentication method
+/// SecretRef to a key in a Secret resource containing client private key to
+/// authenticate with Vault using the Cert authentication method
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthCertSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Jwt authenticates with Vault by passing role and JWT token using the JWT/OIDC authentication method
+/// Jwt authenticates with Vault by passing role and JWT token using the
+/// JWT/OIDC authentication method
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthJwt {
-    /// Optional ServiceAccountToken specifies the Kubernetes service account for which to request a token for with the `TokenRequest` API.
+    /// Optional ServiceAccountToken specifies the Kubernetes service account for which to request
+    /// a token for with the `TokenRequest` API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesServiceAccountToken")]
     pub kubernetes_service_account_token: Option<SecretStoreProviderVaultAuthJwtKubernetesServiceAccountToken>,
-    /// Path where the JWT authentication backend is mounted in Vault, e.g: "jwt"
+    /// Path where the JWT authentication backend is mounted
+    /// in Vault, e.g: "jwt"
     pub path: String,
-    /// Role is a JWT role to authenticate using the JWT/OIDC Vault authentication method
+    /// Role is a JWT role to authenticate using the JWT/OIDC Vault
+    /// authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
-    /// Optional SecretRef that refers to a key in a Secret resource containing JWT token to authenticate with Vault using the JWT/OIDC authentication method.
+    /// Optional SecretRef that refers to a key in a Secret resource containing JWT token to
+    /// authenticate with Vault using the JWT/OIDC authentication method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderVaultAuthJwtSecretRef>,
 }
 
-/// Optional ServiceAccountToken specifies the Kubernetes service account for which to request a token for with the `TokenRequest` API.
+/// Optional ServiceAccountToken specifies the Kubernetes service account for which to request
+/// a token for with the `TokenRequest` API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthJwtKubernetesServiceAccountToken {
-    /// Optional audiences field that will be used to request a temporary Kubernetes service account token for the service account referenced by `serviceAccountRef`. Defaults to a single audience `vault` it not specified.
+    /// Optional audiences field that will be used to request a temporary Kubernetes service
+    /// account token for the service account referenced by `serviceAccountRef`.
+    /// Defaults to a single audience `vault` it not specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
-    /// Optional expiration time in seconds that will be used to request a temporary Kubernetes service account token for the service account referenced by `serviceAccountRef`. Defaults to 10 minutes.
+    /// Optional expiration time in seconds that will be used to request a temporary
+    /// Kubernetes service account token for the service account referenced by
+    /// `serviceAccountRef`.
+    /// Defaults to 10 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// Service account field containing the name of a kubernetes ServiceAccount.
@@ -1024,95 +1179,130 @@ pub struct SecretStoreProviderVaultAuthJwtKubernetesServiceAccountToken {
 /// Service account field containing the name of a kubernetes ServiceAccount.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthJwtKubernetesServiceAccountTokenServiceAccountRef {
-    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Optional SecretRef that refers to a key in a Secret resource containing JWT token to authenticate with Vault using the JWT/OIDC authentication method.
+/// Optional SecretRef that refers to a key in a Secret resource containing JWT token to
+/// authenticate with Vault using the JWT/OIDC authentication method.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthJwtSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Kubernetes authenticates with Vault by passing the ServiceAccount token stored in the named Secret resource to the Vault server.
+/// Kubernetes authenticates with Vault by passing the ServiceAccount
+/// token stored in the named Secret resource to the Vault server.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthKubernetes {
-    /// Path where the Kubernetes authentication backend is mounted in Vault, e.g: "kubernetes"
+    /// Path where the Kubernetes authentication backend is mounted in Vault, e.g:
+    /// "kubernetes"
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// A required field containing the Vault Role to assume. A Role binds a Kubernetes ServiceAccount with a set of Vault policies.
+    /// A required field containing the Vault Role to assume. A Role binds a
+    /// Kubernetes ServiceAccount with a set of Vault policies.
     pub role: String,
-    /// Optional secret field containing a Kubernetes ServiceAccount JWT used for authenticating with Vault. If a name is specified without a key, `token` is the default. If one is not specified, the one bound to the controller will be used.
+    /// Optional secret field containing a Kubernetes ServiceAccount JWT used
+    /// for authenticating with Vault. If a name is specified without a key,
+    /// `token` is the default. If one is not specified, the one bound to
+    /// the controller will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderVaultAuthKubernetesSecretRef>,
-    /// Optional service account field containing the name of a kubernetes ServiceAccount. If the service account is specified, the service account secret token JWT will be used for authenticating with Vault. If the service account selector is not supplied, the secretRef will be used instead.
+    /// Optional service account field containing the name of a kubernetes ServiceAccount.
+    /// If the service account is specified, the service account secret token JWT will be used
+    /// for authenticating with Vault. If the service account selector is not supplied,
+    /// the secretRef will be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<SecretStoreProviderVaultAuthKubernetesServiceAccountRef>,
 }
 
-/// Optional secret field containing a Kubernetes ServiceAccount JWT used for authenticating with Vault. If a name is specified without a key, `token` is the default. If one is not specified, the one bound to the controller will be used.
+/// Optional secret field containing a Kubernetes ServiceAccount JWT used
+/// for authenticating with Vault. If a name is specified without a key,
+/// `token` is the default. If one is not specified, the one bound to
+/// the controller will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthKubernetesSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Optional service account field containing the name of a kubernetes ServiceAccount. If the service account is specified, the service account secret token JWT will be used for authenticating with Vault. If the service account selector is not supplied, the secretRef will be used instead.
+/// Optional service account field containing the name of a kubernetes ServiceAccount.
+/// If the service account is specified, the service account secret token JWT will be used
+/// for authenticating with Vault. If the service account selector is not supplied,
+/// the secretRef will be used instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthKubernetesServiceAccountRef {
-    /// Audience specifies the `aud` claim for the service account token If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity then this audiences will be appended to the list
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Ldap authenticates with Vault by passing username/password pair using the LDAP authentication method
+/// Ldap authenticates with Vault by passing username/password pair using
+/// the LDAP authentication method
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthLdap {
-    /// Path where the LDAP authentication backend is mounted in Vault, e.g: "ldap"
+    /// Path where the LDAP authentication backend is mounted
+    /// in Vault, e.g: "ldap"
     pub path: String,
-    /// SecretRef to a key in a Secret resource containing password for the LDAP user used to authenticate with Vault using the LDAP authentication method
+    /// SecretRef to a key in a Secret resource containing password for the LDAP
+    /// user used to authenticate with Vault using the LDAP authentication
+    /// method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderVaultAuthLdapSecretRef>,
-    /// Username is a LDAP user name used to authenticate using the LDAP Vault authentication method
+    /// Username is a LDAP user name used to authenticate using the LDAP Vault
+    /// authentication method
     pub username: String,
 }
 
-/// SecretRef to a key in a Secret resource containing password for the LDAP user used to authenticate with Vault using the LDAP authentication method
+/// SecretRef to a key in a Secret resource containing password for the LDAP
+/// user used to authenticate with Vault using the LDAP authentication
+/// method
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthLdapSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -1120,13 +1310,15 @@ pub struct SecretStoreProviderVaultAuthLdapSecretRef {
 /// TokenSecretRef authenticates with Vault by presenting a token.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderVaultAuthTokenSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -1169,7 +1361,10 @@ pub struct SecretStoreProviderWebhook {
     /// Body
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    /// PEM encoded CA bundle used to validate webhook server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+    /// PEM encoded CA bundle used to validate webhook server certificate. Only used
+    /// if the Server URL is using HTTPS protocol. This parameter is ignored for
+    /// plain HTTP protocol connection. If not set the system root certificates
+    /// are used to validate the TLS connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// The provider for the CA bundle to use to validate webhook server certificate.
@@ -1183,7 +1378,8 @@ pub struct SecretStoreProviderWebhook {
     pub method: Option<String>,
     /// Result formatting
     pub result: SecretStoreProviderWebhookResult,
-    /// Secrets to fill in templates These secrets will be passed to the templating function as key value pairs under the given name
+    /// Secrets to fill in templates
+    /// These secrets will be passed to the templating function as key value pairs under the given name
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<SecretStoreProviderWebhookSecrets>>,
     /// Timeout
@@ -1236,13 +1432,15 @@ pub struct SecretStoreProviderWebhookSecrets {
 /// Secret ref to fill in credentials
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderWebhookSecretsSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -1271,13 +1469,15 @@ pub struct SecretStoreProviderYandexlockboxAuth {
 /// The authorized key used for authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderYandexlockboxAuthAuthorizedKeySecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -1285,21 +1485,25 @@ pub struct SecretStoreProviderYandexlockboxAuthAuthorizedKeySecretRef {
 /// The provider for the CA bundle to use to validate Yandex.Cloud server certificate.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderYandexlockboxCaProvider {
-    /// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+    /// A reference to a specific 'key' within a Secret resource,
+    /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<SecretStoreProviderYandexlockboxCaProviderCertSecretRef>,
 }
 
-/// A reference to a specific 'key' within a Secret resource, In some instances, `key` is a required field.
+/// A reference to a specific 'key' within a Secret resource,
+/// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SecretStoreProviderYandexlockboxCaProviderCertSecretRef {
-    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be defaulted, in others it may be required.
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of the Secret resource being referred to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults to the namespace of the referent.
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }

@@ -63,7 +63,7 @@ pub struct TeleportUserSamlIdentities {
     pub username: Option<String>,
 }
 
-/// TeleportUserStatus defines the observed state of TeleportUser
+/// Status defines the observed state of the Teleport resource
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TeleportUserStatus {
     /// Conditions represent the latest available observations of an object's state

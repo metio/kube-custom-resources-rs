@@ -34,7 +34,7 @@ pub struct VaultStaticSecretSpec {
     /// Type of the Vault static secret
     #[serde(rename = "type")]
     pub r#type: VaultStaticSecretType,
-    /// VaultAuthRef to the VaultAuth resource, can be prefixed with a namespace, eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator will default to the `default` VaultAuth, configured in its own Kubernetes namespace.
+    /// VaultAuthRef to the VaultAuth resource, can be prefixed with a namespace, eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator will default to the `default` VaultAuth, configured in the operator's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthRef")]
     pub vault_auth_ref: Option<String>,
     /// Version of the secret to fetch. Only valid for type kv-v2. Corresponds to version query parameter: https://developer.hashicorp.com/vault/api-docs/secret/kv/kv-v2#version

@@ -18,7 +18,7 @@ pub struct HCPVaultSecretsAppSpec {
     pub app_name: String,
     /// Destination provides configuration necessary for syncing the HCP Vault Application secrets to Kubernetes.
     pub destination: HCPVaultSecretsAppDestination,
-    /// HCPAuthRef to the HCPAuth resource, can be prefixed with a namespace, eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to the namespace of the HCPAuth CR. If no value is specified for HCPAuthRef the Operator will default to the `default` HCPAuth, configured in its own Kubernetes namespace. HCPAuthRef string `json:"hcpAuthRef,omitempty"`
+    /// HCPAuthRef to the HCPAuth resource, can be prefixed with a namespace, eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to the namespace of the HCPAuth CR. If no value is specified for HCPAuthRef the Operator will default to the `default` HCPAuth, configured in the operator's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hcpAuthRef")]
     pub hcp_auth_ref: Option<String>,
     /// RefreshAfter a period of time, in duration notation e.g. 30s, 1m, 24h

@@ -3,6 +3,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.0
+  labels:
+    app.kubernetes.io/part-of: otterize
   name: kafkaserverconfigs.k8s.otterize.com
 spec:
   conversion:

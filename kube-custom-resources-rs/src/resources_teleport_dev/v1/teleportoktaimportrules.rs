@@ -55,6 +55,7 @@ pub struct TeleportOktaImportRuleMappingsMatch {
     pub group_name_regexes: Option<Vec<String>>,
 }
 
+/// Status defines the observed state of the Teleport resource
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TeleportOktaImportRuleStatus {
     /// Conditions represent the latest available observations of an object's state

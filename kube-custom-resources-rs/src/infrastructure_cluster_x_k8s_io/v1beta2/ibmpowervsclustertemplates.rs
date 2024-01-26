@@ -43,11 +43,35 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<IBMPowerVSClusterTemplateTemplateSpecControlPlaneEndpoint>,
-    /// Network is the reference to the Network to use for this cluster.
+    /// cosInstance contains options to configure a supporting IBM Cloud COS bucket for this cluster - currently used for nodes requiring Ignition (https://coreos.github.io/ignition/) for bootstrapping (requires BootstrapFormatIgnition feature flag to be enabled).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosInstance")]
+    pub cos_instance: Option<IBMPowerVSClusterTemplateTemplateSpecCosInstance>,
+    /// loadBalancers is optional configuration for configuring loadbalancers to control plane or data plane nodes when specified a vpc loadbalancer will be created and controlPlaneEndpoint will be set with associated hostname of loadbalancer. when omitted user is expected to set controlPlaneEndpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
+    pub load_balancers: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancers>>,
+    /// Network is the reference to the Network to use for this cluster. when the field is omitted, A DHCP service will be created in the Power VS server workspace and its private network will be used.
     pub network: IBMPowerVSClusterTemplateTemplateSpecNetwork,
-    /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
+    /// resourceGroup name under which the resources will be created. when omitted default resource group of the account will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
+    pub resource_group: Option<String>,
+    /// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created. Power VS server workspace is a container for all Power VS instances at a specific geographic region. serviceInstance can be created via IBM Cloud catalog or CLI. supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli. More detail about Power VS service instance. https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server when omitted system will dynamically create the service instance
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
+    pub service_instance: Option<IBMPowerVSClusterTemplateTemplateSpecServiceInstance>,
+    /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed. Deprecated: use ServiceInstance instead
     #[serde(rename = "serviceInstanceID")]
     pub service_instance_id: String,
+    /// transitGateway contains information about IBM Cloud TransitGateway IBM Cloud TransitGateway helps in establishing network connectivity between IBM Cloud Power VS and VPC infrastructure more information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGateway")]
+    pub transit_gateway: Option<IBMPowerVSClusterTemplateTemplateSpecTransitGateway>,
+    /// vpc contains information about IBM Cloud VPC resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vpc: Option<IBMPowerVSClusterTemplateTemplateSpecVpc>,
+    /// vpcSubnets contains information about IBM Cloud VPC Subnet resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSubnets")]
+    pub vpc_subnets: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecVpcSubnets>>,
+    /// zone is the name of Power VS zone where the cluster will be created possible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server. when omitted syd04 will be set as default zone.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
 }
 
 /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
@@ -59,7 +83,47 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecControlPlaneEndpoint {
     pub port: i32,
 }
 
-/// Network is the reference to the Network to use for this cluster.
+/// cosInstance contains options to configure a supporting IBM Cloud COS bucket for this cluster - currently used for nodes requiring Ignition (https://coreos.github.io/ignition/) for bootstrapping (requires BootstrapFormatIgnition feature flag to be enabled).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterTemplateTemplateSpecCosInstance {
+    /// bucketName is IBM cloud COS bucket name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketName")]
+    pub bucket_name: Option<String>,
+    /// bucketRegion is IBM cloud COS bucket region
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketRegion")]
+    pub bucket_region: Option<String>,
+    /// Name defines name of IBM cloud COS instance to be created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// PresignedURLDuration defines the duration for which presigned URLs are valid. 
+    ///  This is used to generate presigned URLs for S3 Bucket objects, which are used by control-plane and worker nodes to fetch bootstrap data. 
+    ///  When enabled, the IAM instance profiles specified are not used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "presignedURLDuration")]
+    pub presigned_url_duration: Option<String>,
+}
+
+/// VPCLoadBalancerSpec defines the desired state of an VPC load balancer.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterTemplateTemplateSpecLoadBalancers {
+    /// AdditionalListeners sets the additional listeners for the control plane load balancer. .
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
+    pub additional_listeners: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancersAdditionalListeners>>,
+    /// Name sets the name of the VPC load balancer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// public indicates that load balancer is public or private
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub public: Option<bool>,
+}
+
+/// AdditionalListenerSpec defines the desired state of an additional listener on an VPC load balancer.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterTemplateTemplateSpecLoadBalancersAdditionalListeners {
+    /// Port sets the port for the additional listener.
+    pub port: i64,
+}
+
+/// Network is the reference to the Network to use for this cluster. when the field is omitted, A DHCP service will be created in the Power VS server workspace and its private network will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecNetwork {
     /// ID of resource
@@ -71,5 +135,55 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecNetwork {
     /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
+}
+
+/// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created. Power VS server workspace is a container for all Power VS instances at a specific geographic region. serviceInstance can be created via IBM Cloud catalog or CLI. supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli. More detail about Power VS service instance. https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server when omitted system will dynamically create the service instance
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterTemplateTemplateSpecServiceInstance {
+    /// ID of resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Name of resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<String>,
+}
+
+/// transitGateway contains information about IBM Cloud TransitGateway IBM Cloud TransitGateway helps in establishing network connectivity between IBM Cloud Power VS and VPC infrastructure more information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterTemplateTemplateSpecTransitGateway {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// vpc contains information about IBM Cloud VPC resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterTemplateTemplateSpecVpc {
+    /// ID of resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Name of resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// IBM Cloud VPC region
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+}
+
+/// Subnet describes a subnet.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSubnets {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
 }
 

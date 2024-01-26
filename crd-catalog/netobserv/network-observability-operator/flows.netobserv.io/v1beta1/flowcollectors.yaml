@@ -115,7 +115,7 @@ spec:
                         - panic
                         type: string
                       privileged:
-                        description: 'Privileged mode for the eBPF Agent container. In general this setting can be ignored or set to `false`: in that case, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container, to enable its correct operation. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges.'
+                        description: Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges. Some agent features require the privileged mode, such as packet drops tracking (see `features`).
                         type: boolean
                       resources:
                         default:
@@ -623,12 +623,10 @@ spec:
                     default:
                     - default: true
                       filter:
-                        dst_namespace!: openshift-,netobserv
-                        src_namespace!: openshift-,netobserv
+                        flow_layer: app
                       name: Applications
                     - filter:
-                        dst_namespace: openshift-,netobserv
-                        src_namespace: openshift-,netobserv
+                        flow_layer: infra
                       name: Infrastructure
                     - default: true
                       filter:
@@ -1046,6 +1044,10 @@ spec:
                   querierUrl:
                     description: '`querierURL` specifies the address of the Loki querier service, in case it is different from the Loki ingester URL. If empty, the URL value is used (assuming that the Loki ingester and querier are in the same server). When using the Loki Operator, do not set it, since ingestion and queries use the Loki gateway.'
                     type: string
+                  readTimeout:
+                    default: 30s
+                    description: '`readTimeout` is the maximum loki query total time limit. A timeout of zero means no timeout.'
+                    type: string
                   staticLabels:
                     additionalProperties:
                       type: string
@@ -1120,7 +1122,7 @@ spec:
                     type: string
                   timeout:
                     default: 10s
-                    description: '`timeout` is the maximum time connection / request limit. A timeout of zero means no timeout.'
+                    description: '`timeout` is the maximum processor time connection / request limit. A timeout of zero means no timeout.'
                     type: string
                   tls:
                     description: TLS client configuration for Loki URL.

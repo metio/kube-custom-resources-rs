@@ -131,6 +131,9 @@ pub struct ControlPlaneMachineSetTemplateMachinesV1beta1MachineOpenshiftIoFailur
     pub openstack: Option<Vec<ControlPlaneMachineSetTemplateMachinesV1beta1MachineOpenshiftIoFailureDomainsOpenstack>>,
     /// Platform identifies the platform for which the FailureDomain represents. Currently supported values are AWS, Azure, GCP, OpenStack, VSphere and Nutanix.
     pub platform: ControlPlaneMachineSetTemplateMachinesV1beta1MachineOpenshiftIoFailureDomainsPlatform,
+    /// vsphere configures failure domain information for the VSphere platform.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vsphere: Option<Vec<ControlPlaneMachineSetTemplateMachinesV1beta1MachineOpenshiftIoFailureDomainsVsphere>>,
 }
 
 /// AWSFailureDomain configures failure domain information for the AWS platform.
@@ -261,6 +264,13 @@ pub enum ControlPlaneMachineSetTemplateMachinesV1beta1MachineOpenshiftIoFailureD
     AlibabaCloud,
     Nutanix,
     External,
+}
+
+/// VSphereFailureDomain configures failure domain information for the vSphere platform
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ControlPlaneMachineSetTemplateMachinesV1beta1MachineOpenshiftIoFailureDomainsVsphere {
+    /// name of the failure domain in which the vSphere machine provider will create the VM. Failure domains are defined in a cluster's config.openshift.io/Infrastructure resource. When balancing machines across failure domains, the control plane machine set will inject configuration from the Infrastructure resource into the machine providerSpec to allocate the machine to a failure domain.
+    pub name: String,
 }
 
 /// ObjectMeta is the standard object metadata More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata Labels are required to match the ControlPlaneMachineSet selector.

@@ -26,6 +26,9 @@ pub struct ReplicatedStateMachineSpec {
     /// MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "membershipReconfiguration")]
     pub membership_reconfiguration: Option<ReplicatedStateMachineMembershipReconfiguration>,
+    /// Minimum number of seconds for which a newly created pod should be ready without any of its container crashing for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i32>,
     /// NodeAssignment defines the expected assignment of nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAssignment")]
     pub node_assignment: Option<Vec<ReplicatedStateMachineNodeAssignment>>,

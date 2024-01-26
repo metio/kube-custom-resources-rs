@@ -257,6 +257,11 @@ spec:
                                 description: Name is the name of the listener.
                                 minLength: 1
                                 type: string
+                              priority:
+                                description: Priority for this Listener that is used when multiple rules would apply different listeners to a policy map entry. Behavior of this is implementation dependent.
+                                maximum: 100.0
+                                minimum: 1.0
+                                type: integer
                             required:
                             - envoyConfig
                             - name
@@ -1099,6 +1104,11 @@ spec:
                                 description: Name is the name of the listener.
                                 minLength: 1
                                 type: string
+                              priority:
+                                description: Priority for this Listener that is used when multiple rules would apply different listeners to a policy map entry. Behavior of this is implementation dependent.
+                                maximum: 100.0
+                                minimum: 1.0
+                                type: integer
                             required:
                             - envoyConfig
                             - name
@@ -1785,6 +1795,11 @@ spec:
                                   description: Name is the name of the listener.
                                   minLength: 1
                                   type: string
+                                priority:
+                                  description: Priority for this Listener that is used when multiple rules would apply different listeners to a policy map entry. Behavior of this is implementation dependent.
+                                  maximum: 100.0
+                                  minimum: 1.0
+                                  type: integer
                               required:
                               - envoyConfig
                               - name
@@ -2627,6 +2642,11 @@ spec:
                                   description: Name is the name of the listener.
                                   minLength: 1
                                   type: string
+                                priority:
+                                  description: Priority for this Listener that is used when multiple rules would apply different listeners to a policy map entry. Behavior of this is implementation dependent.
+                                  maximum: 100.0
+                                  minimum: 1.0
+                                  type: integer
                               required:
                               - envoyConfig
                               - name

@@ -43,9 +43,22 @@ pub struct IBMVPCClusterControlPlaneEndpoint {
 /// ControlPlaneLoadBalancer is optional configuration for customizing control plane behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterControlPlaneLoadBalancer {
+    /// AdditionalListeners sets the additional listeners for the control plane load balancer. .
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
+    pub additional_listeners: Option<Vec<IBMVPCClusterControlPlaneLoadBalancerAdditionalListeners>>,
     /// Name sets the name of the VPC load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// public indicates that load balancer is public or private
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub public: Option<bool>,
+}
+
+/// AdditionalListenerSpec defines the desired state of an additional listener on an VPC load balancer.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterControlPlaneLoadBalancerAdditionalListeners {
+    /// Port sets the port for the additional listener.
+    pub port: i64,
 }
 
 /// IBMVPCClusterStatus defines the observed state of IBMVPCCluster.
@@ -96,10 +109,14 @@ pub struct IBMVPCClusterStatusConditions {
 /// Subnet describes a subnet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterStatusSubnet {
-    pub cidr: String,
-    pub id: String,
-    pub name: String,
-    pub zone: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
 }
 
 /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file

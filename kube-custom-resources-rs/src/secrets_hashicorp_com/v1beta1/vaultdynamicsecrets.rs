@@ -40,7 +40,7 @@ pub struct VaultDynamicSecretSpec {
     /// RolloutRestartTargets should be configured whenever the application(s) consuming the Vault secret does not support dynamically reloading a rotated secret. In that case one, or more RolloutRestartTarget(s) can be configured here. The Operator will trigger a "rollout-restart" for each target whenever the Vault secret changes between reconciliation events. See RolloutRestartTarget for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutRestartTargets")]
     pub rollout_restart_targets: Option<Vec<VaultDynamicSecretRolloutRestartTargets>>,
-    /// VaultAuthRef to the VaultAuth resource, can be prefixed with a namespace, eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator will default to the `default` VaultAuth, configured in its own Kubernetes namespace.
+    /// VaultAuthRef to the VaultAuth resource, can be prefixed with a namespace, eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator will default to the `default` VaultAuth, configured in the operator's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthRef")]
     pub vault_auth_ref: Option<String>,
 }

@@ -24,6 +24,9 @@ pub struct ScrapeConfigSpec {
     /// ConsulSDConfigs defines a list of Consul service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consulSDConfigs")]
     pub consul_sd_configs: Option<Vec<ScrapeConfigConsulSdConfigs>>,
+    /// DigitalOceanSDConfigs defines a list of DigitalOcean service discovery configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "digitalOceanSDConfigs")]
+    pub digital_ocean_sd_configs: Option<Vec<ScrapeConfigDigitalOceanSdConfigs>>,
     /// DNSSDConfigs defines a list of DNS service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsSDConfigs")]
     pub dns_sd_configs: Option<Vec<ScrapeConfigDnsSdConfigs>>,
@@ -106,6 +109,11 @@ pub struct ScrapeConfigSpec {
     /// ScrapeInterval is the interval between consecutive scrapes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
+    /// The protocols to negotiate during a scrape. It tells clients the protocols supported by Prometheus in order of preference (from most to least preferred). 
+    ///  If unset, Prometheus uses its default value. 
+    ///  It requires Prometheus >= v2.49.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
+    pub scrape_protocols: Option<Vec<String>>,
     /// ScrapeTimeout is the number of seconds to wait until a scrape request times out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
@@ -589,6 +597,266 @@ pub struct ScrapeConfigConsulSdConfigsTokenRef {
     pub optional: Option<bool>,
 }
 
+/// DigitalOceanSDConfig allow retrieving scrape targets from DigitalOcean's Droplets API. This service discovery uses the public IPv4 address by default, by that can be changed with relabeling See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#digitalocean_sd_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigs {
+    /// Authorization header configuration to authenticate against the DigitalOcean API. Cannot be set at the same time as `oauth2`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<ScrapeConfigDigitalOceanSdConfigsAuthorization>,
+    /// Whether to enable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
+    pub enable_http2: Option<bool>,
+    /// Configure whether HTTP requests follow HTTP 3xx redirects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
+    pub follow_redirects: Option<bool>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
+    ///  It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth2: Option<ScrapeConfigDigitalOceanSdConfigsOauth2>,
+    /// The port to scrape metrics from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
+    ///  It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDigitalOceanSdConfigsProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
+    ///  It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use. 
+    ///  It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
+    /// Refresh interval to re-read the instance list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
+    pub refresh_interval: Option<String>,
+    /// TLS configuration applying to the target HTTP endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfig>,
+}
+
+/// Authorization header configuration to authenticate against the DigitalOcean API. Cannot be set at the same time as `oauth2`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsAuthorization {
+    /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<ScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials>,
+    /// Defines the authentication type. The value is case-insensitive. 
+    ///  "Basic" is not a supported value. 
+    ///  Default: "Bearer"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsOauth2 {
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    #[serde(rename = "clientId")]
+    pub client_id: ScrapeConfigDigitalOceanSdConfigsOauth2ClientId,
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    #[serde(rename = "clientSecret")]
+    pub client_secret: ScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret,
+    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
+    pub endpoint_params: Option<BTreeMap<String, String>>,
+    /// `scopes` defines the OAuth2 scopes used for the token request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// `tokenURL` configures the URL to fetch the token from.
+    #[serde(rename = "tokenUrl")]
+    pub token_url: String,
+}
+
+/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientId {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigDigitalOceanSdConfigsOauth2ClientIdConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigDigitalOceanSdConfigsOauth2ClientIdSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientIdConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientIdSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
+///  It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration applying to the target HTTP endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets. The DNS servers to be contacted are read from /etc/resolv.conf. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#dns_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDnsSdConfigs {
@@ -600,7 +868,8 @@ pub struct ScrapeConfigDnsSdConfigs {
     /// RefreshInterval configures the time after which the provided names are refreshed. If not set, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
-    /// The type of DNS query to perform. One of SRV, A, AAAA or MX. If not set, Prometheus uses its default value.
+    /// The type of DNS query to perform. One of SRV, A, AAAA, MX or NS. If not set, Prometheus uses its default value. 
+    ///  When set to NS, It requires Prometheus >= 2.49.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ScrapeConfigDnsSdConfigsType>,
 }
@@ -615,6 +884,8 @@ pub enum ScrapeConfigDnsSdConfigsType {
     Aaaa,
     #[serde(rename = "MX")]
     Mx,
+    #[serde(rename = "NS")]
+    Ns,
 }
 
 /// EC2SDConfig allow retrieving scrape targets from AWS EC2 instances. The private IP address is used by default, but may be changed to the public IP address with relabeling. The IAM credentials used must have the ec2:DescribeInstances permission to discover scrape targets See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ec2_sd_config

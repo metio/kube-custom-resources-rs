@@ -17,6 +17,9 @@ pub struct MiddlewareTCPSpec {
     /// IPAllowList defines the IPAllowList middleware configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAllowList")]
     pub ip_allow_list: Option<MiddlewareTCPIpAllowList>,
+    /// IPWhiteList defines the IPWhiteList middleware configuration. Deprecated: please use IPAllowList instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipWhiteList")]
+    pub ip_white_list: Option<MiddlewareTCPIpWhiteList>,
 }
 
 /// InFlightConn defines the InFlightConn middleware configuration.
@@ -30,6 +33,14 @@ pub struct MiddlewareTCPInFlightConn {
 /// IPAllowList defines the IPAllowList middleware configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareTCPIpAllowList {
+    /// SourceRange defines the allowed IPs (or ranges of allowed IPs by using CIDR notation).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceRange")]
+    pub source_range: Option<Vec<String>>,
+}
+
+/// IPWhiteList defines the IPWhiteList middleware configuration. Deprecated: please use IPAllowList instead.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MiddlewareTCPIpWhiteList {
     /// SourceRange defines the allowed IPs (or ranges of allowed IPs by using CIDR notation).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceRange")]
     pub source_range: Option<Vec<String>>,

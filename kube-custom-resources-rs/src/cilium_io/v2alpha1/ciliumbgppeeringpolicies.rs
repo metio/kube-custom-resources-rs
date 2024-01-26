@@ -188,49 +188,10 @@ pub enum CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSe
 /// CiliumBGPFamily represents a AFI/SAFI address family pair.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamilies {
-    /// Advertisements selects group of BGP Advertisement(s) to advertise for this family. 
-    ///  If not specified, no advertisements are sent for this family. 
-    ///  This field is ignored in CiliumBGPNeighbor which is used in CiliumBGPPeeringPolicy. Use CiliumBGPPeeringPolicy advertisement options instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub advertisements: Option<CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamiliesAdvertisements>,
     /// Afi is the Address Family Identifier (AFI) of the family.
     pub afi: CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamiliesAfi,
     /// Safi is the Subsequent Address Family Identifier (SAFI) of the family.
     pub safi: CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamiliesSafi,
-}
-
-/// Advertisements selects group of BGP Advertisement(s) to advertise for this family. 
-///  If not specified, no advertisements are sent for this family. 
-///  This field is ignored in CiliumBGPNeighbor which is used in CiliumBGPPeeringPolicy. Use CiliumBGPPeeringPolicy advertisement options instead.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamiliesAdvertisements {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamiliesAdvertisementsMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamiliesAdvertisementsMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamiliesAdvertisementsMatchExpressionsOperator,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamiliesAdvertisementsMatchExpressionsOperator {
-    In,
-    NotIn,
-    Exists,
-    DoesNotExist,
 }
 
 /// CiliumBGPFamily represents a AFI/SAFI address family pair.

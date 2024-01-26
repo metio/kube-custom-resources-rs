@@ -126,6 +126,9 @@ pub struct IngressRouteRoutesServicesStickyCookie {
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
+    /// MaxAge indicates the number of seconds until the cookie expires. When set to a negative number, the cookie expires immediately. When set to zero, the cookie never expires.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
+    pub max_age: Option<i64>,
     /// Name defines the Cookie name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
