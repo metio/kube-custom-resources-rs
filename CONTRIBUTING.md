@@ -49,7 +49,7 @@ If no `<project_name>` argument was given, code for all CRDs in the catalog will
 Certain CRDs cannot be correctly converted to Rust code yet. Make sure that each newly generated resource can be compiled by calling:
 
 ```console
-$ cargo check --locked --package kube-custom-resources-rs --features <feature_name>
+$ ./code-generator/test-custom-resources.sh <feature_name>
 ```
 
 The `<feature_name>` argument corresponds to the newly generated folder in `kube-custom-resources-rs/src` for the new CRDs added by yourself.

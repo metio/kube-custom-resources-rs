@@ -1103,6 +1103,20 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "k8up-io/k8up",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/k8up-io/k8up/blob/master/config/crd/apiextensions.k8s.io/v1/k8up.io_archives.yaml",
+            "https://github.com/k8up-io/k8up/blob/master/config/crd/apiextensions.k8s.io/v1/k8up.io_backups.yaml",
+            "https://github.com/k8up-io/k8up/blob/master/config/crd/apiextensions.k8s.io/v1/k8up.io_checks.yaml",
+            "https://github.com/k8up-io/k8up/blob/master/config/crd/apiextensions.k8s.io/v1/k8up.io_prebackuppods.yaml",
+            "https://github.com/k8up-io/k8up/blob/master/config/crd/apiextensions.k8s.io/v1/k8up.io_prunes.yaml",
+            "https://github.com/k8up-io/k8up/blob/master/config/crd/apiextensions.k8s.io/v1/k8up.io_restores.yaml",
+            "https://github.com/k8up-io/k8up/blob/master/config/crd/apiextensions.k8s.io/v1/k8up.io_schedules.yaml",
+            "https://github.com/k8up-io/k8up/blob/master/config/crd/apiextensions.k8s.io/v1/k8up.io_snapshots.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "karmada-io/karmada",
         license: APACHE_V2,
         urls: &[
