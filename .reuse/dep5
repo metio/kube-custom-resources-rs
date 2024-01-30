@@ -439,6 +439,10 @@ Files: crd-catalog/k8gb-io/k8gb/*
 Copyright: The k8gb-io/k8gb Authors
 License: Apache-2.0
 
+Files: crd-catalog/k8up-io/k8up/*
+Copyright: The k8up-io/k8up Authors
+License: Apache-2.0
+
 Files: crd-catalog/karmada-io/karmada/*
 Copyright: The karmada-io/karmada Authors
 License: Apache-2.0
