@@ -10907,6 +10907,8 @@ pub struct FlinkDeploymentStatus {
     pub job_status: Option<FlinkDeploymentStatusJobStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleState")]
     pub lifecycle_state: Option<FlinkDeploymentStatusLifecycleState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationStatus")]
     pub reconciliation_status: Option<FlinkDeploymentStatusReconciliationStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskManager")]

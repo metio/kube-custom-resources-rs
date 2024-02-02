@@ -16,6 +16,9 @@ pub struct MapSpec {
     /// Number of asynchronous backups.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asyncBackupCount")]
     pub async_backup_count: Option<i32>,
+    /// Attributes to be used with Predicates API. You can learn more at https://docs.hazelcast.com/hazelcast/latest/query/predicate-overview#creating-custom-query-attributes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<Vec<MapAttributes>>,
     /// Number of synchronous backups.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCount")]
     pub backup_count: Option<i32>,
@@ -43,6 +46,9 @@ pub struct MapSpec {
     /// Maximum time in seconds for each entry to stay idle in the map. Entries that are idle for more than this time are evicted automatically. It can be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxIdleSeconds")]
     pub max_idle_seconds: Option<i32>,
+    /// MerkleTree defines the configuration for the Merkle tree data structure.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "merkleTree")]
+    pub merkle_tree: Option<MapMerkleTree>,
     /// Name of the data structure config to be created. If empty, CR name will be used. It cannot be updated after the config is created successfully.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -55,6 +61,15 @@ pub struct MapSpec {
     /// Maximum time in seconds for each entry to stay in the map. If it is not 0, entries that are older than this time and not updated for this time are evicted automatically. It can be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeToLiveSeconds")]
     pub time_to_live_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MapAttributes {
+    /// Name of the extractor class https://docs.hazelcast.com/hazelcast/latest/query/predicate-overview#implementing-a-valueextractor
+    #[serde(rename = "extractorClassName")]
+    pub extractor_class_name: String,
+    /// Name of the attribute https://docs.hazelcast.com/hazelcast/latest/query/predicate-overview#creating-custom-query-attributes
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -222,6 +237,14 @@ pub enum MapMapStoreInitialMode {
     Lazy,
     #[serde(rename = "EAGER")]
     Eager,
+}
+
+/// MerkleTree defines the configuration for the Merkle tree data structure.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MapMerkleTree {
+    /// Depth of the merkle tree.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub depth: Option<i32>,
 }
 
 /// InMemoryFormat specifies near cache configuration for map

@@ -12,52 +12,93 @@ use std::collections::BTreeMap;
 #[kube(status = "CompositeResourceDefinitionStatus")]
 #[kube(schema = "disabled")]
 pub struct CompositeResourceDefinitionSpec {
-    /// ClaimNames specifies the names of an optional composite resource claim. When claim names are specified Crossplane will create a namespaced 'composite resource claim' CRD that corresponds to the defined composite resource. This composite resource claim acts as a namespaced proxy for the composite resource; creating, updating, or deleting the claim will create, update, or delete a corresponding composite resource. You may add claim names to an existing CompositeResourceDefinition, but they cannot be changed or removed once they have been set.
+    /// ClaimNames specifies the names of an optional composite resource claim.
+    /// When claim names are specified Crossplane will create a namespaced
+    /// 'composite resource claim' CRD that corresponds to the defined composite
+    /// resource. This composite resource claim acts as a namespaced proxy for
+    /// the composite resource; creating, updating, or deleting the claim will
+    /// create, update, or delete a corresponding composite resource. You may add
+    /// claim names to an existing CompositeResourceDefinition, but they cannot
+    /// be changed or removed once they have been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimNames")]
     pub claim_names: Option<CompositeResourceDefinitionClaimNames>,
-    /// ConnectionSecretKeys is the list of keys that will be exposed to the end user of the defined kind. If the list is empty, all keys will be published.
+    /// ConnectionSecretKeys is the list of keys that will be exposed to the end
+    /// user of the defined kind.
+    /// If the list is empty, all keys will be published.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionSecretKeys")]
     pub connection_secret_keys: Option<Vec<String>>,
     /// Conversion defines all conversion settings for the defined Composite resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conversion: Option<CompositeResourceDefinitionConversion>,
-    /// DefaultCompositeDeletePolicy is the policy used when deleting the Composite that is associated with the Claim if no policy has been specified.
+    /// DefaultCompositeDeletePolicy is the policy used when deleting the Composite
+    /// that is associated with the Claim if no policy has been specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCompositeDeletePolicy")]
     pub default_composite_delete_policy: Option<CompositeResourceDefinitionDefaultCompositeDeletePolicy>,
-    /// DefaultCompositionRef refers to the Composition resource that will be used in case no composition selector is given.
+    /// DefaultCompositionRef refers to the Composition resource that will be used
+    /// in case no composition selector is given.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCompositionRef")]
     pub default_composition_ref: Option<CompositeResourceDefinitionDefaultCompositionRef>,
-    /// DefaultCompositionUpdatePolicy is the policy used when updating composites after a new Composition Revision has been created if no policy has been specified on the composite.
+    /// DefaultCompositionUpdatePolicy is the policy used when updating composites after a new
+    /// Composition Revision has been created if no policy has been specified on the composite.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCompositionUpdatePolicy")]
     pub default_composition_update_policy: Option<CompositeResourceDefinitionDefaultCompositionUpdatePolicy>,
-    /// EnforcedCompositionRef refers to the Composition resource that will be used by all composite instances whose schema is defined by this definition.
+    /// EnforcedCompositionRef refers to the Composition resource that will be used
+    /// by all composite instances whose schema is defined by this definition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedCompositionRef")]
     pub enforced_composition_ref: Option<CompositeResourceDefinitionEnforcedCompositionRef>,
-    /// Group specifies the API group of the defined composite resource. Composite resources are served under `/apis/<group>/...`. Must match the name of the XRD (in the form `<names.plural>.<group>`).
+    /// Group specifies the API group of the defined composite resource.
+    /// Composite resources are served under `/apis/<group>/...`. Must match the
+    /// name of the XRD (in the form `<names.plural>.<group>`).
     pub group: String,
     /// Metadata specifies the desired metadata for the defined composite resource and claim CRD's.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<CompositeResourceDefinitionMetadata>,
-    /// Names specifies the resource and kind names of the defined composite resource.
+    /// Names specifies the resource and kind names of the defined composite
+    /// resource.
     pub names: CompositeResourceDefinitionNames,
-    /// Versions is the list of all API versions of the defined composite resource. Version names are used to compute the order in which served versions are listed in API discovery. If the version string is "kube-like", it will sort above non "kube-like" version strings, which are ordered lexicographically. "Kube-like" versions start with a "v", then are followed by a number (the major version), then optionally the string "alpha" or "beta" and another number (the minor version). These are sorted first by GA > beta > alpha (where GA is a version with no suffix such as beta or alpha), and then by comparing major version, then minor version. An example sorted list of versions: v10, v2, v1, v11beta2, v10beta3, v3beta1, v12alpha1, v11alpha2, foo1, foo10.
+    /// Versions is the list of all API versions of the defined composite
+    /// resource. Version names are used to compute the order in which served
+    /// versions are listed in API discovery. If the version string is
+    /// "kube-like", it will sort above non "kube-like" version strings, which
+    /// are ordered lexicographically. "Kube-like" versions start with a "v",
+    /// then are followed by a number (the major version), then optionally the
+    /// string "alpha" or "beta" and another number (the minor version). These
+    /// are sorted first by GA > beta > alpha (where GA is a version with no
+    /// suffix such as beta or alpha), and then by comparing major version, then
+    /// minor version. An example sorted list of versions: v10, v2, v1, v11beta2,
+    /// v10beta3, v3beta1, v12alpha1, v11alpha2, foo1, foo10.
     pub versions: Vec<CompositeResourceDefinitionVersions>,
 }
 
-/// ClaimNames specifies the names of an optional composite resource claim. When claim names are specified Crossplane will create a namespaced 'composite resource claim' CRD that corresponds to the defined composite resource. This composite resource claim acts as a namespaced proxy for the composite resource; creating, updating, or deleting the claim will create, update, or delete a corresponding composite resource. You may add claim names to an existing CompositeResourceDefinition, but they cannot be changed or removed once they have been set.
+/// ClaimNames specifies the names of an optional composite resource claim.
+/// When claim names are specified Crossplane will create a namespaced
+/// 'composite resource claim' CRD that corresponds to the defined composite
+/// resource. This composite resource claim acts as a namespaced proxy for
+/// the composite resource; creating, updating, or deleting the claim will
+/// create, update, or delete a corresponding composite resource. You may add
+/// claim names to an existing CompositeResourceDefinition, but they cannot
+/// be changed or removed once they have been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionClaimNames {
-    /// categories is a list of grouped resources this custom resource belongs to (e.g. 'all'). This is published in API discovery documents, and used by clients to support invocations like `kubectl get all`.
+    /// categories is a list of grouped resources this custom resource belongs to (e.g. 'all').
+    /// This is published in API discovery documents, and used by clients to support invocations like
+    /// `kubectl get all`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<String>>,
-    /// kind is the serialized kind of the resource. It is normally CamelCase and singular. Custom resource instances will use this value as the `kind` attribute in API calls.
+    /// kind is the serialized kind of the resource. It is normally CamelCase and singular.
+    /// Custom resource instances will use this value as the `kind` attribute in API calls.
     pub kind: String,
     /// listKind is the serialized kind of the list for this resource. Defaults to "`kind`List".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listKind")]
     pub list_kind: Option<String>,
-    /// plural is the plural name of the resource to serve. The custom resources are served under `/apis/<group>/<version>/.../<plural>`. Must match the name of the CustomResourceDefinition (in the form `<names.plural>.<group>`). Must be all lowercase.
+    /// plural is the plural name of the resource to serve.
+    /// The custom resources are served under `/apis/<group>/<version>/.../<plural>`.
+    /// Must match the name of the CustomResourceDefinition (in the form `<names.plural>.<group>`).
+    /// Must be all lowercase.
     pub plural: String,
-    /// shortNames are short names for the resource, exposed in API discovery documents, and used by clients to support invocations like `kubectl get <shortname>`. It must be all lowercase.
+    /// shortNames are short names for the resource, exposed in API discovery documents,
+    /// and used by clients to support invocations like `kubectl get <shortname>`.
+    /// It must be all lowercase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shortNames")]
     pub short_names: Option<Vec<String>>,
     /// singular is the singular name of the resource. It must be all lowercase. Defaults to lowercased `kind`.
@@ -68,7 +109,10 @@ pub struct CompositeResourceDefinitionClaimNames {
 /// Conversion defines all conversion settings for the defined Composite resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionConversion {
-    /// strategy specifies how custom resources are converted between versions. Allowed values are: - `"None"`: The converter only change the apiVersion and would not touch any other field in the custom resource. - `"Webhook"`: API Server will call to an external webhook to do the conversion. Additional information is needed for this option. This requires spec.preserveUnknownFields to be false, and spec.conversion.webhook to be set.
+    /// strategy specifies how custom resources are converted between versions. Allowed values are:
+    /// - `"None"`: The converter only change the apiVersion and would not touch any other field in the custom resource.
+    /// - `"Webhook"`: API Server will call to an external webhook to do the conversion. Additional information
+    ///   is needed for this option. This requires spec.preserveUnknownFields to be false, and spec.conversion.webhook to be set.
     pub strategy: String,
     /// webhook describes how to call the conversion webhook. Required when `strategy` is set to `"Webhook"`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,7 +125,12 @@ pub struct CompositeResourceDefinitionConversionWebhook {
     /// clientConfig is the instructions for how to call the webhook if strategy is `Webhook`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientConfig")]
     pub client_config: Option<CompositeResourceDefinitionConversionWebhookClientConfig>,
-    /// conversionReviewVersions is an ordered list of preferred `ConversionReview` versions the Webhook expects. The API server will use the first version in the list which it supports. If none of the versions specified in this list are supported by API server, conversion will fail for the custom resource. If a persisted Webhook configuration specifies allowed versions and does not include any versions known to the API Server, calls to the webhook will fail.
+    /// conversionReviewVersions is an ordered list of preferred `ConversionReview`
+    /// versions the Webhook expects. The API server will use the first version in
+    /// the list which it supports. If none of the versions specified in this list
+    /// are supported by API server, conversion will fail for the custom resource.
+    /// If a persisted Webhook configuration specifies allowed versions and does not
+    /// include any versions known to the API Server, calls to the webhook will fail.
     #[serde(rename = "conversionReviewVersions")]
     pub conversion_review_versions: Vec<String>,
 }
@@ -89,35 +138,70 @@ pub struct CompositeResourceDefinitionConversionWebhook {
 /// clientConfig is the instructions for how to call the webhook if strategy is `Webhook`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionConversionWebhookClientConfig {
-    /// caBundle is a PEM encoded CA bundle which will be used to validate the webhook's server certificate. If unspecified, system trust roots on the apiserver are used.
+    /// caBundle is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.
+    /// If unspecified, system trust roots on the apiserver are used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// service is a reference to the service for this webhook. Either service or url must be specified. 
-    ///  If the webhook is running within the cluster, then you should use `service`.
+    /// service is a reference to the service for this webhook. Either
+    /// service or url must be specified.
+    /// 
+    /// 
+    /// If the webhook is running within the cluster, then you should use `service`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CompositeResourceDefinitionConversionWebhookClientConfigService>,
-    /// url gives the location of the webhook, in standard URL form (`scheme://host:port/path`). Exactly one of `url` or `service` must be specified. 
-    ///  The `host` should not refer to a service running in the cluster; use the `service` field instead. The host might be resolved via external DNS in some apiservers (e.g., `kube-apiserver` cannot resolve in-cluster DNS as that would be a layering violation). `host` may also be an IP address. 
-    ///  Please note that using `localhost` or `127.0.0.1` as a `host` is risky unless you take great care to run this webhook on all hosts which run an apiserver which might need to make calls to this webhook. Such installs are likely to be non-portable, i.e., not easy to turn up in a new cluster. 
-    ///  The scheme must be "https"; the URL must begin with "https://". 
-    ///  A path is optional, and if present may be any string permissible in a URL. You may use the path to pass an arbitrary string to the webhook, for example, a cluster identifier. 
-    ///  Attempting to use a user or basic auth e.g. "user:password@" is not allowed. Fragments ("#...") and query parameters ("?...") are not allowed, either.
+    /// url gives the location of the webhook, in standard URL form
+    /// (`scheme://host:port/path`). Exactly one of `url` or `service`
+    /// must be specified.
+    /// 
+    /// 
+    /// The `host` should not refer to a service running in the cluster; use
+    /// the `service` field instead. The host might be resolved via external
+    /// DNS in some apiservers (e.g., `kube-apiserver` cannot resolve
+    /// in-cluster DNS as that would be a layering violation). `host` may
+    /// also be an IP address.
+    /// 
+    /// 
+    /// Please note that using `localhost` or `127.0.0.1` as a `host` is
+    /// risky unless you take great care to run this webhook on all hosts
+    /// which run an apiserver which might need to make calls to this
+    /// webhook. Such installs are likely to be non-portable, i.e., not easy
+    /// to turn up in a new cluster.
+    /// 
+    /// 
+    /// The scheme must be "https"; the URL must begin with "https://".
+    /// 
+    /// 
+    /// A path is optional, and if present may be any string permissible in
+    /// a URL. You may use the path to pass an arbitrary string to the
+    /// webhook, for example, a cluster identifier.
+    /// 
+    /// 
+    /// Attempting to use a user or basic auth e.g. "user:password@" is not
+    /// allowed. Fragments ("#...") and query parameters ("?...") are not
+    /// allowed, either.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// service is a reference to the service for this webhook. Either service or url must be specified. 
-///  If the webhook is running within the cluster, then you should use `service`.
+/// service is a reference to the service for this webhook. Either
+/// service or url must be specified.
+/// 
+/// 
+/// If the webhook is running within the cluster, then you should use `service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionConversionWebhookClientConfigService {
-    /// name is the name of the service. Required
+    /// name is the name of the service.
+    /// Required
     pub name: String,
-    /// namespace is the namespace of the service. Required
+    /// namespace is the namespace of the service.
+    /// Required
     pub namespace: String,
     /// path is an optional URL path at which the webhook will be contacted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// port is an optional service port at which the webhook will be contacted. `port` should be a valid port number (1-65535, inclusive). Defaults to 443 for backward compatibility.
+    /// port is an optional service port at which the webhook will be contacted.
+    /// `port` should be a valid port number (1-65535, inclusive).
+    /// Defaults to 443 for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
 }
@@ -129,7 +213,8 @@ pub enum CompositeResourceDefinitionDefaultCompositeDeletePolicy {
     Foreground,
 }
 
-/// DefaultCompositionRef refers to the Composition resource that will be used in case no composition selector is given.
+/// DefaultCompositionRef refers to the Composition resource that will be used
+/// in case no composition selector is given.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionDefaultCompositionRef {
     /// Name of the Composition.
@@ -143,7 +228,8 @@ pub enum CompositeResourceDefinitionDefaultCompositionUpdatePolicy {
     Manual,
 }
 
-/// EnforcedCompositionRef refers to the Composition resource that will be used by all composite instances whose schema is defined by this definition.
+/// EnforcedCompositionRef refers to the Composition resource that will be used
+/// by all composite instances whose schema is defined by this definition.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionEnforcedCompositionRef {
     /// Name of the Composition.
@@ -153,28 +239,45 @@ pub struct CompositeResourceDefinitionEnforcedCompositionRef {
 /// Metadata specifies the desired metadata for the defined composite resource and claim CRD's.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
+    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels and services. These labels are added to the composite resource and claim CRD's in addition to any labels defined by `CompositionResourceDefinition` `metadata.labels`.
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+    /// and services.
+    /// These labels are added to the composite resource and claim CRD's in addition
+    /// to any labels defined by `CompositionResourceDefinition` `metadata.labels`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Names specifies the resource and kind names of the defined composite resource.
+/// Names specifies the resource and kind names of the defined composite
+/// resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionNames {
-    /// categories is a list of grouped resources this custom resource belongs to (e.g. 'all'). This is published in API discovery documents, and used by clients to support invocations like `kubectl get all`.
+    /// categories is a list of grouped resources this custom resource belongs to (e.g. 'all').
+    /// This is published in API discovery documents, and used by clients to support invocations like
+    /// `kubectl get all`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<String>>,
-    /// kind is the serialized kind of the resource. It is normally CamelCase and singular. Custom resource instances will use this value as the `kind` attribute in API calls.
+    /// kind is the serialized kind of the resource. It is normally CamelCase and singular.
+    /// Custom resource instances will use this value as the `kind` attribute in API calls.
     pub kind: String,
     /// listKind is the serialized kind of the list for this resource. Defaults to "`kind`List".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listKind")]
     pub list_kind: Option<String>,
-    /// plural is the plural name of the resource to serve. The custom resources are served under `/apis/<group>/<version>/.../<plural>`. Must match the name of the CustomResourceDefinition (in the form `<names.plural>.<group>`). Must be all lowercase.
+    /// plural is the plural name of the resource to serve.
+    /// The custom resources are served under `/apis/<group>/<version>/.../<plural>`.
+    /// Must match the name of the CustomResourceDefinition (in the form `<names.plural>.<group>`).
+    /// Must be all lowercase.
     pub plural: String,
-    /// shortNames are short names for the resource, exposed in API discovery documents, and used by clients to support invocations like `kubectl get <shortname>`. It must be all lowercase.
+    /// shortNames are short names for the resource, exposed in API discovery documents,
+    /// and used by clients to support invocations like `kubectl get <shortname>`.
+    /// It must be all lowercase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shortNames")]
     pub short_names: Option<Vec<String>>,
     /// singular is the singular name of the resource. It must be all lowercase. Defaults to lowercased `kind`.
@@ -185,20 +288,36 @@ pub struct CompositeResourceDefinitionNames {
 /// CompositeResourceDefinitionVersion describes a version of an XR.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionVersions {
-    /// AdditionalPrinterColumns specifies additional columns returned in Table output. If no columns are specified, a single column displaying the age of the custom resource is used. See the following link for details: https://kubernetes.io/docs/reference/using-api/api-concepts/#receiving-resources-as-tables
+    /// AdditionalPrinterColumns specifies additional columns returned in Table
+    /// output. If no columns are specified, a single column displaying the age
+    /// of the custom resource is used. See the following link for details:
+    /// https://kubernetes.io/docs/reference/using-api/api-concepts/#receiving-resources-as-tables
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalPrinterColumns")]
     pub additional_printer_columns: Option<Vec<CompositeResourceDefinitionVersionsAdditionalPrinterColumns>>,
-    /// The deprecated field specifies that this version is deprecated and should not be used.
+    /// The deprecated field specifies that this version is deprecated and should
+    /// not be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<bool>,
-    /// DeprecationWarning specifies the message that should be shown to the user when using this version.
+    /// DeprecationWarning specifies the message that should be shown to the user
+    /// when using this version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deprecationWarning")]
     pub deprecation_warning: Option<String>,
-    /// Name of this version, e.g. “v1”, “v2beta1”, etc. Composite resources are served under this version at `/apis/<group>/<version>/...` if `served` is true.
+    /// Name of this version, e.g. “v1”, “v2beta1”, etc. Composite resources are
+    /// served under this version at `/apis/<group>/<version>/...` if `served` is
+    /// true.
     pub name: String,
-    /// Referenceable specifies that this version may be referenced by a Composition in order to configure which resources an XR may be composed of. Exactly one version must be marked as referenceable; all Compositions must target only the referenceable version. The referenceable version must be served. It's mapped to the CRD's `spec.versions[*].storage` field.
+    /// Referenceable specifies that this version may be referenced by a
+    /// Composition in order to configure which resources an XR may be composed
+    /// of. Exactly one version must be marked as referenceable; all Compositions
+    /// must target only the referenceable version. The referenceable version
+    /// must be served. It's mapped to the CRD's `spec.versions[*].storage` field.
     pub referenceable: bool,
-    /// Schema describes the schema used for validation, pruning, and defaulting of this version of the defined composite resource. Fields required by all composite resources will be injected into this schema automatically, and will override equivalently named fields in this schema. Omitting this schema results in a schema that contains only the fields required by all composite resources.
+    /// Schema describes the schema used for validation, pruning, and defaulting
+    /// of this version of the defined composite resource. Fields required by all
+    /// composite resources will be injected into this schema automatically, and
+    /// will override equivalently named fields in this schema. Omitting this
+    /// schema results in a schema that contains only the fields required by all
+    /// composite resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<CompositeResourceDefinitionVersionsSchema>,
     /// Served specifies that this version should be served via REST APIs.
@@ -211,26 +330,38 @@ pub struct CompositeResourceDefinitionVersionsAdditionalPrinterColumns {
     /// description is a human readable description of this column.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// format is an optional OpenAPI type definition for this column. The 'name' format is applied to the primary identifier column to assist in clients identifying column is the resource name. See https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types for details.
+    /// format is an optional OpenAPI type definition for this column. The 'name' format is applied
+    /// to the primary identifier column to assist in clients identifying column is the resource name.
+    /// See https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// jsonPath is a simple JSON path (i.e. with array notation) which is evaluated against each custom resource to produce the value for this column.
+    /// jsonPath is a simple JSON path (i.e. with array notation) which is evaluated against
+    /// each custom resource to produce the value for this column.
     #[serde(rename = "jsonPath")]
     pub json_path: String,
     /// name is a human readable name for the column.
     pub name: String,
-    /// priority is an integer defining the relative importance of this column compared to others. Lower numbers are considered higher priority. Columns that may be omitted in limited space scenarios should be given a priority greater than 0.
+    /// priority is an integer defining the relative importance of this column compared to others. Lower
+    /// numbers are considered higher priority. Columns that may be omitted in limited space scenarios
+    /// should be given a priority greater than 0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    /// type is an OpenAPI type definition for this column. See https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types for details.
+    /// type is an OpenAPI type definition for this column.
+    /// See https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#data-types for details.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// Schema describes the schema used for validation, pruning, and defaulting of this version of the defined composite resource. Fields required by all composite resources will be injected into this schema automatically, and will override equivalently named fields in this schema. Omitting this schema results in a schema that contains only the fields required by all composite resources.
+/// Schema describes the schema used for validation, pruning, and defaulting
+/// of this version of the defined composite resource. Fields required by all
+/// composite resources will be injected into this schema automatically, and
+/// will override equivalently named fields in this schema. Omitting this
+/// schema results in a schema that contains only the fields required by all
+/// composite resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionVersionsSchema {
-    /// OpenAPIV3Schema is the OpenAPI v3 schema to use for validation and pruning.
+    /// OpenAPIV3Schema is the OpenAPI v3 schema to use for validation and
+    /// pruning.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openAPIV3Schema")]
     pub open_apiv3_schema: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -241,7 +372,8 @@ pub struct CompositeResourceDefinitionStatus {
     /// Conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<CompositeResourceDefinitionStatusConditions>>,
-    /// Controllers represents the status of the controllers that power this composite resource definition.
+    /// Controllers represents the status of the controllers that power this
+    /// composite resource definition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controllers: Option<CompositeResourceDefinitionStatusControllers>,
 }
@@ -249,33 +381,49 @@ pub struct CompositeResourceDefinitionStatus {
 /// A Condition that may apply to a resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionStatusConditions {
-    /// LastTransitionTime is the last time this condition transitioned from one status to another.
+    /// LastTransitionTime is the last time this condition transitioned from one
+    /// status to another.
     #[serde(rename = "lastTransitionTime")]
     pub last_transition_time: String,
-    /// A Message containing details about this condition's last transition from one status to another, if any.
+    /// A Message containing details about this condition's last transition from
+    /// one status to another, if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// A Reason for this condition's last transition from one status to another.
     pub reason: String,
     /// Status of this condition; is it currently True, False, or Unknown?
     pub status: String,
-    /// Type of this condition. At most one of each condition type may apply to a resource at any point in time.
+    /// Type of this condition. At most one of each condition type may apply to
+    /// a resource at any point in time.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// Controllers represents the status of the controllers that power this composite resource definition.
+/// Controllers represents the status of the controllers that power this
+/// composite resource definition.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionStatusControllers {
-    /// The CompositeResourceClaimTypeRef is the type of composite resource claim that Crossplane is currently reconciling for this definition. Its version will eventually become consistent with the definition's referenceable version. Note that clients may interact with any served type; this is simply the type that Crossplane interacts with.
+    /// The CompositeResourceClaimTypeRef is the type of composite resource claim
+    /// that Crossplane is currently reconciling for this definition. Its version
+    /// will eventually become consistent with the definition's referenceable
+    /// version. Note that clients may interact with any served type; this is
+    /// simply the type that Crossplane interacts with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compositeResourceClaimType")]
     pub composite_resource_claim_type: Option<CompositeResourceDefinitionStatusControllersCompositeResourceClaimType>,
-    /// The CompositeResourceTypeRef is the type of composite resource that Crossplane is currently reconciling for this definition. Its version will eventually become consistent with the definition's referenceable version. Note that clients may interact with any served type; this is simply the type that Crossplane interacts with.
+    /// The CompositeResourceTypeRef is the type of composite resource that
+    /// Crossplane is currently reconciling for this definition. Its version will
+    /// eventually become consistent with the definition's referenceable version.
+    /// Note that clients may interact with any served type; this is simply the
+    /// type that Crossplane interacts with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compositeResourceType")]
     pub composite_resource_type: Option<CompositeResourceDefinitionStatusControllersCompositeResourceType>,
 }
 
-/// The CompositeResourceClaimTypeRef is the type of composite resource claim that Crossplane is currently reconciling for this definition. Its version will eventually become consistent with the definition's referenceable version. Note that clients may interact with any served type; this is simply the type that Crossplane interacts with.
+/// The CompositeResourceClaimTypeRef is the type of composite resource claim
+/// that Crossplane is currently reconciling for this definition. Its version
+/// will eventually become consistent with the definition's referenceable
+/// version. Note that clients may interact with any served type; this is
+/// simply the type that Crossplane interacts with.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionStatusControllersCompositeResourceClaimType {
     /// APIVersion of the type.
@@ -285,7 +433,11 @@ pub struct CompositeResourceDefinitionStatusControllersCompositeResourceClaimTyp
     pub kind: String,
 }
 
-/// The CompositeResourceTypeRef is the type of composite resource that Crossplane is currently reconciling for this definition. Its version will eventually become consistent with the definition's referenceable version. Note that clients may interact with any served type; this is simply the type that Crossplane interacts with.
+/// The CompositeResourceTypeRef is the type of composite resource that
+/// Crossplane is currently reconciling for this definition. Its version will
+/// eventually become consistent with the definition's referenceable version.
+/// Note that clients may interact with any served type; this is simply the
+/// type that Crossplane interacts with.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeResourceDefinitionStatusControllersCompositeResourceType {
     /// APIVersion of the type.

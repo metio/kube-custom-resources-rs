@@ -26,7 +26,8 @@ pub struct ClusterTriggerAuthenticationSpec {
     /// HashiCorpVault is used to authenticate using Hashicorp Vault
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashiCorpVault")]
     pub hashi_corp_vault: Option<ClusterTriggerAuthenticationHashiCorpVault>,
-    /// AuthPodIdentity allows users to select the platform native identity mechanism
+    /// AuthPodIdentity allows users to select the platform native identity
+    /// mechanism
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
     pub pod_identity: Option<ClusterTriggerAuthenticationPodIdentity>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTargetRef")]
@@ -38,7 +39,8 @@ pub struct ClusterTriggerAuthenticationSpec {
 pub struct ClusterTriggerAuthenticationAwsSecretManager {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ClusterTriggerAuthenticationAwsSecretManagerCredentials>,
-    /// AuthPodIdentity allows users to select the platform native identity mechanism
+    /// AuthPodIdentity allows users to select the platform native identity
+    /// mechanism
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
     pub pod_identity: Option<ClusterTriggerAuthenticationAwsSecretManagerPodIdentity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -110,7 +112,8 @@ pub struct ClusterTriggerAuthenticationAwsSecretManagerCredentialsAccessTokenVal
     pub name: String,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTriggerAuthenticationAwsSecretManagerPodIdentity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
@@ -125,7 +128,8 @@ pub struct ClusterTriggerAuthenticationAwsSecretManagerPodIdentity {
     pub role_arn: Option<String>,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationAwsSecretManagerPodIdentityIdentityOwner {
     #[serde(rename = "keda")]
@@ -134,7 +138,8 @@ pub enum ClusterTriggerAuthenticationAwsSecretManagerPodIdentityIdentityOwner {
     Workload,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationAwsSecretManagerPodIdentityProvider {
     #[serde(rename = "azure")]
@@ -168,7 +173,8 @@ pub struct ClusterTriggerAuthenticationAzureKeyVault {
     pub cloud: Option<ClusterTriggerAuthenticationAzureKeyVaultCloud>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ClusterTriggerAuthenticationAzureKeyVaultCredentials>,
-    /// AuthPodIdentity allows users to select the platform native identity mechanism
+    /// AuthPodIdentity allows users to select the platform native identity
+    /// mechanism
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
     pub pod_identity: Option<ClusterTriggerAuthenticationAzureKeyVaultPodIdentity>,
     pub secrets: Vec<ClusterTriggerAuthenticationAzureKeyVaultSecrets>,
@@ -214,7 +220,8 @@ pub struct ClusterTriggerAuthenticationAzureKeyVaultCredentialsClientSecretValue
     pub name: String,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTriggerAuthenticationAzureKeyVaultPodIdentity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
@@ -229,7 +236,8 @@ pub struct ClusterTriggerAuthenticationAzureKeyVaultPodIdentity {
     pub role_arn: Option<String>,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationAzureKeyVaultPodIdentityIdentityOwner {
     #[serde(rename = "keda")]
@@ -238,7 +246,8 @@ pub enum ClusterTriggerAuthenticationAzureKeyVaultPodIdentityIdentityOwner {
     Workload,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationAzureKeyVaultPodIdentityProvider {
     #[serde(rename = "azure")]
@@ -271,7 +280,8 @@ pub struct ClusterTriggerAuthenticationConfigMapTargetRef {
     pub parameter: String,
 }
 
-/// AuthEnvironment is used to authenticate using environment variables in the destination ScaleTarget spec
+/// AuthEnvironment is used to authenticate using environment variables
+/// in the destination ScaleTarget spec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTriggerAuthenticationEnv {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
@@ -284,7 +294,8 @@ pub struct ClusterTriggerAuthenticationEnv {
 pub struct ClusterTriggerAuthenticationGcpSecretManager {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ClusterTriggerAuthenticationGcpSecretManagerCredentials>,
-    /// AuthPodIdentity allows users to select the platform native identity mechanism
+    /// AuthPodIdentity allows users to select the platform native identity
+    /// mechanism
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
     pub pod_identity: Option<ClusterTriggerAuthenticationGcpSecretManagerPodIdentity>,
     pub secrets: Vec<ClusterTriggerAuthenticationGcpSecretManagerSecrets>,
@@ -314,7 +325,8 @@ pub struct ClusterTriggerAuthenticationGcpSecretManagerCredentialsClientSecretVa
     pub name: String,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTriggerAuthenticationGcpSecretManagerPodIdentity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
@@ -329,7 +341,8 @@ pub struct ClusterTriggerAuthenticationGcpSecretManagerPodIdentity {
     pub role_arn: Option<String>,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationGcpSecretManagerPodIdentityIdentityOwner {
     #[serde(rename = "keda")]
@@ -338,7 +351,8 @@ pub enum ClusterTriggerAuthenticationGcpSecretManagerPodIdentityIdentityOwner {
     Workload,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationGcpSecretManagerPodIdentityProvider {
     #[serde(rename = "azure")]
@@ -421,7 +435,8 @@ pub struct ClusterTriggerAuthenticationHashiCorpVaultSecretsPkiData {
     pub uri_sans: Option<String>,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTriggerAuthenticationPodIdentity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
@@ -436,7 +451,8 @@ pub struct ClusterTriggerAuthenticationPodIdentity {
     pub role_arn: Option<String>,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationPodIdentityIdentityOwner {
     #[serde(rename = "keda")]
@@ -445,7 +461,8 @@ pub enum ClusterTriggerAuthenticationPodIdentityIdentityOwner {
     Workload,
 }
 
-/// AuthPodIdentity allows users to select the platform native identity mechanism
+/// AuthPodIdentity allows users to select the platform native identity
+/// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTriggerAuthenticationPodIdentityProvider {
     #[serde(rename = "azure")]

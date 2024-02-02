@@ -51,6 +51,21 @@ spec:
                 maximum: 6.0
                 minimum: 0.0
                 type: integer
+              attributes:
+                description: Attributes to be used with Predicates API. You can learn more at https://docs.hazelcast.com/hazelcast/latest/query/predicate-overview#creating-custom-query-attributes
+                items:
+                  properties:
+                    extractorClassName:
+                      description: Name of the extractor class https://docs.hazelcast.com/hazelcast/latest/query/predicate-overview#implementing-a-valueextractor
+                      type: string
+                    name:
+                      description: Name of the attribute https://docs.hazelcast.com/hazelcast/latest/query/predicate-overview#creating-custom-query-attributes
+                      type: string
+                  required:
+                  - extractorClassName
+                  - name
+                  type: object
+                type: array
               backupCount:
                 default: 1
                 description: Number of synchronous backups.
@@ -218,6 +233,15 @@ spec:
                 description: Maximum time in seconds for each entry to stay idle in the map. Entries that are idle for more than this time are evicted automatically. It can be updated.
                 format: int32
                 type: integer
+              merkleTree:
+                description: MerkleTree defines the configuration for the Merkle tree data structure.
+                properties:
+                  depth:
+                    default: 10
+                    description: Depth of the merkle tree.
+                    format: int32
+                    type: integer
+                type: object
               name:
                 description: Name of the data structure config to be created. If empty, CR name will be used. It cannot be updated after the config is created successfully.
                 type: string

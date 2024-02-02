@@ -52,13 +52,14 @@ pub struct VaultDynamicSecretDestination {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Create the destination Secret. If the Secret already exists this should be set to false.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub create: Option<bool>,
+    pub create: bool,
     /// Labels to apply to the Secret. Requires Create to be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name of the Secret
     pub name: String,
+    /// Overwrite the destination Secret if it exists and Create is true. This is useful when migrating to VSO from a previous secret deployment strategy.
+    pub overwrite: bool,
     /// Type of Kubernetes Secret. Requires Create to be set to true. Defaults to Opaque.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,

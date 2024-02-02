@@ -1194,6 +1194,9 @@ spec:
               processor:
                 description: '`processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.'
                 properties:
+                  addZone:
+                    description: '`addZone` allows availability zone awareness by labelling flows with their source and destination zones. This feature requires the "topology.kubernetes.io/zone" label to be set on nodes.'
+                    type: boolean
                   clusterName:
                     default: ''
                     description: '`clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.'
@@ -1754,7 +1757,7 @@ spec:
                     type: object
                   multiClusterDeployment:
                     default: false
-                    description: Set `multiClusterDeployment` to `true` to enable multi clusters feature. This will add clusterName label to flows data
+                    description: Set `multiClusterDeployment` to `true` to enable multi clusters feature. This adds clusterName label to flows data
                     type: boolean
                   port:
                     default: 2055

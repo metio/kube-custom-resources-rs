@@ -51,34 +51,53 @@ pub struct ScaledObjectAdvanced {
 /// HorizontalPodAutoscalerConfig specifies horizontal scale config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfig {
-    /// HorizontalPodAutoscalerBehavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively).
+    /// HorizontalPodAutoscalerBehavior configures the scaling behavior of the target
+    /// in both Up and Down directions (scaleUp and scaleDown fields respectively).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub behavior: Option<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehavior>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// HorizontalPodAutoscalerBehavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively).
+/// HorizontalPodAutoscalerBehavior configures the scaling behavior of the target
+/// in both Up and Down directions (scaleUp and scaleDown fields respectively).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehavior {
-    /// scaleDown is scaling policy for scaling Down. If not set, the default value is to allow to scale down to minReplicas pods, with a 300 second stabilization window (i.e., the highest recommendation for the last 300sec is used).
+    /// scaleDown is scaling policy for scaling Down.
+    /// If not set, the default value is to allow to scale down to minReplicas pods, with a
+    /// 300 second stabilization window (i.e., the highest recommendation for
+    /// the last 300sec is used).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDown")]
     pub scale_down: Option<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDown>,
-    /// scaleUp is scaling policy for scaling Up. If not set, the default value is the higher of: * increase no more than 4 pods per 60 seconds * double the number of pods per 60 seconds No stabilization is used.
+    /// scaleUp is scaling policy for scaling Up.
+    /// If not set, the default value is the higher of:
+    ///   * increase no more than 4 pods per 60 seconds
+    ///   * double the number of pods per 60 seconds
+    /// No stabilization is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleUp")]
     pub scale_up: Option<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUp>,
 }
 
-/// scaleDown is scaling policy for scaling Down. If not set, the default value is to allow to scale down to minReplicas pods, with a 300 second stabilization window (i.e., the highest recommendation for the last 300sec is used).
+/// scaleDown is scaling policy for scaling Down.
+/// If not set, the default value is to allow to scale down to minReplicas pods, with a
+/// 300 second stabilization window (i.e., the highest recommendation for
+/// the last 300sec is used).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDown {
-    /// policies is a list of potential scaling polices which can be used during scaling. At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+    /// policies is a list of potential scaling polices which can be used during scaling.
+    /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDownPolicies>>,
-    /// selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.
+    /// selectPolicy is used to specify which policy should be used.
+    /// If not set, the default value Max is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
-    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
+    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
+    /// considered while scaling up or scaling down.
+    /// StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour).
+    /// If not set, use the default values:
+    /// - For scale up: 0 (i.e. no stabilization is done).
+    /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
@@ -86,26 +105,39 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDown {
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDownPolicies {
-    /// periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+    /// periodSeconds specifies the window of time for which the policy should hold true.
+    /// PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
     #[serde(rename = "periodSeconds")]
     pub period_seconds: i32,
     /// type is used to specify the scaling policy.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// value contains the amount of change which is permitted by the policy. It must be greater than zero
+    /// value contains the amount of change which is permitted by the policy.
+    /// It must be greater than zero
     pub value: i32,
 }
 
-/// scaleUp is scaling policy for scaling Up. If not set, the default value is the higher of: * increase no more than 4 pods per 60 seconds * double the number of pods per 60 seconds No stabilization is used.
+/// scaleUp is scaling policy for scaling Up.
+/// If not set, the default value is the higher of:
+///   * increase no more than 4 pods per 60 seconds
+///   * double the number of pods per 60 seconds
+/// No stabilization is used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUp {
-    /// policies is a list of potential scaling polices which can be used during scaling. At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+    /// policies is a list of potential scaling polices which can be used during scaling.
+    /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUpPolicies>>,
-    /// selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.
+    /// selectPolicy is used to specify which policy should be used.
+    /// If not set, the default value Max is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
-    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
+    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
+    /// considered while scaling up or scaling down.
+    /// StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour).
+    /// If not set, use the default values:
+    /// - For scale up: 0 (i.e. no stabilization is done).
+    /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
@@ -113,13 +145,15 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUp {
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUpPolicies {
-    /// periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+    /// periodSeconds specifies the window of time for which the policy should hold true.
+    /// PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
     #[serde(rename = "periodSeconds")]
     pub period_seconds: i32,
     /// type is used to specify the scaling policy.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// value contains the amount of change which is permitted by the policy. It must be greater than zero
+    /// value contains the amount of change which is permitted by the policy.
+    /// It must be greater than zero
     pub value: i32,
 }
 
@@ -130,7 +164,8 @@ pub struct ScaledObjectAdvancedScalingModifiers {
     pub activation_target: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub formula: Option<String>,
-    /// MetricTargetType specifies the type of metric being targeted, and should be either "Value", "AverageValue", or "Utilization"
+    /// MetricTargetType specifies the type of metric being targeted, and should be either
+    /// "Value", "AverageValue", or "Utilization"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricType")]
     pub metric_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -160,11 +195,13 @@ pub struct ScaledObjectScaleTargetRef {
 /// ScaleTriggers reference the scaler that will be used
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectTriggers {
-    /// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that is used to authenticate the scaler with the environment
+    /// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that
+    /// is used to authenticate the scaler with the environment
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationRef")]
     pub authentication_ref: Option<ScaledObjectTriggersAuthenticationRef>,
     pub metadata: BTreeMap<String, String>,
-    /// MetricTargetType specifies the type of metric being targeted, and should be either "Value", "AverageValue", or "Utilization"
+    /// MetricTargetType specifies the type of metric being targeted, and should be either
+    /// "Value", "AverageValue", or "Utilization"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricType")]
     pub metric_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -175,7 +212,8 @@ pub struct ScaledObjectTriggers {
     pub use_cached_metrics: Option<bool>,
 }
 
-/// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that is used to authenticate the scaler with the environment
+/// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that
+/// is used to authenticate the scaler with the environment
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectTriggersAuthenticationRef {
     /// Kind of the resource being referred to. Defaults to TriggerAuthentication.

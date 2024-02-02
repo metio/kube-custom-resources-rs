@@ -2747,6 +2747,9 @@ pub struct OpenTelemetryCollectorObservability {
 /// Metrics defines the metrics configuration for operands.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenTelemetryCollectorObservabilityMetrics {
+    /// DisablePrometheusAnnotations controls the automatic addition of default Prometheus annotations ('prometheus.io/scrape', 'prometheus.io/port', and 'prometheus.io/path')
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DisablePrometheusAnnotations")]
+    pub disable_prometheus_annotations: Option<bool>,
     /// EnableMetrics specifies if ServiceMonitor or PodMonitor(for sidecar mode) should be created for the service managed by the OpenTelemetry Operator. The operator.observability.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
@@ -3579,6 +3582,9 @@ pub struct OpenTelemetryCollectorTargetAllocatorObservability {
 /// Metrics defines the metrics configuration for operands.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenTelemetryCollectorTargetAllocatorObservabilityMetrics {
+    /// DisablePrometheusAnnotations controls the automatic addition of default Prometheus annotations ('prometheus.io/scrape', 'prometheus.io/port', and 'prometheus.io/path')
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DisablePrometheusAnnotations")]
+    pub disable_prometheus_annotations: Option<bool>,
     /// EnableMetrics specifies if ServiceMonitor or PodMonitor(for sidecar mode) should be created for the service managed by the OpenTelemetry Operator. The operator.observability.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,

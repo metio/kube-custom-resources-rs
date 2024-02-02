@@ -439,9 +439,15 @@ pub enum ClusterResourceBindingPlacementSpreadConstraintsSpreadByField {
 /// ReplicaRequirements represents the requirements required by each replica.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterResourceBindingReplicaRequirements {
+    /// Namespace represents the resources namespaces
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// NodeClaim represents the node claim HardNodeAffinity, NodeSelector and Tolerations required by each replica.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeClaim")]
     pub node_claim: Option<ClusterResourceBindingReplicaRequirementsNodeClaim>,
+    /// PriorityClassName represents the resources priorityClassName
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     /// ResourceRequest represents the resources required by each replica.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequest")]
     pub resource_request: Option<BTreeMap<String, IntOrString>>,

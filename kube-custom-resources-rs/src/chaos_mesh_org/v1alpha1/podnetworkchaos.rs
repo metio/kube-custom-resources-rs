@@ -90,6 +90,9 @@ pub struct PodNetworkChaosTcs {
     /// Loss represents the detail about loss action
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loss: Option<PodNetworkChaosTcsLoss>,
+    /// Rate represents the detail about rate control action
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rate: Option<PodNetworkChaosTcsRate>,
     /// The name and namespace of the source network chaos
     pub source: String,
     /// The type of traffic control
@@ -158,6 +161,13 @@ pub struct PodNetworkChaosTcsLoss {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub correlation: Option<String>,
     pub loss: String,
+}
+
+/// Rate represents the detail about rate control action
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PodNetworkChaosTcsRate {
+    /// Rate is the speed knob. Allows bit, kbit, mbit, gbit, tbit, bps, kbps, mbps, gbps, tbps unit. bps means bytes per second.
+    pub rate: String,
 }
 
 /// Most recently observed status of the chaos experiment about pods
