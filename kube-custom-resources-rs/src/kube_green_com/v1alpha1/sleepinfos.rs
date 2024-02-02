@@ -16,6 +16,9 @@ pub struct SleepInfoSpec {
     /// ExcludeRef define the resource to exclude from the sleep.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRef")]
     pub exclude_ref: Option<Vec<SleepInfoExcludeRef>>,
+    /// Patches is a list of json 6902 patches to apply to the target resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<SleepInfoPatches>>,
     /// Hours:Minutes 
     ///  Accept cron schedule for both hour and minute. For example, *:*/2 is set to configure a run every even minute.
     #[serde(rename = "sleepAt")]
@@ -52,6 +55,23 @@ pub struct SleepInfoExcludeRef {
     /// Name which identify the kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SleepInfoPatches {
+    /// Patch is the json6902 patch to apply to the target resource.
+    pub patch: String,
+    /// Target is the target resource to patch.
+    pub target: SleepInfoPatchesTarget,
+}
+
+/// Target is the target resource to patch.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SleepInfoPatchesTarget {
+    /// Group of the Kubernetes resources.
+    pub group: String,
+    /// Kind of the Kubernetes resources.
+    pub kind: String,
 }
 
 /// SleepInfoStatus defines the observed state of SleepInfo

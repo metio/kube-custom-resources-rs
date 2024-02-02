@@ -450,6 +450,9 @@ spec:
               replicaRequirements:
                 description: ReplicaRequirements represents the requirements required by each replica.
                 properties:
+                  namespace:
+                    description: Namespace represents the resources namespaces
+                    type: string
                   nodeClaim:
                     description: NodeClaim represents the node claim HardNodeAffinity, NodeSelector and Tolerations required by each replica.
                     properties:
@@ -537,6 +540,9 @@ spec:
                           type: object
                         type: array
                     type: object
+                  priorityClassName:
+                    description: PriorityClassName represents the resources priorityClassName
+                    type: string
                   resourceRequest:
                     additionalProperties:
                       anyOf:

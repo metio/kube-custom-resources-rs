@@ -2346,6 +2346,11 @@ spec:
                           type: boolean
                         pathRedirect:
                           type: string
+                        portRedirect:
+                          maximum: 4294967295.0
+                          minimum: 0.0
+                          nullable: true
+                          type: integer
                         prefixRewrite:
                           type: string
                         regexRewrite:

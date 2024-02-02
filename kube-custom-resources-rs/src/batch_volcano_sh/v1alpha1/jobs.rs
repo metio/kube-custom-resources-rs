@@ -295,6 +295,10 @@ pub struct JobTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnor
 pub struct JobTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<JobTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<JobTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -339,6 +343,10 @@ pub struct JobTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnor
 pub struct JobTasksTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<JobTasksTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<JobTasksTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -398,6 +406,10 @@ pub struct JobTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingI
 pub struct JobTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<JobTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<JobTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -442,6 +454,10 @@ pub struct JobTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingI
 pub struct JobTasksTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<JobTasksTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<JobTasksTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -509,6 +525,8 @@ pub struct JobTasksTemplateSpecContainers {
     pub resize_policy: Option<Vec<JobTasksTemplateSpecContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JobTasksTemplateSpecContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTasksTemplateSpecContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -627,6 +645,8 @@ pub struct JobTasksTemplateSpecContainersLifecyclePostStart {
     pub exec: Option<JobTasksTemplateSpecContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTasksTemplateSpecContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTasksTemplateSpecContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTasksTemplateSpecContainersLifecyclePostStartTcpSocket>,
 }
@@ -657,6 +677,11 @@ pub struct JobTasksTemplateSpecContainersLifecyclePostStartHttpGetHttpHeaders {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTasksTemplateSpecContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -669,6 +694,8 @@ pub struct JobTasksTemplateSpecContainersLifecyclePreStop {
     pub exec: Option<JobTasksTemplateSpecContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTasksTemplateSpecContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTasksTemplateSpecContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTasksTemplateSpecContainersLifecyclePreStopTcpSocket>,
 }
@@ -696,6 +723,11 @@ pub struct JobTasksTemplateSpecContainersLifecyclePreStopHttpGet {
 pub struct JobTasksTemplateSpecContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1064,6 +1096,8 @@ pub struct JobTasksTemplateSpecEphemeralContainers {
     pub resize_policy: Option<Vec<JobTasksTemplateSpecEphemeralContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JobTasksTemplateSpecEphemeralContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTasksTemplateSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1184,6 +1218,8 @@ pub struct JobTasksTemplateSpecEphemeralContainersLifecyclePostStart {
     pub exec: Option<JobTasksTemplateSpecEphemeralContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTasksTemplateSpecEphemeralContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTasksTemplateSpecEphemeralContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTasksTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket>,
 }
@@ -1214,6 +1250,11 @@ pub struct JobTasksTemplateSpecEphemeralContainersLifecyclePostStartHttpGetHttpH
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecEphemeralContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTasksTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -1226,6 +1267,8 @@ pub struct JobTasksTemplateSpecEphemeralContainersLifecyclePreStop {
     pub exec: Option<JobTasksTemplateSpecEphemeralContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTasksTemplateSpecEphemeralContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTasksTemplateSpecEphemeralContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTasksTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket>,
 }
@@ -1253,6 +1296,11 @@ pub struct JobTasksTemplateSpecEphemeralContainersLifecyclePreStopHttpGet {
 pub struct JobTasksTemplateSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecEphemeralContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1617,6 +1665,8 @@ pub struct JobTasksTemplateSpecInitContainers {
     pub resize_policy: Option<Vec<JobTasksTemplateSpecInitContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JobTasksTemplateSpecInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTasksTemplateSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1735,6 +1785,8 @@ pub struct JobTasksTemplateSpecInitContainersLifecyclePostStart {
     pub exec: Option<JobTasksTemplateSpecInitContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTasksTemplateSpecInitContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTasksTemplateSpecInitContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTasksTemplateSpecInitContainersLifecyclePostStartTcpSocket>,
 }
@@ -1765,6 +1817,11 @@ pub struct JobTasksTemplateSpecInitContainersLifecyclePostStartHttpGetHttpHeader
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecInitContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTasksTemplateSpecInitContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -1777,6 +1834,8 @@ pub struct JobTasksTemplateSpecInitContainersLifecyclePreStop {
     pub exec: Option<JobTasksTemplateSpecInitContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTasksTemplateSpecInitContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTasksTemplateSpecInitContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTasksTemplateSpecInitContainersLifecyclePreStopTcpSocket>,
 }
@@ -1804,6 +1863,11 @@ pub struct JobTasksTemplateSpecInitContainersLifecyclePreStopHttpGet {
 pub struct JobTasksTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecInitContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2534,6 +2598,8 @@ pub struct JobTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<JobTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -2561,16 +2627,9 @@ pub struct JobTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<JobTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JobTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2740,6 +2799,8 @@ pub struct JobTasksTemplateSpecVolumesProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTasksTemplateSpecVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<JobTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<JobTasksTemplateSpecVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -2748,6 +2809,35 @@ pub struct JobTasksTemplateSpecVolumesProjectedSources {
     pub secret: Option<JobTasksTemplateSpecVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<JobTasksTemplateSpecVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<JobTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<JobTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2971,6 +3061,8 @@ pub struct JobVolumesVolumeClaim {
     pub selector: Option<JobVolumesVolumeClaimSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -2998,16 +3090,9 @@ pub struct JobVolumesVolumeClaimDataSourceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobVolumesVolumeClaimResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<JobVolumesVolumeClaimResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JobVolumesVolumeClaimResourcesClaims {
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

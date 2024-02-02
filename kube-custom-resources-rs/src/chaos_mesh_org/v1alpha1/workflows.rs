@@ -1087,6 +1087,9 @@ pub struct WorkflowTemplatesNetworkChaos {
     pub loss: Option<WorkflowTemplatesNetworkChaosLoss>,
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesNetworkChaosMode,
+    /// Rate represents the detail about rate control action
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rate: Option<WorkflowTemplatesNetworkChaosRate>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
@@ -1209,6 +1212,13 @@ pub enum WorkflowTemplatesNetworkChaosMode {
     FixedPercent,
     #[serde(rename = "random-max-percent")]
     RandomMaxPercent,
+}
+
+/// Rate represents the detail about rate control action
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WorkflowTemplatesNetworkChaosRate {
+    /// Rate is the speed knob. Allows bit, kbit, mbit, gbit, tbit, bps, kbps, mbps, gbps, tbps unit. bps means bytes per second.
+    pub rate: String,
 }
 
 /// Selector is used to select pods that are used to inject chaos action.
@@ -3436,6 +3446,9 @@ pub struct WorkflowTemplatesScheduleNetworkChaos {
     pub loss: Option<WorkflowTemplatesScheduleNetworkChaosLoss>,
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesScheduleNetworkChaosMode,
+    /// Rate represents the detail about rate control action
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rate: Option<WorkflowTemplatesScheduleNetworkChaosRate>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
@@ -3558,6 +3571,13 @@ pub enum WorkflowTemplatesScheduleNetworkChaosMode {
     FixedPercent,
     #[serde(rename = "random-max-percent")]
     RandomMaxPercent,
+}
+
+/// Rate represents the detail about rate control action
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WorkflowTemplatesScheduleNetworkChaosRate {
+    /// Rate is the speed knob. Allows bit, kbit, mbit, gbit, tbit, bps, kbps, mbps, gbps, tbps unit. bps means bytes per second.
+    pub rate: String,
 }
 
 /// Selector is used to select pods that are used to inject chaos action.

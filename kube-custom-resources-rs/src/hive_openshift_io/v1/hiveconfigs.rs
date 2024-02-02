@@ -236,6 +236,32 @@ pub struct HiveConfigControllersConfigControllersConfig {
     /// Replicas specifies the number of replicas the specific controller pod should use. This is ONLY for controllers that have been split out into their own pods. This is ignored for all others.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    /// Resources describes the compute resource requirements of the controller container. This is ONLY for controllers that have been split out into their own pods. This is ignored for all others.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<HiveConfigControllersConfigControllersConfigResources>,
+}
+
+/// Resources describes the compute resource requirements of the controller container. This is ONLY for controllers that have been split out into their own pods. This is ignored for all others.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HiveConfigControllersConfigControllersConfigResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<HiveConfigControllersConfigControllersConfigResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HiveConfigControllersConfigControllersConfigResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// SpecificControllerConfig contains the configuration for a specific controller
@@ -306,6 +332,32 @@ pub struct HiveConfigControllersConfigDefault {
     /// Replicas specifies the number of replicas the specific controller pod should use. This is ONLY for controllers that have been split out into their own pods. This is ignored for all others.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    /// Resources describes the compute resource requirements of the controller container. This is ONLY for controllers that have been split out into their own pods. This is ignored for all others.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<HiveConfigControllersConfigDefaultResources>,
+}
+
+/// Resources describes the compute resource requirements of the controller container. This is ONLY for controllers that have been split out into their own pods. This is ignored for all others.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HiveConfigControllersConfigDefaultResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<HiveConfigControllersConfigDefaultResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HiveConfigControllersConfigDefaultResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// HiveConfigSpec defines the desired state of Hive

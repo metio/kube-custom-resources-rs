@@ -12,34 +12,51 @@ use std::collections::BTreeMap;
 #[kube(status = "ConfigurationRevisionStatus")]
 #[kube(schema = "disabled")]
 pub struct ConfigurationRevisionSpec {
-    /// Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// and services.
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
     /// DesiredState of the PackageRevision. Can be either Active or Inactive.
     #[serde(rename = "desiredState")]
     pub desired_state: String,
-    /// IgnoreCrossplaneConstraints indicates to the package manager whether to honor Crossplane version constrains specified by the package. Default is false.
+    /// IgnoreCrossplaneConstraints indicates to the package manager whether to
+    /// honor Crossplane version constrains specified by the package.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCrossplaneConstraints")]
     pub ignore_crossplane_constraints: Option<bool>,
     /// Package image used by install Pod to extract package contents.
     pub image: String,
-    /// PackagePullPolicy defines the pull policy for the package. It is also applied to any images pulled for the package, such as a provider's controller image. Default is IfNotPresent.
+    /// PackagePullPolicy defines the pull policy for the package. It is also
+    /// applied to any images pulled for the package, such as a provider's
+    /// controller image.
+    /// Default is IfNotPresent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "packagePullPolicy")]
     pub package_pull_policy: Option<String>,
-    /// PackagePullSecrets are named secrets in the same namespace that can be used to fetch packages from private registries. They are also applied to any images pulled for the package, such as a provider's controller image.
+    /// PackagePullSecrets are named secrets in the same namespace that can be
+    /// used to fetch packages from private registries. They are also applied to
+    /// any images pulled for the package, such as a provider's controller image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "packagePullSecrets")]
     pub package_pull_secrets: Option<Vec<ConfigurationRevisionPackagePullSecrets>>,
-    /// Revision number. Indicates when the revision will be garbage collected based on the parent's RevisionHistoryLimit.
+    /// Revision number. Indicates when the revision will be garbage collected
+    /// based on the parent's RevisionHistoryLimit.
     pub revision: i64,
-    /// SkipDependencyResolution indicates to the package manager whether to skip resolving dependencies for a package. Setting this value to true may have unintended consequences. Default is false.
+    /// SkipDependencyResolution indicates to the package manager whether to skip
+    /// resolving dependencies for a package. Setting this value to true may have
+    /// unintended consequences.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipDependencyResolution")]
     pub skip_dependency_resolution: Option<bool>,
 }
 
-/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationRevisionPackagePullSecrets {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -60,7 +77,9 @@ pub struct ConfigurationRevisionStatus {
     /// References to objects owned by PackageRevision.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectRefs")]
     pub object_refs: Option<Vec<ConfigurationRevisionStatusObjectRefs>>,
-    /// PermissionRequests made by this package. The package declares that its controller needs these permissions to run. The RBAC manager is responsible for granting them.
+    /// PermissionRequests made by this package. The package declares that its
+    /// controller needs these permissions to run. The RBAC manager is
+    /// responsible for granting them.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "permissionRequests")]
     pub permission_requests: Option<Vec<ConfigurationRevisionStatusPermissionRequests>>,
 }
@@ -68,22 +87,27 @@ pub struct ConfigurationRevisionStatus {
 /// A Condition that may apply to a resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationRevisionStatusConditions {
-    /// LastTransitionTime is the last time this condition transitioned from one status to another.
+    /// LastTransitionTime is the last time this condition transitioned from one
+    /// status to another.
     #[serde(rename = "lastTransitionTime")]
     pub last_transition_time: String,
-    /// A Message containing details about this condition's last transition from one status to another, if any.
+    /// A Message containing details about this condition's last transition from
+    /// one status to another, if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// A Reason for this condition's last transition from one status to another.
     pub reason: String,
     /// Status of this condition; is it currently True, False, or Unknown?
     pub status: String,
-    /// Type of this condition. At most one of each condition type may apply to a resource at any point in time.
+    /// Type of this condition. At most one of each condition type may apply to
+    /// a resource at any point in time.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// A TypedReference refers to an object by Name, Kind, and APIVersion. It is commonly used to reference cluster-scoped objects or objects where the namespace is already known.
+/// A TypedReference refers to an object by Name, Kind, and APIVersion. It is
+/// commonly used to reference cluster-scoped objects or objects where the
+/// namespace is already known.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationRevisionStatusObjectRefs {
     /// APIVersion of the referenced object.
@@ -98,13 +122,17 @@ pub struct ConfigurationRevisionStatusObjectRefs {
     pub uid: Option<String>,
 }
 
-/// PolicyRule holds information that describes a policy rule, but does not contain information about who the rule applies to or which namespace the rule applies to.
+/// PolicyRule holds information that describes a policy rule, but does not contain information
+/// about who the rule applies to or which namespace the rule applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationRevisionStatusPermissionRequests {
-    /// APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of the enumerated resources in any API group will be allowed. "" represents the core API group and "*" represents all API groups.
+    /// APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of
+    /// the enumerated resources in any API group will be allowed. "" represents the core API group and "*" represents all API groups.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroups")]
     pub api_groups: Option<Vec<String>>,
-    /// NonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full, final step in the path Since non-resource URLs are not namespaced, this field is only applicable for ClusterRoles referenced from a ClusterRoleBinding. Rules can either apply to API resources (such as "pods" or "secrets") or non-resource URL paths (such as "/api"),  but not both.
+    /// NonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full, final step in the path
+    /// Since non-resource URLs are not namespaced, this field is only applicable for ClusterRoles referenced from a ClusterRoleBinding.
+    /// Rules can either apply to API resources (such as "pods" or "secrets") or non-resource URL paths (such as "/api"),  but not both.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonResourceURLs")]
     pub non_resource_ur_ls: Option<Vec<String>>,
     /// ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.

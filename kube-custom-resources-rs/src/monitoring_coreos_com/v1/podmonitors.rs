@@ -50,6 +50,11 @@ pub struct PodMonitorSpec {
     /// `sampleLimit` defines a per-scrape limit on the number of scraped samples that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
+    /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the protocols supported by Prometheus in order of preference (from most to least preferred). 
+    ///  If unset, Prometheus uses its default value. 
+    ///  It requires Prometheus >= v2.49.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
+    pub scrape_protocols: Option<Vec<String>>,
     /// Label selector to select the Kubernetes `Pod` objects.
     pub selector: PodMonitorSelector,
     /// `targetLimit` defines a limit on the number of scraped targets that will be accepted.

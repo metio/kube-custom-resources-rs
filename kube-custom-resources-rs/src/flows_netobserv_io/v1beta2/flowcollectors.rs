@@ -1446,7 +1446,7 @@ pub enum FlowCollectorLokiMonolithicTlsUserCertType {
 /// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessor {
-    /// `addZone` when set to `true`, the source and destination of flow will their zone added to the flow
+    /// `addZone` allows availability zone awareness by labelling flows with their source and destination zones. This feature requires the "topology.kubernetes.io/zone" label to be set on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addZone")]
     pub add_zone: Option<bool>,
     /// `advanced` allows setting some aspects of the internal configuration of the flow processor. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
@@ -1479,7 +1479,7 @@ pub struct FlowCollectorProcessor {
     /// `Metrics` define the processor configuration regarding metrics
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorProcessorMetrics>,
-    /// Set `multiClusterDeployment` to `true` to enable multi clusters feature. This will add clusterName label to flows data
+    /// Set `multiClusterDeployment` to `true` to enable multi clusters feature. This adds `clusterName` label to flows data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterDeployment")]
     pub multi_cluster_deployment: Option<bool>,
     /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -1854,7 +1854,7 @@ pub struct FlowCollectorProcessorMetrics {
     /// `disableAlerts` is a list of alerts that should be disabled. Possible values are:<br> `NetObservNoFlows`, which is triggered when no flows are being observed for a certain period.<br> `NetObservLokiError`, which is triggered when flows are being dropped due to Loki errors.<br>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
-    /// `includeList` is a list of metric names to specify which ones to generate. The names correspond to the names in Prometheus without the prefix. For example, `namespace_egress_packets_total` will show up as `netobserv_namespace_egress_packets_total` in Prometheus. Note that the more metrics you add, the bigger is the impact on Prometheus workload resources. Metrics enabled by default are: `namespace_flows_total`, `node_ingress_bytes_total`, `workload_ingress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled), `namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled). More information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md
+    /// `includeList` is a list of metric names to specify which ones to generate. The names correspond to the names in Prometheus without the prefix. For example, `namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus. Note that the more metrics you add, the bigger is the impact on Prometheus workload resources. Metrics enabled by default are: `namespace_flows_total`, `node_ingress_bytes_total`, `workload_ingress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled), `namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled). More information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeList")]
     pub include_list: Option<Vec<String>>,
     /// Metrics server endpoint configuration for Prometheus scraper

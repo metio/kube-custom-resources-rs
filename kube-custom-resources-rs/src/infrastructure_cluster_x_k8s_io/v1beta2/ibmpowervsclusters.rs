@@ -166,9 +166,9 @@ pub struct IBMPowerVSClusterStatus {
     /// Conditions defines current service state of the IBMPowerVSCluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<IBMPowerVSClusterStatusConditions>>,
-    /// cosBucket is reference to IBM Cloud COS Bucket resource.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosBucket")]
-    pub cos_bucket: Option<IBMPowerVSClusterStatusCosBucket>,
+    /// cosInstance is reference to IBM Cloud COS Instance resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosInstance")]
+    pub cos_instance: Option<IBMPowerVSClusterStatusCosInstance>,
     /// dhcpServer is the reference to the Power VS DHCP server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
     pub dhcp_server: Option<IBMPowerVSClusterStatusDhcpServer>,
@@ -216,9 +216,9 @@ pub struct IBMPowerVSClusterStatusConditions {
     pub r#type: String,
 }
 
-/// cosBucket is reference to IBM Cloud COS Bucket resource.
+/// cosInstance is reference to IBM Cloud COS Instance resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IBMPowerVSClusterStatusCosBucket {
+pub struct IBMPowerVSClusterStatusCosInstance {
     /// controllerCreated indicates whether the resource is created by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
@@ -241,14 +241,15 @@ pub struct IBMPowerVSClusterStatusDhcpServer {
 /// loadBalancers reference to IBM Cloud VPC Loadbalancer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusLoadBalancers {
+    /// controllerCreated indicates whether the resource is created by the controller.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
+    pub controller_created: Option<bool>,
     /// hostname is the hostname of load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// id of VPC load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
     /// State is the status of the load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,

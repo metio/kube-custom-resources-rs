@@ -56,9 +56,15 @@ pub struct ScyllaClusterSpec {
     /// imagePullSecrets is an optional list of references to secrets in the same namespace used for pulling Scylla and Agent images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ScyllaClusterImagePullSecrets>>,
+    /// minTerminationGracePeriodSeconds specifies minimum duration in seconds to wait before every drained node is terminated. This gives time to potential load balancer in front of a node to notice that node is not ready anymore and stop forwarding new requests. This applies only when node is terminated gracefully. If not provided, Operator will determine this value. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTerminationGracePeriodSeconds")]
+    pub min_termination_grace_period_seconds: Option<i32>,
     /// network holds the networking config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<ScyllaClusterNetwork>,
+    /// podMetadata controls shared metadata for all pods created based on this spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
+    pub pod_metadata: Option<ScyllaClusterPodMetadata>,
     /// repairs specify repair tasks in Scylla Manager. When Scylla Manager is not installed, these will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repairs: Option<Vec<ScyllaClusterRepairs>>,
@@ -700,9 +706,23 @@ pub struct ScyllaClusterDatacenterRacksStorage {
     /// capacity describes the requested size of each persistent volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<String>,
+    /// metadata controls shared metadata for the volume claim for this rack. At this point, the values are applied only for the initial claim and are not reconciled during its lifetime. Note that this may get fixed in the future and this behaviour shouldn't be relied on in any way.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<ScyllaClusterDatacenterRacksStorageMetadata>,
     /// storageClassName is the name of a storageClass to request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+}
+
+/// metadata controls shared metadata for the volume claim for this rack. At this point, the values are applied only for the initial claim and are not reconciled during its lifetime. Note that this may get fixed in the future and this behaviour shouldn't be relied on in any way.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScyllaClusterDatacenterRacksStorageMetadata {
+    /// annotations is a custom key value map that gets merged with managed object annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// labels is a custom key value map that gets merged with managed object labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
@@ -1817,7 +1837,7 @@ pub struct ScyllaClusterExposeOptionsCql {
 /// ingress is an Ingress configuration options. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterExposeOptionsCqlIngress {
-    /// annotations specifies custom annotations merged into every Ingress object. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
+    /// annotations is a custom key value map that gets merged with managed object annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// disabled controls if Ingress object creation is disabled. Unless disabled, there is an Ingress objects created for every Scylla node. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
@@ -1826,6 +1846,9 @@ pub struct ScyllaClusterExposeOptionsCqlIngress {
     /// ingressClassName specifies Ingress class name. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
+    /// labels is a custom key value map that gets merged with managed object labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// nodeService controls properties of Service dedicated for each ScyllaCluster node.
@@ -1834,7 +1857,7 @@ pub struct ScyllaClusterExposeOptionsNodeService {
     /// allocateLoadBalancerNodePorts controls value of service.spec.allocateLoadBalancerNodePorts of each node Service. Check Kubernetes corev1.Service documentation about semantic of this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
-    /// annotations is a custom key value map merged with every node Service annotations.
+    /// annotations is a custom key value map that gets merged with managed object annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// externalTrafficPolicy controls value of service.spec.externalTrafficPolicy of each node Service. Check Kubernetes corev1.Service documentation about semantic of this field.
@@ -1843,6 +1866,9 @@ pub struct ScyllaClusterExposeOptionsNodeService {
     /// internalTrafficPolicy controls value of service.spec.internalTrafficPolicy of each node Service. Check Kubernetes corev1.Service documentation about semantic of this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
     pub internal_traffic_policy: Option<String>,
+    /// labels is a custom key value map that gets merged with managed object labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// loadBalancerClass controls value of service.spec.loadBalancerClass of each node Service. Check Kubernetes corev1.Service documentation about semantic of this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
@@ -1879,6 +1905,17 @@ pub struct ScyllaClusterNetwork {
     /// hostNetworking determines if scylla uses the host's network namespace. Setting this option avoids going through Kubernetes SDN and exposes scylla on node's IP.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworking")]
     pub host_networking: Option<bool>,
+}
+
+/// podMetadata controls shared metadata for all pods created based on this spec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScyllaClusterPodMetadata {
+    /// annotations is a custom key value map that gets merged with managed object annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// labels is a custom key value map that gets merged with managed object labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

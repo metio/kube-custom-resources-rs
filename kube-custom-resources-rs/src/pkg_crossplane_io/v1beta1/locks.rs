@@ -8,7 +8,8 @@ use serde::{Serialize, Deserialize};
 /// LockPackage is a package that is in the lock.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LockPackages {
-    /// Dependencies are the list of dependencies of this package. The order of the dependencies will dictate the order in which they are resolved.
+    /// Dependencies are the list of dependencies of this package. The order of
+    /// the dependencies will dictate the order in which they are resolved.
     pub dependencies: Vec<LockPackagesDependencies>,
     /// Name corresponds to the name of the package revision for this package.
     pub name: String,
@@ -24,7 +25,8 @@ pub struct LockPackages {
 /// A Dependency is a dependency of a package in the lock.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LockPackagesDependencies {
-    /// Constraints is a valid semver range, which will be used to select a valid dependency version.
+    /// Constraints is a valid semver range, which will be used to select a valid
+    /// dependency version.
     pub constraints: String,
     /// Package is the OCI image name without a tag or digest.
     pub package: String,

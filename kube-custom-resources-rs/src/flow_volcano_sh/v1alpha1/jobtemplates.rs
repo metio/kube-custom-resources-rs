@@ -421,9 +421,15 @@ pub struct JobTemplateTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedul
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
+    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<JobTemplateTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<JobTemplateTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
@@ -435,7 +441,7 @@ pub struct JobTemplateTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedul
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
+/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -484,9 +490,15 @@ pub struct JobTemplateTasksTemplateSpecAffinityPodAffinityPreferredDuringSchedul
 /// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
+    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<JobTemplateTasksTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<JobTemplateTasksTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
@@ -498,7 +510,7 @@ pub struct JobTemplateTasksTemplateSpecAffinityPodAffinityRequiredDuringScheduli
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
+/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -568,9 +580,15 @@ pub struct JobTemplateTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSch
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
+    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<JobTemplateTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<JobTemplateTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
@@ -582,7 +600,7 @@ pub struct JobTemplateTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSch
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
+/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -631,9 +649,15 @@ pub struct JobTemplateTasksTemplateSpecAffinityPodAntiAffinityPreferredDuringSch
 /// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
+    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<JobTemplateTasksTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<JobTemplateTasksTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
@@ -645,7 +669,7 @@ pub struct JobTemplateTasksTemplateSpecAffinityPodAntiAffinityRequiredDuringSche
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
+/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -732,6 +756,9 @@ pub struct JobTemplateTasksTemplateSpecContainers {
     /// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JobTemplateTasksTemplateSpecContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTemplateTasksTemplateSpecContainersSecurityContext>,
@@ -900,6 +927,9 @@ pub struct JobTemplateTasksTemplateSpecContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTemplateTasksTemplateSpecContainersLifecyclePostStartHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTemplateTasksTemplateSpecContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTemplateTasksTemplateSpecContainersLifecyclePostStartTcpSocket>,
@@ -941,6 +971,13 @@ pub struct JobTemplateTasksTemplateSpecContainersLifecyclePostStartHttpGetHttpHe
     pub value: String,
 }
 
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecContainersLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecContainersLifecyclePostStartTcpSocket {
@@ -960,6 +997,9 @@ pub struct JobTemplateTasksTemplateSpecContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTemplateTasksTemplateSpecContainersLifecyclePreStopHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTemplateTasksTemplateSpecContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTemplateTasksTemplateSpecContainersLifecyclePreStopTcpSocket>,
@@ -999,6 +1039,13 @@ pub struct JobTemplateTasksTemplateSpecContainersLifecyclePreStopHttpGetHttpHead
     pub name: String,
     /// The header field value
     pub value: String,
+}
+
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecContainersLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -1318,7 +1365,7 @@ pub struct JobTemplateTasksTemplateSpecContainersSecurityContextSeLinuxOptions {
 /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied. Valid options are: 
@@ -1336,7 +1383,7 @@ pub struct JobTemplateTasksTemplateSpecContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
@@ -1534,6 +1581,9 @@ pub struct JobTemplateTasksTemplateSpecEphemeralContainers {
     /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JobTemplateTasksTemplateSpecEphemeralContainersResources>,
+    /// Restart policy for the container to manage the restart behavior of each container within a pod. This may only be set for init containers. You cannot set this field on ephemeral containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     /// Optional: SecurityContext defines the security options the ephemeral container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTemplateTasksTemplateSpecEphemeralContainersSecurityContext>,
@@ -1706,6 +1756,9 @@ pub struct JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePostStartHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket>,
@@ -1747,6 +1800,13 @@ pub struct JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePostStartHttp
     pub value: String,
 }
 
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket {
@@ -1766,6 +1826,9 @@ pub struct JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePreStopHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket>,
@@ -1805,6 +1868,13 @@ pub struct JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePreStopHttpGe
     pub name: String,
     /// The header field value
     pub value: String,
+}
+
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecEphemeralContainersLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -2124,7 +2194,7 @@ pub struct JobTemplateTasksTemplateSpecEphemeralContainersSecurityContextSeLinux
 /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecEphemeralContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied. Valid options are: 
@@ -2142,7 +2212,7 @@ pub struct JobTemplateTasksTemplateSpecEphemeralContainersSecurityContextWindows
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
@@ -2334,6 +2404,9 @@ pub struct JobTemplateTasksTemplateSpecInitContainers {
     /// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JobTemplateTasksTemplateSpecInitContainersResources>,
+    /// RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTemplateTasksTemplateSpecInitContainersSecurityContext>,
@@ -2502,6 +2575,9 @@ pub struct JobTemplateTasksTemplateSpecInitContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTemplateTasksTemplateSpecInitContainersLifecyclePostStartHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTemplateTasksTemplateSpecInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTemplateTasksTemplateSpecInitContainersLifecyclePostStartTcpSocket>,
@@ -2543,6 +2619,13 @@ pub struct JobTemplateTasksTemplateSpecInitContainersLifecyclePostStartHttpGetHt
     pub value: String,
 }
 
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecInitContainersLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecInitContainersLifecyclePostStartTcpSocket {
@@ -2562,6 +2645,9 @@ pub struct JobTemplateTasksTemplateSpecInitContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<JobTemplateTasksTemplateSpecInitContainersLifecyclePreStopHttpGet>,
+    /// Sleep represents the duration that the container should sleep before being terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<JobTemplateTasksTemplateSpecInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<JobTemplateTasksTemplateSpecInitContainersLifecyclePreStopTcpSocket>,
@@ -2601,6 +2687,13 @@ pub struct JobTemplateTasksTemplateSpecInitContainersLifecyclePreStopHttpGetHttp
     pub name: String,
     /// The header field value
     pub value: String,
+}
+
+/// Sleep represents the duration that the container should sleep before being terminated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecInitContainersLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
@@ -2920,7 +3013,7 @@ pub struct JobTemplateTasksTemplateSpecInitContainersSecurityContextSeLinuxOptio
 /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecInitContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied. Valid options are: 
@@ -2938,7 +3031,7 @@ pub struct JobTemplateTasksTemplateSpecInitContainersSecurityContextWindowsOptio
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
@@ -3104,8 +3197,7 @@ pub struct JobTemplateTasksTemplateSpecResourceClaimsSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate object in the same namespace as this pod. 
-    ///  The template will be used to create a new ResourceClaim, which will be bound to this pod. When this pod is deleted, the ResourceClaim will also be deleted. The name of the ResourceClaim will be <pod name>-<resource name>, where <resource name> is the PodResourceClaim.Name. Pod validation will reject the pod if the concatenated name is not valid for a ResourceClaim (e.g. too long). 
-    ///  An existing ResourceClaim with that name that is not owned by the pod will not be used for the pod to avoid using an unrelated resource by mistake. Scheduling and pod startup are then blocked until the unrelated ResourceClaim is removed. 
+    ///  The template will be used to create a new ResourceClaim, which will be bound to this pod. When this pod is deleted, the ResourceClaim will also be deleted. The pod name and resource name, along with a generated component, will be used to form a unique name for the ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses. 
     ///  This field is immutable and no changes will be made to the corresponding ResourceClaim by the control plane after creating the ResourceClaim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
@@ -3175,7 +3267,7 @@ pub struct JobTemplateTasksTemplateSpecSecurityContextSeLinuxOptions {
 /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied. Valid options are: 
@@ -3202,7 +3294,7 @@ pub struct JobTemplateTasksTemplateSpecSecurityContextWindowsOptions {
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
@@ -3676,6 +3768,9 @@ pub struct JobTemplateTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
     /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim. If specified, the CSI driver will create or update the volume with the attributes defined in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName, it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass will be applied to the claim but it's not allowed to reset this field to empty string once it is set. If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass will be set by the persistentvolume controller if it exists. If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource exists. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -3714,24 +3809,12 @@ pub struct JobTemplateTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDa
 /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<JobTemplateTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JobTemplateTasksTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -3973,6 +4056,12 @@ pub struct JobTemplateTasksTemplateSpecVolumesProjected {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecVolumesProjectedSources {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field of ClusterTrustBundle objects in an auto-updating file. 
+    ///  Alpha, gated by the ClusterTrustBundleProjection feature gate. 
+    ///  ClusterTrustBundle objects can either be selected by name, or by the combination of signer name and a label selector. 
+    ///  Kubelet performs aggressive normalization of the PEM contents written into the pod filesystem.  Esoteric PEM features such as inter-block comments and block headers are stripped.  Certificates are deduplicated. The ordering of certificates within the file is arbitrary, and Kubelet may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<JobTemplateTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<JobTemplateTasksTemplateSpecVolumesProjectedSourcesConfigMap>,
@@ -3985,6 +4074,51 @@ pub struct JobTemplateTasksTemplateSpecVolumesProjectedSources {
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<JobTemplateTasksTemplateSpecVolumesProjectedSourcesServiceAccountToken>,
+}
+
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field of ClusterTrustBundle objects in an auto-updating file. 
+///  Alpha, gated by the ClusterTrustBundleProjection feature gate. 
+///  ClusterTrustBundle objects can either be selected by name, or by the combination of signer name and a label selector. 
+///  Kubelet performs aggressive normalization of the PEM contents written into the pod filesystem.  Esoteric PEM features such as inter-block comments and block headers are stripped.  Certificates are deduplicated. The ordering of certificates within the file is arbitrary, and Kubelet may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has effect if signerName is set.  Mutually-exclusive with name.  If unset, interpreted as "match nothing".  If set but empty, interpreted as "match everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<JobTemplateTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available.  If using name, then the named ClusterTrustBundle is allowed not to exist.  If using signerName, then the combination of signerName and labelSelector is allowed to match zero ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name.  The contents of all selected ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has effect if signerName is set.  Mutually-exclusive with name.  If unset, interpreted as "match nothing".  If set but empty, interpreted as "match everything".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<JobTemplateTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// configMap information about the configMap data to project
@@ -4306,6 +4440,9 @@ pub struct JobTemplateVolumesVolumeClaim {
     /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim. If specified, the CSI driver will create or update the volume with the attributes defined in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName, it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass will be applied to the claim but it's not allowed to reset this field to empty string once it is set. If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass will be set by the persistentvolume controller if it exists. If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource exists. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -4344,24 +4481,12 @@ pub struct JobTemplateVolumesVolumeClaimDataSourceRef {
 /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateVolumesVolumeClaimResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<JobTemplateVolumesVolumeClaimResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JobTemplateVolumesVolumeClaimResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.

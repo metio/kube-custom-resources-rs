@@ -10,21 +10,31 @@ use serde::{Serialize, Deserialize};
 #[kube(group = "secrets.crossplane.io", version = "v1alpha1", kind = "StoreConfig", plural = "storeconfigs")]
 #[kube(schema = "disabled")]
 pub struct StoreConfigSpec {
-    /// DefaultScope used for scoping secrets for "cluster-scoped" resources. If store type is "Kubernetes", this would mean the default namespace to store connection secrets for cluster scoped resources. In case of "Vault", this would be used as the default parent path. Typically, should be set as Crossplane installation namespace.
+    /// DefaultScope used for scoping secrets for "cluster-scoped" resources.
+    /// If store type is "Kubernetes", this would mean the default namespace to
+    /// store connection secrets for cluster scoped resources.
+    /// In case of "Vault", this would be used as the default parent path.
+    /// Typically, should be set as Crossplane installation namespace.
     #[serde(rename = "defaultScope")]
     pub default_scope: String,
-    /// Kubernetes configures a Kubernetes secret store. If the "type" is "Kubernetes" but no config provided, in cluster config will be used.
+    /// Kubernetes configures a Kubernetes secret store.
+    /// If the "type" is "Kubernetes" but no config provided, in cluster config
+    /// will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<StoreConfigKubernetes>,
     /// Plugin configures External secret store as a plugin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugin: Option<StoreConfigPlugin>,
-    /// Type configures which secret store to be used. Only the configuration block for this store will be used and others will be ignored if provided. Default is Kubernetes.
+    /// Type configures which secret store to be used. Only the configuration
+    /// block for this store will be used and others will be ignored if provided.
+    /// Default is Kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<StoreConfigType>,
 }
 
-/// Kubernetes configures a Kubernetes secret store. If the "type" is "Kubernetes" but no config provided, in cluster config will be used.
+/// Kubernetes configures a Kubernetes secret store.
+/// If the "type" is "Kubernetes" but no config provided, in cluster config
+/// will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct StoreConfigKubernetes {
     /// Credentials used to connect to the Kubernetes API.
@@ -34,34 +44,40 @@ pub struct StoreConfigKubernetes {
 /// Credentials used to connect to the Kubernetes API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct StoreConfigKubernetesAuth {
-    /// Env is a reference to an environment variable that contains credentials that must be used to connect to the provider.
+    /// Env is a reference to an environment variable that contains credentials
+    /// that must be used to connect to the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<StoreConfigKubernetesAuthEnv>,
-    /// Fs is a reference to a filesystem location that contains credentials that must be used to connect to the provider.
+    /// Fs is a reference to a filesystem location that contains credentials that
+    /// must be used to connect to the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fs: Option<StoreConfigKubernetesAuthFs>,
-    /// A SecretRef is a reference to a secret key that contains the credentials that must be used to connect to the provider.
+    /// A SecretRef is a reference to a secret key that contains the credentials
+    /// that must be used to connect to the provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<StoreConfigKubernetesAuthSecretRef>,
     /// Source of the credentials.
     pub source: StoreConfigKubernetesAuthSource,
 }
 
-/// Env is a reference to an environment variable that contains credentials that must be used to connect to the provider.
+/// Env is a reference to an environment variable that contains credentials
+/// that must be used to connect to the provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct StoreConfigKubernetesAuthEnv {
     /// Name is the name of an environment variable.
     pub name: String,
 }
 
-/// Fs is a reference to a filesystem location that contains credentials that must be used to connect to the provider.
+/// Fs is a reference to a filesystem location that contains credentials that
+/// must be used to connect to the provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct StoreConfigKubernetesAuthFs {
     /// Path is a filesystem path.
     pub path: String,
 }
 
-/// A SecretRef is a reference to a secret key that contains the credentials that must be used to connect to the provider.
+/// A SecretRef is a reference to a secret key that contains the credentials
+/// that must be used to connect to the provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct StoreConfigKubernetesAuthSecretRef {
     /// The key to select.

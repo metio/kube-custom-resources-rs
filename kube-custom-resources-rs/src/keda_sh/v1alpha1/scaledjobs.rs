@@ -43,72 +43,196 @@ pub struct ScaledJobSpec {
 /// JobSpec describes how the job execution will look like.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRef {
-    /// Specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it; value must be positive integer. If a Job is suspended (at creation or through an update), this timer will effectively be stopped and reset when the Job is resumed again.
+    /// Specifies the duration in seconds relative to the startTime that the job
+    /// may be continuously active before the system tries to terminate it; value
+    /// must be positive integer. If a Job is suspended (at creation or through an
+    /// update), this timer will effectively be stopped and reset when the Job is
+    /// resumed again.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
-    /// Specifies the number of retries before marking this job failed. Defaults to 6
+    /// Specifies the number of retries before marking this job failed.
+    /// Defaults to 6
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
-    /// Specifies the limit for the number of retries within an index before marking this index as failed. When enabled the number of failures per index is kept in the pod's batch.kubernetes.io/job-index-failure-count annotation. It can only be set when Job's completionMode=Indexed, and the Pod's restart policy is Never. The field is immutable. This field is alpha-level. It can be used when the `JobBackoffLimitPerIndex` feature gate is enabled (disabled by default).
+    /// Specifies the limit for the number of retries within an
+    /// index before marking this index as failed. When enabled the number of
+    /// failures per index is kept in the pod's
+    /// batch.kubernetes.io/job-index-failure-count annotation. It can only
+    /// be set when Job's completionMode=Indexed, and the Pod's restart
+    /// policy is Never. The field is immutable.
+    /// This field is alpha-level. It can be used when the `JobBackoffLimitPerIndex`
+    /// feature gate is enabled (disabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimitPerIndex")]
     pub backoff_limit_per_index: Option<i32>,
-    /// completionMode specifies how Pod completions are tracked. It can be `NonIndexed` (default) or `Indexed`. 
-    ///  `NonIndexed` means that the Job is considered complete when there have been .spec.completions successfully completed Pods. Each Pod completion is homologous to each other. 
-    ///  `Indexed` means that the Pods of a Job get an associated completion index from 0 to (.spec.completions - 1), available in the annotation batch.kubernetes.io/job-completion-index. The Job is considered complete when there is one successfully completed Pod for each index. When value is `Indexed`, .spec.completions must be specified and `.spec.parallelism` must be less than or equal to 10^5. In addition, The Pod name takes the form `$(job-name)-$(index)-$(random-string)`, the Pod hostname takes the form `$(job-name)-$(index)`. 
-    ///  More completion modes can be added in the future. If the Job controller observes a mode that it doesn't recognize, which is possible during upgrades due to version skew, the controller skips updates for the Job.
+    /// completionMode specifies how Pod completions are tracked. It can be
+    /// `NonIndexed` (default) or `Indexed`.
+    /// 
+    /// 
+    /// `NonIndexed` means that the Job is considered complete when there have
+    /// been .spec.completions successfully completed Pods. Each Pod completion is
+    /// homologous to each other.
+    /// 
+    /// 
+    /// `Indexed` means that the Pods of a
+    /// Job get an associated completion index from 0 to (.spec.completions - 1),
+    /// available in the annotation batch.kubernetes.io/job-completion-index.
+    /// The Job is considered complete when there is one successfully completed Pod
+    /// for each index.
+    /// When value is `Indexed`, .spec.completions must be specified and
+    /// `.spec.parallelism` must be less than or equal to 10^5.
+    /// In addition, The Pod name takes the form
+    /// `$(job-name)-$(index)-$(random-string)`,
+    /// the Pod hostname takes the form `$(job-name)-$(index)`.
+    /// 
+    /// 
+    /// More completion modes can be added in the future.
+    /// If the Job controller observes a mode that it doesn't recognize, which
+    /// is possible during upgrades due to version skew, the controller
+    /// skips updates for the Job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionMode")]
     pub completion_mode: Option<String>,
-    /// Specifies the desired number of successfully finished pods the job should be run with.  Setting to null means that the success of any pod signals the success of all pods, and allows parallelism to have any positive value.  Setting to 1 means that parallelism is limited to 1 and the success of that pod signals the success of the job. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+    /// Specifies the desired number of successfully finished pods the
+    /// job should be run with.  Setting to null means that the success of any
+    /// pod signals the success of all pods, and allows parallelism to have any positive
+    /// value.  Setting to 1 means that parallelism is limited to 1 and the success of that
+    /// pod signals the success of the job.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completions: Option<i32>,
-    /// manualSelector controls generation of pod labels and pod selectors. Leave `manualSelector` unset unless you are certain what you are doing. When false or unset, the system pick labels unique to this job and appends those labels to the pod template.  When true, the user is responsible for picking unique labels and specifying the selector.  Failure to pick a unique label may cause this and other jobs to not function correctly.  However, You may see `manualSelector=true` in jobs that were created with the old `extensions/v1beta1` API. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#specifying-your-own-pod-selector
+    /// manualSelector controls generation of pod labels and pod selectors.
+    /// Leave `manualSelector` unset unless you are certain what you are doing.
+    /// When false or unset, the system pick labels unique to this job
+    /// and appends those labels to the pod template.  When true,
+    /// the user is responsible for picking unique labels and specifying
+    /// the selector.  Failure to pick a unique label may cause this
+    /// and other jobs to not function correctly.  However, You may see
+    /// `manualSelector=true` in jobs that were created with the old `extensions/v1beta1`
+    /// API.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#specifying-your-own-pod-selector
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "manualSelector")]
     pub manual_selector: Option<bool>,
-    /// Specifies the maximal number of failed indexes before marking the Job as failed, when backoffLimitPerIndex is set. Once the number of failed indexes exceeds this number the entire Job is marked as Failed and its execution is terminated. When left as null the job continues execution of all of its indexes and is marked with the `Complete` Job condition. It can only be specified when backoffLimitPerIndex is set. It can be null or up to completions. It is required and must be less than or equal to 10^4 when is completions greater than 10^5. This field is alpha-level. It can be used when the `JobBackoffLimitPerIndex` feature gate is enabled (disabled by default).
+    /// Specifies the maximal number of failed indexes before marking the Job as
+    /// failed, when backoffLimitPerIndex is set. Once the number of failed
+    /// indexes exceeds this number the entire Job is marked as Failed and its
+    /// execution is terminated. When left as null the job continues execution of
+    /// all of its indexes and is marked with the `Complete` Job condition.
+    /// It can only be specified when backoffLimitPerIndex is set.
+    /// It can be null or up to completions. It is required and must be
+    /// less than or equal to 10^4 when is completions greater than 10^5.
+    /// This field is alpha-level. It can be used when the `JobBackoffLimitPerIndex`
+    /// feature gate is enabled (disabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxFailedIndexes")]
     pub max_failed_indexes: Option<i32>,
-    /// Specifies the maximum desired number of pods the job should run at any given time. The actual number of pods running in steady state will be less than this number when ((.spec.completions - .status.successful) < .spec.parallelism), i.e. when the work left to do is less than max parallelism. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+    /// Specifies the maximum desired number of pods the job should
+    /// run at any given time. The actual number of pods running in steady state will
+    /// be less than this number when ((.spec.completions - .status.successful) < .spec.parallelism),
+    /// i.e. when the work left to do is less than max parallelism.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallelism: Option<i32>,
-    /// Specifies the policy of handling failed pods. In particular, it allows to specify the set of actions and conditions which need to be satisfied to take the associated action. If empty, the default behaviour applies - the counter of failed pods, represented by the jobs's .status.failed field, is incremented and it is checked against the backoffLimit. This field cannot be used in combination with restartPolicy=OnFailure. 
-    ///  This field is beta-level. It can be used when the `JobPodFailurePolicy` feature gate is enabled (enabled by default).
+    /// Specifies the policy of handling failed pods. In particular, it allows to
+    /// specify the set of actions and conditions which need to be
+    /// satisfied to take the associated action.
+    /// If empty, the default behaviour applies - the counter of failed pods,
+    /// represented by the jobs's .status.failed field, is incremented and it is
+    /// checked against the backoffLimit. This field cannot be used in combination
+    /// with restartPolicy=OnFailure.
+    /// 
+    /// 
+    /// This field is beta-level. It can be used when the `JobPodFailurePolicy`
+    /// feature gate is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podFailurePolicy")]
     pub pod_failure_policy: Option<ScaledJobJobTargetRefPodFailurePolicy>,
-    /// podReplacementPolicy specifies when to create replacement Pods. Possible values are: - TerminatingOrFailed means that we recreate pods when they are terminating (has a metadata.deletionTimestamp) or failed. - Failed means to wait until a previously created Pod is fully terminated (has phase Failed or Succeeded) before creating a replacement Pod. 
-    ///  When using podFailurePolicy, Failed is the the only allowed value. TerminatingOrFailed and Failed are allowed values when podFailurePolicy is not in use. This is an alpha field. Enable JobPodReplacementPolicy to be able to use this field.
+    /// podReplacementPolicy specifies when to create replacement Pods.
+    /// Possible values are:
+    /// - TerminatingOrFailed means that we recreate pods
+    ///   when they are terminating (has a metadata.deletionTimestamp) or failed.
+    /// - Failed means to wait until a previously created Pod is fully terminated (has phase
+    ///   Failed or Succeeded) before creating a replacement Pod.
+    /// 
+    /// 
+    /// When using podFailurePolicy, Failed is the the only allowed value.
+    /// TerminatingOrFailed and Failed are allowed values when podFailurePolicy is not in use.
+    /// This is an alpha field. Enable JobPodReplacementPolicy to be able to use this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podReplacementPolicy")]
     pub pod_replacement_policy: Option<String>,
-    /// A label query over pods that should match the pod count. Normally, the system sets this field for you. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+    /// A label query over pods that should match the pod count.
+    /// Normally, the system sets this field for you.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ScaledJobJobTargetRefSelector>,
-    /// suspend specifies whether the Job controller should create Pods or not. If a Job is created with suspend set to true, no Pods are created by the Job controller. If a Job is suspended after creation (i.e. the flag goes from false to true), the Job controller will delete all active Pods associated with this Job. Users must design their workload to gracefully handle this. Suspending a Job will reset the StartTime field of the Job, effectively resetting the ActiveDeadlineSeconds timer too. Defaults to false.
+    /// suspend specifies whether the Job controller should create Pods or not. If
+    /// a Job is created with suspend set to true, no Pods are created by the Job
+    /// controller. If a Job is suspended after creation (i.e. the flag goes from
+    /// false to true), the Job controller will delete all active Pods associated
+    /// with this Job. Users must design their workload to gracefully handle this.
+    /// Suspending a Job will reset the StartTime field of the Job, effectively
+    /// resetting the ActiveDeadlineSeconds timer too. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
-    /// Describes the pod that will be created when executing a job. The only allowed template.spec.restartPolicy values are "Never" or "OnFailure". More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+    /// Describes the pod that will be created when executing a job.
+    /// The only allowed template.spec.restartPolicy values are "Never" or "OnFailure".
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
     pub template: ScaledJobJobTargetRefTemplate,
-    /// ttlSecondsAfterFinished limits the lifetime of a Job that has finished execution (either Complete or Failed). If this field is set, ttlSecondsAfterFinished after the Job finishes, it is eligible to be automatically deleted. When the Job is being deleted, its lifecycle guarantees (e.g. finalizers) will be honored. If this field is unset, the Job won't be automatically deleted. If this field is set to zero, the Job becomes eligible to be deleted immediately after it finishes.
+    /// ttlSecondsAfterFinished limits the lifetime of a Job that has finished
+    /// execution (either Complete or Failed). If this field is set,
+    /// ttlSecondsAfterFinished after the Job finishes, it is eligible to be
+    /// automatically deleted. When the Job is being deleted, its lifecycle
+    /// guarantees (e.g. finalizers) will be honored. If this field is unset,
+    /// the Job won't be automatically deleted. If this field is set to zero,
+    /// the Job becomes eligible to be deleted immediately after it finishes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i32>,
 }
 
-/// Specifies the policy of handling failed pods. In particular, it allows to specify the set of actions and conditions which need to be satisfied to take the associated action. If empty, the default behaviour applies - the counter of failed pods, represented by the jobs's .status.failed field, is incremented and it is checked against the backoffLimit. This field cannot be used in combination with restartPolicy=OnFailure. 
-///  This field is beta-level. It can be used when the `JobPodFailurePolicy` feature gate is enabled (enabled by default).
+/// Specifies the policy of handling failed pods. In particular, it allows to
+/// specify the set of actions and conditions which need to be
+/// satisfied to take the associated action.
+/// If empty, the default behaviour applies - the counter of failed pods,
+/// represented by the jobs's .status.failed field, is incremented and it is
+/// checked against the backoffLimit. This field cannot be used in combination
+/// with restartPolicy=OnFailure.
+/// 
+/// 
+/// This field is beta-level. It can be used when the `JobPodFailurePolicy`
+/// feature gate is enabled (enabled by default).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefPodFailurePolicy {
-    /// A list of pod failure policy rules. The rules are evaluated in order. Once a rule matches a Pod failure, the remaining of the rules are ignored. When no rule matches the Pod failure, the default handling applies - the counter of pod failures is incremented and it is checked against the backoffLimit. At most 20 elements are allowed.
+    /// A list of pod failure policy rules. The rules are evaluated in order.
+    /// Once a rule matches a Pod failure, the remaining of the rules are ignored.
+    /// When no rule matches the Pod failure, the default handling applies - the
+    /// counter of pod failures is incremented and it is checked against
+    /// the backoffLimit. At most 20 elements are allowed.
     pub rules: Vec<ScaledJobJobTargetRefPodFailurePolicyRules>,
 }
 
-/// PodFailurePolicyRule describes how a pod failure is handled when the requirements are met. One of onExitCodes and onPodConditions, but not both, can be used in each rule.
+/// PodFailurePolicyRule describes how a pod failure is handled when the requirements are met.
+/// One of onExitCodes and onPodConditions, but not both, can be used in each rule.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefPodFailurePolicyRules {
-    /// Specifies the action taken on a pod failure when the requirements are satisfied. Possible values are: 
-    ///  - FailJob: indicates that the pod's job is marked as Failed and all running pods are terminated. - FailIndex: indicates that the pod's index is marked as Failed and will not be restarted. This value is alpha-level. It can be used when the `JobBackoffLimitPerIndex` feature gate is enabled (disabled by default). - Ignore: indicates that the counter towards the .backoffLimit is not incremented and a replacement pod is created. - Count: indicates that the pod is handled in the default way - the counter towards the .backoffLimit is incremented. Additional values are considered to be added in the future. Clients should react to an unknown action by skipping the rule.
+    /// Specifies the action taken on a pod failure when the requirements are satisfied.
+    /// Possible values are:
+    /// 
+    /// 
+    /// - FailJob: indicates that the pod's job is marked as Failed and all
+    ///   running pods are terminated.
+    /// - FailIndex: indicates that the pod's index is marked as Failed and will
+    ///   not be restarted.
+    ///   This value is alpha-level. It can be used when the
+    ///   `JobBackoffLimitPerIndex` feature gate is enabled (disabled by default).
+    /// - Ignore: indicates that the counter towards the .backoffLimit is not
+    ///   incremented and a replacement pod is created.
+    /// - Count: indicates that the pod is handled in the default way - the
+    ///   counter towards the .backoffLimit is incremented.
+    /// Additional values are considered to be added in the future. Clients should
+    /// react to an unknown action by skipping the rule.
     pub action: String,
     /// Represents the requirement on the container exit codes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onExitCodes")]
     pub on_exit_codes: Option<ScaledJobJobTargetRefPodFailurePolicyRulesOnExitCodes>,
-    /// Represents the requirement on the pod conditions. The requirement is represented as a list of pod condition patterns. The requirement is satisfied if at least one pattern matches an actual pod condition. At most 20 elements are allowed.
+    /// Represents the requirement on the pod conditions. The requirement is represented
+    /// as a list of pod condition patterns. The requirement is satisfied if at
+    /// least one pattern matches an actual pod condition. At most 20 elements are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onPodConditions")]
     pub on_pod_conditions: Option<Vec<ScaledJobJobTargetRefPodFailurePolicyRulesOnPodConditions>>,
 }
@@ -116,69 +240,108 @@ pub struct ScaledJobJobTargetRefPodFailurePolicyRules {
 /// Represents the requirement on the container exit codes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefPodFailurePolicyRulesOnExitCodes {
-    /// Restricts the check for exit codes to the container with the specified name. When null, the rule applies to all containers. When specified, it should match one the container or initContainer names in the pod template.
+    /// Restricts the check for exit codes to the container with the
+    /// specified name. When null, the rule applies to all containers.
+    /// When specified, it should match one the container or initContainer
+    /// names in the pod template.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Represents the relationship between the container exit code(s) and the specified values. Containers completed with success (exit code 0) are excluded from the requirement check. Possible values are: 
-    ///  - In: the requirement is satisfied if at least one container exit code (might be multiple if there are multiple containers not restricted by the 'containerName' field) is in the set of specified values. - NotIn: the requirement is satisfied if at least one container exit code (might be multiple if there are multiple containers not restricted by the 'containerName' field) is not in the set of specified values. Additional values are considered to be added in the future. Clients should react to an unknown operator by assuming the requirement is not satisfied.
+    /// Represents the relationship between the container exit code(s) and the
+    /// specified values. Containers completed with success (exit code 0) are
+    /// excluded from the requirement check. Possible values are:
+    /// 
+    /// 
+    /// - In: the requirement is satisfied if at least one container exit code
+    ///   (might be multiple if there are multiple containers not restricted
+    ///   by the 'containerName' field) is in the set of specified values.
+    /// - NotIn: the requirement is satisfied if at least one container exit code
+    ///   (might be multiple if there are multiple containers not restricted
+    ///   by the 'containerName' field) is not in the set of specified values.
+    /// Additional values are considered to be added in the future. Clients should
+    /// react to an unknown operator by assuming the requirement is not satisfied.
     pub operator: String,
-    /// Specifies the set of values. Each returned container exit code (might be multiple in case of multiple containers) is checked against this set of values with respect to the operator. The list of values must be ordered and must not contain duplicates. Value '0' cannot be used for the In operator. At least one element is required. At most 255 elements are allowed.
+    /// Specifies the set of values. Each returned container exit code (might be
+    /// multiple in case of multiple containers) is checked against this set of
+    /// values with respect to the operator. The list of values must be ordered
+    /// and must not contain duplicates. Value '0' cannot be used for the In operator.
+    /// At least one element is required. At most 255 elements are allowed.
     pub values: Vec<i64>,
 }
 
-/// PodFailurePolicyOnPodConditionsPattern describes a pattern for matching an actual pod condition type.
+/// PodFailurePolicyOnPodConditionsPattern describes a pattern for matching
+/// an actual pod condition type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefPodFailurePolicyRulesOnPodConditions {
-    /// Specifies the required Pod condition status. To match a pod condition it is required that the specified status equals the pod condition status. Defaults to True.
+    /// Specifies the required Pod condition status. To match a pod condition
+    /// it is required that the specified status equals the pod condition status.
+    /// Defaults to True.
     pub status: String,
-    /// Specifies the required Pod condition type. To match a pod condition it is required that specified type equals the pod condition type.
+    /// Specifies the required Pod condition type. To match a pod condition
+    /// it is required that specified type equals the pod condition type.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// A label query over pods that should match the pod count. Normally, the system sets this field for you. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+/// A label query over pods that should match the pod count.
+/// Normally, the system sets this field for you.
+/// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Describes the pod that will be created when executing a job. The only allowed template.spec.restartPolicy values are "Never" or "OnFailure". More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+/// Describes the pod that will be created when executing a job.
+/// The only allowed template.spec.restartPolicy values are "Never" or "OnFailure".
+/// More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplate {
-    /// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+    /// Standard object's metadata.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ScaledJobJobTargetRefTemplateMetadata>,
-    /// Specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+    /// Specification of the desired behavior of the pod.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ScaledJobJobTargetRefTemplateSpec>,
 }
 
-/// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+/// Standard object's metadata.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateMetadata {
 }
 
-/// Specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+/// Specification of the desired behavior of the pod.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpec {
-    /// Optional duration in seconds the pod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.
+    /// Optional duration in seconds the pod may be active on the node relative to
+    /// StartTime before the system will actively try to mark it failed and kill associated containers.
+    /// Value must be a positive integer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// If specified, the pod's scheduling constraints
@@ -187,117 +350,255 @@ pub struct ScaledJobJobTargetRefTemplateSpec {
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
-    /// List of containers belonging to the pod. Containers cannot currently be added or removed. There must be at least one container in a Pod. Cannot be updated.
+    /// List of containers belonging to the pod.
+    /// Containers cannot currently be added or removed.
+    /// There must be at least one container in a Pod.
+    /// Cannot be updated.
     pub containers: Vec<ScaledJobJobTargetRefTemplateSpecContainers>,
-    /// Specifies the DNS parameters of a pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy.
+    /// Specifies the DNS parameters of a pod.
+    /// Parameters specified here will be merged to the generated DNS
+    /// configuration based on DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<ScaledJobJobTargetRefTemplateSpecDnsConfig>,
-    /// Set DNS policy for the pod. Defaults to "ClusterFirst". Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'. DNS parameters given in DNSConfig will be merged with the policy selected with DNSPolicy. To have DNS options set along with hostNetwork, you have to specify DNS policy explicitly to 'ClusterFirstWithHostNet'.
+    /// Set DNS policy for the pod.
+    /// Defaults to "ClusterFirst".
+    /// Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'.
+    /// DNS parameters given in DNSConfig will be merged with the policy selected with DNSPolicy.
+    /// To have DNS options set along with hostNetwork, you have to specify DNS policy
+    /// explicitly to 'ClusterFirstWithHostNet'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
-    /// EnableServiceLinks indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links. Optional: Defaults to true.
+    /// EnableServiceLinks indicates whether information about services should be injected into pod's
+    /// environment variables, matching the syntax of Docker links.
+    /// Optional: Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    /// List of ephemeral containers run in this pod. Ephemeral containers may be run in an existing pod to perform user-initiated actions such as debugging. This list cannot be specified when creating a pod, and it cannot be modified by updating the pod spec. In order to add an ephemeral container to an existing pod, use the pod's ephemeralcontainers subresource.
+    /// List of ephemeral containers run in this pod. Ephemeral containers may be run in an existing
+    /// pod to perform user-initiated actions such as debugging. This list cannot be specified when
+    /// creating a pod, and it cannot be modified by updating the pod spec. In order to add an
+    /// ephemeral container to an existing pod, use the pod's ephemeralcontainers subresource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
     pub ephemeral_containers: Option<Vec<ScaledJobJobTargetRefTemplateSpecEphemeralContainers>>,
-    /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts file if specified. This is only valid for non-hostNetwork pods.
+    /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
+    /// file if specified. This is only valid for non-hostNetwork pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<ScaledJobJobTargetRefTemplateSpecHostAliases>>,
-    /// Use the host's ipc namespace. Optional: Default to false.
+    /// Use the host's ipc namespace.
+    /// Optional: Default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIPC")]
     pub host_ipc: Option<bool>,
-    /// Host networking requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false.
+    /// Host networking requested for this pod. Use the host's network namespace.
+    /// If this option is set, the ports that will be used must be specified.
+    /// Default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
-    /// Use the host's pid namespace. Optional: Default to false.
+    /// Use the host's pid namespace.
+    /// Optional: Default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
     pub host_pid: Option<bool>,
-    /// Use the host's user namespace. Optional: Default to true. If set to true or not present, the pod will be run in the host user namespace, useful for when the pod needs a feature only available to the host user namespace, such as loading a kernel module with CAP_SYS_MODULE. When set to false, a new userns is created for the pod. Setting false is useful for mitigating container breakout vulnerabilities even allowing users to run their containers as root without actually having root privileges on the host. This field is alpha-level and is only honored by servers that enable the UserNamespacesSupport feature.
+    /// Use the host's user namespace.
+    /// Optional: Default to true.
+    /// If set to true or not present, the pod will be run in the host user namespace, useful
+    /// for when the pod needs a feature only available to the host user namespace, such as
+    /// loading a kernel module with CAP_SYS_MODULE.
+    /// When set to false, a new userns is created for the pod. Setting false is useful for
+    /// mitigating container breakout vulnerabilities even allowing users to run their
+    /// containers as root without actually having root privileges on the host.
+    /// This field is alpha-level and is only honored by servers that enable the UserNamespacesSupport feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
     pub host_users: Option<bool>,
-    /// Specifies the hostname of the Pod If not specified, the pod's hostname will be set to a system-defined value.
+    /// Specifies the hostname of the Pod
+    /// If not specified, the pod's hostname will be set to a system-defined value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
+    /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
+    /// If specified, these secrets will be passed to individual puller implementations for them to use.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ScaledJobJobTargetRefTemplateSpecImagePullSecrets>>,
-    /// List of initialization containers belonging to the pod. Init containers are executed in order prior to containers being started. If any init container fails, the pod is considered to have failed and is handled according to its restartPolicy. The name for an init container or normal container must be unique among all containers. Init containers may not have Lifecycle actions, Readiness probes, Liveness probes, or Startup probes. The resourceRequirements of an init container are taken into account during scheduling by finding the highest request/limit for each resource type, and then using the max of of that value or the sum of the normal containers. Limits are applied to init containers in a similar fashion. Init containers cannot currently be added or removed. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+    /// List of initialization containers belonging to the pod.
+    /// Init containers are executed in order prior to containers being started. If any
+    /// init container fails, the pod is considered to have failed and is handled according
+    /// to its restartPolicy. The name for an init container or normal container must be
+    /// unique among all containers.
+    /// Init containers may not have Lifecycle actions, Readiness probes, Liveness probes, or Startup probes.
+    /// The resourceRequirements of an init container are taken into account during scheduling
+    /// by finding the highest request/limit for each resource type, and then using the max of
+    /// of that value or the sum of the normal containers. Limits are applied to init containers
+    /// in a similar fashion.
+    /// Init containers cannot currently be added or removed.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainers>>,
-    /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty, the scheduler simply schedules this pod onto that node, assuming that it fits resource requirements.
+    /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty,
+    /// the scheduler simply schedules this pod onto that node, assuming that it fits resource
+    /// requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
-    /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    /// NodeSelector is a selector which must be true for the pod to fit on a node.
+    /// Selector which must match a node's labels for the pod to be scheduled on that node.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// Specifies the OS of the containers in the pod. Some pod and container fields are restricted if this is set. 
-    ///  If the OS field is set to linux, the following fields must be unset: -securityContext.windowsOptions 
-    ///  If the OS field is set to windows, following fields must be unset: - spec.hostPID - spec.hostIPC - spec.hostUsers - spec.securityContext.seLinuxOptions - spec.securityContext.seccompProfile - spec.securityContext.fsGroup - spec.securityContext.fsGroupChangePolicy - spec.securityContext.sysctls - spec.shareProcessNamespace - spec.securityContext.runAsUser - spec.securityContext.runAsGroup - spec.securityContext.supplementalGroups - spec.containers[*].securityContext.seLinuxOptions - spec.containers[*].securityContext.seccompProfile - spec.containers[*].securityContext.capabilities - spec.containers[*].securityContext.readOnlyRootFilesystem - spec.containers[*].securityContext.privileged - spec.containers[*].securityContext.allowPrivilegeEscalation - spec.containers[*].securityContext.procMount - spec.containers[*].securityContext.runAsUser - spec.containers[*].securityContext.runAsGroup
+    /// Specifies the OS of the containers in the pod.
+    /// Some pod and container fields are restricted if this is set.
+    /// 
+    /// 
+    /// If the OS field is set to linux, the following fields must be unset:
+    /// -securityContext.windowsOptions
+    /// 
+    /// 
+    /// If the OS field is set to windows, following fields must be unset:
+    /// - spec.hostPID
+    /// - spec.hostIPC
+    /// - spec.hostUsers
+    /// - spec.securityContext.seLinuxOptions
+    /// - spec.securityContext.seccompProfile
+    /// - spec.securityContext.fsGroup
+    /// - spec.securityContext.fsGroupChangePolicy
+    /// - spec.securityContext.sysctls
+    /// - spec.shareProcessNamespace
+    /// - spec.securityContext.runAsUser
+    /// - spec.securityContext.runAsGroup
+    /// - spec.securityContext.supplementalGroups
+    /// - spec.containers[*].securityContext.seLinuxOptions
+    /// - spec.containers[*].securityContext.seccompProfile
+    /// - spec.containers[*].securityContext.capabilities
+    /// - spec.containers[*].securityContext.readOnlyRootFilesystem
+    /// - spec.containers[*].securityContext.privileged
+    /// - spec.containers[*].securityContext.allowPrivilegeEscalation
+    /// - spec.containers[*].securityContext.procMount
+    /// - spec.containers[*].securityContext.runAsUser
+    /// - spec.containers[*].securityContext.runAsGroup
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub os: Option<ScaledJobJobTargetRefTemplateSpecOs>,
-    /// Overhead represents the resource overhead associated with running a pod for a given RuntimeClass. This field will be autopopulated at admission time by the RuntimeClass admission controller. If the RuntimeClass admission controller is enabled, overhead must not be set in Pod create requests. The RuntimeClass admission controller will reject Pod create requests which have the overhead already set. If RuntimeClass is configured and selected in the PodSpec, Overhead will be set to the value defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero. More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md
+    /// Overhead represents the resource overhead associated with running a pod for a given RuntimeClass.
+    /// This field will be autopopulated at admission time by the RuntimeClass admission controller. If
+    /// the RuntimeClass admission controller is enabled, overhead must not be set in Pod create requests.
+    /// The RuntimeClass admission controller will reject Pod create requests which have the overhead already
+    /// set. If RuntimeClass is configured and selected in the PodSpec, Overhead will be set to the value
+    /// defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero.
+    /// More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overhead: Option<BTreeMap<String, IntOrString>>,
-    /// PreemptionPolicy is the Policy for preempting pods with lower priority. One of Never, PreemptLowerPriority. Defaults to PreemptLowerPriority if unset.
+    /// PreemptionPolicy is the Policy for preempting pods with lower priority.
+    /// One of Never, PreemptLowerPriority.
+    /// Defaults to PreemptLowerPriority if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
-    /// The priority value. Various system components use this field to find the priority of the pod. When Priority Admission Controller is enabled, it prevents users from setting this field. The admission controller populates this field from PriorityClassName. The higher the value, the higher the priority.
+    /// The priority value. Various system components use this field to find the
+    /// priority of the pod. When Priority Admission Controller is enabled, it
+    /// prevents users from setting this field. The admission controller populates
+    /// this field from PriorityClassName.
+    /// The higher the value, the higher the priority.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    /// If specified, indicates the pod's priority. "system-node-critical" and "system-cluster-critical" are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default.
+    /// If specified, indicates the pod's priority. "system-node-critical" and
+    /// "system-cluster-critical" are two special keywords which indicate the
+    /// highest priorities with the former being the highest priority. Any other
+    /// name must be defined by creating a PriorityClass object with that name.
+    /// If not specified, the pod priority will be default or zero if there is no
+    /// default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// If specified, all readiness gates will be evaluated for pod readiness. A pod is ready when all its containers are ready AND all conditions specified in the readiness gates have status equal to "True" More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gates
+    /// If specified, all readiness gates will be evaluated for pod readiness.
+    /// A pod is ready when all its containers are ready AND
+    /// all conditions specified in the readiness gates have status equal to "True"
+    /// More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gates
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<ScaledJobJobTargetRefTemplateSpecReadinessGates>>,
-    /// ResourceClaims defines which ResourceClaims must be allocated and reserved before the Pod is allowed to start. The resources will be made available to those containers which consume them by name. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable.
+    /// ResourceClaims defines which ResourceClaims must be allocated
+    /// and reserved before the Pod is allowed to start. The resources
+    /// will be made available to those containers which consume them
+    /// by name.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<ScaledJobJobTargetRefTemplateSpecResourceClaims>>,
-    /// Restart policy for all containers within the pod. One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
+    /// Restart policy for all containers within the pod.
+    /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
+    /// Default to Always.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run. If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an empty definition that uses the default runtime handler. More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
+    /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used
+    /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
+    /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
+    /// empty definition that uses the default runtime handler.
+    /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
-    /// If specified, the pod will be dispatched by specified scheduler. If not specified, the pod will be dispatched by default scheduler.
+    /// If specified, the pod will be dispatched by specified scheduler.
+    /// If not specified, the pod will be dispatched by default scheduler.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod. If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the scheduler will not attempt to schedule the pod. 
-    ///  SchedulingGates can only be set at pod creation time, and be removed only afterwards. 
-    ///  This is a beta feature enabled by the PodSchedulingReadiness feature gate.
+    /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod.
+    /// If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the
+    /// scheduler will not attempt to schedule the pod.
+    /// 
+    /// 
+    /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
+    /// 
+    /// 
+    /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<ScaledJobJobTargetRefTemplateSpecSchedulingGates>>,
-    /// SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.
+    /// SecurityContext holds pod-level security attributes and common container settings.
+    /// Optional: Defaults to empty.  See type description for default values of each field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ScaledJobJobTargetRefTemplateSpecSecurityContext>,
-    /// DeprecatedServiceAccount is a depreciated alias for ServiceAccountName. Deprecated: Use serviceAccountName instead.
+    /// DeprecatedServiceAccount is a depreciated alias for ServiceAccountName.
+    /// Deprecated: Use serviceAccountName instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    /// ServiceAccountName is the name of the ServiceAccount to use to run this pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+    /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default). In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname). In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN. If a pod does not have FQDN, this has no effect. Default to false.
+    /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default).
+    /// In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname).
+    /// In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN.
+    /// If a pod does not have FQDN, this has no effect.
+    /// Default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
-    /// Share a single process namespace between all of the containers in a pod. When this is set containers will be able to view and signal processes from other containers in the same pod, and the first process in each container will not be assigned PID 1. HostPID and ShareProcessNamespace cannot both be set. Optional: Default to false.
+    /// Share a single process namespace between all of the containers in a pod.
+    /// When this is set containers will be able to view and signal processes from other containers
+    /// in the same pod, and the first process in each container will not be assigned PID 1.
+    /// HostPID and ShareProcessNamespace cannot both be set.
+    /// Optional: Default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
-    /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>". If not specified, the pod will not have a domainname at all.
+    /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>".
+    /// If not specified, the pod will not have a domainname at all.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subdomain: Option<String>,
-    /// Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. Defaults to 30 seconds.
+    /// Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// If this value is nil, the default grace period will be used instead.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ScaledJobJobTargetRefTemplateSpecTolerations>>,
-    /// TopologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed.
+    /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
+    /// domains. Scheduler will schedule pods in a way which abides by the constraints.
+    /// All topologySpreadConstraints are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraints>>,
-    /// List of volumes that can be mounted by containers belonging to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes
+    /// List of volumes that can be mounted by containers belonging to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ScaledJobJobTargetRefTemplateSpecVolumes>>,
 }
@@ -319,15 +620,28 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinity {
 /// Describes node affinity scheduling rules for the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
@@ -347,31 +661,47 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityPreferredDuringS
     pub match_fields: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
@@ -379,7 +709,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSc
     pub node_selector_terms: Vec<ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
@@ -390,26 +722,38 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSc
     pub match_fields: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -417,10 +761,24 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityNodeAffinityRequiredDuringSc
 /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
@@ -431,7 +789,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSc
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
     pub weight: i32,
 }
 
@@ -441,13 +800,24 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSc
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -458,59 +828,93 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSc
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -521,42 +925,60 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSch
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -564,10 +986,24 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSch
 /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the anti-affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    /// If the anti-affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the anti-affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
@@ -578,7 +1014,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuri
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
     pub weight: i32,
 }
 
@@ -588,13 +1025,24 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuri
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -605,59 +1053,93 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuri
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -668,42 +1150,60 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDurin
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -711,75 +1211,166 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDurin
 /// A single application container that you want to run within a pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainers {
-    /// Arguments to the entrypoint. The container image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Arguments to the entrypoint.
+    /// The container image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Entrypoint array. Not executed within a shell. The container image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Entrypoint array. Not executed within a shell.
+    /// The container image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// List of environment variables to set in the container. Cannot be updated.
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ScaledJobJobTargetRefTemplateSpecContainersEnv>>,
-    /// List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<ScaledJobJobTargetRefTemplateSpecContainersEnvFrom>>,
-    /// Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    /// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
+    /// Actions that the management system should take in response to container lifecycle events.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecycle>,
-    /// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Periodic probe of container liveness.
+    /// Container will be restarted if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ScaledJobJobTargetRefTemplateSpecContainersLivenessProbe>,
-    /// Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
+    /// Name of the container specified as a DNS_LABEL.
+    /// Each container in a pod must have a unique name (DNS_LABEL).
+    /// Cannot be updated.
     pub name: String,
-    /// List of ports to expose from the container. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Modifying this array with strategic merge patch may corrupt the data. For more information See https://github.com/kubernetes/kubernetes/issues/108255. Cannot be updated.
+    /// List of ports to expose from the container. Not specifying a port here
+    /// DOES NOT prevent that port from being exposed. Any port which is
+    /// listening on the default "0.0.0.0" address inside a container will be
+    /// accessible from the network.
+    /// Modifying this array with strategic merge patch may corrupt the data.
+    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ScaledJobJobTargetRefTemplateSpecContainersPorts>>,
-    /// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Periodic probe of container service readiness.
+    /// Container will be removed from service endpoints if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbe>,
     /// Resources resize policy for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ScaledJobJobTargetRefTemplateSpecContainersResizePolicy>>,
-    /// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Compute Resources required by this container.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ScaledJobJobTargetRefTemplateSpecContainersResources>,
-    /// RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed.
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    /// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    /// SecurityContext defines the security options the container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ScaledJobJobTargetRefTemplateSpecContainersSecurityContext>,
-    /// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// StartupProbe indicates that the Pod has successfully initialized.
+    /// If specified, no other probes are executed until this completes successfully.
+    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
+    /// This cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ScaledJobJobTargetRefTemplateSpecContainersStartupProbe>,
-    /// Whether this container should allocate a buffer for stdin in the container runtime. If this is not set, reads from stdin in the container will always result in EOF. Default is false.
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
-    /// Whether the container runtime should close the stdin channel after it has been opened by a single attach. When stdin is true the stdin stream will remain open across multiple attach sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the first client attaches to stdin, and then remains open and accepts data until the client disconnects, at which time stdin is closed and remains closed until the container is restarted. If this flag is false, a container processes that reads from stdin will never receive an EOF. Default is false
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    /// Optional: Path at which the file to which the container's termination message will be written is mounted into the container's filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    /// Indicate how the termination message should be populated. File will use the contents of terminationMessagePath to populate the container status message on both success and failure. FallbackToLogsOnError will use the last chunk of container log output if the termination message file is empty and the container exited with an error. The log output is limited to 2048 bytes or 80 lines, whichever is smaller. Defaults to File. Cannot be updated.
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
-    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true. Default is false.
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ScaledJobJobTargetRefTemplateSpecContainersVolumeDevices>>,
-    /// Pod volumes to mount into the container's filesystem. Cannot be updated.
+    /// Pod volumes to mount into the container's filesystem.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ScaledJobJobTargetRefTemplateSpecContainersVolumeMounts>>,
-    /// Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
@@ -789,7 +1380,15 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainers {
 pub struct ScaledJobJobTargetRefTemplateSpecContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -803,10 +1402,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -819,7 +1420,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFrom {
 pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -827,7 +1430,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromConfigMapKeyRe
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -838,7 +1442,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -856,7 +1461,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromResourceFieldR
 pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -881,7 +1488,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -892,7 +1501,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -900,18 +1511,33 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
+/// Actions that the management system should take in response to container lifecycle events.
+/// Cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecycle {
-    /// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStart>,
-    /// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStop>,
 }
 
-/// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStart {
     /// Exec specifies the action to take.
@@ -920,7 +1546,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartTcpSocket>,
 }
@@ -928,7 +1556,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStart {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -936,7 +1568,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartExec {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -945,9 +1578,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartHttpGet 
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -955,23 +1591,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartHttpGet 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStop {
     /// Exec specifies the action to take.
@@ -980,7 +1629,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopTcpSocket>,
 }
@@ -988,7 +1639,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStop {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -996,7 +1651,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopExec {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1005,9 +1661,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1015,29 +1674,38 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// Periodic probe of container liveness.
+/// Container will be restarted if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1046,22 +1714,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1069,7 +1751,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1079,8 +1765,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeExec {
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1088,7 +1777,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1097,9 +1787,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1107,7 +1800,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1119,37 +1813,50 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerPort represents a network port in a single container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersPorts {
-    /// Number of port to expose on the pod's IP address. This must be a valid port number, 0 < x < 65536.
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
     #[serde(rename = "containerPort")]
     pub container_port: i32,
     /// What host IP to bind the external port to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
     pub host_ip: Option<String>,
-    /// Number of port to expose on the host. If specified, this must be a valid port number, 0 < x < 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
     pub host_port: Option<i32>,
-    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each named port in a pod must have a unique name. Name for the port that can be referred to by services.
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Protocol for port. Must be UDP, TCP, or SCTP. Defaults to "TCP".
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
 
-/// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// Periodic probe of container service readiness.
+/// Container will be removed from service endpoints if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1158,22 +1865,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1181,7 +1902,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1191,8 +1916,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeExec {
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1200,7 +1928,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1209,9 +1938,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1219,7 +1951,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1231,33 +1964,49 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerResizePolicy represents resource resize policy for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersResizePolicy {
-    /// Name of the resource to which this resource resize policy applies. Supported values: cpu, memory.
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
     #[serde(rename = "resourceName")]
     pub resource_name: String,
-    /// Restart policy to apply when specified resource is resized. If not specified, it defaults to NotRequired.
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
     #[serde(rename = "restartPolicy")]
     pub restart_policy: String,
 }
 
-/// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// Compute Resources required by this container.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ScaledJobJobTargetRefTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1265,49 +2014,95 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+/// SecurityContext defines the security options the container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    /// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<ScaledJobJobTargetRefTemplateSpecContainersSecurityContextCapabilities>,
-    /// Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false. Note that this field cannot be set when spec.os.name is windows.
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows.
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ScaledJobJobTargetRefTemplateSpecContainersSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ScaledJobJobTargetRefTemplateSpecContainersSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ScaledJobJobTargetRefTemplateSpecContainersSecurityContextWindowsOptions>,
 }
 
-/// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersSecurityContextCapabilities {
     /// Added capabilities
@@ -1318,7 +2113,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersSecurityContextCapabilitie
     pub drop: Option<Vec<String>>,
 }
 
-/// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -1335,42 +2134,71 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersSecurityContextSeLinuxOpti
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
-/// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// StartupProbe indicates that the Pod has successfully initialized.
+/// If specified, no other probes are executed until this completes successfully.
+/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+/// when it might take a long time to load data or warm a cache, than during steady-state operation.
+/// This cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecContainersStartupProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1379,22 +2207,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersStartupProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersStartupProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1402,7 +2244,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1412,8 +2258,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeExec {
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1421,7 +2270,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1430,9 +2280,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1440,7 +2293,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1452,7 +2306,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -1469,35 +2325,53 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersVolumeDevices {
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
-/// Specifies the DNS parameters of a pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy.
+/// Specifies the DNS parameters of a pod.
+/// Parameters specified here will be merged to the generated DNS
+/// configuration based on DNSPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecDnsConfig {
-    /// A list of DNS name server IP addresses. This will be appended to the base nameservers generated from DNSPolicy. Duplicated nameservers will be removed.
+    /// A list of DNS name server IP addresses.
+    /// This will be appended to the base nameservers generated from DNSPolicy.
+    /// Duplicated nameservers will be removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nameservers: Option<Vec<String>>,
-    /// A list of DNS resolver options. This will be merged with the base options generated from DNSPolicy. Duplicated entries will be removed. Resolution options given in Options will override those that appear in the base DNSPolicy.
+    /// A list of DNS resolver options.
+    /// This will be merged with the base options generated from DNSPolicy.
+    /// Duplicated entries will be removed. Resolution options given in Options
+    /// will override those that appear in the base DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<Vec<ScaledJobJobTargetRefTemplateSpecDnsConfigOptions>>,
-    /// A list of DNS search domains for host-name lookup. This will be appended to the base search paths generated from DNSPolicy. Duplicated search paths will be removed.
+    /// A list of DNS search domains for host-name lookup.
+    /// This will be appended to the base search paths generated from DNSPolicy.
+    /// Duplicated search paths will be removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub searches: Option<Vec<String>>,
 }
@@ -1512,26 +2386,58 @@ pub struct ScaledJobJobTargetRefTemplateSpecDnsConfigOptions {
     pub value: Option<String>,
 }
 
-/// An EphemeralContainer is a temporary container that you may add to an existing Pod for user-initiated activities such as debugging. Ephemeral containers have no resource or scheduling guarantees, and they will not be restarted when they exit or when a Pod is removed or restarted. The kubelet may evict a Pod if an ephemeral container causes the Pod to exceed its resource allocation. 
-///  To add an ephemeral container, use the ephemeralcontainers subresource of an existing Pod. Ephemeral containers may not be removed or restarted.
+/// An EphemeralContainer is a temporary container that you may add to an existing Pod for
+/// user-initiated activities such as debugging. Ephemeral containers have no resource or
+/// scheduling guarantees, and they will not be restarted when they exit or when a Pod is
+/// removed or restarted. The kubelet may evict a Pod if an ephemeral container causes the
+/// Pod to exceed its resource allocation.
+/// 
+/// 
+/// To add an ephemeral container, use the ephemeralcontainers subresource of an existing
+/// Pod. Ephemeral containers may not be removed or restarted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainers {
-    /// Arguments to the entrypoint. The image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Arguments to the entrypoint.
+    /// The image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Entrypoint array. Not executed within a shell. The image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Entrypoint array. Not executed within a shell.
+    /// The image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// List of environment variables to set in the container. Cannot be updated.
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnv>>,
-    /// List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvFrom>>,
-    /// Container image name. More info: https://kubernetes.io/docs/concepts/containers/images
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Lifecycle is not allowed for ephemeral containers.
@@ -1540,7 +2446,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainers {
     /// Probes are not allowed for ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbe>,
-    /// Name of the ephemeral container specified as a DNS_LABEL. This name must be unique among all containers, init containers and ephemeral containers.
+    /// Name of the ephemeral container specified as a DNS_LABEL.
+    /// This name must be unique among all containers, init containers and ephemeral containers.
     pub name: String,
     /// Ports are not allowed for ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1551,44 +2458,79 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainers {
     /// Resources resize policy for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ScaledJobJobTargetRefTemplateSpecEphemeralContainersResizePolicy>>,
-    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+    /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersResources>,
-    /// Restart policy for the container to manage the restart behavior of each container within a pod. This may only be set for init containers. You cannot set this field on ephemeral containers.
+    /// Restart policy for the container to manage the restart behavior of each
+    /// container within a pod.
+    /// This may only be set for init containers. You cannot set this field on
+    /// ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    /// Optional: SecurityContext defines the security options the ephemeral container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// Optional: SecurityContext defines the security options the ephemeral container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContext>,
     /// Probes are not allowed for ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbe>,
-    /// Whether this container should allocate a buffer for stdin in the container runtime. If this is not set, reads from stdin in the container will always result in EOF. Default is false.
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
-    /// Whether the container runtime should close the stdin channel after it has been opened by a single attach. When stdin is true the stdin stream will remain open across multiple attach sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the first client attaches to stdin, and then remains open and accepts data until the client disconnects, at which time stdin is closed and remains closed until the container is restarted. If this flag is false, a container processes that reads from stdin will never receive an EOF. Default is false
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    /// If set, the name of the container from PodSpec that this ephemeral container targets. The ephemeral container will be run in the namespaces (IPC, PID, etc) of this container. If not set then the ephemeral container uses the namespaces configured in the Pod spec. 
-    ///  The container runtime must implement support for this feature. If the runtime does not support namespace targeting then the result of setting this field is undefined.
+    /// If set, the name of the container from PodSpec that this ephemeral container targets.
+    /// The ephemeral container will be run in the namespaces (IPC, PID, etc) of this container.
+    /// If not set then the ephemeral container uses the namespaces configured in the Pod spec.
+    /// 
+    /// 
+    /// The container runtime must implement support for this feature. If the runtime does not
+    /// support namespace targeting then the result of setting this field is undefined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetContainerName")]
     pub target_container_name: Option<String>,
-    /// Optional: Path at which the file to which the container's termination message will be written is mounted into the container's filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    /// Indicate how the termination message should be populated. File will use the contents of terminationMessagePath to populate the container status message on both success and failure. FallbackToLogsOnError will use the last chunk of container log output if the termination message file is empty and the container exited with an error. The log output is limited to 2048 bytes or 80 lines, whichever is smaller. Defaults to File. Cannot be updated.
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
-    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true. Default is false.
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ScaledJobJobTargetRefTemplateSpecEphemeralContainersVolumeDevices>>,
-    /// Pod volumes to mount into the container's filesystem. Subpath mounts are not allowed for ephemeral containers. Cannot be updated.
+    /// Pod volumes to mount into the container's filesystem. Subpath mounts are not allowed for ephemeral containers.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ScaledJobJobTargetRefTemplateSpecEphemeralContainersVolumeMounts>>,
-    /// Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
@@ -1598,7 +2540,15 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainers {
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -1612,10 +2562,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -1628,7 +2580,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFrom {
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1636,7 +2590,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromConfi
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -1647,7 +2602,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromField
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -1665,7 +2621,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromResou
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1690,7 +2648,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1701,7 +2661,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvFromConfigMapR
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1712,15 +2674,29 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvFromSecretRef 
 /// Lifecycle is not allowed for ephemeral containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecycle {
-    /// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStart>,
-    /// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStop>,
 }
 
-/// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStart {
     /// Exec specifies the action to take.
@@ -1729,7 +2705,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket>,
 }
@@ -1737,7 +2715,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1745,7 +2727,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1754,9 +2737,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1764,23 +2750,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStop {
     /// Exec specifies the action to take.
@@ -1789,7 +2788,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStop 
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket>,
 }
@@ -1797,7 +2798,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStop 
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1805,7 +2810,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopE
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1814,9 +2820,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopH
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1824,19 +2833,24 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopH
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -1846,7 +2860,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1855,22 +2870,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1878,7 +2907,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1888,8 +2921,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeExec
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1897,7 +2933,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeGrpc
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1906,9 +2943,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeHttp
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1916,7 +2956,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeHttp
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1928,26 +2969,35 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeTcpS
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerPort represents a network port in a single container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersPorts {
-    /// Number of port to expose on the pod's IP address. This must be a valid port number, 0 < x < 65536.
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
     #[serde(rename = "containerPort")]
     pub container_port: i32,
     /// What host IP to bind the external port to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
     pub host_ip: Option<String>,
-    /// Number of port to expose on the host. If specified, this must be a valid port number, 0 < x < 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
     pub host_port: Option<i32>,
-    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each named port in a pod must have a unique name. Name for the port that can be referred to by services.
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Protocol for port. Must be UDP, TCP, or SCTP. Defaults to "TCP".
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
@@ -1958,7 +3008,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1967,22 +3018,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1990,7 +3055,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2000,8 +3069,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeExe
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -2009,7 +3081,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeGrp
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2018,9 +3091,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeHtt
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2028,7 +3104,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeHtt
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2040,33 +3117,48 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeTcp
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerResizePolicy represents resource resize policy for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersResizePolicy {
-    /// Name of the resource to which this resource resize policy applies. Supported values: cpu, memory.
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
     #[serde(rename = "resourceName")]
     pub resource_name: String,
-    /// Restart policy to apply when specified resource is resized. If not specified, it defaults to NotRequired.
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
     #[serde(rename = "restartPolicy")]
     pub restart_policy: String,
 }
 
-/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources already allocated to the pod.
+/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
+/// already allocated to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ScaledJobJobTargetRefTemplateSpecEphemeralContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -2074,49 +3166,94 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// Optional: SecurityContext defines the security options the ephemeral container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// Optional: SecurityContext defines the security options the ephemeral container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    /// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextCapabilities>,
-    /// Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false. Note that this field cannot be set when spec.os.name is windows.
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows.
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextWindowsOptions>,
 }
 
-/// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextCapabilities {
     /// Added capabilities
@@ -2127,7 +3264,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextCa
     pub drop: Option<Vec<String>>,
 }
 
-/// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -2144,31 +3285,53 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextSe
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
@@ -2179,7 +3342,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -2188,22 +3352,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -2211,7 +3389,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2221,8 +3403,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeExec 
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -2230,7 +3415,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeGrpc 
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2239,9 +3425,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeHttpG
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2249,7 +3438,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeHttpG
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2261,7 +3451,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeTcpSo
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -2278,26 +3470,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersVolumeDevices {
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
-/// HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the pod's hosts file.
+/// HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the
+/// pod's hosts file.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecHostAliases {
     /// Hostnames for the above IP address.
@@ -2308,10 +3510,13 @@ pub struct ScaledJobJobTargetRefTemplateSpecHostAliases {
     pub ip: Option<String>,
 }
 
-/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecImagePullSecrets {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2319,75 +3524,166 @@ pub struct ScaledJobJobTargetRefTemplateSpecImagePullSecrets {
 /// A single application container that you want to run within a pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainers {
-    /// Arguments to the entrypoint. The container image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Arguments to the entrypoint.
+    /// The container image's CMD is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Entrypoint array. Not executed within a shell. The container image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+    /// Entrypoint array. Not executed within a shell.
+    /// The container image's ENTRYPOINT is used if this is not provided.
+    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+    /// of whether the variable exists or not. Cannot be updated.
+    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// List of environment variables to set in the container. Cannot be updated.
+    /// List of environment variables to set in the container.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainersEnv>>,
-    /// List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.
+    /// List of sources to populate environment variables in the container.
+    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// sources, the value associated with the last source will take precedence.
+    /// Values defined by an Env with a duplicate key will take precedence.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainersEnvFrom>>,
-    /// Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.
+    /// Container image name.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
+    /// Image pull policy.
+    /// One of Always, Never, IfNotPresent.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    /// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
+    /// Actions that the management system should take in response to container lifecycle events.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecycle>,
-    /// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Periodic probe of container liveness.
+    /// Container will be restarted if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbe>,
-    /// Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
+    /// Name of the container specified as a DNS_LABEL.
+    /// Each container in a pod must have a unique name (DNS_LABEL).
+    /// Cannot be updated.
     pub name: String,
-    /// List of ports to expose from the container. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Modifying this array with strategic merge patch may corrupt the data. For more information See https://github.com/kubernetes/kubernetes/issues/108255. Cannot be updated.
+    /// List of ports to expose from the container. Not specifying a port here
+    /// DOES NOT prevent that port from being exposed. Any port which is
+    /// listening on the default "0.0.0.0" address inside a container will be
+    /// accessible from the network.
+    /// Modifying this array with strategic merge patch may corrupt the data.
+    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainersPorts>>,
-    /// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Periodic probe of container service readiness.
+    /// Container will be removed from service endpoints if the probe fails.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainersResizePolicy>>,
-    /// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Compute Resources required by this container.
+    /// Cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ScaledJobJobTargetRefTemplateSpecInitContainersResources>,
-    /// RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed.
+    /// RestartPolicy defines the restart behavior of individual containers in a pod.
+    /// This field may only be set for init containers, and the only allowed value is "Always".
+    /// For non-init containers or when this field is not specified,
+    /// the restart behavior is defined by the Pod's restart policy and the container type.
+    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// this init container will be continually restarted on
+    /// exit until all regular containers have terminated. Once all regular
+    /// containers have completed, all init containers with restartPolicy "Always"
+    /// will be shut down. This lifecycle differs from normal init containers and
+    /// is often referred to as a "sidecar" container. Although this init
+    /// container still starts in the init container sequence, it does not wait
+    /// for the container to complete before proceeding to the next init
+    /// container. Instead, the next init container starts immediately after this
+    /// init container is started, or after any startupProbe has successfully
+    /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    /// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    /// SecurityContext defines the security options the container should be run with.
+    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContext>,
-    /// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// StartupProbe indicates that the Pod has successfully initialized.
+    /// If specified, no other probes are executed until this completes successfully.
+    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
+    /// This cannot be updated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbe>,
-    /// Whether this container should allocate a buffer for stdin in the container runtime. If this is not set, reads from stdin in the container will always result in EOF. Default is false.
+    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
+    /// is not set, reads from stdin in the container will always result in EOF.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
-    /// Whether the container runtime should close the stdin channel after it has been opened by a single attach. When stdin is true the stdin stream will remain open across multiple attach sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the first client attaches to stdin, and then remains open and accepts data until the client disconnects, at which time stdin is closed and remains closed until the container is restarted. If this flag is false, a container processes that reads from stdin will never receive an EOF. Default is false
+    /// Whether the container runtime should close the stdin channel after it has been opened by
+    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
+    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
+    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
+    /// at which time stdin is closed and remains closed until the container is restarted. If this
+    /// flag is false, a container processes that reads from stdin will never receive an EOF.
+    /// Default is false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    /// Optional: Path at which the file to which the container's termination message will be written is mounted into the container's filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.
+    /// Optional: Path at which the file to which the container's termination message
+    /// will be written is mounted into the container's filesystem.
+    /// Message written is intended to be brief final status, such as an assertion failure message.
+    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
+    /// all containers will be limited to 12kb.
+    /// Defaults to /dev/termination-log.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    /// Indicate how the termination message should be populated. File will use the contents of terminationMessagePath to populate the container status message on both success and failure. FallbackToLogsOnError will use the last chunk of container log output if the termination message file is empty and the container exited with an error. The log output is limited to 2048 bytes or 80 lines, whichever is smaller. Defaults to File. Cannot be updated.
+    /// Indicate how the termination message should be populated. File will use the contents of
+    /// terminationMessagePath to populate the container status message on both success and failure.
+    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
+    /// message file is empty and the container exited with an error.
+    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
+    /// Defaults to File.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
-    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true. Default is false.
+    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
+    /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainersVolumeDevices>>,
-    /// Pod volumes to mount into the container's filesystem. Cannot be updated.
+    /// Pod volumes to mount into the container's filesystem.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainersVolumeMounts>>,
-    /// Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.
+    /// Container's working directory.
+    /// If not specified, the container runtime's default will be used, which
+    /// might be configured in the container image.
+    /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
@@ -2397,7 +3693,15 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainers {
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -2411,10 +3715,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -2427,7 +3733,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFrom {
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2435,7 +3743,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromConfigMapK
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -2446,7 +3755,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -2464,7 +3774,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromResourceFi
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2489,7 +3801,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -2500,7 +3814,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -2508,18 +3824,33 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
+/// Actions that the management system should take in response to container lifecycle events.
+/// Cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecycle {
-    /// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStart>,
-    /// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStop>,
 }
 
-/// PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStart {
     /// Exec specifies the action to take.
@@ -2528,7 +3859,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStart {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartTcpSocket>,
 }
@@ -2536,7 +3869,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStart {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2544,7 +3881,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartExec
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2553,9 +3891,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartHttp
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2563,23 +3904,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartHttp
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStop {
     /// Exec specifies the action to take.
@@ -2588,7 +3942,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStop {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopHttpGet>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for the backward compatibility. There are no validation of this field and
+    /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopTcpSocket>,
 }
@@ -2596,7 +3952,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStop {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2604,7 +3964,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopExec {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2613,9 +3974,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopHttpGe
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2623,29 +3987,38 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopHttpGe
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
 }
 
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for the backward compatibility. There are no validation of this field and
+/// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// Periodic probe of container liveness.
+/// Container will be restarted if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -2654,22 +4027,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -2677,7 +4064,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2687,8 +4078,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeExec {
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -2696,7 +4090,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2705,9 +4100,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2715,7 +4113,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2727,37 +4126,50 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeTcpSocket
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerPort represents a network port in a single container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersPorts {
-    /// Number of port to expose on the pod's IP address. This must be a valid port number, 0 < x < 65536.
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
     #[serde(rename = "containerPort")]
     pub container_port: i32,
     /// What host IP to bind the external port to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
     pub host_ip: Option<String>,
-    /// Number of port to expose on the host. If specified, this must be a valid port number, 0 < x < 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.
+    /// Number of port to expose on the host.
+    /// If specified, this must be a valid port number, 0 < x < 65536.
+    /// If HostNetwork is specified, this must match ContainerPort.
+    /// Most containers do not need this.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
     pub host_port: Option<i32>,
-    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each named port in a pod must have a unique name. Name for the port that can be referred to by services.
+    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+    /// named port in a pod must have a unique name. Name for the port that can be
+    /// referred to by services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Protocol for port. Must be UDP, TCP, or SCTP. Defaults to "TCP".
+    /// Protocol for port. Must be UDP, TCP, or SCTP.
+    /// Defaults to "TCP".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
 
-/// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// Periodic probe of container service readiness.
+/// Container will be removed from service endpoints if the probe fails.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -2766,22 +4178,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -2789,7 +4215,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2799,8 +4229,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeExec {
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -2808,7 +4241,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -2817,9 +4251,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeHttpGet 
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -2827,7 +4264,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeHttpGet 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2839,33 +4277,49 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeTcpSocke
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// ContainerResizePolicy represents resource resize policy for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersResizePolicy {
-    /// Name of the resource to which this resource resize policy applies. Supported values: cpu, memory.
+    /// Name of the resource to which this resource resize policy applies.
+    /// Supported values: cpu, memory.
     #[serde(rename = "resourceName")]
     pub resource_name: String,
-    /// Restart policy to apply when specified resource is resized. If not specified, it defaults to NotRequired.
+    /// Restart policy to apply when specified resource is resized.
+    /// If not specified, it defaults to NotRequired.
     #[serde(rename = "restartPolicy")]
     pub restart_policy: String,
 }
 
-/// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// Compute Resources required by this container.
+/// Cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -2873,49 +4327,95 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+/// SecurityContext defines the security options the container should be run with.
+/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
+/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    /// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextCapabilities>,
-    /// Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false. Note that this field cannot be set when spec.os.name is windows.
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows.
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextWindowsOptions>,
 }
 
-/// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextCapabilities {
     /// Added capabilities
@@ -2926,7 +4426,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextCapabil
     pub drop: Option<Vec<String>>,
 }
 
-/// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -2943,42 +4447,71 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextSeLinux
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
-/// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+/// StartupProbe indicates that the Pod has successfully initialized.
+/// If specified, no other probes are executed until this completes successfully.
+/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
+/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
+/// when it might take a long time to load data or warm a cache, than during steady-state operation.
+/// This cannot be updated.
+/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -2987,22 +4520,36 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -3010,7 +4557,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -3020,8 +4571,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeExec {
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -3029,7 +4583,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -3038,9 +4593,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -3048,7 +4606,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -3060,7 +4619,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeTcpSocket 
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -3077,31 +4638,70 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersVolumeDevices {
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must not contain ':'.
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
-/// Specifies the OS of the containers in the pod. Some pod and container fields are restricted if this is set. 
-///  If the OS field is set to linux, the following fields must be unset: -securityContext.windowsOptions 
-///  If the OS field is set to windows, following fields must be unset: - spec.hostPID - spec.hostIPC - spec.hostUsers - spec.securityContext.seLinuxOptions - spec.securityContext.seccompProfile - spec.securityContext.fsGroup - spec.securityContext.fsGroupChangePolicy - spec.securityContext.sysctls - spec.shareProcessNamespace - spec.securityContext.runAsUser - spec.securityContext.runAsGroup - spec.securityContext.supplementalGroups - spec.containers[*].securityContext.seLinuxOptions - spec.containers[*].securityContext.seccompProfile - spec.containers[*].securityContext.capabilities - spec.containers[*].securityContext.readOnlyRootFilesystem - spec.containers[*].securityContext.privileged - spec.containers[*].securityContext.allowPrivilegeEscalation - spec.containers[*].securityContext.procMount - spec.containers[*].securityContext.runAsUser - spec.containers[*].securityContext.runAsGroup
+/// Specifies the OS of the containers in the pod.
+/// Some pod and container fields are restricted if this is set.
+/// 
+/// 
+/// If the OS field is set to linux, the following fields must be unset:
+/// -securityContext.windowsOptions
+/// 
+/// 
+/// If the OS field is set to windows, following fields must be unset:
+/// - spec.hostPID
+/// - spec.hostIPC
+/// - spec.hostUsers
+/// - spec.securityContext.seLinuxOptions
+/// - spec.securityContext.seccompProfile
+/// - spec.securityContext.fsGroup
+/// - spec.securityContext.fsGroupChangePolicy
+/// - spec.securityContext.sysctls
+/// - spec.shareProcessNamespace
+/// - spec.securityContext.runAsUser
+/// - spec.securityContext.runAsGroup
+/// - spec.securityContext.supplementalGroups
+/// - spec.containers[*].securityContext.seLinuxOptions
+/// - spec.containers[*].securityContext.seccompProfile
+/// - spec.containers[*].securityContext.capabilities
+/// - spec.containers[*].securityContext.readOnlyRootFilesystem
+/// - spec.containers[*].securityContext.privileged
+/// - spec.containers[*].securityContext.allowPrivilegeEscalation
+/// - spec.containers[*].securityContext.procMount
+/// - spec.containers[*].securityContext.runAsUser
+/// - spec.containers[*].securityContext.runAsGroup
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecOs {
-    /// Name is the name of the operating system. The currently supported values are linux and windows. Additional value may be defined in future and can be one of: https://github.com/opencontainers/runtime-spec/blob/master/config.md#platform-specific-configuration Clients should expect to handle additional values and treat unrecognized values in this field as os: null
+    /// Name is the name of the operating system. The currently supported values are linux and windows.
+    /// Additional value may be defined in future and can be one of:
+    /// https://github.com/opencontainers/runtime-spec/blob/master/config.md#platform-specific-configuration
+    /// Clients should expect to handle additional values and treat unrecognized values in this field as os: null
     pub name: String,
 }
 
@@ -3113,10 +4713,13 @@ pub struct ScaledJobJobTargetRefTemplateSpecReadinessGates {
     pub condition_type: String,
 }
 
-/// PodResourceClaim references exactly one ResourceClaim through a ClaimSource. It adds a name to it that uniquely identifies the ResourceClaim inside the Pod. Containers that need access to the ResourceClaim reference it with this name.
+/// PodResourceClaim references exactly one ResourceClaim through a ClaimSource.
+/// It adds a name to it that uniquely identifies the ResourceClaim inside the Pod.
+/// Containers that need access to the ResourceClaim reference it with this name.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecResourceClaims {
-    /// Name uniquely identifies this resource claim inside the pod. This must be a DNS_LABEL.
+    /// Name uniquely identifies this resource claim inside the pod.
+    /// This must be a DNS_LABEL.
     pub name: String,
     /// Source describes where to find the ResourceClaim.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3126,12 +4729,24 @@ pub struct ScaledJobJobTargetRefTemplateSpecResourceClaims {
 /// Source describes where to find the ResourceClaim.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecResourceClaimsSource {
-    /// ResourceClaimName is the name of a ResourceClaim object in the same namespace as this pod.
+    /// ResourceClaimName is the name of a ResourceClaim object in the same
+    /// namespace as this pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
-    /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate object in the same namespace as this pod. 
-    ///  The template will be used to create a new ResourceClaim, which will be bound to this pod. When this pod is deleted, the ResourceClaim will also be deleted. The pod name and resource name, along with a generated component, will be used to form a unique name for the ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses. 
-    ///  This field is immutable and no changes will be made to the corresponding ResourceClaim by the control plane after creating the ResourceClaim.
+    /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate
+    /// object in the same namespace as this pod.
+    /// 
+    /// 
+    /// The template will be used to create a new ResourceClaim, which will
+    /// be bound to this pod. When this pod is deleted, the ResourceClaim
+    /// will also be deleted. The pod name and resource name, along with a
+    /// generated component, will be used to form a unique name for the
+    /// ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
+    /// 
+    /// 
+    /// This field is immutable and no changes will be made to the
+    /// corresponding ResourceClaim by the control plane after creating the
+    /// ResourceClaim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
 }
@@ -3139,48 +4754,102 @@ pub struct ScaledJobJobTargetRefTemplateSpecResourceClaimsSource {
 /// PodSchedulingGate is associated to a Pod to guard its scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecSchedulingGates {
-    /// Name of the scheduling gate. Each scheduling gate must have a unique name field.
+    /// Name of the scheduling gate.
+    /// Each scheduling gate must have a unique name field.
     pub name: String,
 }
 
-/// SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.
+/// SecurityContext holds pod-level security attributes and common container settings.
+/// Optional: Defaults to empty.  See type description for default values of each field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
-    ///  If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    /// A special supplemental group that applies to all containers in a pod.
+    /// Some volume types allow the Kubelet to change the ownership of that volume
+    /// to be owned by the pod:
+    /// 
+    /// 
+    /// 1. The owning GID will be the FSGroup
+    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
+    /// 3. The permission bits are OR'd with rw-rw----
+    /// 
+    /// 
+    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
+    /// before being exposed inside Pod. This field will only apply to
+    /// volume types which support fsGroup based ownership(and permissions).
+    /// It will have no effect on ephemeral volume types such as: secret, configmaps
+    /// and emptydir.
+    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to all containers.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in SecurityContext.  If set in
+    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+    /// takes precedence for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ScaledJobJobTargetRefTemplateSpecSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ScaledJobJobTargetRefTemplateSpecSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID, the fsGroup (if specified), and group memberships defined in the container image for the uid of the container process. If unspecified, no additional groups are added to any container. Note that group memberships defined in the container image for the uid of the container process are still effective, even if they are not included in this list. Note that this field cannot be set when spec.os.name is windows.
+    /// A list of groups applied to the first process run in each container, in addition
+    /// to the container's primary GID, the fsGroup (if specified), and group memberships
+    /// defined in the container image for the uid of the container process. If unspecified,
+    /// no additional groups are added to any container. Note that group memberships
+    /// defined in the container image for the uid of the container process are still effective,
+    /// even if they are not included in this list.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
+    /// sysctls (by the container runtime) might fail to launch.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<ScaledJobJobTargetRefTemplateSpecSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options within a container's SecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ScaledJobJobTargetRefTemplateSpecSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to all containers.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in SecurityContext.  If set in
+/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+/// takes precedence for that container.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -3197,14 +4866,23 @@ pub struct ScaledJobJobTargetRefTemplateSpecSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -3218,39 +4896,60 @@ pub struct ScaledJobJobTargetRefTemplateSpecSecurityContextSysctls {
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options within a container's SecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -3258,56 +4957,151 @@ pub struct ScaledJobJobTargetRefTemplateSpecTolerations {
 /// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraints {
-    /// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
+    /// LabelSelector is used to find matching pods.
+    /// Pods that match this label selector are counted to determine the number of pods
+    /// in their corresponding topology domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. 
-    ///  This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which
+    /// spreading will be calculated. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are ANDed with labelSelector
+    /// to select the group of existing pods over which spreading will be calculated
+    /// for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// Keys that don't exist in the incoming pod labels will
+    /// be ignored. A null or empty list means only match against labelSelector.
+    /// 
+    /// 
+    /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. The global minimum is the minimum number of matching pods in an eligible domain or zero if the number of eligible domains is less than MinDomains. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 2/2/1: In this case, the global minimum is 1. | zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.
+    /// MaxSkew describes the degree to which pods may be unevenly distributed.
+    /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
+    /// between the number of matching pods in the target topology and the global minimum.
+    /// The global minimum is the minimum number of matching pods in an eligible domain
+    /// or zero if the number of eligible domains is less than MinDomains.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 2/2/1:
+    /// In this case, the global minimum is 1.
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |   P   |
+    /// - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2;
+    /// scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2)
+    /// violate MaxSkew(1).
+    /// - if MaxSkew is 2, incoming pod can be scheduled onto any zone.
+    /// When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence
+    /// to topologies that satisfy it.
+    /// It's a required field. Default value is 1 and 0 is not allowed.
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    /// MinDomains indicates a minimum number of eligible domains. When the number of eligible domains with matching topology keys is less than minDomains, Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed. And when the number of eligible domains with matching topology keys equals or greater than minDomains, this value has no effect on scheduling. As a result, when the number of eligible domains is less than minDomains, scheduler won't schedule more than maxSkew Pods to those domains. If value is nil, the constraint behaves as if MinDomains is equal to 1. Valid values are integers greater than 0. When value is not nil, WhenUnsatisfiable must be DoNotSchedule. 
-    ///  For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same labelSelector spread as 2/2/2: | zone1 | zone2 | zone3 | |  P P  |  P P  |  P P  | The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0. In this situation, new pod with the same labelSelector cannot be scheduled, because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones, it will violate MaxSkew. 
-    ///  This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
+    /// MinDomains indicates a minimum number of eligible domains.
+    /// When the number of eligible domains with matching topology keys is less than minDomains,
+    /// Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed.
+    /// And when the number of eligible domains with matching topology keys equals or greater than minDomains,
+    /// this value has no effect on scheduling.
+    /// As a result, when the number of eligible domains is less than minDomains,
+    /// scheduler won't schedule more than maxSkew Pods to those domains.
+    /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
+    /// Valid values are integers greater than 0.
+    /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
+    /// 
+    /// 
+    /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
+    /// labelSelector spread as 2/2/2:
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |  P P  |
+    /// The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0.
+    /// In this situation, new pod with the same labelSelector cannot be scheduled,
+    /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
+    /// it will violate MaxSkew.
+    /// 
+    /// 
+    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod topology spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations. - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations. 
-    ///  If this value is nil, the behavior is equivalent to the Honor policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
+    /// when calculating pod topology spread skew. Options are:
+    /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
+    /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
+    /// 
+    /// 
+    /// If this value is nil, the behavior is equivalent to the Honor policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    /// NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew. Options are: - Honor: nodes without taints, along with tainted nodes for which the incoming pod has a toleration, are included. - Ignore: node taints are ignored. All nodes are included. 
-    ///  If this value is nil, the behavior is equivalent to the Ignore policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating
+    /// pod topology spread skew. Options are:
+    /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
+    /// has a toleration, are included.
+    /// - Ignore: node taints are ignored. All nodes are included.
+    /// 
+    /// 
+    /// If this value is nil, the behavior is equivalent to the Ignore policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
-    /// TopologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. We consider each <key, value> as a "bucket", and try to put balanced number of pods into each bucket. We define a domain as a particular instance of a topology. Also, we define an eligible domain as a domain whose nodes meet the requirements of nodeAffinityPolicy and nodeTaintsPolicy. e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology. And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology. It's a required field.
+    /// TopologyKey is the key of node labels. Nodes that have a label with this key
+    /// and identical values are considered to be in the same topology.
+    /// We consider each <key, value> as a "bucket", and try to put balanced number
+    /// of pods into each bucket.
+    /// We define a domain as a particular instance of a topology.
+    /// Also, we define an eligible domain as a domain whose nodes meet the requirements of
+    /// nodeAffinityPolicy and nodeTaintsPolicy.
+    /// e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology.
+    /// And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology.
+    /// It's a required field.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
-    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it. - ScheduleAnyway tells the scheduler to schedule the pod in any location, but giving higher precedence to topologies that would help reduce the skew. A constraint is considered "Unsatisfiable" for an incoming pod if and only if every possible node assignment for that pod would violate "MaxSkew" on some topology. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field.
+    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy
+    /// the spread constraint.
+    /// - DoNotSchedule (default) tells the scheduler not to schedule it.
+    /// - ScheduleAnyway tells the scheduler to schedule the pod in any location,
+    ///   but giving higher precedence to topologies that would help reduce the
+    ///   skew.
+    /// A constraint is considered "Unsatisfiable" for an incoming pod
+    /// if and only if every possible node assignment for that pod would violate
+    /// "MaxSkew" on some topology.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 3/1/1:
+    /// | zone1 | zone2 | zone3 |
+    /// | P P P |   P   |   P   |
+    /// If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled
+    /// to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies
+    /// MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler
+    /// won't make it *more* imbalanced.
+    /// It's a required field.
     #[serde(rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: String,
 }
 
-/// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
+/// LabelSelector is used to find matching pods.
+/// Pods that match this label selector are counted to determine the number of pods
+/// in their corresponding topology domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -3315,7 +5109,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraintsLabelSelect
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
-    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<ScaledJobJobTargetRefTemplateSpecVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -3327,7 +5123,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<ScaledJobJobTargetRefTemplateSpecVolumesCephfs>,
-    /// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<ScaledJobJobTargetRefTemplateSpecVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
@@ -3339,46 +5136,91 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ScaledJobJobTargetRefTemplateSpecVolumesDownwardApi>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// emptyDir represents a temporary directory that shares a pod's lifetime.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<ScaledJobJobTargetRefTemplateSpecVolumesEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
-    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
-    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
-    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
-    ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+    /// ephemeral represents a volume that is handled by a cluster storage driver.
+    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+    /// and deleted when the pod is removed.
+    /// 
+    /// 
+    /// Use this if:
+    /// a) the volume is only needed while the pod runs,
+    /// b) features of normal volumes like restoring from snapshot or capacity
+    ///    tracking are needed,
+    /// c) the storage driver is specified through a storage class, and
+    /// d) the storage driver supports dynamic volume provisioning through
+    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+    ///    information on the connection between this volume type
+    ///    and PersistentVolumeClaim).
+    /// 
+    /// 
+    /// Use PersistentVolumeClaim or one of the vendor-specific
+    /// APIs for volumes that persist for longer than the lifecycle
+    /// of an individual pod.
+    /// 
+    /// 
+    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+    /// be used that way - see the documentation of the driver for
+    /// more information.
+    /// 
+    /// 
+    /// A pod can use both types of ephemeral volumes and
+    /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<ScaledJobJobTargetRefTemplateSpecVolumesEphemeral>,
     /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<ScaledJobJobTargetRefTemplateSpecVolumesFc>,
-    /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+    /// flexVolume represents a generic volume resource that is
+    /// provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ScaledJobJobTargetRefTemplateSpecVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<ScaledJobJobTargetRefTemplateSpecVolumesFlocker>,
-    /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<ScaledJobJobTargetRefTemplateSpecVolumesGcePersistentDisk>,
-    /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+    /// gitRepo represents a git repository at a particular revision.
+    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+    /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<ScaledJobJobTargetRefTemplateSpecVolumesGitRepo>,
-    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<ScaledJobJobTargetRefTemplateSpecVolumesGlusterfs>,
-    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+    /// hostPath represents a pre-existing file or directory on the host
+    /// machine that is directly exposed to the container. This is generally
+    /// used for system agents or other privileged things that are allowed
+    /// to see the host machine. Most containers will NOT need this.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// ---
+    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<ScaledJobJobTargetRefTemplateSpecVolumesHostPath>,
-    /// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+    /// iscsi represents an ISCSI Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<ScaledJobJobTargetRefTemplateSpecVolumesIscsi>,
-    /// name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// name of the volume.
+    /// Must be a DNS_LABEL and unique within the pod.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
-    /// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<ScaledJobJobTargetRefTemplateSpecVolumesNfs>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<ScaledJobJobTargetRefTemplateSpecVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
@@ -3393,13 +5235,15 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<ScaledJobJobTargetRefTemplateSpecVolumesQuobyte>,
-    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<ScaledJobJobTargetRefTemplateSpecVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<ScaledJobJobTargetRefTemplateSpecVolumesScaleIo>,
-    /// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secret represents a secret that should populate this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ScaledJobJobTargetRefTemplateSpecVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
@@ -3410,19 +5254,30 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     pub vsphere_volume: Option<ScaledJobJobTargetRefTemplateSpecVolumesVsphereVolume>,
 }
 
-/// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesAwsElasticBlockStore {
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// readOnly value true will force the readOnly setting in VolumeMounts. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// readOnly value true will force the readOnly setting in VolumeMounts.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume). More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
@@ -3439,13 +5294,16 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesAzureDisk {
     /// diskURI is the URI of data disk in the blob storage
     #[serde(rename = "diskURI")]
     pub disk_uri: String,
-    /// fsType is Filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is Filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -3453,7 +5311,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesAzureDisk {
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesAzureFile {
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretName is the  name of secret that contains Azure Storage Account Name and Key
@@ -3467,54 +5326,74 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesAzureFile {
 /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCephfs {
-    /// monitors is Required: Monitors is a collection of Ceph monitors More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// monitors is Required: Monitors is a collection of Ceph monitors
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
     /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
-    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesCephfsSecretRef>,
-    /// user is optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    /// user is optional: User is the rados user name, default is admin
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCephfsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+/// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCinder {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
+    /// secretRef is optional: points to a secret object containing parameters used to connect
+    /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesCinderSecretRef>,
-    /// volumeID used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    /// volumeID used to identify the volume in cinder.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// secretRef is optional: points to a secret object containing parameters used to connect to OpenStack.
+/// secretRef is optional: points to a secret object containing parameters used to connect
+/// to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCinderSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3522,13 +5401,27 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesCinderSecretRef {
 /// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ScaledJobJobTargetRefTemplateSpecVolumesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -3541,36 +5434,59 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesConfigMap {
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesConfigMapItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCsi {
-    /// driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
+    /// driver is the name of the CSI driver that handles this volume.
+    /// Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
-    /// fsType to mount. Ex. "ext4", "xfs", "ntfs". If not provided, the empty value is passed to the associated CSI driver which will determine the default filesystem to apply.
+    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
+    /// If not provided, the empty value is passed to the associated CSI driver
+    /// which will determine the default filesystem to apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+    /// nodePublishSecretRef is a reference to the secret object containing
+    /// sensitive information to pass to the CSI driver to complete the CSI
+    /// NodePublishVolume and NodeUnpublishVolume calls.
+    /// This field is optional, and  may be empty if no secret is required. If the
+    /// secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesCsiNodePublishSecretRef>,
-    /// readOnly specifies a read-only configuration for the volume. Defaults to false (read/write).
+    /// readOnly specifies a read-only configuration for the volume.
+    /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
+    /// volumeAttributes stores driver-specific properties that are passed to the CSI
+    /// driver. Consult your driver's documentation for supported values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
+/// nodePublishSecretRef is a reference to the secret object containing
+/// sensitive information to pass to the CSI driver to complete the CSI
+/// NodePublishVolume and NodeUnpublishVolume calls.
+/// This field is optional, and  may be empty if no secret is required. If the
+/// secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCsiNodePublishSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3578,7 +5494,14 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesCsiNodePublishSecretRef {
 /// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesDownwardApi {
-    /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits to use on created files by default. Must be a
+    /// Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
@@ -3592,12 +5515,18 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesDownwardApiItemsResourceFieldRef>,
 }
@@ -3613,7 +5542,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesDownwardApiItemsFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -3626,72 +5556,190 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesDownwardApiItemsResourceField
     pub resource: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+/// emptyDir represents a temporary directory that shares a pod's lifetime.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEmptyDir {
-    /// medium represents what type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// medium represents what type of storage medium should back this directory.
+    /// The default is "" which means to use the node's default medium.
+    /// Must be an empty string (default) or Memory.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
+    /// The size limit is also applicable for memory medium.
+    /// The maximum usage on memory medium EmptyDir would be the minimum value between
+    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
+    /// The default is nil which means that the limit is undefined.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
-///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
-///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
-///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
-///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
+/// ephemeral represents a volume that is handled by a cluster storage driver.
+/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+/// and deleted when the pod is removed.
+/// 
+/// 
+/// Use this if:
+/// a) the volume is only needed while the pod runs,
+/// b) features of normal volumes like restoring from snapshot or capacity
+///    tracking are needed,
+/// c) the storage driver is specified through a storage class, and
+/// d) the storage driver supports dynamic volume provisioning through
+///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+///    information on the connection between this volume type
+///    and PersistentVolumeClaim).
+/// 
+/// 
+/// Use PersistentVolumeClaim or one of the vendor-specific
+/// APIs for volumes that persist for longer than the lifecycle
+/// of an individual pod.
+/// 
+/// 
+/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+/// be used that way - see the documentation of the driver for
+/// more information.
+/// 
+/// 
+/// A pod can use both types of ephemeral volumes and
+/// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
-    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
-    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
-    ///  Required, must not be nil.
+    /// Will be used to create a stand-alone PVC to provision the volume.
+    /// The pod in which this EphemeralVolumeSource is embedded will be the
+    /// owner of the PVC, i.e. the PVC will be deleted together with the
+    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+    /// `<volume name>` is the name from the `PodSpec.Volumes` array
+    /// entry. Pod validation will reject the pod if the concatenated name
+    /// is not valid for a PVC (for example, too long).
+    /// 
+    /// 
+    /// An existing PVC with that name that is not owned by the pod
+    /// will *not* be used for the pod to avoid using an unrelated
+    /// volume by mistake. Starting the pod is then blocked until
+    /// the unrelated PVC is removed. If such a pre-created PVC is
+    /// meant to be used by the pod, the PVC has to updated with an
+    /// owner reference to the pod once the pod exists. Normally
+    /// this should not be necessary, but it may be useful when
+    /// manually reconstructing a broken cluster.
+    /// 
+    /// 
+    /// This field is read-only and no changes will be made by Kubernetes
+    /// to the PVC after it has been created.
+    /// 
+    /// 
+    /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplate>,
 }
 
-/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
-///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
-///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
-///  Required, must not be nil.
+/// Will be used to create a stand-alone PVC to provision the volume.
+/// The pod in which this EphemeralVolumeSource is embedded will be the
+/// owner of the PVC, i.e. the PVC will be deleted together with the
+/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+/// `<volume name>` is the name from the `PodSpec.Volumes` array
+/// entry. Pod validation will reject the pod if the concatenated name
+/// is not valid for a PVC (for example, too long).
+/// 
+/// 
+/// An existing PVC with that name that is not owned by the pod
+/// will *not* be used for the pod to avoid using an unrelated
+/// volume by mistake. Starting the pod is then blocked until
+/// the unrelated PVC is removed. If such a pre-created PVC is
+/// meant to be used by the pod, the PVC has to updated with an
+/// owner reference to the pod once the pod exists. Normally
+/// this should not be necessary, but it may be useful when
+/// manually reconstructing a broken cluster.
+/// 
+/// 
+/// This field is read-only and no changes will be made by Kubernetes
+/// to the PVC after it has been created.
+/// 
+/// 
+/// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplate {
-    /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+    /// May contain labels and annotations that will be copied into the PVC
+    /// when creating it. No other fields are allowed and will be rejected during
+    /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata>,
-    /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+    /// The specification for the PersistentVolumeClaim. The entire content is
+    /// copied unchanged into the PVC that gets created from this
+    /// template. The same fields as in a PersistentVolumeClaim
+    /// are also valid here.
     pub spec: ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
-/// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
+/// May contain labels and annotations that will be copied into the PVC
+/// when creating it. No other fields are allowed and will be rejected during
+/// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata {
 }
 
-/// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
+/// The specification for the PersistentVolumeClaim. The entire content is
+/// copied unchanged into the PVC that gets created from this
+/// template. The same fields as in a PersistentVolumeClaim
+/// are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
-    /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
@@ -3699,10 +5747,19 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateS
     pub volume_name: Option<String>,
 }
 
-/// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
@@ -3711,33 +5768,73 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateS
     pub name: String,
 }
 
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
     pub kind: String,
     /// Name is the name of resource being referenced
     pub name: String,
-    /// Namespace is the namespace of resource being referenced Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -3745,7 +5842,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateS
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -3755,19 +5854,26 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateS
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -3775,46 +5881,65 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateS
 /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesFc {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
-    /// wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    /// wwids Optional: FC volume world wide identifiers (wwids)
+    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
 }
 
-/// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
+/// flexVolume represents a generic volume resource that is
+/// provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
     pub driver: String,
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// options is Optional: this field holds extra command options if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
-    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+    /// secretRef is Optional: secretRef is reference to the secret object containing
+    /// sensitive information to pass to the plugin scripts. This may be
+    /// empty if no secret object is specified. If the secret object
+    /// contains more than one secret, all secrets are passed to the plugin
+    /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesFlexVolumeSecretRef>,
 }
 
-/// secretRef is Optional: secretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
+/// secretRef is Optional: secretRef is reference to the secret object containing
+/// sensitive information to pass to the plugin scripts. This may be
+/// empty if no secret object is specified. If the secret object
+/// contains more than one secret, all secrets are passed to the plugin
+/// scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlexVolumeSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3822,7 +5947,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlexVolumeSecretRef {
 /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlocker {
-    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
+    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
+    /// should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
@@ -3830,27 +5956,46 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlocker {
     pub dataset_uuid: Option<String>,
 }
 
-/// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+/// gcePersistentDisk represents a GCE Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesGcePersistentDisk {
-    /// fsType is filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount. If omitted, the default is to mount by volume name. Examples: For volume /dev/sda1, you specify the partition as "1". Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty). More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(rename = "pdName")]
     pub pd_name: String,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
+/// gitRepo represents a git repository at a particular revision.
+/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+/// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesGitRepo {
-    /// directory is the target directory name. Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the git repository.  Otherwise, if specified, the volume will contain the git repository in the subdirectory with the given name.
+    /// directory is the target directory name.
+    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
+    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
+    /// the subdirectory with the given name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub directory: Option<String>,
     /// repository is the URL
@@ -3860,29 +6005,47 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesGitRepo {
     pub revision: Option<String>,
 }
 
-/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md
+/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesGlusterfs {
-    /// endpoints is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// endpoints is the endpoint name that details Glusterfs topology.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
-    /// path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// path is the Glusterfs volume path.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub path: String,
-    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions. Defaults to false. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath --- TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not mount host directories as read/write.
+/// hostPath represents a pre-existing file or directory on the host
+/// machine that is directly exposed to the container. This is generally
+/// used for system agents or other privileged things that are allowed
+/// to see the host machine. Most containers will NOT need this.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+/// ---
+/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
+/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesHostPath {
-    /// path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// path of the directory on the host.
+    /// If the path is a symlink, it will follow the link to the real path.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     pub path: String,
-    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    /// type for HostPath Volume
+    /// Defaults to ""
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md
+/// iscsi represents an ISCSI Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -3891,29 +6054,39 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesIscsi {
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// initiatorName is the custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
+    /// initiatorName is the custom iSCSI Initiator Name.
+    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
+    /// <target portal>:<volume name> will be created for the connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
-    /// iscsiInterface is the interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
+    /// iscsiInterface is the interface Name that uses an iSCSI transport.
+    /// Defaults to 'default' (tcp).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
-    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub portals: Option<Vec<String>>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesIscsiSecretRef>,
-    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
+    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
 }
@@ -3921,30 +6094,41 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesIscsi {
 /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesIscsiSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// nfs represents an NFS mount on the host that shares a pod's lifetime More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesNfs {
-    /// path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// path that is exported by the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
-    /// readOnly here will force the NFS export to be mounted with read-only permissions. Defaults to false. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// server is the hostname or IP address of the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub server: String,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesPersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -3952,7 +6136,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesPersistentVolumeClaim {
 /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesPhotonPersistentDisk {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// pdID is the ID that identifies Photon Controller persistent disk
@@ -3963,10 +6149,13 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesPhotonPersistentDisk {
 /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesPortworxVolume {
-    /// fSType represents the filesystem type to mount Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fSType represents the filesystem type to mount
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeID uniquely identifies a Portworx volume
@@ -3977,7 +6166,12 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesPortworxVolume {
 /// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode are the mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
@@ -4005,10 +6199,18 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSources {
 /// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -4021,10 +6223,18 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesConfigMap {
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
@@ -4042,12 +6252,18 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesDownwardApiIt
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
@@ -4063,7 +6279,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesDownwardApiIt
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -4079,10 +6296,18 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesDownwardApiIt
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesSecretItems>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -4095,78 +6320,124 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesSecret {
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+    /// audience is the intended audience of the token. A recipient of a token
+    /// must identify itself with an identifier specified in the audience of the
+    /// token, and otherwise should reject the token. The audience defaults to the
+    /// identifier of the apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+    /// expirationSeconds is the requested duration of validity of the service
+    /// account token. As the token approaches expiration, the kubelet volume
+    /// plugin will proactively rotate the service account token. The kubelet will
+    /// start trying to rotate the token if the token is older than 80 percent of
+    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
+    /// and must be at least 10 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the token into.
+    /// path is the path relative to the mount point of the file to project the
+    /// token into.
     pub path: String,
 }
 
 /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesQuobyte {
-    /// group to map volume access to Default is no group
+    /// group to map volume access to
+    /// Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions. Defaults to false.
+    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// registry represents a single or multiple Quobyte Registry services specified as a string as host:port pair (multiple entries are separated with commas) which acts as the central registry for volumes
+    /// registry represents a single or multiple Quobyte Registry services
+    /// specified as a string as host:port pair (multiple entries are separated with commas)
+    /// which acts as the central registry for volumes
     pub registry: String,
-    /// tenant owning the given Quobyte volume in the Backend Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    /// tenant owning the given Quobyte volume in the Backend
+    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
-    /// user to map volume access to Defaults to serivceaccount user
+    /// user to map volume access to
+    /// Defaults to serivceaccount user
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
     /// volume is a string that references an already created Quobyte volume by name.
     pub volume: String,
 }
 
-/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md
+/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesRbd {
-    /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd TODO: how do we prevent errors in the filesystem from compromising the machine
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
+    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// image is the rados image name. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// image is the rados image name.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub image: String,
-    /// keyring is the path to key ring for RBDUser. Default is /etc/ceph/keyring. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// keyring is the path to key ring for RBDUser.
+    /// Default is /etc/ceph/keyring.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyring: Option<String>,
-    /// monitors is a collection of Ceph monitors. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// monitors is a collection of Ceph monitors.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub monitors: Vec<String>,
-    /// pool is the rados pool name. Default is rbd. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// pool is the rados pool name.
+    /// Default is rbd.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pool: Option<String>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// secretRef is name of the authentication secret for RBDUser. If provided
+    /// overrides keyring.
+    /// Default is nil.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesRbdSecretRef>,
-    /// user is the rados user name. Default is admin. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    /// user is the rados user name.
+    /// Default is admin.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is name of the authentication secret for RBDUser. If provided overrides keyring. Default is nil. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+/// secretRef is name of the authentication secret for RBDUser. If provided
+/// overrides keyring.
+/// Default is nil.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesRbdSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4174,7 +6445,10 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesRbdSecretRef {
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesScaleIo {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Default is "xfs".
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs".
+    /// Default is "xfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// gateway is the host address of the ScaleIO API Gateway.
@@ -4182,16 +6456,19 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesScaleIo {
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+    /// secretRef references to the secret for ScaleIO user and other
+    /// sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
     pub secret_ref: ScaledJobJobTargetRefTemplateSpecVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
+    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
+    /// Default is ThinProvisioned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
@@ -4199,32 +6476,50 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesScaleIo {
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
-    /// volumeName is the name of a volume already created in the ScaleIO system that is associated with this volume source.
+    /// volumeName is the name of a volume already created in the ScaleIO system
+    /// that is associated with this volume source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// secretRef references to the secret for ScaleIO user and other sensitive information. If this is not provided, Login operation will fail.
+/// secretRef references to the secret for ScaleIO user and other
+/// sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesScaleIoSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+/// secret represents a secret that should populate this volume.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ScaledJobJobTargetRefTemplateSpecVolumesSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -4234,37 +6529,58 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesSecret {
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesSecretItems {
     /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
     pub path: String,
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesStorageos {
-    /// fsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+    /// secretRef specifies the secret to use for obtaining the StorageOS API
+    /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesStorageosSecretRef>,
-    /// volumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
+    /// volumeName is the human-readable name of the StorageOS volume.  Volume
+    /// names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
+    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
+    /// namespace is specified then the Pod's namespace will be used.  This allows the
+    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
+    /// Set VolumeName to any name to override the default behaviour.
+    /// Set to "default" if you are not using namespaces within StorageOS.
+    /// Namespaces that do not pre-exist within StorageOS will be created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
-/// secretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
+/// secretRef specifies the secret to use for obtaining the StorageOS API
+/// credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesStorageosSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4272,7 +6588,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesStorageosSecretRef {
 /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesVsphereVolume {
-    /// fsType is filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// fsType is filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
@@ -4313,11 +6631,13 @@ pub struct ScaledJobScalingStrategy {
 /// ScaleTriggers reference the scaler that will be used
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobTriggers {
-    /// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that is used to authenticate the scaler with the environment
+    /// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that
+    /// is used to authenticate the scaler with the environment
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationRef")]
     pub authentication_ref: Option<ScaledJobTriggersAuthenticationRef>,
     pub metadata: BTreeMap<String, String>,
-    /// MetricTargetType specifies the type of metric being targeted, and should be either "Value", "AverageValue", or "Utilization"
+    /// MetricTargetType specifies the type of metric being targeted, and should be either
+    /// "Value", "AverageValue", or "Utilization"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricType")]
     pub metric_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4328,7 +6648,8 @@ pub struct ScaledJobTriggers {
     pub use_cached_metrics: Option<bool>,
 }
 
-/// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that is used to authenticate the scaler with the environment
+/// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that
+/// is used to authenticate the scaler with the environment
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobTriggersAuthenticationRef {
     /// Kind of the resource being referred to. Defaults to TriggerAuthentication.

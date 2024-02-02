@@ -32,6 +32,8 @@ pub struct RayJobSpec {
     pub runtime_env_yaml: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shutdownAfterJobFinishes")]
     pub shutdown_after_job_finishes: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "submissionMode")]
+    pub submission_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "submitterPodTemplate")]
     pub submitter_pod_template: Option<RayJobSubmitterPodTemplate>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

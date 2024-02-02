@@ -1215,6 +1215,9 @@ pub enum FlowCollectorLokiTlsUserCertType {
 /// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessor {
+    /// `addZone` allows availability zone awareness by labelling flows with their source and destination zones. This feature requires the "topology.kubernetes.io/zone" label to be set on nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addZone")]
+    pub add_zone: Option<bool>,
     /// `clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
@@ -1263,7 +1266,7 @@ pub struct FlowCollectorProcessor {
     /// `Metrics` define the processor configuration regarding metrics
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorProcessorMetrics>,
-    /// Set `multiClusterDeployment` to `true` to enable multi clusters feature. This will add clusterName label to flows data
+    /// Set `multiClusterDeployment` to `true` to enable multi clusters feature. This adds clusterName label to flows data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterDeployment")]
     pub multi_cluster_deployment: Option<bool>,
     /// Port of the flow collector (host port). By convention, some values are forbidden. It must be greater than 1024 and different from 4500, 4789 and 6081.

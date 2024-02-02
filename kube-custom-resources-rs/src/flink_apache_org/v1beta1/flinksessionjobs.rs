@@ -74,6 +74,8 @@ pub struct FlinkSessionJobStatus {
     pub job_status: Option<FlinkSessionJobStatusJobStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleState")]
     pub lifecycle_state: Option<FlinkSessionJobStatusLifecycleState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationStatus")]
     pub reconciliation_status: Option<FlinkSessionJobStatusReconciliationStatus>,
 }

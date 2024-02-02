@@ -9818,6 +9818,8 @@ spec:
                 - ROLLED_BACK
                 - FAILED
                 type: string
+              observedGeneration:
+                type: integer
               reconciliationStatus:
                 properties:
                   lastReconciledSpec:
