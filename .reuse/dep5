@@ -563,6 +563,10 @@ Files: crd-catalog/kubernetes-sigs/cluster-api-provider-vsphere/*
 Copyright: The kubernetes-sigs/cluster-api-provider-vsphere Authors
 License: Apache-2.0
 
+Files: crd-catalog/kubernetes-sigs/external-dns/*
+Copyright: The kubernetes-sigs/external-dns Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubernetes-sigs/gateway-api/*
 Copyright: The kubernetes-sigs/gateway-api Authors
 License: Apache-2.0

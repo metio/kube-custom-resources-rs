@@ -891,6 +891,7 @@ apiVersion `externaldata.gatekeeper.sh/v1beta1`:
 
 apiVersion `externaldns.k8s.io/v1alpha1`:
 - `DNSEndpoint`
+- `DNSEndpoint`
 
 ## externaldns_nginx_org
 
