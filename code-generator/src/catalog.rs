@@ -202,6 +202,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws/amazon-network-policy-controller-k8s",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws/amazon-network-policy-controller-k8s/blob/main/config/crd/bases/networking.k8s.aws_policyendpoints.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws/amazon-vpc-resource-controller-k8s",
         license: APACHE_V2,
         urls: &[

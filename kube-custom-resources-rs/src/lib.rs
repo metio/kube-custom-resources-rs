@@ -1664,6 +1664,11 @@ apiVersion `network.openshift.io/v1`:
 apiVersion `network.operator.openshift.io/v1`:
 - `EgressRouter`
 
+## networking_k8s_aws
+
+apiVersion `networking.k8s.aws/v1alpha1`:
+- `PolicyEndpoint`
+
 ## networking_karmada_io
 
 apiVersion `networking.karmada.io/v1alpha1`:
@@ -2719,6 +2724,8 @@ pub mod netchecks_io;
 pub mod network_openshift_io;
 #[cfg(feature = "network_operator_openshift_io")]
 pub mod network_operator_openshift_io;
+#[cfg(feature = "networking_k8s_aws")]
+pub mod networking_k8s_aws;
 #[cfg(feature = "networking_karmada_io")]
 pub mod networking_karmada_io;
 #[cfg(feature = "nfd_k8s_sigs_io")]
