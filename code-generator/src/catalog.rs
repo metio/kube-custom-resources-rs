@@ -1133,7 +1133,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "k8gb-io/k8gb",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/k8gb-io/k8gb/blob/master/chart/k8gb/crd/dns-endpoint-crd-manifest.yaml",
             "https://github.com/k8gb-io/k8gb/blob/master/chart/k8gb/crd/k8gb.absa.oss_gslbs.yaml",
         ],
     },
@@ -1435,6 +1434,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/blob/main/config/default/crd/bases/infrastructure.cluster.x-k8s.io_vspheremachines.yaml",
             "https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/blob/main/config/default/crd/bases/infrastructure.cluster.x-k8s.io_vspheremachinetemplates.yaml",
             "https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/blob/main/config/default/crd/bases/infrastructure.cluster.x-k8s.io_vspherevms.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "kubernetes-sigs/external-dns",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubernetes-sigs/external-dns/blob/master/docs/contributing/crd-source/crd-manifest.yaml",
         ],
     },
     UpstreamSource {
