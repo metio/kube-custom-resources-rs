@@ -79,6 +79,10 @@ Files: crd-catalog/authzed/spicedb-operator/*
 Copyright: The authzed/spicedb-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws/amazon-vpc-resource-controller-k8s/*
+Copyright: The aws/amazon-vpc-resource-controller-k8s Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/apigatewayv2-controller/*
 Copyright: The aws-controllers-k8s/apigatewayv2-controller Authors
 License: Apache-2.0

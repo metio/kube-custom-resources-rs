@@ -202,6 +202,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws/amazon-vpc-resource-controller-k8s",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws/amazon-vpc-resource-controller-k8s/blob/master/config/crd/bases/vpcresources.k8s.aws_cninodes.yaml",
+            "https://github.com/aws/amazon-vpc-resource-controller-k8s/blob/master/config/crd/bases/vpcresources.k8s.aws_securitygrouppolicies.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/apigatewayv2-controller",
         license: APACHE_V2,
         urls: &[

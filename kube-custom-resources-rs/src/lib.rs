@@ -2308,6 +2308,14 @@ apiVersion `virt.virtink.smartx.com/v1alpha1`:
 - `VirtualMachineMigration`
 - `VirtualMachine`
 
+## vpcresources_k8s_aws
+
+apiVersion `vpcresources.k8s.aws/v1alpha1`:
+- `CNINode`
+
+apiVersion `vpcresources.k8s.aws/v1beta1`:
+- `SecurityGroupPolicy`
+
 ## wgpolicyk8s_io
 
 apiVersion `wgpolicyk8s.io/v1alpha1`:
@@ -2875,6 +2883,8 @@ pub mod upgrade_cattle_io;
 pub mod upgrade_managed_openshift_io;
 #[cfg(feature = "virt_virtink_smartx_com")]
 pub mod virt_virtink_smartx_com;
+#[cfg(feature = "vpcresources_k8s_aws")]
+pub mod vpcresources_k8s_aws;
 #[cfg(feature = "wgpolicyk8s_io")]
 pub mod wgpolicyk8s_io;
 #[cfg(feature = "wildfly_org")]
