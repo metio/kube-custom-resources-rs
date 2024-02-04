@@ -131,6 +131,16 @@ apiVersion `app.terraform.io/v1alpha2`:
 - `Module`
 - `Workspace`
 
+## application_networking_k8s_aws
+
+apiVersion `application-networking.k8s.aws/v1alpha1`:
+- `AccessLogPolicy`
+- `IAMAuthPolicy`
+- `ServiceExport`
+- `ServiceImport`
+- `TargetGroupPolicy`
+- `VpcAssociationPolicy`
+
 ## applicationautoscaling_services_k8s_aws
 
 apiVersion `applicationautoscaling.services.k8s.aws/v1alpha1`:
@@ -2390,6 +2400,8 @@ pub mod app_lightbend_com;
 pub mod app_redislabs_com;
 #[cfg(feature = "app_terraform_io")]
 pub mod app_terraform_io;
+#[cfg(feature = "application_networking_k8s_aws")]
+pub mod application_networking_k8s_aws;
 #[cfg(feature = "applicationautoscaling_services_k8s_aws")]
 pub mod applicationautoscaling_services_k8s_aws;
 #[cfg(feature = "appprotect_f5_com")]
