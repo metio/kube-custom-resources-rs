@@ -2375,6 +2375,12 @@ apiVersion `work.karmada.io/v1alpha2`:
 
 apiVersion `workloads.kubeblocks.io/v1alpha1`:
 - `ReplicatedStateMachine`
+
+## zonecontrol_k8s_aws
+
+apiVersion `zonecontrol.k8s.aws/v1`:
+- `ZoneAwareUpdate`
+- `ZoneDisruptionBudget`
  */
 
 #[cfg(feature = "about_k8s_io")]
@@ -2925,3 +2931,5 @@ pub mod wildfly_org;
 pub mod work_karmada_io;
 #[cfg(feature = "workloads_kubeblocks_io")]
 pub mod workloads_kubeblocks_io;
+#[cfg(feature = "zonecontrol_k8s_aws")]
+pub mod zonecontrol_k8s_aws;

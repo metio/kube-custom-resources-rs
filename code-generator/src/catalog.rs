@@ -242,6 +242,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws/zone-aware-controllers-for-k8s",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws/zone-aware-controllers-for-k8s/blob/main/config/crd/bases/zonecontrol.k8s.aws_zoneawareupdates.yaml",
+            "https://github.com/aws/zone-aware-controllers-for-k8s/blob/main/config/crd/bases/zonecontrol.k8s.aws_zonedisruptionbudgets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/apigatewayv2-controller",
         license: APACHE_V2,
         urls: &[
