@@ -217,6 +217,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws/aws-application-networking-k8s",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws/aws-application-networking-k8s/blob/main/config/crds/bases/application-networking.k8s.aws_accesslogpolicies.yaml",
+            "https://github.com/aws/aws-application-networking-k8s/blob/main/config/crds/bases/application-networking.k8s.aws_iamauthpolicies.yaml",
+            "https://github.com/aws/aws-application-networking-k8s/blob/main/config/crds/bases/application-networking.k8s.aws_serviceexports.yaml",
+            "https://github.com/aws/aws-application-networking-k8s/blob/main/config/crds/bases/application-networking.k8s.aws_serviceimports.yaml",
+            "https://github.com/aws/aws-application-networking-k8s/blob/main/config/crds/bases/application-networking.k8s.aws_targetgrouppolicies.yaml",
+            "https://github.com/aws/aws-application-networking-k8s/blob/main/config/crds/bases/application-networking.k8s.aws_vpcassociationpolicies.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/apigatewayv2-controller",
         license: APACHE_V2,
         urls: &[
