@@ -229,6 +229,19 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws/aws-app-mesh-controller-for-k8",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws/aws-app-mesh-controller-for-k8s/blob/master/config/crd/bases/appmesh.k8s.aws_backendgroups.yaml",
+            "https://github.com/aws/aws-app-mesh-controller-for-k8s/blob/master/config/crd/bases/appmesh.k8s.aws_gatewayroutes.yaml",
+            "https://github.com/aws/aws-app-mesh-controller-for-k8s/blob/master/config/crd/bases/appmesh.k8s.aws_meshes.yaml",
+            "https://github.com/aws/aws-app-mesh-controller-for-k8s/blob/master/config/crd/bases/appmesh.k8s.aws_virtualgateways.yaml",
+            "https://github.com/aws/aws-app-mesh-controller-for-k8s/blob/master/config/crd/bases/appmesh.k8s.aws_virtualnodes.yaml",
+            "https://github.com/aws/aws-app-mesh-controller-for-k8s/blob/master/config/crd/bases/appmesh.k8s.aws_virtualrouters.yaml",
+            "https://github.com/aws/aws-app-mesh-controller-for-k8s/blob/master/config/crd/bases/appmesh.k8s.aws_virtualservices.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/apigatewayv2-controller",
         license: APACHE_V2,
         urls: &[
