@@ -21,7 +21,7 @@ jobs:
         run: cargo check --package code-generator --locked
       - name: Check changed CRDs
         run: |
-          for feature in $(git diff --name-only origin/main -- ./kube-custom-resources-rs/src | grep --invert-match lib.rs | xargs --no-run-if-empty -I{} dirname {} | sort --unique | xargs --no-run-if-empty -I{} basename {}); do
+          for feature in $(git diff --name-only origin/main -- ./kube-custom-resources-rs/src | grep --invert-match lib.rs | xargs --no-run-if-empty -I{} dirname {} | sort --unique | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} basename {}); do
             if [ -f "./kube-custom-resources-rs/src/${feature}/mod.rs" ]; then
               ./code-generator/test-custom-resources.sh "${feature}"
             fi
