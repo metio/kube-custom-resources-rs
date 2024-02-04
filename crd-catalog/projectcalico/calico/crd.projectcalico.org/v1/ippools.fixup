@@ -3,10 +3,11 @@
 # SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 # SPDX-License-Identifier: 0BSD
 
-project=$(dirname "${0}")
-echo "fixing ${project}"
+folder=$(dirname "${0}")
+crd=$(basename "${0}" .fixup)
+yaml=$(<"${folder}/${crd}.yaml")
 
 properties='.spec.versions[0].schema.openAPIV3Schema.properties.spec.properties'
 
-yq --inplace "del(${properties}.nat-outgoing)" \
-  "${project}/ippools.yaml"
+echo "${yaml}" |
+  yq "del(${properties}.nat-outgoing)"

@@ -2,3 +2,4 @@
 # SPDX-License-Identifier: 0BSD
 
 target/
+crd-catalog/**/*.fixed
