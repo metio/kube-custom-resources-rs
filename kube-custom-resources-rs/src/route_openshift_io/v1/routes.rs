@@ -273,7 +273,7 @@ pub struct RouteStatusIngressConditions {
     pub reason: Option<String>,
     /// Status is the status of the condition. Can be True, False, Unknown.
     pub status: String,
-    /// Type is the type of the condition. Currently only Admitted.
+    /// Type is the type of the condition. Currently only Admitted or UnservableInFutureVersions.
     #[serde(rename = "type")]
     pub r#type: String,
 }

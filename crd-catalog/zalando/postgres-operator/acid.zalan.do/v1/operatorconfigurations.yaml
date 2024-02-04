@@ -95,7 +95,7 @@ spec:
                     pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                     type: string
                   connection_pooler_image:
-                    default: registry.opensource.zalan.do/acid/pgbouncer:master-27
+                    default: registry.opensource.zalan.do/acid/pgbouncer:master-32
                     type: string
                   connection_pooler_max_db_connections:
                     default: 60
