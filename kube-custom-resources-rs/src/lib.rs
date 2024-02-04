@@ -147,6 +147,17 @@ apiVersion `applicationautoscaling.services.k8s.aws/v1alpha1`:
 - `ScalableTarget`
 - `ScalingPolicy`
 
+## appmesh_k8s_aws
+
+apiVersion `appmesh.k8s.aws/v1beta2`:
+- `BackendGroup`
+- `GatewayRoute`
+- `Mesh`
+- `VirtualGateway`
+- `VirtualNode`
+- `VirtualRouter`
+- `VirtualService`
+
 ## appprotect_f5_com
 
 apiVersion `appprotect.f5.com/v1beta1`:
@@ -890,7 +901,6 @@ apiVersion `externaldata.gatekeeper.sh/v1beta1`:
 ## externaldns_k8s_io
 
 apiVersion `externaldns.k8s.io/v1alpha1`:
-- `DNSEndpoint`
 - `DNSEndpoint`
 
 ## externaldns_nginx_org
@@ -2405,6 +2415,8 @@ pub mod app_terraform_io;
 pub mod application_networking_k8s_aws;
 #[cfg(feature = "applicationautoscaling_services_k8s_aws")]
 pub mod applicationautoscaling_services_k8s_aws;
+#[cfg(feature = "appmesh_k8s_aws")]
+pub mod appmesh_k8s_aws;
 #[cfg(feature = "appprotect_f5_com")]
 pub mod appprotect_f5_com;
 #[cfg(feature = "appprotectdos_f5_com")]

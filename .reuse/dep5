@@ -91,6 +91,10 @@ Files: crd-catalog/aws/aws-application-networking-k8s/*
 Copyright: The aws/aws-application-networking-k8s Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws/aws-app-mesh-controller-for-k8/*
+Copyright: The aws/aws-app-mesh-controller-for-k8 Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/apigatewayv2-controller/*
 Copyright: The aws-controllers-k8s/apigatewayv2-controller Authors
 License: Apache-2.0
