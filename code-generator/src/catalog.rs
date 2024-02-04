@@ -917,6 +917,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "FyraLabs/chisel-operator",
+        license: GPL_V3_OR_LATER,
+        urls: &[
+            "https://github.com/FyraLabs/chisel-operator/blob/main/deploy/crd/exit-node-provisioner.yaml",
+            "https://github.com/FyraLabs/chisel-operator/blob/main/deploy/crd/exit-node.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "furiko-io/furiko",
         license: APACHE_V2,
         urls: &[
@@ -2336,6 +2344,7 @@ const EPL_V2: &'static str = "EPL-2.0";
 const AGPL_V3_ONLY: &'static str = "AGPL-3.0-only";
 const AGPL_V3_OR_LATER: &'static str = "AGPL-3.0-or-later";
 const GPL_V2_OR_LATER: &'static str = "GPL-2.0-or-later";
+const GPL_V3_OR_LATER: &'static str = "GPL-3.0-or-later";
 const UPL_V1: &'static str = "UPL-1.0";
 const MPL_V2: &'static str = "MPL-2.0";
 const KUBEMOD: &'static str = "LicenseRef-Kubemod";

@@ -488,6 +488,12 @@ apiVersion `chaosblade.io/v1alpha1`:
 apiVersion `che.eclipse.org/v1alpha1`:
 - `KubernetesImagePuller`
 
+## chisel_operator_io
+
+apiVersion `chisel-operator.io/v1`:
+- `ExitNodeProvisioner`
+- `ExitNode`
+
 ## cilium_io
 
 apiVersion `cilium.io/v2`:
@@ -2449,6 +2455,8 @@ pub mod chaos_mesh_org;
 pub mod chaosblade_io;
 #[cfg(feature = "che_eclipse_org")]
 pub mod che_eclipse_org;
+#[cfg(feature = "chisel_operator_io")]
+pub mod chisel_operator_io;
 #[cfg(feature = "cilium_io")]
 pub mod cilium_io;
 #[cfg(feature = "claudie_io")]
