@@ -355,6 +355,10 @@ Files: crd-catalog/fossul/fossul/*
 Copyright: The fossul/fossul Authors
 License: Apache-2.0
 
+Files: crd-catalog/FyraLabs/chisel-operator/*
+Copyright: The FyraLabs/chisel-operator Authors
+License: GPL-3.0-or-later
+
 Files: crd-catalog/furiko-io/furiko/*
 Copyright: The furiko-io/furiko Authors
 License: Apache-2.0
