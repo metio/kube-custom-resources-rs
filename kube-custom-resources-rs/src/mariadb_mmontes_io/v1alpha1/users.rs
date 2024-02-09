@@ -18,7 +18,7 @@ pub struct UserSpec {
     /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: UserMariaDbRef,
-    /// MaxUserConnections defines the maximum number of connections that the User can have.
+    /// MaxUserConnections defines the maximum number of connections that the User can establish.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUserConnections")]
     pub max_user_connections: Option<i32>,
     /// Name overrides the default name provided by metadata.name.

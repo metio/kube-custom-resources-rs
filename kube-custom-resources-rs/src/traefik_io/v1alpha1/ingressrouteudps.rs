@@ -12,7 +12,10 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct IngressRouteUDPSpec {
-    /// EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v3.0/routing/entrypoints/ Default: all.
+    /// EntryPoints defines the list of entry point names to bind to.
+    /// Entry points have to be configured in the static configuration.
+    /// More info: https://doc.traefik.io/traefik/v3.0/routing/entrypoints/
+    /// Default: all.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,
     /// Routes defines the list of routes.
@@ -35,10 +38,14 @@ pub struct IngressRouteUDPRoutesServices {
     /// Namespace defines the namespace of the referenced Kubernetes Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// NativeLB controls, when creating the load-balancer, whether the LB's children are directly the pods IPs or if the only child is the Kubernetes Service clusterIP. The Kubernetes Service itself does load-balance to the pods. By default, NativeLB is false.
+    /// NativeLB controls, when creating the load-balancer,
+    /// whether the LB's children are directly the pods IPs or if the only child is the Kubernetes Service clusterIP.
+    /// The Kubernetes Service itself does load-balance to the pods.
+    /// By default, NativeLB is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeLB")]
     pub native_lb: Option<bool>,
-    /// Port defines the port of a Kubernetes Service. This can be a reference to a named port.
+    /// Port defines the port of a Kubernetes Service.
+    /// This can be a reference to a named port.
     pub port: IntOrString,
     /// Weight defines the weight used when balancing requests between multiple Kubernetes Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]

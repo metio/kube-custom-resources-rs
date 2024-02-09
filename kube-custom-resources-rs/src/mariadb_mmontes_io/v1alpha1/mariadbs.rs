@@ -1665,6 +1665,9 @@ pub struct MariaDBConnection {
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
+    /// Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
     /// SecretName to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
@@ -3630,6 +3633,9 @@ pub struct MariaDBMaxScale {
     /// Config defines the MaxScale configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<MariaDBMaxScaleConfig>,
+    /// Connection provides a template to define the Connection for MaxScale.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub connection: Option<MariaDBMaxScaleConnection>,
     /// Enabled is a flag to enable Metrics
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -4139,6 +4145,9 @@ pub struct MariaDBMaxScaleAuth {
     /// AdminUsername is an admin username to call the admin REST API. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
+    /// ClientMaxConnections defines the maximum number of connections that the client can establish. If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections. It defaults to 30 times the number of MaxScale replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientMaxConnections")]
+    pub client_max_connections: Option<i32>,
     /// ClientPasswordSecretKeyRef is Secret key reference to the password to connect to MaxScale. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPasswordSecretKeyRef")]
     pub client_password_secret_key_ref: Option<MariaDBMaxScaleAuthClientPasswordSecretKeyRef>,
@@ -4151,18 +4160,27 @@ pub struct MariaDBMaxScaleAuth {
     /// Generate  defies whether the operator should generate users and grants for MaxScale to work. It only supports MariaDBs specified via spec.mariaDbRef.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
+    /// MonitorMaxConnections defines the maximum number of connections that the monitor can establish. If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections. It defaults to 30 times the number of MaxScale replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorMaxConnections")]
+    pub monitor_max_connections: Option<i32>,
     /// MonitorPasswordSecretKeyRef is Secret key reference to the password used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorPasswordSecretKeyRef")]
     pub monitor_password_secret_key_ref: Option<MariaDBMaxScaleAuthMonitorPasswordSecretKeyRef>,
     /// MonitorUsername is the user used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorUsername")]
     pub monitor_username: Option<String>,
+    /// ServerMaxConnections defines the maximum number of connections that the server can establish. If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections. It defaults to 30 times the number of MaxScale replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverMaxConnections")]
+    pub server_max_connections: Option<i32>,
     /// ServerPasswordSecretKeyRef is Secret key reference to the password used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverPasswordSecretKeyRef")]
     pub server_password_secret_key_ref: Option<MariaDBMaxScaleAuthServerPasswordSecretKeyRef>,
     /// ServerUsername is the user used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverUsername")]
     pub server_username: Option<String>,
+    /// SyncMaxConnections defines the maximum number of connections that the sync can establish. If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections. It defaults to 30 times the number of MaxScale replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncMaxConnections")]
+    pub sync_max_connections: Option<i32>,
     /// SyncPasswordSecretKeyRef is Secret key reference to the password used by MaxScale config to connect to MariaDB server. It is defaulted when HA is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncPasswordSecretKeyRef")]
     pub sync_password_secret_key_ref: Option<MariaDBMaxScaleAuthSyncPasswordSecretKeyRef>,
@@ -4370,6 +4388,72 @@ pub struct MariaDBMaxScaleConfigVolumeClaimTemplateSelectorMatchExpressions {
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Connection provides a template to define the Connection for MaxScale.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBMaxScaleConnection {
+    /// HealthCheck to be used in the Connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
+    pub health_check: Option<MariaDBMaxScaleConnectionHealthCheck>,
+    /// Params to be used in the Connection.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<BTreeMap<String, String>>,
+    /// Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// SecretName to be used in the Connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+    /// SecretTemplate to be used in the Connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
+    pub secret_template: Option<MariaDBMaxScaleConnectionSecretTemplate>,
+    /// ServiceName to be used in the Connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+}
+
+/// HealthCheck to be used in the Connection.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBMaxScaleConnectionHealthCheck {
+    /// Interval used to perform health checks.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
+    /// RetryInterval is the intervañ used to perform health check retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<String>,
+}
+
+/// SecretTemplate to be used in the Connection.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MariaDBMaxScaleConnectionSecretTemplate {
+    /// Annotations to be added to the Secret object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// DatabaseKey to be used in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
+    pub database_key: Option<String>,
+    /// Format to be used in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
+    /// HostKey to be used in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
+    pub host_key: Option<String>,
+    /// Key to be used in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Labels to be added to the Secret object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// PasswordKey to be used in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
+    pub password_key: Option<String>,
+    /// PortKey to be used in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
+    pub port_key: Option<String>,
+    /// UsernameKey to be used in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
+    pub username_key: Option<String>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -7793,6 +7877,9 @@ pub struct MariaDBPrimaryConnection {
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
+    /// Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
     /// SecretName to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
@@ -8103,6 +8190,9 @@ pub struct MariaDBSecondaryConnection {
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
+    /// Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
     /// SecretName to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,

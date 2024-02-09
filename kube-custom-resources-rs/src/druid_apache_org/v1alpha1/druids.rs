@@ -310,7 +310,7 @@ pub struct DruidAdditionalContainerResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1109,7 +1109,7 @@ pub struct DruidLivenessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+    /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<DruidLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -1143,7 +1143,7 @@ pub struct DruidLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+/// GRPC specifies an action involving a GRPC port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1176,7 +1176,7 @@ pub struct DruidLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidLivenessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1501,7 +1501,7 @@ pub struct DruidNodesAdditionalContainerResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -2287,7 +2287,7 @@ pub struct DruidNodesHpAutoscalerBehaviorScaleDown {
     /// selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
-    /// StabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
+    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
@@ -2295,13 +2295,13 @@ pub struct DruidNodesHpAutoscalerBehaviorScaleDown {
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesHpAutoscalerBehaviorScaleDownPolicies {
-    /// PeriodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+    /// periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
     #[serde(rename = "periodSeconds")]
     pub period_seconds: i32,
-    /// Type is used to specify the scaling policy.
+    /// type is used to specify the scaling policy.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// Value contains the amount of change which is permitted by the policy. It must be greater than zero
+    /// value contains the amount of change which is permitted by the policy. It must be greater than zero
     pub value: i32,
 }
 
@@ -2314,7 +2314,7 @@ pub struct DruidNodesHpAutoscalerBehaviorScaleUp {
     /// selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
-    /// StabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
+    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
@@ -2322,13 +2322,13 @@ pub struct DruidNodesHpAutoscalerBehaviorScaleUp {
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesHpAutoscalerBehaviorScaleUpPolicies {
-    /// PeriodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+    /// periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
     #[serde(rename = "periodSeconds")]
     pub period_seconds: i32,
-    /// Type is used to specify the scaling policy.
+    /// type is used to specify the scaling policy.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// Value contains the amount of change which is permitted by the policy. It must be greater than zero
+    /// value contains the amount of change which is permitted by the policy. It must be greater than zero
     pub value: i32,
 }
 
@@ -2457,12 +2457,12 @@ pub struct DruidNodesHpAutoscalerMetricsObject {
 /// describedObject specifies the descriptions of a object,such as kind,name apiVersion
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesHpAutoscalerMetricsObjectDescribedObject {
-    /// API version of the referent
+    /// apiVersion is the API version of the referent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
-    /// Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
 }
 
@@ -2604,12 +2604,12 @@ pub struct DruidNodesHpAutoscalerMetricsResourceTarget {
 /// scaleTargetRef points to the target resource to scale, and is used to the pods for which metrics should be collected, as well as to actually change the replica count.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesHpAutoscalerScaleTargetRef {
-    /// API version of the referent
+    /// apiVersion is the API version of the referent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
-    /// Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
 }
 
@@ -2624,32 +2624,32 @@ pub struct DruidNodesImagePullSecrets {
 /// Ingress Kubernetes Native `Ingress` specification.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngress {
-    /// DefaultBackend is the backend that should handle requests that don't match any rule. If Rules are not specified, DefaultBackend must be specified. If DefaultBackend is not set, the handling of requests that do not match any of the rules will be up to the Ingress controller.
+    /// defaultBackend is the backend that should handle requests that don't match any rule. If Rules are not specified, DefaultBackend must be specified. If DefaultBackend is not set, the handling of requests that do not match any of the rules will be up to the Ingress controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultBackend")]
     pub default_backend: Option<DruidNodesIngressDefaultBackend>,
-    /// IngressClassName is the name of an IngressClass cluster resource. Ingress controller implementations use this field to know whether they should be serving this Ingress resource, by a transitive connection (controller -> IngressClass -> Ingress resource). Although the `kubernetes.io/ingress.class` annotation (simple constant name) was never formally defined, it was widely supported by Ingress controllers to create a direct binding between Ingress controller and Ingress resources. Newly created Ingress resources should prefer using the field. However, even though the annotation is officially deprecated, for backwards compatibility reasons, ingress controllers should still honor that annotation if present.
+    /// ingressClassName is the name of an IngressClass cluster resource. Ingress controller implementations use this field to know whether they should be serving this Ingress resource, by a transitive connection (controller -> IngressClass -> Ingress resource). Although the `kubernetes.io/ingress.class` annotation (simple constant name) was never formally defined, it was widely supported by Ingress controllers to create a direct binding between Ingress controller and Ingress resources. Newly created Ingress resources should prefer using the field. However, even though the annotation is officially deprecated, for backwards compatibility reasons, ingress controllers should still honor that annotation if present.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
-    /// A list of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.
+    /// rules is a list of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<DruidNodesIngressRules>>,
-    /// TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
+    /// tls represents the TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<Vec<DruidNodesIngressTls>>,
 }
 
-/// DefaultBackend is the backend that should handle requests that don't match any rule. If Rules are not specified, DefaultBackend must be specified. If DefaultBackend is not set, the handling of requests that do not match any of the rules will be up to the Ingress controller.
+/// defaultBackend is the backend that should handle requests that don't match any rule. If Rules are not specified, DefaultBackend must be specified. If DefaultBackend is not set, the handling of requests that do not match any of the rules will be up to the Ingress controller.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressDefaultBackend {
-    /// Resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
+    /// resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<DruidNodesIngressDefaultBackendResource>,
-    /// Service references a Service as a Backend. This is a mutually exclusive setting with "Resource".
+    /// service references a service as a backend. This is a mutually exclusive setting with "Resource".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<DruidNodesIngressDefaultBackendService>,
 }
 
-/// Resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
+/// resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressDefaultBackendResource {
     /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
@@ -2661,23 +2661,23 @@ pub struct DruidNodesIngressDefaultBackendResource {
     pub name: String,
 }
 
-/// Service references a Service as a Backend. This is a mutually exclusive setting with "Resource".
+/// service references a service as a backend. This is a mutually exclusive setting with "Resource".
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressDefaultBackendService {
-    /// Name is the referenced service. The service must exist in the same namespace as the Ingress object.
+    /// name is the referenced service. The service must exist in the same namespace as the Ingress object.
     pub name: String,
-    /// Port of the referenced service. A port name or port number is required for a IngressServiceBackend.
+    /// port of the referenced service. A port name or port number is required for a IngressServiceBackend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<DruidNodesIngressDefaultBackendServicePort>,
 }
 
-/// Port of the referenced service. A port name or port number is required for a IngressServiceBackend.
+/// port of the referenced service. A port name or port number is required for a IngressServiceBackend.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressDefaultBackendServicePort {
-    /// Name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
+    /// name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
+    /// number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub number: Option<i32>,
 }
@@ -2685,8 +2685,8 @@ pub struct DruidNodesIngressDefaultBackendServicePort {
 /// IngressRule represents the rules mapping the paths under a specified host to the related backend services. Incoming requests are first evaluated for a host match, then routed to the backend associated with the matching IngressRuleValue.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressRules {
-    /// Host is the fully qualified domain name of a network host, as defined by RFC 3986. Note the following deviations from the "host" part of the URI as defined in RFC 3986: 1. IPs are not allowed. Currently an IngressRuleValue can only apply to the IP in the Spec of the parent Ingress. 2. The `:` delimiter is not respected because ports are not allowed. Currently the port of an Ingress is implicitly :80 for http and :443 for https. Both these may change in the future. Incoming requests are matched against the host before the IngressRuleValue. If the host is unspecified, the Ingress routes all traffic based on the specified IngressRuleValue. 
-    ///  Host can be "precise" which is a domain name without the terminating dot of a network host (e.g. "foo.bar.com") or "wildcard", which is a domain name prefixed with a single wildcard label (e.g. "*.foo.com"). The wildcard character '*' must appear by itself as the first DNS label and matches only a single label. You cannot have a wildcard label by itself (e.g. Host == "*"). Requests will be matched against the Host field in the following way: 1. If Host is precise, the request matches this rule if the http host header is equal to Host. 2. If Host is a wildcard, then the request matches this rule if the http host header is to equal to the suffix (removing the first label) of the wildcard rule.
+    /// host is the fully qualified domain name of a network host, as defined by RFC 3986. Note the following deviations from the "host" part of the URI as defined in RFC 3986: 1. IPs are not allowed. Currently an IngressRuleValue can only apply to the IP in the Spec of the parent Ingress. 2. The `:` delimiter is not respected because ports are not allowed. Currently the port of an Ingress is implicitly :80 for http and :443 for https. Both these may change in the future. Incoming requests are matched against the host before the IngressRuleValue. If the host is unspecified, the Ingress routes all traffic based on the specified IngressRuleValue. 
+    ///  host can be "precise" which is a domain name without the terminating dot of a network host (e.g. "foo.bar.com") or "wildcard", which is a domain name prefixed with a single wildcard label (e.g. "*.foo.com"). The wildcard character '*' must appear by itself as the first DNS label and matches only a single label. You cannot have a wildcard label by itself (e.g. Host == "*"). Requests will be matched against the Host field in the following way: 1. If host is precise, the request matches this rule if the http host header is equal to Host. 2. If host is a wildcard, then the request matches this rule if the http host header is to equal to the suffix (removing the first label) of the wildcard rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// HTTPIngressRuleValue is a list of http selectors pointing to backends. In the example: http://<host>/<path>?<searchpart> -> backend where where parts of the url correspond to RFC 3986, this resource will be used to match against everything after the last '/' and before the first '?' or '#'.
@@ -2697,35 +2697,35 @@ pub struct DruidNodesIngressRules {
 /// HTTPIngressRuleValue is a list of http selectors pointing to backends. In the example: http://<host>/<path>?<searchpart> -> backend where where parts of the url correspond to RFC 3986, this resource will be used to match against everything after the last '/' and before the first '?' or '#'.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressRulesHttp {
-    /// A collection of paths that map requests to backends.
+    /// paths is a collection of paths that map requests to backends.
     pub paths: Vec<DruidNodesIngressRulesHttpPaths>,
 }
 
 /// HTTPIngressPath associates a path with a backend. Incoming urls matching the path are forwarded to the backend.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressRulesHttpPaths {
-    /// Backend defines the referenced service endpoint to which the traffic will be forwarded to.
+    /// backend defines the referenced service endpoint to which the traffic will be forwarded to.
     pub backend: DruidNodesIngressRulesHttpPathsBackend,
-    /// Path is matched against the path of an incoming request. Currently it can contain characters disallowed from the conventional "path" part of a URL as defined by RFC 3986. Paths must begin with a '/' and must be present when using PathType with value "Exact" or "Prefix".
+    /// path is matched against the path of an incoming request. Currently it can contain characters disallowed from the conventional "path" part of a URL as defined by RFC 3986. Paths must begin with a '/' and must be present when using PathType with value "Exact" or "Prefix".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// PathType determines the interpretation of the Path matching. PathType can be one of the following values: * Exact: Matches the URL path exactly. * Prefix: Matches based on a URL path prefix split by '/'. Matching is done on a path element by element basis. A path element refers is the list of labels in the path split by the '/' separator. A request is a match for path p if every p is an element-wise prefix of p of the request path. Note that if the last element of the path is a substring of the last element in request path, it is not a match (e.g. /foo/bar matches /foo/bar/baz, but does not match /foo/barbaz). * ImplementationSpecific: Interpretation of the Path matching is up to the IngressClass. Implementations can treat this as a separate PathType or treat it identically to Prefix or Exact path types. Implementations are required to support all path types.
+    /// pathType determines the interpretation of the path matching. PathType can be one of the following values: * Exact: Matches the URL path exactly. * Prefix: Matches based on a URL path prefix split by '/'. Matching is done on a path element by element basis. A path element refers is the list of labels in the path split by the '/' separator. A request is a match for path p if every p is an element-wise prefix of p of the request path. Note that if the last element of the path is a substring of the last element in request path, it is not a match (e.g. /foo/bar matches /foo/bar/baz, but does not match /foo/barbaz). * ImplementationSpecific: Interpretation of the Path matching is up to the IngressClass. Implementations can treat this as a separate PathType or treat it identically to Prefix or Exact path types. Implementations are required to support all path types.
     #[serde(rename = "pathType")]
     pub path_type: String,
 }
 
-/// Backend defines the referenced service endpoint to which the traffic will be forwarded to.
+/// backend defines the referenced service endpoint to which the traffic will be forwarded to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressRulesHttpPathsBackend {
-    /// Resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
+    /// resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<DruidNodesIngressRulesHttpPathsBackendResource>,
-    /// Service references a Service as a Backend. This is a mutually exclusive setting with "Resource".
+    /// service references a service as a backend. This is a mutually exclusive setting with "Resource".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<DruidNodesIngressRulesHttpPathsBackendService>,
 }
 
-/// Resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
+/// resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressRulesHttpPathsBackendResource {
     /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
@@ -2737,34 +2737,34 @@ pub struct DruidNodesIngressRulesHttpPathsBackendResource {
     pub name: String,
 }
 
-/// Service references a Service as a Backend. This is a mutually exclusive setting with "Resource".
+/// service references a service as a backend. This is a mutually exclusive setting with "Resource".
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressRulesHttpPathsBackendService {
-    /// Name is the referenced service. The service must exist in the same namespace as the Ingress object.
+    /// name is the referenced service. The service must exist in the same namespace as the Ingress object.
     pub name: String,
-    /// Port of the referenced service. A port name or port number is required for a IngressServiceBackend.
+    /// port of the referenced service. A port name or port number is required for a IngressServiceBackend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<DruidNodesIngressRulesHttpPathsBackendServicePort>,
 }
 
-/// Port of the referenced service. A port name or port number is required for a IngressServiceBackend.
+/// port of the referenced service. A port name or port number is required for a IngressServiceBackend.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressRulesHttpPathsBackendServicePort {
-    /// Name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
+    /// name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
+    /// number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub number: Option<i32>,
 }
 
-/// IngressTLS describes the transport layer security associated with an Ingress.
+/// IngressTLS describes the transport layer security associated with an ingress.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesIngressTls {
-    /// Hosts are a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
+    /// hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// SecretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the Host header is used for routing.
+    /// secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the "Host" header is used for routing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
@@ -2824,7 +2824,7 @@ pub struct DruidNodesLifecyclePostStartHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2884,7 +2884,7 @@ pub struct DruidNodesLifecyclePreStopHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -2909,7 +2909,7 @@ pub struct DruidNodesLivenessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+    /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<DruidNodesLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -2943,7 +2943,7 @@ pub struct DruidNodesLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+/// GRPC specifies an action involving a GRPC port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2976,7 +2976,7 @@ pub struct DruidNodesLivenessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesLivenessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -3113,7 +3113,7 @@ pub struct DruidNodesPersistentVolumeClaimSpecResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -3171,7 +3171,7 @@ pub struct DruidNodesPersistentVolumeClaimStatus {
     pub resize_status: Option<String>,
 }
 
-/// PersistentVolumeClaimCondition contails details about state of pvc
+/// PersistentVolumeClaimCondition contains details about state of pvc
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesPersistentVolumeClaimStatusConditions {
     /// lastProbeTime is the time we probed the condition.
@@ -3209,7 +3209,7 @@ pub struct DruidNodesPodDisruptionBudgetSpec {
     ///  IfHealthyBudget policy means that running pods (status.phase="Running"), but not yet healthy can be evicted only if the guarded application is not disrupted (status.currentHealthy is at least equal to status.desiredHealthy). Healthy pods will be subject to the PDB for eviction. 
     ///  AlwaysAllow policy means that all running pods (status.phase="Running"), but not yet healthy are considered disrupted and can be evicted regardless of whether the criteria in a PDB is met. This means perspective running pods of a disrupted application might not get a chance to become healthy. Healthy pods will be subject to the PDB for eviction. 
     ///  Additional policies may be added in the future. Clients making eviction decisions should disallow eviction of unhealthy pods if they encounter an unrecognized policy in this field. 
-    ///  This field is alpha-level. The eviction API uses this field when the feature gate PDBUnhealthyPodEvictionPolicy is enabled (disabled by default).
+    ///  This field is beta-level. The eviction API uses this field when the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
     pub unhealthy_pod_eviction_policy: Option<String>,
 }
@@ -3266,7 +3266,7 @@ pub struct DruidNodesReadinessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+    /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<DruidNodesReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -3300,7 +3300,7 @@ pub struct DruidNodesReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+/// GRPC specifies an action involving a GRPC port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3333,7 +3333,7 @@ pub struct DruidNodesReadinessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesReadinessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -3360,7 +3360,7 @@ pub struct DruidNodesResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -3686,7 +3686,7 @@ pub struct DruidNodesStartUpProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+    /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<DruidNodesStartUpProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -3720,7 +3720,7 @@ pub struct DruidNodesStartUpProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+/// GRPC specifies an action involving a GRPC port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesStartUpProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3753,7 +3753,7 @@ pub struct DruidNodesStartUpProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesStartUpProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -3795,7 +3795,8 @@ pub struct DruidNodesTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<DruidNodesTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector.
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. 
+    ///  This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. The global minimum is the minimum number of matching pods in an eligible domain or zero if the number of eligible domains is less than MinDomains. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 2/2/1: In this case, the global minimum is 1. | zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.
@@ -3969,7 +3970,7 @@ pub struct DruidNodesVolumeClaimTemplatesSpecResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -4027,7 +4028,7 @@ pub struct DruidNodesVolumeClaimTemplatesStatus {
     pub resize_status: Option<String>,
 }
 
-/// PersistentVolumeClaimCondition contails details about state of pvc
+/// PersistentVolumeClaimCondition contains details about state of pvc
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidNodesVolumeClaimTemplatesStatusConditions {
     /// lastProbeTime is the time we probed the condition.
@@ -4390,7 +4391,7 @@ pub struct DruidNodesVolumesEmptyDir {
     /// medium represents what type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
@@ -4505,7 +4506,7 @@ pub struct DruidNodesVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -5063,7 +5064,7 @@ pub struct DruidReadinessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+    /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<DruidReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -5097,7 +5098,7 @@ pub struct DruidReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+/// GRPC specifies an action involving a GRPC port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -5130,7 +5131,7 @@ pub struct DruidReadinessProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidReadinessProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -5460,7 +5461,7 @@ pub struct DruidStartUpProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+    /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<DruidStartUpProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
@@ -5494,7 +5495,7 @@ pub struct DruidStartUpProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+/// GRPC specifies an action involving a GRPC port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidStartUpProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -5527,7 +5528,7 @@ pub struct DruidStartUpProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidStartUpProbeHttpGetHttpHeaders {
-    /// The header field name
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -5687,7 +5688,7 @@ pub struct DruidVolumeClaimTemplatesSpecResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -5745,7 +5746,7 @@ pub struct DruidVolumeClaimTemplatesStatus {
     pub resize_status: Option<String>,
 }
 
-/// PersistentVolumeClaimCondition contails details about state of pvc
+/// PersistentVolumeClaimCondition contains details about state of pvc
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidVolumeClaimTemplatesStatusConditions {
     /// lastProbeTime is the time we probed the condition.
@@ -6108,7 +6109,7 @@ pub struct DruidVolumesEmptyDir {
     /// medium represents what type of storage medium should back this directory. The default is "" which means to use the node's default medium. Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
@@ -6223,7 +6224,7 @@ pub struct DruidVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }

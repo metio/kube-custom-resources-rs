@@ -203,7 +203,7 @@ spec:
                             - type: string
                             pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                             x-kubernetes-int-or-string: true
-                          description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                          description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                           type: object
                       type: object
                     runAsInit:
@@ -1118,7 +1118,7 @@ spec:
                     format: int32
                     type: integer
                   grpc:
-                    description: GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+                    description: GRPC specifies an action involving a GRPC port.
                     properties:
                       port:
                         description: Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1142,7 +1142,7 @@ spec:
                           description: HTTPHeader describes a custom header to be used in HTTP probes
                           properties:
                             name:
-                              description: The header field name
+                              description: The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
                               type: string
                             value:
                               description: The header field value
@@ -1405,7 +1405,7 @@ spec:
                                   - type: string
                                   pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                   x-kubernetes-int-or-string: true
-                                description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                 type: object
                             type: object
                           runAsInit:
@@ -2229,14 +2229,14 @@ spec:
                                     description: HPAScalingPolicy is a single policy which must hold true for a specified past interval.
                                     properties:
                                       periodSeconds:
-                                        description: PeriodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+                                        description: periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
                                         format: int32
                                         type: integer
                                       type:
-                                        description: Type is used to specify the scaling policy.
+                                        description: type is used to specify the scaling policy.
                                         type: string
                                       value:
-                                        description: Value contains the amount of change which is permitted by the policy. It must be greater than zero
+                                        description: value contains the amount of change which is permitted by the policy. It must be greater than zero
                                         format: int32
                                         type: integer
                                     required:
@@ -2250,7 +2250,7 @@ spec:
                                   description: selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.
                                   type: string
                                 stabilizationWindowSeconds:
-                                  description: 'StabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).'
+                                  description: 'stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).'
                                   format: int32
                                   type: integer
                               type: object
@@ -2263,14 +2263,14 @@ spec:
                                     description: HPAScalingPolicy is a single policy which must hold true for a specified past interval.
                                     properties:
                                       periodSeconds:
-                                        description: PeriodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+                                        description: periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
                                         format: int32
                                         type: integer
                                       type:
-                                        description: Type is used to specify the scaling policy.
+                                        description: type is used to specify the scaling policy.
                                         type: string
                                       value:
-                                        description: Value contains the amount of change which is permitted by the policy. It must be greater than zero
+                                        description: value contains the amount of change which is permitted by the policy. It must be greater than zero
                                         format: int32
                                         type: integer
                                     required:
@@ -2284,7 +2284,7 @@ spec:
                                   description: selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.
                                   type: string
                                 stabilizationWindowSeconds:
-                                  description: 'StabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).'
+                                  description: 'stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).'
                                   format: int32
                                   type: integer
                               type: object
@@ -2420,13 +2420,13 @@ spec:
                                     description: describedObject specifies the descriptions of a object,such as kind,name apiVersion
                                     properties:
                                       apiVersion:
-                                        description: API version of the referent
+                                        description: apiVersion is the API version of the referent
                                         type: string
                                       kind:
-                                        description: 'Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                        description: 'kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
                                         type: string
                                       name:
-                                        description: 'Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names'
+                                        description: 'name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                                         type: string
                                     required:
                                     - kind
@@ -2631,13 +2631,13 @@ spec:
                           description: scaleTargetRef points to the target resource to scale, and is used to the pods for which metrics should be collected, as well as to actually change the replica count.
                           properties:
                             apiVersion:
-                              description: API version of the referent
+                              description: apiVersion is the API version of the referent
                               type: string
                             kind:
-                              description: 'Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              description: 'kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
                               type: string
                             name:
-                              description: 'Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names'
+                              description: 'name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                               type: string
                           required:
                           - kind
@@ -2668,10 +2668,10 @@ spec:
                       description: Ingress Kubernetes Native `Ingress` specification.
                       properties:
                         defaultBackend:
-                          description: DefaultBackend is the backend that should handle requests that don't match any rule. If Rules are not specified, DefaultBackend must be specified. If DefaultBackend is not set, the handling of requests that do not match any of the rules will be up to the Ingress controller.
+                          description: defaultBackend is the backend that should handle requests that don't match any rule. If Rules are not specified, DefaultBackend must be specified. If DefaultBackend is not set, the handling of requests that do not match any of the rules will be up to the Ingress controller.
                           properties:
                             resource:
-                              description: Resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
+                              description: resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
                               properties:
                                 apiGroup:
                                   description: APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
@@ -2688,19 +2688,19 @@ spec:
                               type: object
                               x-kubernetes-map-type: atomic
                             service:
-                              description: Service references a Service as a Backend. This is a mutually exclusive setting with "Resource".
+                              description: service references a service as a backend. This is a mutually exclusive setting with "Resource".
                               properties:
                                 name:
-                                  description: Name is the referenced service. The service must exist in the same namespace as the Ingress object.
+                                  description: name is the referenced service. The service must exist in the same namespace as the Ingress object.
                                   type: string
                                 port:
-                                  description: Port of the referenced service. A port name or port number is required for a IngressServiceBackend.
+                                  description: port of the referenced service. A port name or port number is required for a IngressServiceBackend.
                                   properties:
                                     name:
-                                      description: Name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
+                                      description: name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
                                       type: string
                                     number:
-                                      description: Number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
+                                      description: number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
                                       format: int32
                                       type: integer
                                   type: object
@@ -2709,29 +2709,29 @@ spec:
                               type: object
                           type: object
                         ingressClassName:
-                          description: IngressClassName is the name of an IngressClass cluster resource. Ingress controller implementations use this field to know whether they should be serving this Ingress resource, by a transitive connection (controller -> IngressClass -> Ingress resource). Although the `kubernetes.io/ingress.class` annotation (simple constant name) was never formally defined, it was widely supported by Ingress controllers to create a direct binding between Ingress controller and Ingress resources. Newly created Ingress resources should prefer using the field. However, even though the annotation is officially deprecated, for backwards compatibility reasons, ingress controllers should still honor that annotation if present.
+                          description: ingressClassName is the name of an IngressClass cluster resource. Ingress controller implementations use this field to know whether they should be serving this Ingress resource, by a transitive connection (controller -> IngressClass -> Ingress resource). Although the `kubernetes.io/ingress.class` annotation (simple constant name) was never formally defined, it was widely supported by Ingress controllers to create a direct binding between Ingress controller and Ingress resources. Newly created Ingress resources should prefer using the field. However, even though the annotation is officially deprecated, for backwards compatibility reasons, ingress controllers should still honor that annotation if present.
                           type: string
                         rules:
-                          description: A list of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.
+                          description: rules is a list of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.
                           items:
                             description: IngressRule represents the rules mapping the paths under a specified host to the related backend services. Incoming requests are first evaluated for a host match, then routed to the backend associated with the matching IngressRuleValue.
                             properties:
                               host:
-                                description: "Host is the fully qualified domain name of a network host, as defined by RFC 3986. Note the following deviations from the \"host\" part of the URI as defined in RFC 3986: 1. IPs are not allowed. Currently an IngressRuleValue can only apply to the IP in the Spec of the parent Ingress. 2. The `:` delimiter is not respected because ports are not allowed. Currently the port of an Ingress is implicitly :80 for http and :443 for https. Both these may change in the future. Incoming requests are matched against the host before the IngressRuleValue. If the host is unspecified, the Ingress routes all traffic based on the specified IngressRuleValue. \n Host can be \"precise\" which is a domain name without the terminating dot of a network host (e.g. \"foo.bar.com\") or \"wildcard\", which is a domain name prefixed with a single wildcard label (e.g. \"*.foo.com\"). The wildcard character '*' must appear by itself as the first DNS label and matches only a single label. You cannot have a wildcard label by itself (e.g. Host == \"*\"). Requests will be matched against the Host field in the following way: 1. If Host is precise, the request matches this rule if the http host header is equal to Host. 2. If Host is a wildcard, then the request matches this rule if the http host header is to equal to the suffix (removing the first label) of the wildcard rule."
+                                description: "host is the fully qualified domain name of a network host, as defined by RFC 3986. Note the following deviations from the \"host\" part of the URI as defined in RFC 3986: 1. IPs are not allowed. Currently an IngressRuleValue can only apply to the IP in the Spec of the parent Ingress. 2. The `:` delimiter is not respected because ports are not allowed. Currently the port of an Ingress is implicitly :80 for http and :443 for https. Both these may change in the future. Incoming requests are matched against the host before the IngressRuleValue. If the host is unspecified, the Ingress routes all traffic based on the specified IngressRuleValue. \n host can be \"precise\" which is a domain name without the terminating dot of a network host (e.g. \"foo.bar.com\") or \"wildcard\", which is a domain name prefixed with a single wildcard label (e.g. \"*.foo.com\"). The wildcard character '*' must appear by itself as the first DNS label and matches only a single label. You cannot have a wildcard label by itself (e.g. Host == \"*\"). Requests will be matched against the Host field in the following way: 1. If host is precise, the request matches this rule if the http host header is equal to Host. 2. If host is a wildcard, then the request matches this rule if the http host header is to equal to the suffix (removing the first label) of the wildcard rule."
                                 type: string
                               http:
                                 description: 'HTTPIngressRuleValue is a list of http selectors pointing to backends. In the example: http://<host>/<path>?<searchpart> -> backend where where parts of the url correspond to RFC 3986, this resource will be used to match against everything after the last ''/'' and before the first ''?'' or ''#''.'
                                 properties:
                                   paths:
-                                    description: A collection of paths that map requests to backends.
+                                    description: paths is a collection of paths that map requests to backends.
                                     items:
                                       description: HTTPIngressPath associates a path with a backend. Incoming urls matching the path are forwarded to the backend.
                                       properties:
                                         backend:
-                                          description: Backend defines the referenced service endpoint to which the traffic will be forwarded to.
+                                          description: backend defines the referenced service endpoint to which the traffic will be forwarded to.
                                           properties:
                                             resource:
-                                              description: Resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
+                                              description: resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
                                               properties:
                                                 apiGroup:
                                                   description: APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
@@ -2748,19 +2748,19 @@ spec:
                                               type: object
                                               x-kubernetes-map-type: atomic
                                             service:
-                                              description: Service references a Service as a Backend. This is a mutually exclusive setting with "Resource".
+                                              description: service references a service as a backend. This is a mutually exclusive setting with "Resource".
                                               properties:
                                                 name:
-                                                  description: Name is the referenced service. The service must exist in the same namespace as the Ingress object.
+                                                  description: name is the referenced service. The service must exist in the same namespace as the Ingress object.
                                                   type: string
                                                 port:
-                                                  description: Port of the referenced service. A port name or port number is required for a IngressServiceBackend.
+                                                  description: port of the referenced service. A port name or port number is required for a IngressServiceBackend.
                                                   properties:
                                                     name:
-                                                      description: Name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
+                                                      description: name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
                                                       type: string
                                                     number:
-                                                      description: Number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
+                                                      description: number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
                                                       format: int32
                                                       type: integer
                                                   type: object
@@ -2769,10 +2769,10 @@ spec:
                                               type: object
                                           type: object
                                         path:
-                                          description: Path is matched against the path of an incoming request. Currently it can contain characters disallowed from the conventional "path" part of a URL as defined by RFC 3986. Paths must begin with a '/' and must be present when using PathType with value "Exact" or "Prefix".
+                                          description: path is matched against the path of an incoming request. Currently it can contain characters disallowed from the conventional "path" part of a URL as defined by RFC 3986. Paths must begin with a '/' and must be present when using PathType with value "Exact" or "Prefix".
                                           type: string
                                         pathType:
-                                          description: 'PathType determines the interpretation of the Path matching. PathType can be one of the following values: * Exact: Matches the URL path exactly. * Prefix: Matches based on a URL path prefix split by ''/''. Matching is done on a path element by element basis. A path element refers is the list of labels in the path split by the ''/'' separator. A request is a match for path p if every p is an element-wise prefix of p of the request path. Note that if the last element of the path is a substring of the last element in request path, it is not a match (e.g. /foo/bar matches /foo/bar/baz, but does not match /foo/barbaz). * ImplementationSpecific: Interpretation of the Path matching is up to the IngressClass. Implementations can treat this as a separate PathType or treat it identically to Prefix or Exact path types. Implementations are required to support all path types.'
+                                          description: 'pathType determines the interpretation of the path matching. PathType can be one of the following values: * Exact: Matches the URL path exactly. * Prefix: Matches based on a URL path prefix split by ''/''. Matching is done on a path element by element basis. A path element refers is the list of labels in the path split by the ''/'' separator. A request is a match for path p if every p is an element-wise prefix of p of the request path. Note that if the last element of the path is a substring of the last element in request path, it is not a match (e.g. /foo/bar matches /foo/bar/baz, but does not match /foo/barbaz). * ImplementationSpecific: Interpretation of the Path matching is up to the IngressClass. Implementations can treat this as a separate PathType or treat it identically to Prefix or Exact path types. Implementations are required to support all path types.'
                                           type: string
                                       required:
                                       - backend
@@ -2787,18 +2787,18 @@ spec:
                           type: array
                           x-kubernetes-list-type: atomic
                         tls:
-                          description: TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
+                          description: tls represents the TLS configuration. Currently the Ingress only supports a single TLS port, 443. If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.
                           items:
-                            description: IngressTLS describes the transport layer security associated with an Ingress.
+                            description: IngressTLS describes the transport layer security associated with an ingress.
                             properties:
                               hosts:
-                                description: Hosts are a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
+                                description: hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
                                 items:
                                   type: string
                                 type: array
                                 x-kubernetes-list-type: atomic
                               secretName:
-                                description: SecretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the Host header is used for routing.
+                                description: secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the "Host" header is used for routing.
                                 type: string
                             type: object
                           type: array
@@ -2843,7 +2843,7 @@ spec:
                                     description: HTTPHeader describes a custom header to be used in HTTP probes
                                     properties:
                                       name:
-                                        description: The header field name
+                                        description: The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
                                         type: string
                                       value:
                                         description: The header field value
@@ -2908,7 +2908,7 @@ spec:
                                     description: HTTPHeader describes a custom header to be used in HTTP probes
                                     properties:
                                       name:
-                                        description: The header field name
+                                        description: The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
                                         type: string
                                       value:
                                         description: The header field value
@@ -2967,7 +2967,7 @@ spec:
                           format: int32
                           type: integer
                         grpc:
-                          description: GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+                          description: GRPC specifies an action involving a GRPC port.
                           properties:
                             port:
                               description: Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2991,7 +2991,7 @@ spec:
                                 description: HTTPHeader describes a custom header to be used in HTTP probes
                                 properties:
                                   name:
-                                    description: The header field name
+                                    description: The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
                                     type: string
                                   value:
                                     description: The header field value
@@ -3191,7 +3191,7 @@ spec:
                                       - type: string
                                       pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                       x-kubernetes-int-or-string: true
-                                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                     type: object
                                 type: object
                               selector:
@@ -3264,7 +3264,7 @@ spec:
                               conditions:
                                 description: conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'ResizeStarted'.
                                 items:
-                                  description: PersistentVolumeClaimCondition contails details about state of pvc
+                                  description: PersistentVolumeClaimCondition contains details about state of pvc
                                   properties:
                                     lastProbeTime:
                                       description: lastProbeTime is the time we probed the condition.
@@ -3351,7 +3351,7 @@ spec:
                           type: object
                           x-kubernetes-map-type: atomic
                         unhealthyPodEvictionPolicy:
-                          description: "UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods should be considered for eviction. Current implementation considers healthy pods, as pods that have status.conditions item with type=\"Ready\",status=\"True\". \n Valid policies are IfHealthyBudget and AlwaysAllow. If no policy is specified, the default behavior will be used, which corresponds to the IfHealthyBudget policy. \n IfHealthyBudget policy means that running pods (status.phase=\"Running\"), but not yet healthy can be evicted only if the guarded application is not disrupted (status.currentHealthy is at least equal to status.desiredHealthy). Healthy pods will be subject to the PDB for eviction. \n AlwaysAllow policy means that all running pods (status.phase=\"Running\"), but not yet healthy are considered disrupted and can be evicted regardless of whether the criteria in a PDB is met. This means perspective running pods of a disrupted application might not get a chance to become healthy. Healthy pods will be subject to the PDB for eviction. \n Additional policies may be added in the future. Clients making eviction decisions should disallow eviction of unhealthy pods if they encounter an unrecognized policy in this field. \n This field is alpha-level. The eviction API uses this field when the feature gate PDBUnhealthyPodEvictionPolicy is enabled (disabled by default)."
+                          description: "UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods should be considered for eviction. Current implementation considers healthy pods, as pods that have status.conditions item with type=\"Ready\",status=\"True\". \n Valid policies are IfHealthyBudget and AlwaysAllow. If no policy is specified, the default behavior will be used, which corresponds to the IfHealthyBudget policy. \n IfHealthyBudget policy means that running pods (status.phase=\"Running\"), but not yet healthy can be evicted only if the guarded application is not disrupted (status.currentHealthy is at least equal to status.desiredHealthy). Healthy pods will be subject to the PDB for eviction. \n AlwaysAllow policy means that all running pods (status.phase=\"Running\"), but not yet healthy are considered disrupted and can be evicted regardless of whether the criteria in a PDB is met. This means perspective running pods of a disrupted application might not get a chance to become healthy. Healthy pods will be subject to the PDB for eviction. \n Additional policies may be added in the future. Clients making eviction decisions should disallow eviction of unhealthy pods if they encounter an unrecognized policy in this field. \n This field is beta-level. The eviction API uses this field when the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default)."
                           type: string
                       type: object
                     podLabels:
@@ -3410,7 +3410,7 @@ spec:
                           format: int32
                           type: integer
                         grpc:
-                          description: GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+                          description: GRPC specifies an action involving a GRPC port.
                           properties:
                             port:
                               description: Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3434,7 +3434,7 @@ spec:
                                 description: HTTPHeader describes a custom header to be used in HTTP probes
                                 properties:
                                   name:
-                                    description: The header field name
+                                    description: The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
                                     type: string
                                   value:
                                     description: The header field value
@@ -3534,7 +3534,7 @@ spec:
                             - type: string
                             pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                             x-kubernetes-int-or-string: true
-                          description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                          description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                           type: object
                       type: object
                     runtime.properties:
@@ -3888,7 +3888,7 @@ spec:
                           format: int32
                           type: integer
                         grpc:
-                          description: GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+                          description: GRPC specifies an action involving a GRPC port.
                           properties:
                             port:
                               description: Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3912,7 +3912,7 @@ spec:
                                 description: HTTPHeader describes a custom header to be used in HTTP probes
                                 properties:
                                   name:
-                                    description: The header field name
+                                    description: The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
                                     type: string
                                   value:
                                     description: The header field value
@@ -4037,7 +4037,7 @@ spec:
                             type: object
                             x-kubernetes-map-type: atomic
                           matchLabelKeys:
-                            description: MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector.
+                            description: "MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. \n This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
                             items:
                               type: string
                             type: array
@@ -4198,7 +4198,7 @@ spec:
                                       - type: string
                                       pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                       x-kubernetes-int-or-string: true
-                                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                     type: object
                                 type: object
                               selector:
@@ -4271,7 +4271,7 @@ spec:
                               conditions:
                                 description: conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'ResizeStarted'.
                                 items:
-                                  description: PersistentVolumeClaimCondition contails details about state of pvc
+                                  description: PersistentVolumeClaimCondition contains details about state of pvc
                                   properties:
                                     lastProbeTime:
                                       description: lastProbeTime is the time we probed the condition.
@@ -4583,7 +4583,7 @@ spec:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: 'sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir'
+                                description: 'sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir'
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                             type: object
@@ -4691,7 +4691,7 @@ spec:
                                               - type: string
                                               pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                               x-kubernetes-int-or-string: true
-                                            description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                            description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                             type: object
                                         type: object
                                       selector:
@@ -5344,7 +5344,7 @@ spec:
                     format: int32
                     type: integer
                   grpc:
-                    description: GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+                    description: GRPC specifies an action involving a GRPC port.
                     properties:
                       port:
                         description: Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -5368,7 +5368,7 @@ spec:
                           description: HTTPHeader describes a custom header to be used in HTTP probes
                           properties:
                             name:
-                              description: The header field name
+                              description: The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
                               type: string
                             value:
                               description: The header field value
@@ -5792,7 +5792,7 @@ spec:
                     format: int32
                     type: integer
                   grpc:
-                    description: GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.
+                    description: GRPC specifies an action involving a GRPC port.
                     properties:
                       port:
                         description: Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -5816,7 +5816,7 @@ spec:
                           description: HTTPHeader describes a custom header to be used in HTTP probes
                           properties:
                             name:
-                              description: The header field name
+                              description: The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
                               type: string
                             value:
                               description: The header field value
@@ -6030,7 +6030,7 @@ spec:
                                 - type: string
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
-                              description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                              description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                               type: object
                           type: object
                         selector:
@@ -6103,7 +6103,7 @@ spec:
                         conditions:
                           description: conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'ResizeStarted'.
                           items:
-                            description: PersistentVolumeClaimCondition contails details about state of pvc
+                            description: PersistentVolumeClaimCondition contains details about state of pvc
                             properties:
                               lastProbeTime:
                                 description: lastProbeTime is the time we probed the condition.
@@ -6415,7 +6415,7 @@ spec:
                           anyOf:
                           - type: integer
                           - type: string
-                          description: 'sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir'
+                          description: 'sizeLimit is the total amount of local storage required for this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers in a pod. The default is nil which means that the limit is undefined. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir'
                           pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                           x-kubernetes-int-or-string: true
                       type: object
@@ -6523,7 +6523,7 @@ spec:
                                         - type: string
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
-                                      description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                      description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                       type: object
                                   type: object
                                 selector:

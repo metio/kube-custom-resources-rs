@@ -79,19 +79,15 @@ spec:
               connection_pooler:
                 properties:
                   connection_pooler_default_cpu_limit:
-                    default: '1'
                     pattern: ^(\d+m|\d+(\.\d{1,3})?)$
                     type: string
                   connection_pooler_default_cpu_request:
-                    default: 500m
                     pattern: ^(\d+m|\d+(\.\d{1,3})?)$
                     type: string
                   connection_pooler_default_memory_limit:
-                    default: 100Mi
                     pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                     type: string
                   connection_pooler_default_memory_request:
-                    default: 100Mi
                     pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                     type: string
                   connection_pooler_image:
@@ -495,19 +491,15 @@ spec:
               postgres_pod_resources:
                 properties:
                   default_cpu_limit:
-                    default: '1'
                     pattern: ^(\d+m|\d+(\.\d{1,3})?)$
                     type: string
                   default_cpu_request:
-                    default: 100m
                     pattern: ^(\d+m|\d+(\.\d{1,3})?)$
                     type: string
                   default_memory_limit:
-                    default: 500Mi
                     pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                     type: string
                   default_memory_request:
-                    default: 100Mi
                     pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                     type: string
                   max_cpu_request:
@@ -517,11 +509,9 @@ spec:
                     pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                     type: string
                   min_cpu_limit:
-                    default: 250m
                     pattern: ^(\d+m|\d+(\.\d{1,3})?)$
                     type: string
                   min_memory_limit:
-                    default: 250Mi
                     pattern: ^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$
                     type: string
                 type: object

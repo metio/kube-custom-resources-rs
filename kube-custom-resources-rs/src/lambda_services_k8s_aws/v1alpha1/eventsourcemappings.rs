@@ -13,68 +13,145 @@ use std::collections::BTreeMap;
 #[kube(status = "EventSourceMappingStatus")]
 #[kube(schema = "disabled")]
 pub struct EventSourceMappingSpec {
-    /// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
+    /// Specific configuration settings for an Amazon Managed Streaming for Apache
+    /// Kafka (Amazon MSK) event source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "amazonManagedKafkaEventSourceConfig")]
     pub amazon_managed_kafka_event_source_config: Option<EventSourceMappingAmazonManagedKafkaEventSourceConfig>,
-    /// The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB). 
-    ///  * Amazon Kinesis – Default 100. Max 10,000. 
-    ///  * Amazon DynamoDB Streams – Default 100. Max 10,000. 
-    ///  * Amazon Simple Queue Service – Default 10. For standard queues the max is 10,000. For FIFO queues the max is 10. 
-    ///  * Amazon Managed Streaming for Apache Kafka – Default 100. Max 10,000. 
-    ///  * Self-managed Apache Kafka – Default 100. Max 10,000. 
-    ///  * Amazon MQ (ActiveMQ and RabbitMQ) – Default 100. Max 10,000.
+    /// The maximum number of records in each batch that Lambda pulls from your stream
+    /// or queue and sends to your function. Lambda passes all of the records in
+    /// the batch to the function in a single call, up to the payload limit for synchronous
+    /// invocation (6 MB).
+    /// 
+    /// 
+    ///    * Amazon Kinesis – Default 100. Max 10,000.
+    /// 
+    /// 
+    ///    * Amazon DynamoDB Streams – Default 100. Max 10,000.
+    /// 
+    /// 
+    ///    * Amazon Simple Queue Service – Default 10. For standard queues the
+    ///    max is 10,000. For FIFO queues the max is 10.
+    /// 
+    /// 
+    ///    * Amazon Managed Streaming for Apache Kafka – Default 100. Max 10,000.
+    /// 
+    /// 
+    ///    * Self-managed Apache Kafka – Default 100. Max 10,000.
+    /// 
+    /// 
+    ///    * Amazon MQ (ActiveMQ and RabbitMQ) – Default 100. Max 10,000.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSize")]
     pub batch_size: Option<i64>,
-    /// (Streams only) If the function returns an error, split the batch in two and retry.
+    /// (Streams only) If the function returns an error, split the batch in two and
+    /// retry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bisectBatchOnFunctionError")]
     pub bisect_batch_on_function_error: Option<bool>,
-    /// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded records.
+    /// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded
+    /// records.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationConfig")]
     pub destination_config: Option<EventSourceMappingDestinationConfig>,
-    /// When true, the event source mapping is active. When false, Lambda pauses polling and invocation. 
-    ///  Default: True
+    /// When true, the event source mapping is active. When false, Lambda pauses
+    /// polling and invocation.
+    /// 
+    /// 
+    /// Default: True
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The Amazon Resource Name (ARN) of the event source. 
-    ///  * Amazon Kinesis – The ARN of the data stream or a stream consumer. 
-    ///  * Amazon DynamoDB Streams – The ARN of the stream. 
-    ///  * Amazon Simple Queue Service – The ARN of the queue. 
-    ///  * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster. 
-    ///  * Amazon MQ – The ARN of the broker.
+    /// The Amazon Resource Name (ARN) of the event source.
+    /// 
+    /// 
+    ///    * Amazon Kinesis – The ARN of the data stream or a stream consumer.
+    /// 
+    /// 
+    ///    * Amazon DynamoDB Streams – The ARN of the stream.
+    /// 
+    /// 
+    ///    * Amazon Simple Queue Service – The ARN of the queue.
+    /// 
+    /// 
+    ///    * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster.
+    /// 
+    /// 
+    ///    * Amazon MQ – The ARN of the broker.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSourceARN")]
     pub event_source_arn: Option<String>,
-    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-    ///  from: name: my-api
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 
+    /// 	from:
+    /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSourceRef")]
     pub event_source_ref: Option<EventSourceMappingEventSourceRef>,
-    /// An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see Lambda event filtering (https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html).
+    /// An object that defines the filter criteria that determine whether Lambda
+    /// should process an event. For more information, see Lambda event filtering
+    /// (https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterCriteria")]
     pub filter_criteria: Option<EventSourceMappingFilterCriteria>,
-    /// The name of the Lambda function. 
-    ///  Name formats 
-    ///  * Function name – MyFunction. 
-    ///  * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction. 
-    ///  * Version or Alias ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD. 
-    ///  * Partial ARN – 123456789012:function:MyFunction. 
-    ///  The length constraint applies only to the full ARN. If you specify only the function name, it's limited to 64 characters in length.
+    /// The name of the Lambda function.
+    /// 
+    /// 
+    /// Name formats
+    /// 
+    /// 
+    ///    * Function name – MyFunction.
+    /// 
+    /// 
+    ///    * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction.
+    /// 
+    /// 
+    ///    * Version or Alias ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD.
+    /// 
+    /// 
+    ///    * Partial ARN – 123456789012:function:MyFunction.
+    /// 
+    /// 
+    /// The length constraint applies only to the full ARN. If you specify only the
+    /// function name, it's limited to 64 characters in length.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
     pub function_name: Option<String>,
-    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-    ///  from: name: my-api
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 
+    /// 	from:
+    /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionRef")]
     pub function_ref: Option<EventSourceMappingFunctionRef>,
-    /// (Streams and Amazon SQS) A list of current response type enums applied to the event source mapping.
+    /// (Streams and Amazon SQS) A list of current response type enums applied to
+    /// the event source mapping.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionResponseTypes")]
     pub function_response_types: Option<Vec<String>>,
-    /// The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure MaximumBatchingWindowInSeconds to any value from 0 seconds to 300 seconds in increments of seconds. 
-    ///  For streams and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event sources, the default batching window is 500 ms. Note that because you can only change MaximumBatchingWindowInSeconds in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping. 
-    ///  Related setting: For streams and Amazon SQS event sources, when you set BatchSize to a value greater than 10, you must set MaximumBatchingWindowInSeconds to at least 1.
+    /// The maximum amount of time, in seconds, that Lambda spends gathering records
+    /// before invoking the function. You can configure MaximumBatchingWindowInSeconds
+    /// to any value from 0 seconds to 300 seconds in increments of seconds.
+    /// 
+    /// 
+    /// For streams and Amazon SQS event sources, the default batching window is
+    /// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event
+    /// sources, the default batching window is 500 ms. Note that because you can
+    /// only change MaximumBatchingWindowInSeconds in increments of seconds, you
+    /// cannot revert back to the 500 ms default batching window after you have changed
+    /// it. To restore the default batching window, you must create a new event source
+    /// mapping.
+    /// 
+    /// 
+    /// Related setting: For streams and Amazon SQS event sources, when you set BatchSize
+    /// to a value greater than 10, you must set MaximumBatchingWindowInSeconds to
+    /// at least 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
-    /// (Streams only) Discard records older than the specified age. The default value is infinite (-1).
+    /// (Streams only) Discard records older than the specified age. The default
+    /// value is infinite (-1).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRecordAgeInSeconds")]
     pub maximum_record_age_in_seconds: Option<i64>,
-    /// (Streams only) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.
+    /// (Streams only) Discard records after the specified number of retries. The
+    /// default value is infinite (-1). When set to infinite (-1), failed records
+    /// are retried until the record expires.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
     /// (Streams only) The number of batches to process from each shard concurrently.
@@ -85,7 +162,9 @@ pub struct EventSourceMappingSpec {
     /// (MQ) The name of the Amazon MQ broker destination queue to consume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queues: Option<Vec<String>>,
-    /// (Amazon SQS only) The scaling configuration for the event source. For more information, see Configuring maximum concurrency for Amazon SQS event sources (https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency).
+    /// (Amazon SQS only) The scaling configuration for the event source. For more
+    /// information, see Configuring maximum concurrency for Amazon SQS event sources
+    /// (https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingConfig")]
     pub scaling_config: Option<EventSourceMappingScalingConfig>,
     /// The self-managed Apache Kafka cluster to receive records from.
@@ -94,10 +173,13 @@ pub struct EventSourceMappingSpec {
     /// Specific configuration settings for a self-managed Apache Kafka event source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selfManagedKafkaEventSourceConfig")]
     pub self_managed_kafka_event_source_config: Option<EventSourceMappingSelfManagedKafkaEventSourceConfig>,
-    /// An array of authentication protocols or VPC components required to secure your event source.
+    /// An array of authentication protocols or VPC components required to secure
+    /// your event source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAccessConfigurations")]
     pub source_access_configurations: Option<Vec<EventSourceMappingSourceAccessConfigurations>>,
-    /// The position in a stream from which to start reading. Required for Amazon Kinesis, Amazon DynamoDB, and Amazon MSK Streams sources. AT_TIMESTAMP is supported only for Amazon Kinesis streams.
+    /// The position in a stream from which to start reading. Required for Amazon
+    /// Kinesis, Amazon DynamoDB, and Amazon MSK Streams sources. AT_TIMESTAMP is
+    /// supported only for Amazon Kinesis streams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingPosition")]
     pub starting_position: Option<String>,
     /// With StartingPosition set to AT_TIMESTAMP, the time from which to start reading.
@@ -106,19 +188,22 @@ pub struct EventSourceMappingSpec {
     /// The name of the Kafka topic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topics: Option<Vec<String>>,
-    /// (Streams only) The duration in seconds of a processing window. The range is between 1 second and 900 seconds.
+    /// (Streams only) The duration in seconds of a processing window. The range
+    /// is between 1 second and 900 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tumblingWindowInSeconds")]
     pub tumbling_window_in_seconds: Option<i64>,
 }
 
-/// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
+/// Specific configuration settings for an Amazon Managed Streaming for Apache
+/// Kafka (Amazon MSK) event source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerGroupID")]
     pub consumer_group_id: Option<String>,
 }
 
-/// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded records.
+/// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded
+/// records.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingDestinationConfig {
     /// A destination for events that failed processing.
@@ -143,69 +228,98 @@ pub struct EventSourceMappingDestinationConfigOnSuccess {
     pub destination: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingEventSourceRef {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<EventSourceMappingEventSourceRefFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingEventSourceRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see Lambda event filtering (https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html).
+/// An object that defines the filter criteria that determine whether Lambda
+/// should process an event. For more information, see Lambda event filtering
+/// (https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingFilterCriteria {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<EventSourceMappingFilterCriteriaFilters>>,
 }
 
-/// A structure within a FilterCriteria object that defines an event filtering pattern.
+/// A structure within a FilterCriteria object that defines an event filtering
+/// pattern.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingFilterCriteriaFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingFunctionRef {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<EventSourceMappingFunctionRefFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingFunctionRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingQueueRefs {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<EventSourceMappingQueueRefsFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingQueueRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// (Amazon SQS only) The scaling configuration for the event source. For more information, see Configuring maximum concurrency for Amazon SQS event sources (https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency).
+/// (Amazon SQS only) The scaling configuration for the event source. For more
+/// information, see Configuring maximum concurrency for Amazon SQS event sources
+/// (https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingScalingConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumConcurrency")]
@@ -226,7 +340,8 @@ pub struct EventSourceMappingSelfManagedKafkaEventSourceConfig {
     pub consumer_group_id: Option<String>,
 }
 
-/// To secure and define access to your event source, you can specify the authentication protocol, VPC components, or virtual host.
+/// To secure and define access to your event source, you can specify the authentication
+/// protocol, VPC components, or virtual host.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingSourceAccessConfigurations {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
@@ -238,25 +353,33 @@ pub struct EventSourceMappingSourceAccessConfigurations {
 /// EventSourceMappingStatus defines the observed state of EventSourceMapping
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<EventSourceMappingStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<EventSourceMappingStatusConditions>>,
     /// The ARN of the Lambda function.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionARN")]
     pub function_arn: Option<String>,
-    /// The date that the event source mapping was last updated or that its state changed.
+    /// The date that the event source mapping was last updated or that its state
+    /// changed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModified")]
     pub last_modified: Option<String>,
     /// The result of the last Lambda invocation of your function.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastProcessingResult")]
     pub last_processing_result: Option<String>,
-    /// The state of the event source mapping. It can be one of the following: Creating, Enabling, Enabled, Disabling, Disabled, Updating, or Deleting.
+    /// The state of the event source mapping. It can be one of the following: Creating,
+    /// Enabling, Enabled, Disabling, Disabled, Updating, or Deleting.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    /// Indicates whether a user or Lambda made the last change to the event source mapping.
+    /// Indicates whether a user or Lambda made the last change to the event source
+    /// mapping.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateTransitionReason")]
     pub state_transition_reason: Option<String>,
     /// The identifier of the event source mapping.
@@ -264,20 +387,32 @@ pub struct EventSourceMappingStatus {
     pub uuid: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingStatusConditions {
     /// Last time the condition transitioned from one status to another.

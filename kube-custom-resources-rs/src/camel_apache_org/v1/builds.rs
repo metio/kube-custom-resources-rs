@@ -359,15 +359,21 @@ pub struct BuildTasksBuilderMavenCaSecrets {
     pub optional: Option<bool>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMavenExtension {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -569,29 +575,41 @@ pub struct BuildTasksBuilderRuntimeCapabilities {
     pub dependencies: Option<Vec<BuildTasksBuilderRuntimeCapabilitiesDependencies>>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderRuntimeCapabilitiesDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderRuntimeDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -1076,15 +1094,21 @@ pub struct BuildTasksPackageMavenCaSecrets {
     pub optional: Option<bool>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMavenExtension {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -1286,29 +1310,41 @@ pub struct BuildTasksPackageRuntimeCapabilities {
     pub dependencies: Option<Vec<BuildTasksPackageRuntimeCapabilitiesDependencies>>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageRuntimeCapabilitiesDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageRuntimeDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,

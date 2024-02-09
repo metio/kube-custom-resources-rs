@@ -4,11 +4,14 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// IBMVPCMachineTemplateSpec defines the desired state of IBMVPCMachineTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "IBMVPCMachineTemplate", plural = "ibmvpcmachinetemplates")]
 #[kube(namespaced)]
+#[kube(status = "IBMVPCMachineTemplateStatus")]
 #[kube(schema = "disabled")]
 pub struct IBMVPCMachineTemplateSpec {
     /// IBMVPCMachineTemplateResource describes the data needed to create am IBMVPCMachine from a template.
@@ -113,5 +116,13 @@ pub struct IBMVPCMachineTemplateTemplateSpecSshKeys {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// IBMVPCMachineTemplateStatus defines the observed state of IBMVPCMachineTemplate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCMachineTemplateStatus {
+    /// Capacity defines the resource capacity for this machine. This value is used for autoscaling from zero operations as defined in: https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20210310-opt-in-autoscaling-from-zero.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<BTreeMap<String, IntOrString>>,
 }
 

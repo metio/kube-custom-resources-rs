@@ -774,6 +774,17 @@ spec:
                                       description: A valid non-negative integer target port number.
                                       type: integer
                                   type: object
+                                tls:
+                                  properties:
+                                    credentialName:
+                                      description: TLS certificate name.
+                                      format: string
+                                      type: string
+                                    mode:
+                                      description: TLS mode can be SIMPLE, MUTUAL, ISTIO_MUTUAL.
+                                      format: string
+                                      type: string
+                                  type: object
                               type: object
                             type: array
                         type: object
@@ -811,6 +822,17 @@ spec:
                                     target_port:
                                       description: A valid non-negative integer target port number.
                                       type: integer
+                                  type: object
+                                tls:
+                                  properties:
+                                    credentialName:
+                                      description: TLS certificate name.
+                                      format: string
+                                      type: string
+                                    mode:
+                                      description: TLS mode can be SIMPLE, MUTUAL, ISTIO_MUTUAL.
+                                      format: string
+                                      type: string
                                   type: object
                               type: object
                             type: array

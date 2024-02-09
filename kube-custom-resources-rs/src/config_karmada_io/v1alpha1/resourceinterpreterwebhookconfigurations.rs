@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/karmada-io/karmada/config.karmada.io/v1alpha1/resourceinterpreterwebhookconfigurations.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.5
 
-
+use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
 /// ResourceInterpreterWebhook describes the webhook as well as the resources and operations it applies to.

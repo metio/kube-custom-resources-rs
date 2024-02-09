@@ -35,7 +35,8 @@ pub struct ServersTransportTCPTls {
     /// InsecureSkipVerify disables TLS certificate verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// MaxIdleConnsPerHost controls the maximum idle (keep-alive) to keep per-host. PeerCertURI defines the peer cert URI used to match against SAN URI during the peer certificate verification.
+    /// MaxIdleConnsPerHost controls the maximum idle (keep-alive) to keep per-host.
+    /// PeerCertURI defines the peer cert URI used to match against SAN URI during the peer certificate verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerCertURI")]
     pub peer_cert_uri: Option<String>,
     /// RootCAsSecrets defines a list of CA secret used to validate self-signed certificates.

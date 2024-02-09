@@ -57,9 +57,74 @@ pub struct VaultStaticSecretDestination {
     pub name: String,
     /// Overwrite the destination Secret if it exists and Create is true. This is useful when migrating to VSO from a previous secret deployment strategy.
     pub overwrite: bool,
+    /// Transformation provides configuration for transforming the secret data before it is stored in the Destination.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub transformation: Option<VaultStaticSecretDestinationTransformation>,
     /// Type of Kubernetes Secret. Requires Create to be set to true. Defaults to Opaque.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+/// Transformation provides configuration for transforming the secret data before it is stored in the Destination.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VaultStaticSecretDestinationTransformation {
+    /// ExcludeRaw data from the destination Secret. Exclusion policy can be set globally by including 'exclude-raw` in the '--global-transformation-options' command line flag. If set, the command line flag always takes precedence over this configuration.
+    #[serde(rename = "excludeRaw")]
+    pub exclude_raw: bool,
+    /// Excludes contains regex patterns used to filter top-level source secret data fields for exclusion from the final K8s Secret data. These pattern filters are never applied to templated fields as defined in Templates. They are always applied before any inclusion patterns. To exclude all source secret data fields, you can configure the single pattern ".*".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub excludes: Option<Vec<String>>,
+    /// Includes contains regex patterns used to filter top-level source secret data fields for inclusion in the final K8s Secret data. These pattern filters are never applied to templated fields as defined in Templates. They are always applied last.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub includes: Option<Vec<String>>,
+    /// Resync the Secret on updates to any configured TransformationRefs.
+    pub resync: bool,
+    /// Templates maps a template name to its Template. Templates are always included in the rendered K8s Secret, and take precedence over templates defined in a SecretTransformation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub templates: Option<BTreeMap<String, VaultStaticSecretDestinationTransformationTemplates>>,
+    /// TransformationRefs contain references to template configuration from SecretTransformation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformationRefs")]
+    pub transformation_refs: Option<Vec<VaultStaticSecretDestinationTransformationTransformationRefs>>,
+}
+
+/// Templates maps a template name to its Template. Templates are always included in the rendered K8s Secret, and take precedence over templates defined in a SecretTransformation.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VaultStaticSecretDestinationTransformationTemplates {
+    /// Name of the Template
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Text contains the Go text template format. The template references attributes from the data structure of the source secret. Refer to https://pkg.go.dev/text/template for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+}
+
+/// TransformationRef contains the configuration for accessing templates from an SecretTransformation resource. TransformationRefs can be shared across all syncable secret custom resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VaultStaticSecretDestinationTransformationTransformationRefs {
+    /// IgnoreExcludes controls whether to use the SecretTransformation's Excludes data key filters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreExcludes")]
+    pub ignore_excludes: Option<bool>,
+    /// IgnoreIncludes controls whether to use the SecretTransformation's Includes data key filters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreIncludes")]
+    pub ignore_includes: Option<bool>,
+    /// Name of the SecretTransformation resource.
+    pub name: String,
+    /// Namespace of the SecretTransformation resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// TemplateRefs map to a Template found in this TransformationRef. If empty, then all templates from the SecretTransformation will be rendered to the K8s Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRefs")]
+    pub template_refs: Option<Vec<VaultStaticSecretDestinationTransformationTransformationRefsTemplateRefs>>,
+}
+
+/// TemplateRef points to templating text that is stored in a SecretTransformation custom resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VaultStaticSecretDestinationTransformationTransformationRefsTemplateRefs {
+    /// KeyOverride to the rendered template in the Destination secret. If Key is empty, then the Key from reference spec will be used. Set this to override the Key set from the reference spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyOverride")]
+    pub key_override: Option<String>,
+    /// Name of the Template in SecretTransformationSpec.Templates. the rendered secret data.
+    pub name: String,
 }
 
 /// RolloutRestartTarget provides the configuration required to perform a rollout-restart of the supported resources upon Vault Secret rotation. The rollout-restart is triggered by patching the target resource's 'spec.template.metadata.annotations' to include 'vso.secrets.hashicorp.com/restartedAt' with a timestamp value of when the trigger was executed. E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z" 

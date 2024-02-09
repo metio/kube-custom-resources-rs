@@ -4515,7 +4515,7 @@ spec:
                         description: 'Deprecated: no longer in use.'
                         type: boolean
                       hotReload:
-                        description: Enable "hot reload" when a secret/configmap mounted is edited (default `false`)
+                        description: Enable "hot reload" when a secret/configmap mounted is edited (default `false`). The configmap/secret must be marked with `camel.apache.org/integration` label to be taken in account.
                         type: boolean
                       resources:
                         description: 'A list of resources (text or binary content) pointing to configmap/secret. The resources are expected to be any resource type (text or binary content). The destination path can be either a default location or any path specified by the user. Syntax: [configmap|secret]:name[/key][@path], where name represents the resource name, key optionally represents the resource key to be filtered and path represents the destination path'

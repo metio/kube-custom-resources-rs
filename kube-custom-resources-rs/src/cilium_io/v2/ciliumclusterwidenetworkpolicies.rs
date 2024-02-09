@@ -73,6 +73,9 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     ///  Example: toGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toGroups")]
     pub to_groups: Option<Vec<CiliumClusterwideNetworkPolicyEgressToGroups>>,
+    /// ToNodes is a list of nodes identified by an EndpointSelector to which endpoints subject to the rule is allowed to communicate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toNodes")]
+    pub to_nodes: Option<Vec<CiliumClusterwideNetworkPolicyEgressToNodes>>,
     /// ToPorts is a list of destination ports identified by port number and protocol which the endpoint subject to the rule is allowed to connect to. 
     ///  Example: Any endpoint with the label "role=frontend" is allowed to initiate connections to destination port 8080/tcp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPorts")]
@@ -207,6 +210,38 @@ pub struct CiliumClusterwideNetworkPolicyEgressToGroupsAws {
     pub security_groups_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
+}
+
+/// EndpointSelector is a wrapper for k8s LabelSelector.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyEgressToNodes {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressToNodesMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyEgressToNodesMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicyEgressToNodesMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicyEgressToNodesMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// PortRule is a list of ports/protocol combinations with optional Layer 7 rules which must be met.
@@ -595,6 +630,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     ///  Example: toGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toGroups")]
     pub to_groups: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToGroups>>,
+    /// ToNodes is a list of nodes identified by an EndpointSelector to which endpoints subject to the rule is allowed to communicate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toNodes")]
+    pub to_nodes: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToNodes>>,
     /// ToPorts is a list of destination ports identified by port number and protocol which the endpoint subject to the rule is not allowed to connect to. 
     ///  Example: Any endpoint with the label "role=frontend" is not allowed to initiate connections to destination port 8080/tcp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPorts")]
@@ -700,6 +738,38 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToGroupsAws {
     pub security_groups_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
+}
+
+/// EndpointSelector is a wrapper for k8s LabelSelector.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyEgressDenyToNodes {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToNodesMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyEgressDenyToNodesMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicyEgressDenyToNodesMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicyEgressDenyToNodesMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// PortDenyRule is a list of ports/protocol that should be used for deny policies. This structure lacks the L7Rules since it's not supported in deny policies.
@@ -884,6 +954,9 @@ pub struct CiliumClusterwideNetworkPolicyIngress {
     /// FromEntities is a list of special entities which the endpoint subject to the rule is allowed to receive connections from. Supported entities are `world`, `cluster` and `host`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
+    /// FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
+    pub from_nodes: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromNodes>>,
     /// FromRequires is a list of additional constraints which must be met in order for the selected endpoints to be reachable. These additional constraints do no by itself grant access privileges and must always be accompanied with at least one matching FromEndpoints. 
     ///  Example: Any Endpoint with the label "team=A" requires consuming endpoint to also carry the label "team=A".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
@@ -956,6 +1029,38 @@ pub struct CiliumClusterwideNetworkPolicyIngressFromEndpointsMatchExpressions {
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumClusterwideNetworkPolicyIngressFromEndpointsMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
+}
+
+/// EndpointSelector is a wrapper for k8s LabelSelector.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyIngressFromNodes {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromNodesMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyIngressFromNodesMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicyIngressFromNodesMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicyIngressFromNodesMatchExpressionsOperator {
     In,
     NotIn,
     Exists,
@@ -1305,6 +1410,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressDeny {
     /// FromEntities is a list of special entities which the endpoint subject to the rule is allowed to receive connections from. Supported entities are `world`, `cluster` and `host`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
+    /// FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
+    pub from_nodes: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromNodes>>,
     /// FromRequires is a list of additional constraints which must be met in order for the selected endpoints to be reachable. These additional constraints do no by itself grant access privileges and must always be accompanied with at least one matching FromEndpoints. 
     ///  Example: Any Endpoint with the label "team=A" requires consuming endpoint to also carry the label "team=A".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
@@ -1359,6 +1467,38 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyFromEndpointsMatchExpression
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumClusterwideNetworkPolicyIngressDenyFromEndpointsMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
+}
+
+/// EndpointSelector is a wrapper for k8s LabelSelector.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyIngressDenyFromNodes {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromNodesMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyIngressDenyFromNodesMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicyIngressDenyFromNodesMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicyIngressDenyFromNodesMatchExpressionsOperator {
     In,
     NotIn,
     Exists,
@@ -1565,6 +1705,9 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     ///  Example: toGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toGroups")]
     pub to_groups: Option<Vec<CiliumClusterwideNetworkPolicysEgressToGroups>>,
+    /// ToNodes is a list of nodes identified by an EndpointSelector to which endpoints subject to the rule is allowed to communicate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toNodes")]
+    pub to_nodes: Option<Vec<CiliumClusterwideNetworkPolicysEgressToNodes>>,
     /// ToPorts is a list of destination ports identified by port number and protocol which the endpoint subject to the rule is allowed to connect to. 
     ///  Example: Any endpoint with the label "role=frontend" is allowed to initiate connections to destination port 8080/tcp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPorts")]
@@ -1699,6 +1842,38 @@ pub struct CiliumClusterwideNetworkPolicysEgressToGroupsAws {
     pub security_groups_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
+}
+
+/// EndpointSelector is a wrapper for k8s LabelSelector.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysEgressToNodes {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressToNodesMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysEgressToNodesMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicysEgressToNodesMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicysEgressToNodesMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// PortRule is a list of ports/protocol combinations with optional Layer 7 rules which must be met.
@@ -2087,6 +2262,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     ///  Example: toGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toGroups")]
     pub to_groups: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToGroups>>,
+    /// ToNodes is a list of nodes identified by an EndpointSelector to which endpoints subject to the rule is allowed to communicate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toNodes")]
+    pub to_nodes: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToNodes>>,
     /// ToPorts is a list of destination ports identified by port number and protocol which the endpoint subject to the rule is not allowed to connect to. 
     ///  Example: Any endpoint with the label "role=frontend" is not allowed to initiate connections to destination port 8080/tcp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPorts")]
@@ -2192,6 +2370,38 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToGroupsAws {
     pub security_groups_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
+}
+
+/// EndpointSelector is a wrapper for k8s LabelSelector.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysEgressDenyToNodes {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToNodesMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysEgressDenyToNodesMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicysEgressDenyToNodesMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicysEgressDenyToNodesMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// PortDenyRule is a list of ports/protocol that should be used for deny policies. This structure lacks the L7Rules since it's not supported in deny policies.
@@ -2376,6 +2586,9 @@ pub struct CiliumClusterwideNetworkPolicysIngress {
     /// FromEntities is a list of special entities which the endpoint subject to the rule is allowed to receive connections from. Supported entities are `world`, `cluster` and `host`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
+    /// FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
+    pub from_nodes: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromNodes>>,
     /// FromRequires is a list of additional constraints which must be met in order for the selected endpoints to be reachable. These additional constraints do no by itself grant access privileges and must always be accompanied with at least one matching FromEndpoints. 
     ///  Example: Any Endpoint with the label "team=A" requires consuming endpoint to also carry the label "team=A".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
@@ -2448,6 +2661,38 @@ pub struct CiliumClusterwideNetworkPolicysIngressFromEndpointsMatchExpressions {
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumClusterwideNetworkPolicysIngressFromEndpointsMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
+}
+
+/// EndpointSelector is a wrapper for k8s LabelSelector.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysIngressFromNodes {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromNodesMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysIngressFromNodesMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicysIngressFromNodesMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicysIngressFromNodesMatchExpressionsOperator {
     In,
     NotIn,
     Exists,
@@ -2797,6 +3042,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressDeny {
     /// FromEntities is a list of special entities which the endpoint subject to the rule is allowed to receive connections from. Supported entities are `world`, `cluster` and `host`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
+    /// FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
+    pub from_nodes: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromNodes>>,
     /// FromRequires is a list of additional constraints which must be met in order for the selected endpoints to be reachable. These additional constraints do no by itself grant access privileges and must always be accompanied with at least one matching FromEndpoints. 
     ///  Example: Any Endpoint with the label "team=A" requires consuming endpoint to also carry the label "team=A".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
@@ -2851,6 +3099,38 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyFromEndpointsMatchExpressio
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumClusterwideNetworkPolicysIngressDenyFromEndpointsMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
+}
+
+/// EndpointSelector is a wrapper for k8s LabelSelector.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysIngressDenyFromNodes {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromNodesMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysIngressDenyFromNodesMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicysIngressDenyFromNodesMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicysIngressDenyFromNodesMatchExpressionsOperator {
     In,
     NotIn,
     Exists,

@@ -20,7 +20,7 @@ pub struct SonataFlowPlatformSpec {
     /// DevMode Attributes for running workflows in devmode (immutable, no build required)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "devMode")]
     pub dev_mode: Option<SonataFlowPlatformDevMode>,
-    /// Services attributes for deploying supporting applications like Data Index. Only workflows with the proper annotation will be configured to use these service(s). `sonataflow.org/profile: prod`
+    /// Services attributes for deploying supporting applications like Data Index & Job Service. Only workflows without the `sonataflow.org/profile: dev` annotation will be configured to use these service(s). Setting this will override the use of any cluster-scoped services that might be defined via `SonataFlowClusterPlatform`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<SonataFlowPlatformServices>,
 }
@@ -287,21 +287,21 @@ pub struct SonataFlowPlatformDevMode {
     pub base_image: Option<String>,
 }
 
-/// Services attributes for deploying supporting applications like Data Index. Only workflows with the proper annotation will be configured to use these service(s). `sonataflow.org/profile: prod`
+/// Services attributes for deploying supporting applications like Data Index & Job Service. Only workflows without the `sonataflow.org/profile: dev` annotation will be configured to use these service(s). Setting this will override the use of any cluster-scoped services that might be defined via `SonataFlowClusterPlatform`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServices {
-    /// Deploys the Data Index service for use by "prod" profile workflows.
+    /// Deploys the Data Index service for use by workflows without the `sonataflow.org/profile: dev` annotation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataIndex")]
     pub data_index: Option<SonataFlowPlatformServicesDataIndex>,
-    /// Deploys the Job service for use by "prod" profile workflows.
+    /// Deploys the Job service for use by workflows without the `sonataflow.org/profile: dev` annotation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobService")]
     pub job_service: Option<SonataFlowPlatformServicesJobService>,
 }
 
-/// Deploys the Data Index service for use by "prod" profile workflows.
+/// Deploys the Data Index service for use by workflows without the `sonataflow.org/profile: dev` annotation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndex {
-    /// Determines whether "prod" profile workflows should be configured to use this service
+    /// Determines whether workflows without the `sonataflow.org/profile: dev` annotation should be configured to use this service
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Persists service to a datasource of choice. Ephemeral by default.
@@ -4459,10 +4459,10 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// Deploys the Job service for use by "prod" profile workflows.
+/// Deploys the Job service for use by workflows without the `sonataflow.org/profile: dev` annotation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobService {
-    /// Determines whether "prod" profile workflows should be configured to use this service
+    /// Determines whether workflows without the `sonataflow.org/profile: dev` annotation should be configured to use this service
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Persists service to a datasource of choice. Ephemeral by default.
@@ -8626,6 +8626,9 @@ pub struct SonataFlowPlatformStatus {
     /// Cluster what kind of cluster you're running (ie, plain Kubernetes or OpenShift)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<SonataFlowPlatformStatusCluster>,
+    /// ClusterPlatformRef information related to the (optional) active SonataFlowClusterPlatform
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterPlatformRef")]
+    pub cluster_platform_ref: Option<SonataFlowPlatformStatusClusterPlatformRef>,
     /// The latest available observations of a resource's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<SonataFlowPlatformStatusConditions>>,
@@ -8647,6 +8650,56 @@ pub enum SonataFlowPlatformStatusCluster {
     Kubernetes,
     #[serde(rename = "openshift")]
     Openshift,
+}
+
+/// ClusterPlatformRef information related to the (optional) active SonataFlowClusterPlatform
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformStatusClusterPlatformRef {
+    /// Name of the active SonataFlowClusterPlatform
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// PlatformRef displays which SonataFlowPlatform has been referenced by the active SonataFlowClusterPlatform
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "platformRef")]
+    pub platform_ref: Option<SonataFlowPlatformStatusClusterPlatformRefPlatformRef>,
+    /// Services displays which cluster-wide services are being used by this SonataFlowPlatform
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub services: Option<SonataFlowPlatformStatusClusterPlatformRefServices>,
+}
+
+/// PlatformRef displays which SonataFlowPlatform has been referenced by the active SonataFlowClusterPlatform
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformStatusClusterPlatformRefPlatformRef {
+    /// Name of the SonataFlowPlatform
+    pub name: String,
+    /// Namespace of the SonataFlowPlatform
+    pub namespace: String,
+}
+
+/// Services displays which cluster-wide services are being used by this SonataFlowPlatform
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformStatusClusterPlatformRefServices {
+    /// DataIndexRef displays information on the cluster-wide Data Index service
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataIndexRef")]
+    pub data_index_ref: Option<SonataFlowPlatformStatusClusterPlatformRefServicesDataIndexRef>,
+    /// JobServiceRef displays information on the cluster-wide Job Service
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobServiceRef")]
+    pub job_service_ref: Option<SonataFlowPlatformStatusClusterPlatformRefServicesJobServiceRef>,
+}
+
+/// DataIndexRef displays information on the cluster-wide Data Index service
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformStatusClusterPlatformRefServicesDataIndexRef {
+    /// Url displays the base url of a cluster-wide service
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+/// JobServiceRef displays information on the cluster-wide Job Service
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformStatusClusterPlatformRefServicesJobServiceRef {
+    /// Url displays the base url of a cluster-wide service
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// Condition describes the common structure for conditions in our types
