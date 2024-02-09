@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/open-policy-agent/gatekeeper/status.gatekeeper.sh/v1beta1/expansiontemplatepodstatuses.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.5
 
-
+use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
 /// ExpansionTemplatePodStatusStatus defines the observed state of ExpansionTemplatePodStatus.

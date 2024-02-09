@@ -60,6 +60,9 @@ spec:
                     artifactId:
                       description: Maven Artifact
                       type: string
+                    classifier:
+                      description: Maven Classifier
+                      type: string
                     dataformats:
                       description: accepted data formats
                       items:
@@ -72,6 +75,9 @@ spec:
                         properties:
                           artifactId:
                             description: Maven Artifact
+                            type: string
+                          classifier:
+                            description: Maven Classifier
                             type: string
                           exclusions:
                             description: provide a list of artifacts to exclude for this dependency
@@ -91,6 +97,9 @@ spec:
                             type: array
                           groupId:
                             description: Maven Group
+                            type: string
+                          type:
+                            description: Maven Type
                             type: string
                           version:
                             description: Maven Version
@@ -145,6 +154,9 @@ spec:
                                     artifactId:
                                       description: Maven Artifact
                                       type: string
+                                    classifier:
+                                      description: Maven Classifier
+                                      type: string
                                     exclusions:
                                       description: provide a list of artifacts to exclude for this dependency
                                       items:
@@ -163,6 +175,9 @@ spec:
                                       type: array
                                     groupId:
                                       description: Maven Group
+                                      type: string
+                                    type:
+                                      description: Maven Type
                                       type: string
                                     version:
                                       description: Maven Version
@@ -193,6 +208,9 @@ spec:
                                     artifactId:
                                       description: Maven Artifact
                                       type: string
+                                    classifier:
+                                      description: Maven Classifier
+                                      type: string
                                     exclusions:
                                       description: provide a list of artifacts to exclude for this dependency
                                       items:
@@ -212,6 +230,9 @@ spec:
                                     groupId:
                                       description: Maven Group
                                       type: string
+                                    type:
+                                      description: Maven Type
+                                      type: string
                                     version:
                                       description: Maven Version
                                       type: string
@@ -227,6 +248,9 @@ spec:
                         - passive
                         type: object
                       type: array
+                    type:
+                      description: Maven Type
+                      type: string
                     version:
                       description: Maven Version
                       type: string
@@ -243,16 +267,25 @@ spec:
                     artifactId:
                       description: Maven Artifact
                       type: string
+                    classifier:
+                      description: Maven Classifier
+                      type: string
                     dependencies:
                       description: a list of additional dependencies required beside the base one
                       items:
-                        description: MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+                        description: MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
                         properties:
                           artifactId:
                             description: Maven Artifact
                             type: string
+                          classifier:
+                            description: Maven Classifier
+                            type: string
                           groupId:
                             description: Maven Group
+                            type: string
+                          type:
+                            description: Maven Type
                             type: string
                           version:
                             description: Maven Version
@@ -275,6 +308,9 @@ spec:
                         type: string
                       description: the metadata of the loader
                       type: object
+                    type:
+                      description: Maven Type
+                      type: string
                     version:
                       description: Maven Version
                       type: string
@@ -296,13 +332,19 @@ spec:
                       properties:
                         dependencies:
                           items:
-                            description: MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+                            description: MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
                             properties:
                               artifactId:
                                 description: Maven Artifact
                                 type: string
+                              classifier:
+                                description: Maven Classifier
+                                type: string
                               groupId:
                                 description: Maven Group
+                                type: string
+                              type:
+                                description: Maven Type
                                 type: string
                               version:
                                 description: Maven Version
@@ -320,13 +362,19 @@ spec:
                   dependencies:
                     description: list of dependencies needed to run the application
                     items:
-                      description: MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+                      description: MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
                       properties:
                         artifactId:
                           description: Maven Artifact
                           type: string
+                        classifier:
+                          description: Maven Classifier
+                          type: string
                         groupId:
                           description: Maven Group
+                          type: string
+                        type:
+                          description: Maven Type
                           type: string
                         version:
                           description: Maven Version

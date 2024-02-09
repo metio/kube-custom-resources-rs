@@ -27,6 +27,9 @@ pub struct CamelCatalogArtifacts {
     /// Maven Artifact
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "artifactId")]
     pub artifact_id: Option<String>,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// accepted data formats
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dataformats: Option<Vec<String>>,
@@ -48,6 +51,9 @@ pub struct CamelCatalogArtifacts {
     /// accepted URI schemes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schemes: Option<Vec<CamelCatalogArtifactsSchemes>>,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -59,12 +65,18 @@ pub struct CamelCatalogArtifactsDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// provide a list of artifacts to exclude for this dependency
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclusions: Option<Vec<CamelCatalogArtifactsDependenciesExclusions>>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -123,12 +135,18 @@ pub struct CamelCatalogArtifactsSchemesConsumerDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// provide a list of artifacts to exclude for this dependency
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclusions: Option<Vec<CamelCatalogArtifactsSchemesConsumerDependenciesExclusions>>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -159,12 +177,18 @@ pub struct CamelCatalogArtifactsSchemesProducerDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// provide a list of artifacts to exclude for this dependency
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclusions: Option<Vec<CamelCatalogArtifactsSchemesProducerDependenciesExclusions>>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -187,6 +211,9 @@ pub struct CamelCatalogLoaders {
     /// Maven Artifact
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "artifactId")]
     pub artifact_id: Option<String>,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// a list of additional dependencies required beside the base one
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dependencies: Option<Vec<CamelCatalogLoadersDependencies>>,
@@ -199,20 +226,29 @@ pub struct CamelCatalogLoaders {
     /// the metadata of the loader
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BTreeMap<String, String>>,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CamelCatalogLoadersDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -245,29 +281,41 @@ pub struct CamelCatalogRuntimeCapabilities {
     pub dependencies: Option<Vec<CamelCatalogRuntimeCapabilitiesDependencies>>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CamelCatalogRuntimeCapabilitiesDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// MavenArtifact defines a GAV (Group:Artifact:Version) Maven artifact.
+/// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CamelCatalogRuntimeDependencies {
     /// Maven Artifact
     #[serde(rename = "artifactId")]
     pub artifact_id: String,
+    /// Maven Classifier
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classifier: Option<String>,
     /// Maven Group
     #[serde(rename = "groupId")]
     pub group_id: String,
+    /// Maven Type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,

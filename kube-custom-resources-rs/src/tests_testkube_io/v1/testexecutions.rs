@@ -129,6 +129,8 @@ pub enum TestExecutionExecutionRequestArgsMode {
     Append,
     #[serde(rename = "override")]
     Override,
+    #[serde(rename = "replace")]
+    Replace,
 }
 
 /// artifact request body with test artifacts
@@ -500,6 +502,8 @@ pub enum TestExecutionStatusLatestExecutionArgsMode {
     Append,
     #[serde(rename = "override")]
     Override,
+    #[serde(rename = "replace")]
+    Replace,
 }
 
 /// artifact request body with test artifacts

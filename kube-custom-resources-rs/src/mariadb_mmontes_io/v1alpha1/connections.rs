@@ -13,21 +13,30 @@ use std::collections::BTreeMap;
 #[kube(status = "ConnectionStatus")]
 #[kube(schema = "disabled")]
 pub struct ConnectionSpec {
-    /// Database to use for configuring the Connection.
+    /// Database to use when configuring the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
     /// HealthCheck to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<ConnectionHealthCheck>,
-    /// MariaDBRef is a reference to a MariaDB object.
-    #[serde(rename = "mariaDbRef")]
-    pub maria_db_ref: ConnectionMariaDbRef,
+    /// Host to connect to. If not provided, it defaults to the MariaDB host or to the MaxScale host.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// MariaDBRef is a reference to the MariaDB to connect to. Either MariaDBRef or MaxScaleRef must be provided.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mariaDbRef")]
+    pub maria_db_ref: Option<ConnectionMariaDbRef>,
+    /// MaxScaleRef is a reference to the MaxScale to connect to. Either MariaDBRef or MaxScaleRef must be provided.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScaleRef")]
+    pub max_scale_ref: Option<ConnectionMaxScaleRef>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
     /// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.
     #[serde(rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: ConnectionPasswordSecretKeyRef,
+    /// Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
     /// SecretName to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
@@ -52,7 +61,7 @@ pub struct ConnectionHealthCheck {
     pub retry_interval: Option<String>,
 }
 
-/// MariaDBRef is a reference to a MariaDB object.
+/// MariaDBRef is a reference to the MariaDB to connect to. Either MariaDBRef or MaxScaleRef must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConnectionMariaDbRef {
     /// API version of the referent.
@@ -79,6 +88,32 @@ pub struct ConnectionMariaDbRef {
     /// WaitForIt indicates whether the controller using this reference should wait for MariaDB to be ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForIt")]
     pub wait_for_it: Option<bool>,
+}
+
+/// MaxScaleRef is a reference to the MaxScale to connect to. Either MariaDBRef or MaxScaleRef must be provided.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ConnectionMaxScaleRef {
+    /// API version of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
+    pub field_path: Option<String>,
+    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
+    pub resource_version: Option<String>,
+    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
 }
 
 /// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.

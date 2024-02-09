@@ -17,7 +17,7 @@ pub struct ClusterDeploymentSpec {
     /// BaseDomain is the base domain to which the cluster should belong.
     #[serde(rename = "baseDomain")]
     pub base_domain: String,
-    /// BoundServiceAccountSignkingKeySecretRef refers to a Secret that contains a 'bound-service-account-signing-key.key' data key pointing to the private key that will be used to sign ServiceAccount objects. Primarily used to provision AWS clusters to use Amazon's Security Token Service.
+    /// BoundServiceAccountSigningKeySecretRef refers to a Secret that contains a 'bound-service-account-signing-key.key' data key pointing to the private key that will be used to sign ServiceAccount objects. Primarily used to provision AWS clusters to use Amazon's Security Token Service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "boundServiceAccountSigningKeySecretRef")]
     pub bound_service_account_signing_key_secret_ref: Option<ClusterDeploymentBoundServiceAccountSigningKeySecretRef>,
     /// CertificateBundles is a list of certificate bundles associated with this cluster
@@ -69,7 +69,7 @@ pub struct ClusterDeploymentSpec {
     pub pull_secret_ref: Option<ClusterDeploymentPullSecretRef>,
 }
 
-/// BoundServiceAccountSignkingKeySecretRef refers to a Secret that contains a 'bound-service-account-signing-key.key' data key pointing to the private key that will be used to sign ServiceAccount objects. Primarily used to provision AWS clusters to use Amazon's Security Token Service.
+/// BoundServiceAccountSigningKeySecretRef refers to a Secret that contains a 'bound-service-account-signing-key.key' data key pointing to the private key that will be used to sign ServiceAccount objects. Primarily used to provision AWS clusters to use Amazon's Security Token Service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentBoundServiceAccountSigningKeySecretRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?

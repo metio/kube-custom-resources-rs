@@ -1595,6 +1595,10 @@ spec:
                       type: string
                     description: Params to be used in the Connection.
                     type: object
+                  port:
+                    description: Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+                    format: int32
+                    type: integer
                   secretName:
                     description: SecretName to be used in the Connection.
                     type: string
@@ -4100,6 +4104,10 @@ spec:
                       adminUsername:
                         description: AdminUsername is an admin username to call the admin REST API. It is defaulted if not provided.
                         type: string
+                      clientMaxConnections:
+                        description: ClientMaxConnections defines the maximum number of connections that the client can establish. If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections. It defaults to 30 times the number of MaxScale replicas.
+                        format: int32
+                        type: integer
                       clientPasswordSecretKeyRef:
                         description: ClientPasswordSecretKeyRef is Secret key reference to the password to connect to MaxScale. It is defaulted if not provided.
                         properties:
@@ -4125,6 +4133,10 @@ spec:
                       generate:
                         description: Generate  defies whether the operator should generate users and grants for MaxScale to work. It only supports MariaDBs specified via spec.mariaDbRef.
                         type: boolean
+                      monitorMaxConnections:
+                        description: MonitorMaxConnections defines the maximum number of connections that the monitor can establish. If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections. It defaults to 30 times the number of MaxScale replicas.
+                        format: int32
+                        type: integer
                       monitorPasswordSecretKeyRef:
                         description: MonitorPasswordSecretKeyRef is Secret key reference to the password used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
                         properties:
@@ -4144,6 +4156,10 @@ spec:
                       monitorUsername:
                         description: MonitorUsername is the user used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
                         type: string
+                      serverMaxConnections:
+                        description: ServerMaxConnections defines the maximum number of connections that the server can establish. If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections. It defaults to 30 times the number of MaxScale replicas.
+                        format: int32
+                        type: integer
                       serverPasswordSecretKeyRef:
                         description: ServerPasswordSecretKeyRef is Secret key reference to the password used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
                         properties:
@@ -4163,6 +4179,10 @@ spec:
                       serverUsername:
                         description: ServerUsername is the user used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
                         type: string
+                      syncMaxConnections:
+                        description: SyncMaxConnections defines the maximum number of connections that the sync can establish. If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections. It defaults to 30 times the number of MaxScale replicas.
+                        format: int32
+                        type: integer
                       syncPasswordSecretKeyRef:
                         description: SyncPasswordSecretKeyRef is Secret key reference to the password used by MaxScale config to connect to MariaDB server. It is defaulted when HA is enabled.
                         properties:
@@ -4341,6 +4361,70 @@ spec:
                             description: volumeName is the binding reference to the PersistentVolume backing this claim.
                             type: string
                         type: object
+                    type: object
+                  connection:
+                    description: Connection provides a template to define the Connection for MaxScale.
+                    properties:
+                      healthCheck:
+                        description: HealthCheck to be used in the Connection.
+                        properties:
+                          interval:
+                            description: Interval used to perform health checks.
+                            type: string
+                          retryInterval:
+                            description: RetryInterval is the intervañ used to perform health check retries.
+                            type: string
+                        type: object
+                      params:
+                        additionalProperties:
+                          type: string
+                        description: Params to be used in the Connection.
+                        type: object
+                      port:
+                        description: Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+                        format: int32
+                        type: integer
+                      secretName:
+                        description: SecretName to be used in the Connection.
+                        type: string
+                      secretTemplate:
+                        description: SecretTemplate to be used in the Connection.
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: string
+                            description: Annotations to be added to the Secret object.
+                            type: object
+                          databaseKey:
+                            description: DatabaseKey to be used in the Secret.
+                            type: string
+                          format:
+                            description: Format to be used in the Secret.
+                            type: string
+                          hostKey:
+                            description: HostKey to be used in the Secret.
+                            type: string
+                          key:
+                            description: Key to be used in the Secret.
+                            type: string
+                          labels:
+                            additionalProperties:
+                              type: string
+                            description: Labels to be added to the Secret object.
+                            type: object
+                          passwordKey:
+                            description: PasswordKey to be used in the Secret.
+                            type: string
+                          portKey:
+                            description: PortKey to be used in the Secret.
+                            type: string
+                          usernameKey:
+                            description: UsernameKey to be used in the Secret.
+                            type: string
+                        type: object
+                      serviceName:
+                        description: ServiceName to be used in the Connection.
+                        type: string
                     type: object
                   enabled:
                     description: Enabled is a flag to enable Metrics
@@ -7884,6 +7968,10 @@ spec:
                       type: string
                     description: Params to be used in the Connection.
                     type: object
+                  port:
+                    description: Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+                    format: int32
+                    type: integer
                   secretName:
                     description: SecretName to be used in the Connection.
                     type: string
@@ -8213,6 +8301,10 @@ spec:
                       type: string
                     description: Params to be used in the Connection.
                     type: object
+                  port:
+                    description: Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
+                    format: int32
+                    type: integer
                   secretName:
                     description: SecretName to be used in the Connection.
                     type: string

@@ -100,3 +100,8 @@ pub struct IBMVPCMachineTemplateTemplateSpecPrimaryNetworkInterface {
     pub subnet: Option<String>,
 }
 
+/// IBMVPCMachineTemplateStatus defines the observed state of IBMVPCMachineTemplate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCMachineTemplateStatus {
+}
+

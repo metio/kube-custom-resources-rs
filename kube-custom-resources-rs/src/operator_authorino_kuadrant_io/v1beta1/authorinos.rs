@@ -135,6 +135,8 @@ pub struct AuthorinoOidcServerTlsCertSecretRef {
 pub struct AuthorinoTracing {
     pub endpoint: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 

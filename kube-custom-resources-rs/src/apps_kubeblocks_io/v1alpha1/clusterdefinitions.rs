@@ -5523,6 +5523,9 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsPasswordConfig {
     /// numSymbols defines number of symbols.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numSymbols")]
     pub num_symbols: Option<i32>,
+    /// seed specifies the seed used to generate the account's password. Cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub seed: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

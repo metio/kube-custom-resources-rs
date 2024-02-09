@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/cilium/cilium/cilium.io/v2alpha1/ciliumendpointslices.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.5
 
-
+use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
 /// CoreCiliumEndpoint is slim version of status of CiliumEndpoint.

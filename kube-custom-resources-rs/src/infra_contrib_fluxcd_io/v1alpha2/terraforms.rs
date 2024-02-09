@@ -105,6 +105,9 @@ pub struct TerraformSpec {
     /// Targets specify the resource, module or collection of resources to target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub targets: Option<Vec<String>>,
+    /// TfVarsFiles loads all given .tfvars files. It copycats the -var-file functionality.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tfVarsFiles")]
+    pub tf_vars_files: Option<Vec<String>>,
     /// TFStateSpec allows the user to set ForceUnlock
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tfstate: Option<TerraformTfstate>,

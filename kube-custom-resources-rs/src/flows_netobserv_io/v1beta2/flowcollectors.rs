@@ -7,7 +7,7 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
-/// Defines the desired state of the FlowCollector resource. <br><br> *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature is not officially supported by Red Hat. It might have been, for instance, contributed by the community and accepted without a formal agreement for maintenance. The product maintainers might provide some support for these features as a best effort only.
+/// Defines the desired state of the FlowCollector resource. <br><br> *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature is not officially supported by Red Hat. It might have been, for example, contributed by the community and accepted without a formal agreement for maintenance. The product maintainers might provide some support for these features as a best effort only.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "flows.netobserv.io", version = "v1beta2", kind = "FlowCollector", plural = "flowcollectors")]
 #[kube(status = "FlowCollectorStatus")]
@@ -621,7 +621,7 @@ pub struct FlowCollectorConsolePluginResourcesClaims {
     pub name: String,
 }
 
-/// Defines the desired state of the FlowCollector resource. <br><br> *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature is not officially supported by Red Hat. It might have been, for instance, contributed by the community and accepted without a formal agreement for maintenance. The product maintainers might provide some support for these features as a best effort only.
+/// Defines the desired state of the FlowCollector resource. <br><br> *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature is not officially supported by Red Hat. It might have been, for example, contributed by the community and accepted without a formal agreement for maintenance. The product maintainers might provide some support for these features as a best effort only.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorDeploymentModel {
     Direct,
