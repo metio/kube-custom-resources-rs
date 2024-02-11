@@ -771,6 +771,10 @@ Files: crd-catalog/projectcalico/calico/*
 Copyright: The projectcalico/calico Authors
 License: Apache-2.0
 
+Files: crd-catalog/projectcontour/contour/*
+Copyright: The projectcontour/contour Authors
+License: Apache-2.0
+
 Files: crd-catalog/prometheus-operator/prometheus-operator/*
 Copyright: The prometheus-operator/prometheus-operator Authors
 License: Apache-2.0

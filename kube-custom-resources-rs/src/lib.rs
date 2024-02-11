@@ -1895,6 +1895,17 @@ apiVersion `postgresql.cnpg.io/v1`:
 - `Pooler`
 - `ScheduledBackup`
 
+## projectcontour_io
+
+apiVersion `projectcontour.io/v1`:
+- `HTTPProxy`
+- `TLSCertificateDelegation`
+
+apiVersion `projectcontour.io/v1alpha1`:
+- `ContourConfiguration`
+- `ContourDeployment`
+- `ExtensionService`
+
 ## prometheusservice_services_k8s_aws
 
 apiVersion `prometheusservice.services.k8s.aws/v1alpha1`:
@@ -2817,6 +2828,8 @@ pub mod policy_karmada_io;
 pub mod postgres_operator_crunchydata_com;
 #[cfg(feature = "postgresql_cnpg_io")]
 pub mod postgresql_cnpg_io;
+#[cfg(feature = "projectcontour_io")]
+pub mod projectcontour_io;
 #[cfg(feature = "prometheusservice_services_k8s_aws")]
 pub mod prometheusservice_services_k8s_aws;
 #[cfg(feature = "quay_redhat_com")]
