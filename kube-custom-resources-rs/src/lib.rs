@@ -174,6 +174,9 @@ apiVersion `appprotectdos.f5.com/v1beta1`:
 ## apps_3scale_net
 
 apiVersion `apps.3scale.net/v1alpha1`:
+- `APIManagerBackup`
+- `APIManagerRestore`
+- `APIManager`
 - `APIcast`
 
 ## apps_clusternet_io
@@ -437,6 +440,22 @@ apiVersion `camel.apache.org/v1alpha1`:
 
 apiVersion `canaries.flanksource.com/v1`:
 - `Canary`
+
+## capabilities_3scale_net
+
+apiVersion `capabilities.3scale.net/v1alpha1`:
+- `Tenant`
+
+apiVersion `capabilities.3scale.net/v1beta1`:
+- `ActiveDoc`
+- `Application`
+- `Backend`
+- `CustomPolicyDefinition`
+- `DeveloperAccount`
+- `DeveloperUser`
+- `OpenAPI`
+- `Product`
+- `ProxyConfigPromote`
 
 ## capsule_clastix_io
 
@@ -2625,6 +2644,8 @@ pub mod caching_ibm_com;
 pub mod camel_apache_org;
 #[cfg(feature = "canaries_flanksource_com")]
 pub mod canaries_flanksource_com;
+#[cfg(feature = "capabilities_3scale_net")]
+pub mod capabilities_3scale_net;
 #[cfg(feature = "capsule_clastix_io")]
 pub mod capsule_clastix_io;
 #[cfg(feature = "ceph_rook_io")]
