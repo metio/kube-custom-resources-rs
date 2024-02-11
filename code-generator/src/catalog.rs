@@ -813,6 +813,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "DopplerHQ/kubernetes-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/DopplerHQ/kubernetes-operator/blob/main/config/crd/bases/secrets.doppler.com_dopplersecrets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "eclipse-che/che-operator",
         license: EPL_V2,
         urls: &[

@@ -2083,6 +2083,11 @@ apiVersion `secretgenerator.mittwald.de/v1alpha1`:
 apiVersion `secrets.crossplane.io/v1alpha1`:
 - `StoreConfig`
 
+## secrets_doppler_com
+
+apiVersion `secrets.doppler.com/v1alpha1`:
+- `DopplerSecret`
+
 ## secrets_hashicorp_com
 
 apiVersion `secrets.hashicorp.com/v1beta1`:
@@ -2862,6 +2867,8 @@ pub mod scylla_scylladb_com;
 pub mod secretgenerator_mittwald_de;
 #[cfg(feature = "secrets_crossplane_io")]
 pub mod secrets_crossplane_io;
+#[cfg(feature = "secrets_doppler_com")]
+pub mod secrets_doppler_com;
 #[cfg(feature = "secrets_hashicorp_com")]
 pub mod secrets_hashicorp_com;
 #[cfg(feature = "secscan_quay_redhat_com")]
