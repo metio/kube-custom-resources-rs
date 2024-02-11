@@ -2091,6 +2091,11 @@ apiVersion `rds.services.k8s.aws/v1alpha1`:
 - `DBSubnetGroup`
 - `GlobalCluster`
 
+## redhatcop_redhat_io
+
+apiVersion `redhatcop.redhat.io/v1alpha1`:
+- `KeepalivedGroup`
+
 ## registry_apicur_io
 
 apiVersion `registry.apicur.io/v1`:
@@ -3067,6 +3072,8 @@ pub mod ray_io;
 pub mod rbacmanager_reactiveops_io;
 #[cfg(feature = "rds_services_k8s_aws")]
 pub mod rds_services_k8s_aws;
+#[cfg(feature = "redhatcop_redhat_io")]
+pub mod redhatcop_redhat_io;
 #[cfg(feature = "registry_apicur_io")]
 pub mod registry_apicur_io;
 #[cfg(feature = "registry_devfile_io")]

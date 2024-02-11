@@ -2271,6 +2271,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "redhat-cop/keepalived-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/redhat-cop/keepalived-operator/blob/master/config/crd/bases/redhatcop.redhat.io_keepalivedgroups.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "redhat-cop/namespace-configuration-operator",
         license: APACHE_V2,
         urls: &[

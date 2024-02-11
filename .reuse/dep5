@@ -859,6 +859,10 @@ Files: crd-catalog/reddec/keycloak-ext-operator/*
 Copyright: The reddec/keycloak-ext-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/redhat-cop/keepalived-operator/*
+Copyright: The redhat-cop/keepalived-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/redhat-cop/namespace-configuration-operator/*
 Copyright: The redhat-cop/namespace-configuration-operator Authors
 License: Apache-2.0
