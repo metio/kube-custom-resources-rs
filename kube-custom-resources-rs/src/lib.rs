@@ -1771,6 +1771,11 @@ apiVersion `notification.toolkit.fluxcd.io/v1beta3`:
 - `Alert`
 - `Provider`
 
+## onepassword_com
+
+apiVersion `onepassword.com/v1`:
+- `OnePasswordItem`
+
 ## opensearchservice_services_k8s_aws
 
 apiVersion `opensearchservice.services.k8s.aws/v1alpha1`:
@@ -2848,6 +2853,8 @@ pub mod nodeinfo_volcano_sh;
 pub mod notebook_kubedl_io;
 #[cfg(feature = "notification_toolkit_fluxcd_io")]
 pub mod notification_toolkit_fluxcd_io;
+#[cfg(feature = "onepassword_com")]
+pub mod onepassword_com;
 #[cfg(feature = "opensearchservice_services_k8s_aws")]
 pub mod opensearchservice_services_k8s_aws;
 #[cfg(feature = "opentelemetry_io")]
