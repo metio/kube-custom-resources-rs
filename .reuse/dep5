@@ -651,6 +651,10 @@ Files: crd-catalog/kubeshop/testkube-operator/*
 Copyright: The kubeshop/testkube-operator Authors
 License: MIT
 
+Files: crd-catalog/kubev2v/forklift/*
+Copyright: The kubev2v/forklift Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubevious/workload-operator/*
 Copyright: The kubevious/workload-operator Authors
 License: Apache-2.0
