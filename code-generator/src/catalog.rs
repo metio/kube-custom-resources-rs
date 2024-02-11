@@ -1653,6 +1653,22 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kubev2v/forklift",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_forkliftcontrollers.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_hooks.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_hosts.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_migrations.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_networkmaps.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_openstackvolumepopulators.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_ovirtvolumepopulators.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_plans.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_providers.yaml",
+            "https://github.com/kubev2v/forklift/blob/main/operator/config/crd/bases/forklift.konveyor.io_storagemaps.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kubevious/workload-operator",
         license: APACHE_V2,
         urls: &[

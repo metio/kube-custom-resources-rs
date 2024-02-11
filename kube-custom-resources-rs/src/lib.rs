@@ -1004,6 +1004,20 @@ apiVersion `flows.netobserv.io/v1beta2`:
 apiVersion `flux-framework.org/v1alpha1`:
 - `MiniCluster`
 
+## forklift_konveyor_io
+
+apiVersion `forklift.konveyor.io/v1beta1`:
+- `ForkliftController`
+- `Hook`
+- `Host`
+- `Migration`
+- `NetworkMap`
+- `OpenstackVolumePopulator`
+- `OvirtVolumePopulator`
+- `Plan`
+- `Provider`
+- `StorageMap`
+
 ## gateway_networking_k8s_io
 
 apiVersion `gateway.networking.k8s.io/v1`:
@@ -2806,6 +2820,8 @@ pub mod flow_volcano_sh;
 pub mod flows_netobserv_io;
 #[cfg(feature = "flux_framework_org")]
 pub mod flux_framework_org;
+#[cfg(feature = "forklift_konveyor_io")]
+pub mod forklift_konveyor_io;
 #[cfg(feature = "gateway_networking_k8s_io")]
 pub mod gateway_networking_k8s_io;
 #[cfg(feature = "gateway_nginx_org")]
