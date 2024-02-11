@@ -859,6 +859,15 @@ apiVersion `enterprisesearch.k8s.elastic.co/v1`:
 apiVersion `enterprisesearch.k8s.elastic.co/v1beta1`:
 - `EnterpriseSearch`
 
+## everest_percona_com
+
+apiVersion `everest.percona.com/v1alpha1`:
+- `BackupStorage`
+- `DatabaseClusterBackup`
+- `DatabaseClusterRestore`
+- `DatabaseCluster`
+- `MonitoringConfig`
+
 ## example_openshift_io
 
 apiVersion `example.openshift.io/v1`:
@@ -2665,6 +2674,8 @@ pub mod elbv2_k8s_aws;
 pub mod emrcontainers_services_k8s_aws;
 #[cfg(feature = "enterprisesearch_k8s_elastic_co")]
 pub mod enterprisesearch_k8s_elastic_co;
+#[cfg(feature = "everest_percona_com")]
+pub mod everest_percona_com;
 #[cfg(feature = "example_openshift_io")]
 pub mod example_openshift_io;
 #[cfg(feature = "execution_furiko_io")]

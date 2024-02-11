@@ -2079,6 +2079,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "percona/everest-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/percona/everest-operator/blob/main/config/crd/bases/everest.percona.com_backupstorages.yaml",
+            "https://github.com/percona/everest-operator/blob/main/config/crd/bases/everest.percona.com_databaseclusterbackups.yaml",
+            "https://github.com/percona/everest-operator/blob/main/config/crd/bases/everest.percona.com_databaseclusterrestores.yaml",
+            "https://github.com/percona/everest-operator/blob/main/config/crd/bases/everest.percona.com_databaseclusters.yaml",
+            "https://github.com/percona/everest-operator/blob/main/config/crd/bases/everest.percona.com_databaseengines.yaml",
+            "https://github.com/percona/everest-operator/blob/main/config/crd/bases/everest.percona.com_monitoringconfigs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "percona/percona-server-mysql-operator",
         license: APACHE_V2,
         urls: &[
