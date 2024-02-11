@@ -1,110 +1,110 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   labels:
-    app: rbac-manager
-  name: rbacdefinitions.rbacmanager.reactiveops.io
+    app: "rbac-manager"
+  name: "rbacdefinitions.rbacmanager.reactiveops.io"
 spec:
-  group: rbacmanager.reactiveops.io
+  group: "rbacmanager.reactiveops.io"
   names:
-    kind: RBACDefinition
-    plural: rbacdefinitions
+    kind: "RBACDefinition"
+    plural: "rbacdefinitions"
     shortNames:
-    - rbd
-    - rbacdef
-    singular: rbacdefinition
-  scope: Cluster
+      - "rbd"
+      - "rbacdef"
+    singular: "rbacdefinition"
+  scope: "Cluster"
   versions:
-  - name: v1beta1
-    schema:
-      openAPIV3Schema:
-        properties:
-          rbacBindings:
-            items:
-              properties:
-                clusterRoleBindings:
-                  items:
-                    properties:
-                      clusterRole:
-                        type: string
-                    required:
-                    - clusterRole
-                    type: object
-                  type: array
-                name:
-                  type: string
-                roleBindings:
-                  items:
-                    properties:
-                      clusterRole:
-                        type: string
-                      namespace:
-                        type: string
-                      namespaceSelector:
-                        properties:
-                          matchExpressions:
-                            items:
-                              properties:
-                                key:
-                                  type: string
-                                operator:
-                                  enum:
-                                  - Exists
-                                  - DoesNotExist
-                                  - In
-                                  - NotIn
-                                  type: string
-                                values:
-                                  items:
-                                    type: string
-                                  type: array
-                              required:
-                              - key
-                              - operator
-                              type: object
-                            type: array
-                          matchLabels:
-                            additionalProperties:
-                              type: string
-                            type: object
-                        type: object
-                      role:
-                        type: string
-                    type: object
-                  type: array
-                subjects:
-                  items:
-                    properties:
-                      automountServiceAccountToken:
-                        type: boolean
-                      imagePullSecrets:
-                        items:
-                          type: string
-                        type: array
-                      kind:
-                        enum:
-                        - Group
-                        - ServiceAccount
-                        - User
-                        type: string
-                      name:
-                        type: string
-                      namespace:
-                        type: string
-                    required:
-                    - name
-                    - kind
-                    type: object
-                  type: array
-              required:
-              - name
-              - subjects
-              type: object
-            type: array
-          status:
-            type: object
-        required:
-        - rbacBindings
-        type: object
-    served: true
-    storage: true
+    - name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          properties:
+            rbacBindings:
+              items:
+                properties:
+                  clusterRoleBindings:
+                    items:
+                      properties:
+                        clusterRole:
+                          type: "string"
+                      required:
+                        - "clusterRole"
+                      type: "object"
+                    type: "array"
+                  name:
+                    type: "string"
+                  roleBindings:
+                    items:
+                      properties:
+                        clusterRole:
+                          type: "string"
+                        namespace:
+                          type: "string"
+                        namespaceSelector:
+                          properties:
+                            matchExpressions:
+                              items:
+                                properties:
+                                  key:
+                                    type: "string"
+                                  operator:
+                                    enum:
+                                      - "Exists"
+                                      - "DoesNotExist"
+                                      - "In"
+                                      - "NotIn"
+                                    type: "string"
+                                  values:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                required:
+                                  - "key"
+                                  - "operator"
+                                type: "object"
+                              type: "array"
+                            matchLabels:
+                              additionalProperties:
+                                type: "string"
+                              type: "object"
+                          type: "object"
+                        role:
+                          type: "string"
+                      type: "object"
+                    type: "array"
+                  subjects:
+                    items:
+                      properties:
+                        automountServiceAccountToken:
+                          type: "boolean"
+                        imagePullSecrets:
+                          items:
+                            type: "string"
+                          type: "array"
+                        kind:
+                          enum:
+                            - "Group"
+                            - "ServiceAccount"
+                            - "User"
+                          type: "string"
+                        name:
+                          type: "string"
+                        namespace:
+                          type: "string"
+                      required:
+                        - "name"
+                        - "kind"
+                      type: "object"
+                    type: "array"
+                required:
+                  - "name"
+                  - "subjects"
+                type: "object"
+              type: "array"
+            status:
+              type: "object"
+          required:
+            - "rbacBindings"
+          type: "object"
+      served: true
+      storage: true

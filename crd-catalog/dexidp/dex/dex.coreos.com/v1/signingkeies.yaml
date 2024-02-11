@@ -1,20 +1,20 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
-  name: signingkeies.dex.coreos.com
+  name: "signingkeies.dex.coreos.com"
 spec:
-  group: dex.coreos.com
+  group: "dex.coreos.com"
   names:
-    kind: SigningKey
-    listKind: SigningKeyList
-    plural: signingkeies
-    singular: signingkey
-  scope: Namespaced
+    kind: "SigningKey"
+    listKind: "SigningKeyList"
+    plural: "signingkeies"
+    singular: "signingkey"
+  scope: "Namespaced"
   versions:
-  - name: v1
-    schema:
-      openAPIV3Schema:
-        type: object
-        x-kubernetes-preserve-unknown-fields: true
-    served: true
-    storage: true
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          type: "object"
+          x-kubernetes-preserve-unknown-fields: true
+      served: true
+      storage: true

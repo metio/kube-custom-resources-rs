@@ -1,65 +1,54 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
-  name: rules.rules.kubeedge.io
+  name: "rules.rules.kubeedge.io"
 spec:
-  group: rules.kubeedge.io
+  group: "rules.kubeedge.io"
   names:
-    kind: Rule
-    plural: rules
-    singular: rule
-  scope: Namespaced
+    kind: "Rule"
+    plural: "rules"
+    singular: "rule"
+  scope: "Namespaced"
   versions:
-  - name: v1
-    schema:
-      openAPIV3Schema:
-        properties:
-          spec:
-            properties:
-              source:
-                description: |
-                  source is a string value representing where the messages come from. Its
-                  value is the same with ruleendpoint name. For example, my-rest or my-eventbus.
-                type: string
-              sourceResource:
-                additionalProperties:
-                  type: string
-                description: |
-                  sourceResource is a map representing the resource info of source. For rest
-                  rule-endpoint type its value is {"path":"/test"}. For eventbus ruleendpoint type its
-                  value is {"topic":"<user define string>","node_name":"edge-node"}
-                type: object
-              target:
-                description: |
-                  target is a string value representing where the messages go to. its value is
-                  the same with ruleendpoint name. For example, my-eventbus or my-rest or my-servicebus.
-                type: string
-              targetResource:
-                additionalProperties:
-                  type: string
-                description: |
-                  targetResource is a map representing the resource info of target. For rest
-                  rule-endpoint type its value is {"resource":"http://a.com"}. For eventbus ruleendpoint
-                  type its value is {"topic":"/test"}. For servicebus rule-endpoint type its value is
-                  {"path":"/request_path"}.
-                type: object
-            required:
-            - source
-            - sourceResource
-            - target
-            - targetResource
-            type: object
-          status:
-            properties:
-              errors:
-                items:
-                  type: string
-                type: array
-              failMessages:
-                type: integer
-              successMessages:
-                type: integer
-            type: object
-        type: object
-    served: true
-    storage: true
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          properties:
+            spec:
+              properties:
+                source:
+                  description: "source is a string value representing where the messages come from. Its\nvalue is the same with ruleendpoint name. For example, my-rest or my-eventbus.\n"
+                  type: "string"
+                sourceResource:
+                  additionalProperties:
+                    type: "string"
+                  description: "sourceResource is a map representing the resource info of source. For rest\nrule-endpoint type its value is {\"path\":\"/test\"}. For eventbus ruleendpoint type its\nvalue is {\"topic\":\"<user define string>\",\"node_name\":\"edge-node\"}\n"
+                  type: "object"
+                target:
+                  description: "target is a string value representing where the messages go to. its value is\nthe same with ruleendpoint name. For example, my-eventbus or my-rest or my-servicebus.\n"
+                  type: "string"
+                targetResource:
+                  additionalProperties:
+                    type: "string"
+                  description: "targetResource is a map representing the resource info of target. For rest\nrule-endpoint type its value is {\"resource\":\"http://a.com\"}. For eventbus ruleendpoint\ntype its value is {\"topic\":\"/test\"}. For servicebus rule-endpoint type its value is\n{\"path\":\"/request_path\"}.\n"
+                  type: "object"
+              required:
+                - "source"
+                - "sourceResource"
+                - "target"
+                - "targetResource"
+              type: "object"
+            status:
+              properties:
+                errors:
+                  items:
+                    type: "string"
+                  type: "array"
+                failMessages:
+                  type: "integer"
+                successMessages:
+                  type: "integer"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true

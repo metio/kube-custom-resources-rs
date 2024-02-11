@@ -1,192 +1,192 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.8.0
-  name: tests.tests.testkube.io
+    controller-gen.kubebuilder.io/version: "v0.8.0"
+  name: "tests.tests.testkube.io"
 spec:
-  group: tests.testkube.io
+  group: "tests.testkube.io"
   names:
-    kind: Test
-    listKind: TestList
-    plural: tests
-    singular: test
-  scope: Namespaced
+    kind: "Test"
+    listKind: "TestList"
+    plural: "tests"
+    singular: "test"
+  scope: "Namespaced"
   versions:
-  - name: v2
-    schema:
-      openAPIV3Schema:
-        description: Test is the Schema for the tests API
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: TestSpec defines the desired state of Test
-            properties:
-              content:
-                description: test content object
-                properties:
-                  data:
-                    description: test content body
-                    type: string
-                  repository:
-                    description: repository of test content
-                    properties:
-                      branch:
-                        description: branch/tag name for checkout
-                        type: string
-                      commit:
-                        description: commit id (sha) for checkout
-                        type: string
-                      path:
-                        description: if needed we can checkout particular path (dir or file) in case of BIG/mono repositories
-                        type: string
-                      token:
-                        description: git auth token for private repositories
-                        type: string
-                      type:
-                        description: VCS repository type
-                        type: string
-                      uri:
-                        description: uri of content file or git directory
-                        type: string
-                      username:
-                        description: git auth username for private repositories
-                        type: string
-                    required:
-                    - type
-                    - uri
-                    type: object
-                  type:
-                    description: test type
-                    type: string
-                  uri:
-                    description: uri of test content
-                    type: string
-                type: object
-              executorArgs:
-                description: additional executor binary arguments
-                items:
-                  type: string
-                type: array
-              name:
-                description: test execution custom name
-                type: string
-              params:
-                additionalProperties:
-                  type: string
-                description: DEPRECATED execution params passed to executor
-                type: object
-              schedule:
-                description: schedule in cron job format for scheduled test execution
-                type: string
-              type:
-                description: test type
-                type: string
-              variables:
-                additionalProperties:
+    - name: "v2"
+      schema:
+        openAPIV3Schema:
+          description: "Test is the Schema for the tests API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "TestSpec defines the desired state of Test"
+              properties:
+                content:
+                  description: "test content object"
                   properties:
-                    name:
-                      description: variable name
-                      type: string
-                    type:
-                      description: variable type
-                      type: string
-                    value:
-                      description: variable string value
-                      type: string
-                    valueFrom:
-                      description: or load it from var source
+                    data:
+                      description: "test content body"
+                      type: "string"
+                    repository:
+                      description: "repository of test content"
                       properties:
-                        configMapKeyRef:
-                          description: Selects a key of a ConfigMap.
-                          properties:
-                            key:
-                              description: The key to select.
-                              type: string
-                            name:
-                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
-                              type: string
-                            optional:
-                              description: Specify whether the ConfigMap or its key must be defined
-                              type: boolean
-                          required:
-                          - key
-                          type: object
-                        fieldRef:
-                          description: 'Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels[''<KEY>'']`, `metadata.annotations[''<KEY>'']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.'
-                          properties:
-                            apiVersion:
-                              description: Version of the schema the FieldPath is written in terms of, defaults to "v1".
-                              type: string
-                            fieldPath:
-                              description: Path of the field to select in the specified API version.
-                              type: string
-                          required:
-                          - fieldPath
-                          type: object
-                        resourceFieldRef:
-                          description: 'Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.'
-                          properties:
-                            containerName:
-                              description: 'Container name: required for volumes, optional for env vars'
-                              type: string
-                            divisor:
-                              anyOf:
-                              - type: integer
-                              - type: string
-                              description: Specifies the output format of the exposed resources, defaults to "1"
-                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                              x-kubernetes-int-or-string: true
-                            resource:
-                              description: 'Required: resource to select'
-                              type: string
-                          required:
-                          - resource
-                          type: object
-                        secretKeyRef:
-                          description: Selects a key of a secret in the pod's namespace
-                          properties:
-                            key:
-                              description: The key of the secret to select from.  Must be a valid secret key.
-                              type: string
-                            name:
-                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
-                              type: string
-                            optional:
-                              description: Specify whether the Secret or its key must be defined
-                              type: boolean
-                          required:
-                          - key
-                          type: object
-                      type: object
-                  type: object
-                description: Variables are new params with secrets attached
-                type: object
-            type: object
-          status:
-            description: TestStatus defines the observed state of Test
-            properties:
-              executions_count:
-                type: integer
-              last_execution:
-                format: date-time
-                type: string
-            type: object
-        type: object
-    served: true
-    storage: false
-    subresources:
-      status: {}
+                        branch:
+                          description: "branch/tag name for checkout"
+                          type: "string"
+                        commit:
+                          description: "commit id (sha) for checkout"
+                          type: "string"
+                        path:
+                          description: "if needed we can checkout particular path (dir or file) in case of BIG/mono repositories"
+                          type: "string"
+                        token:
+                          description: "git auth token for private repositories"
+                          type: "string"
+                        type:
+                          description: "VCS repository type"
+                          type: "string"
+                        uri:
+                          description: "uri of content file or git directory"
+                          type: "string"
+                        username:
+                          description: "git auth username for private repositories"
+                          type: "string"
+                      required:
+                        - "type"
+                        - "uri"
+                      type: "object"
+                    type:
+                      description: "test type"
+                      type: "string"
+                    uri:
+                      description: "uri of test content"
+                      type: "string"
+                  type: "object"
+                executorArgs:
+                  description: "additional executor binary arguments"
+                  items:
+                    type: "string"
+                  type: "array"
+                name:
+                  description: "test execution custom name"
+                  type: "string"
+                params:
+                  additionalProperties:
+                    type: "string"
+                  description: "DEPRECATED execution params passed to executor"
+                  type: "object"
+                schedule:
+                  description: "schedule in cron job format for scheduled test execution"
+                  type: "string"
+                type:
+                  description: "test type"
+                  type: "string"
+                variables:
+                  additionalProperties:
+                    properties:
+                      name:
+                        description: "variable name"
+                        type: "string"
+                      type:
+                        description: "variable type"
+                        type: "string"
+                      value:
+                        description: "variable string value"
+                        type: "string"
+                      valueFrom:
+                        description: "or load it from var source"
+                        properties:
+                          configMapKeyRef:
+                            description: "Selects a key of a ConfigMap."
+                            properties:
+                              key:
+                                description: "The key to select."
+                                type: "string"
+                              name:
+                                description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the ConfigMap or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                          fieldRef:
+                            description: "Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+                            properties:
+                              apiVersion:
+                                description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
+                                type: "string"
+                              fieldPath:
+                                description: "Path of the field to select in the specified API version."
+                                type: "string"
+                            required:
+                              - "fieldPath"
+                            type: "object"
+                          resourceFieldRef:
+                            description: "Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported."
+                            properties:
+                              containerName:
+                                description: "Container name: required for volumes, optional for env vars"
+                                type: "string"
+                              divisor:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                description: "Specifies the output format of the exposed resources, defaults to \"1\""
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              resource:
+                                description: "Required: resource to select"
+                                type: "string"
+                            required:
+                              - "resource"
+                            type: "object"
+                          secretKeyRef:
+                            description: "Selects a key of a secret in the pod's namespace"
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                        type: "object"
+                    type: "object"
+                  description: "Variables are new params with secrets attached"
+                  type: "object"
+              type: "object"
+            status:
+              description: "TestStatus defines the observed state of Test"
+              properties:
+                executions_count:
+                  type: "integer"
+                last_execution:
+                  format: "date-time"
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: false
+      subresources:
+        status: {}
 status:
   acceptedNames:
-    kind: ''
-    plural: ''
+    kind: ""
+    plural: ""
   conditions: []
   storedVersions: []

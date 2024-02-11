@@ -1,82 +1,82 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.8.0
-  name: webhooks.executor.testkube.io
+    controller-gen.kubebuilder.io/version: "v0.8.0"
+  name: "webhooks.executor.testkube.io"
 spec:
-  group: executor.testkube.io
+  group: "executor.testkube.io"
   names:
-    kind: Webhook
-    listKind: WebhookList
-    plural: webhooks
-    singular: webhook
-  scope: Namespaced
+    kind: "Webhook"
+    listKind: "WebhookList"
+    plural: "webhooks"
+    singular: "webhook"
+  scope: "Namespaced"
   versions:
-  - name: v1
-    schema:
-      openAPIV3Schema:
-        description: Webhook is the Schema for the webhooks API
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: WebhookSpec defines the desired state of Webhook
-            properties:
-              events:
-                description: Events declare list if events on which webhook should be called
-                items:
-                  enum:
-                  - start-test
-                  - end-test-success
-                  - end-test-failed
-                  - end-test-aborted
-                  - end-test-timeout
-                  - start-testsuite
-                  - end-testsuite-success
-                  - end-testsuite-failed
-                  - end-testsuite-aborted
-                  - end-testsuite-timeout
-                  type: string
-                type: array
-              headers:
-                additionalProperties:
-                  type: string
-                description: webhook headers (golang template supported)
-                type: object
-              payloadObjectField:
-                description: will load the generated payload for notification inside the object
-                type: string
-              payloadTemplate:
-                description: golang based template for notification payload
-                type: string
-              payloadTemplateReference:
-                description: name of the template resource
-                type: string
-              selector:
-                description: Labels to filter for tests and test suites
-                type: string
-              uri:
-                description: Uri is address where webhook should be made (golang template supported)
-                type: string
-            type: object
-          status:
-            description: WebhookStatus defines the observed state of Webhook
-            type: object
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "Webhook is the Schema for the webhooks API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "WebhookSpec defines the desired state of Webhook"
+              properties:
+                events:
+                  description: "Events declare list if events on which webhook should be called"
+                  items:
+                    enum:
+                      - "start-test"
+                      - "end-test-success"
+                      - "end-test-failed"
+                      - "end-test-aborted"
+                      - "end-test-timeout"
+                      - "start-testsuite"
+                      - "end-testsuite-success"
+                      - "end-testsuite-failed"
+                      - "end-testsuite-aborted"
+                      - "end-testsuite-timeout"
+                    type: "string"
+                  type: "array"
+                headers:
+                  additionalProperties:
+                    type: "string"
+                  description: "webhook headers (golang template supported)"
+                  type: "object"
+                payloadObjectField:
+                  description: "will load the generated payload for notification inside the object"
+                  type: "string"
+                payloadTemplate:
+                  description: "golang based template for notification payload"
+                  type: "string"
+                payloadTemplateReference:
+                  description: "name of the template resource"
+                  type: "string"
+                selector:
+                  description: "Labels to filter for tests and test suites"
+                  type: "string"
+                uri:
+                  description: "Uri is address where webhook should be made (golang template supported)"
+                  type: "string"
+              type: "object"
+            status:
+              description: "WebhookStatus defines the observed state of Webhook"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
 status:
   acceptedNames:
-    kind: ''
-    plural: ''
+    kind: ""
+    plural: ""
   conditions: []
   storedVersions: []

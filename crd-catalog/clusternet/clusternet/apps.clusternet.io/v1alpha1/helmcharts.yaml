@@ -1,138 +1,138 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.10.0
-  name: helmcharts.apps.clusternet.io
+    controller-gen.kubebuilder.io/version: "v0.10.0"
+  name: "helmcharts.apps.clusternet.io"
 spec:
-  group: apps.clusternet.io
+  group: "apps.clusternet.io"
   names:
     categories:
-    - clusternet
-    kind: HelmChart
-    listKind: HelmChartList
-    plural: helmcharts
+      - "clusternet"
+    kind: "HelmChart"
+    listKind: "HelmChartList"
+    plural: "helmcharts"
     shortNames:
-    - chart
-    - charts
-    singular: helmchart
-  scope: Namespaced
+      - "chart"
+      - "charts"
+    singular: "helmchart"
+  scope: "Namespaced"
   versions:
-  - additionalPrinterColumns:
-    - description: The helm chart name
-      jsonPath: .spec.chart
-      name: CHART
-      type: string
-    - description: The helm chart version
-      jsonPath: .spec.version
-      name: VERSION
-      type: string
-    - description: The helm repo url
-      jsonPath: .spec.repo
-      name: REPO
-      type: string
-    - description: The helm chart status
-      jsonPath: .status.phase
-      name: STATUS
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: AGE
-      type: date
-    name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        description: HelmChart is the Schema for the helm chart
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: HelmChartSpec defines the spec of HelmChart
-            properties:
-              atomic:
-                description: Atomic, for install case, if true, will uninstall failed release.
-                type: boolean
-              chart:
-                description: Chart is the name of a Helm Chart in the Repository.
-                type: string
-              chartPullSecret:
-                description: ChartPullSecret is the name of the secret that contains the auth information for the chart repository.
-                properties:
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                type: object
-              createNamespace:
-                default: true
-                description: CreateNamespace create namespace when install helm release
-                type: boolean
-              disableHooks:
-                description: DisableHooks disables hook processing if set to true.
-                type: boolean
-              force:
-                description: Force will, if set to `true`, ignore certain warnings and perform the upgrade anyway. This should be used with caution.
-                type: boolean
-              replace:
-                description: Replace will re-use the given name, only if that name is a deleted release that remains in the history. This is unsafe in production.
-                type: boolean
-              replaceCRDs:
-                description: ReplaceCRDs replace all crds in chart and sub charts before upgrade and install, not working when SkipCRDs true
-                type: boolean
-              repo:
-                description: a Helm Repository to be used. OCI-based registries are also supported. For example, https://charts.bitnami.com/bitnami or oci://localhost:5000/helm-charts
-                pattern: ^(http|https|oci)?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$
-                type: string
-              skipCRDs:
-                description: SkipCRDs skips installing CRDs when install flag is enabled during upgrade
-                type: boolean
-              targetNamespace:
-                description: TargetNamespace specifies the namespace to install this HelmChart
-                type: string
-              timeoutSeconds:
-                default: 300
-                description: TimeoutSeconds is the timeout of the chart to be install/upgrade/rollback/uninstall
-                format: int32
-                type: integer
-              upgradeAtomic:
-                description: UpgradeAtomic, for upgrade case, if true, will roll back failed release.
-                type: boolean
-              version:
-                description: ChartVersion is the version of the chart to be deployed. It will be defaulted with current latest version if empty.
-                type: string
-              wait:
-                description: Wait determines whether the wait operation should be performed after helm install, upgrade or uninstall is requested.
-                type: boolean
-              waitForJob:
-                description: WaitForJobs determines whether the wait operation for the Jobs should be performed after the upgrade is requested.
-                type: boolean
-            required:
-            - chart
-            - repo
-            - targetNamespace
-            type: object
-          status:
-            description: HelmChartStatus defines the observed state of HelmChart
-            properties:
-              phase:
-                description: Phase denotes the phase of HelmChart
-                enum:
-                - Found
-                - NotFound
-                type: string
-              reason:
-                description: Reason indicates the reason of HelmChartPhase
-                type: string
-            type: object
-        required:
-        - spec
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
+    - additionalPrinterColumns:
+        - description: "The helm chart name"
+          jsonPath: ".spec.chart"
+          name: "CHART"
+          type: "string"
+        - description: "The helm chart version"
+          jsonPath: ".spec.version"
+          name: "VERSION"
+          type: "string"
+        - description: "The helm repo url"
+          jsonPath: ".spec.repo"
+          name: "REPO"
+          type: "string"
+        - description: "The helm chart status"
+          jsonPath: ".status.phase"
+          name: "STATUS"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "AGE"
+          type: "date"
+      name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "HelmChart is the Schema for the helm chart"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "HelmChartSpec defines the spec of HelmChart"
+              properties:
+                atomic:
+                  description: "Atomic, for install case, if true, will uninstall failed release."
+                  type: "boolean"
+                chart:
+                  description: "Chart is the name of a Helm Chart in the Repository."
+                  type: "string"
+                chartPullSecret:
+                  description: "ChartPullSecret is the name of the secret that contains the auth information for the chart repository."
+                  properties:
+                    name:
+                      type: "string"
+                    namespace:
+                      type: "string"
+                  type: "object"
+                createNamespace:
+                  default: true
+                  description: "CreateNamespace create namespace when install helm release"
+                  type: "boolean"
+                disableHooks:
+                  description: "DisableHooks disables hook processing if set to true."
+                  type: "boolean"
+                force:
+                  description: "Force will, if set to `true`, ignore certain warnings and perform the upgrade anyway. This should be used with caution."
+                  type: "boolean"
+                replace:
+                  description: "Replace will re-use the given name, only if that name is a deleted release that remains in the history. This is unsafe in production."
+                  type: "boolean"
+                replaceCRDs:
+                  description: "ReplaceCRDs replace all crds in chart and sub charts before upgrade and install, not working when SkipCRDs true"
+                  type: "boolean"
+                repo:
+                  description: "a Helm Repository to be used. OCI-based registries are also supported. For example, https://charts.bitnami.com/bitnami or oci://localhost:5000/helm-charts"
+                  pattern: "^(http|https|oci)?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$"
+                  type: "string"
+                skipCRDs:
+                  description: "SkipCRDs skips installing CRDs when install flag is enabled during upgrade"
+                  type: "boolean"
+                targetNamespace:
+                  description: "TargetNamespace specifies the namespace to install this HelmChart"
+                  type: "string"
+                timeoutSeconds:
+                  default: 300
+                  description: "TimeoutSeconds is the timeout of the chart to be install/upgrade/rollback/uninstall"
+                  format: "int32"
+                  type: "integer"
+                upgradeAtomic:
+                  description: "UpgradeAtomic, for upgrade case, if true, will roll back failed release."
+                  type: "boolean"
+                version:
+                  description: "ChartVersion is the version of the chart to be deployed. It will be defaulted with current latest version if empty."
+                  type: "string"
+                wait:
+                  description: "Wait determines whether the wait operation should be performed after helm install, upgrade or uninstall is requested."
+                  type: "boolean"
+                waitForJob:
+                  description: "WaitForJobs determines whether the wait operation for the Jobs should be performed after the upgrade is requested."
+                  type: "boolean"
+              required:
+                - "chart"
+                - "repo"
+                - "targetNamespace"
+              type: "object"
+            status:
+              description: "HelmChartStatus defines the observed state of HelmChart"
+              properties:
+                phase:
+                  description: "Phase denotes the phase of HelmChart"
+                  enum:
+                    - "Found"
+                    - "NotFound"
+                  type: "string"
+                reason:
+                  description: "Reason indicates the reason of HelmChartPhase"
+                  type: "string"
+              type: "object"
+          required:
+            - "spec"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

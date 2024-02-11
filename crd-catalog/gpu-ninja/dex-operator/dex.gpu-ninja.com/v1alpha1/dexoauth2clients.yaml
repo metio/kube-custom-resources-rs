@@ -1,97 +1,97 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  name: dexoauth2clients.dex.gpu-ninja.com
+    controller-gen.kubebuilder.io/version: "v0.12.0"
+  name: "dexoauth2clients.dex.gpu-ninja.com"
 spec:
-  group: dex.gpu-ninja.com
+  group: "dex.gpu-ninja.com"
   names:
-    kind: DexOAuth2Client
-    listKind: DexOAuth2ClientList
-    plural: dexoauth2clients
+    kind: "DexOAuth2Client"
+    listKind: "DexOAuth2ClientList"
+    plural: "dexoauth2clients"
     shortNames:
-    - oac
-    singular: dexoauth2client
-  scope: Namespaced
+      - "oac"
+    singular: "dexoauth2client"
+  scope: "Namespaced"
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .status.phase
-      name: Status
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        description: DexOAuth2Client is an OAuth2 client registered with Dex.
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: DexOAuth2ClientSpec defines the desired state of the OAuth2 client.
-            properties:
-              identityProviderRef:
-                description: IdentityProviderRef is a reference to the identity provider which this client is associated with.
-                properties:
-                  name:
-                    description: Name of the referenced DexIdentityProvider.
-                    type: string
-                  namespace:
-                    description: Namespace is the optional namespace of the referenced DexIdentityProvider.
-                    type: string
-                required:
-                - name
-                type: object
-              logoURL:
-                description: LogoURL is the URL to a logo for the client.
-                type: string
-              name:
-                description: Name is the human-readable name of the client.
-                type: string
-              public:
-                description: Public indicates that this client is a public client, such as a mobile app. Public clients must use either use a redirectURL 127.0.0.1:X or "urn:ietf:wg:oauth:2.0:oob".
-                type: boolean
-              redirectURIs:
-                description: RedirectURIs is a list of allowed redirect URLs for the client.
-                items:
-                  type: string
-                type: array
-              secretName:
-                description: SecretName is the name of the secret that will be created to store the OAuth2 client id and client secret.
-                type: string
-              trustedPeers:
-                description: TrustedPeers are a list of peers which can issue tokens on this client's behalf using the dynamic "oauth2:server:client_id:(client_id)" scope. If a peer makes such a request, this client's ID will appear as the ID Token's audience.
-                items:
-                  type: string
-                type: array
-            required:
-            - identityProviderRef
-            - secretName
-            type: object
-          status:
-            description: DexOAuth2ClientStatus defines the observed state of the OAuth2 client.
-            properties:
-              observedGeneration:
-                description: ObservedGeneration is the most recent generation observed for this OAuth2 client by the controller.
-                format: int64
-                type: integer
-              phase:
-                description: Phase is the current phase of the OAuth2 client.
-                type: string
-              reason:
-                description: Reason is a human readable message indicating details about why the OAuth2 client is in this condition.
-                type: string
-            type: object
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
+    - additionalPrinterColumns:
+        - jsonPath: ".status.phase"
+          name: "Status"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "DexOAuth2Client is an OAuth2 client registered with Dex."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "DexOAuth2ClientSpec defines the desired state of the OAuth2 client."
+              properties:
+                identityProviderRef:
+                  description: "IdentityProviderRef is a reference to the identity provider which this client is associated with."
+                  properties:
+                    name:
+                      description: "Name of the referenced DexIdentityProvider."
+                      type: "string"
+                    namespace:
+                      description: "Namespace is the optional namespace of the referenced DexIdentityProvider."
+                      type: "string"
+                  required:
+                    - "name"
+                  type: "object"
+                logoURL:
+                  description: "LogoURL is the URL to a logo for the client."
+                  type: "string"
+                name:
+                  description: "Name is the human-readable name of the client."
+                  type: "string"
+                public:
+                  description: "Public indicates that this client is a public client, such as a mobile app. Public clients must use either use a redirectURL 127.0.0.1:X or \"urn:ietf:wg:oauth:2.0:oob\"."
+                  type: "boolean"
+                redirectURIs:
+                  description: "RedirectURIs is a list of allowed redirect URLs for the client."
+                  items:
+                    type: "string"
+                  type: "array"
+                secretName:
+                  description: "SecretName is the name of the secret that will be created to store the OAuth2 client id and client secret."
+                  type: "string"
+                trustedPeers:
+                  description: "TrustedPeers are a list of peers which can issue tokens on this client's behalf using the dynamic \"oauth2:server:client_id:(client_id)\" scope. If a peer makes such a request, this client's ID will appear as the ID Token's audience."
+                  items:
+                    type: "string"
+                  type: "array"
+              required:
+                - "identityProviderRef"
+                - "secretName"
+              type: "object"
+            status:
+              description: "DexOAuth2ClientStatus defines the observed state of the OAuth2 client."
+              properties:
+                observedGeneration:
+                  description: "ObservedGeneration is the most recent generation observed for this OAuth2 client by the controller."
+                  format: "int64"
+                  type: "integer"
+                phase:
+                  description: "Phase is the current phase of the OAuth2 client."
+                  type: "string"
+                reason:
+                  description: "Reason is a human readable message indicating details about why the OAuth2 client is in this condition."
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

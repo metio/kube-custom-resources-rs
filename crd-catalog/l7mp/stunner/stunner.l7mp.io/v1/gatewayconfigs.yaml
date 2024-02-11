@@ -1,117 +1,117 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.13.0
-  name: gatewayconfigs.stunner.l7mp.io
+    controller-gen.kubebuilder.io/version: "v0.13.0"
+  name: "gatewayconfigs.stunner.l7mp.io"
 spec:
-  group: stunner.l7mp.io
+  group: "stunner.l7mp.io"
   names:
     categories:
-    - stunner
-    kind: GatewayConfig
-    listKind: GatewayConfigList
-    plural: gatewayconfigs
+      - "stunner"
+    kind: "GatewayConfig"
+    listKind: "GatewayConfigList"
+    plural: "gatewayconfigs"
     shortNames:
-    - gwconf
-    singular: gatewayconfig
-  scope: Namespaced
+      - "gwconf"
+    singular: "gatewayconfig"
+  scope: "Namespaced"
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .spec.realm
-      name: Realm
-      type: string
-    - jsonPath: .spec.dataplane
-      name: Dataplane
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    name: v1
-    schema:
-      openAPIV3Schema:
-        description: GatewayConfig is the Schema for the gatewayconfigs API
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: GatewayConfigSpec defines the desired state of GatewayConfig
-            properties:
-              authLifetime:
-                description: AuthLifetime defines the lifetime of "longterm" authentication credentials in seconds.
-                format: int32
-                type: integer
-              authRef:
-                description: 'Note that externally set credentials override any inline auth credentials (AuthType, AuthUsername, etc.): if AuthRef is nonempty then it is expected that the referenced Secret exists and *all* authentication credentials are correctly set in the referenced Secret (username/password or shared secret). Mixing of credential sources (inline/external) is not supported.'
-                properties:
-                  group:
-                    default: ''
-                    description: Group is the group of the referent. For example, "gateway.networking.k8s.io". When unspecified or empty string, core API group is inferred.
-                    maxLength: 253
-                    pattern: ^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
-                    type: string
-                  kind:
-                    default: Secret
-                    description: Kind is kind of the referent. For example "Secret".
-                    maxLength: 63
-                    minLength: 1
-                    pattern: ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
-                    type: string
-                  name:
-                    description: Name is the name of the referent.
-                    maxLength: 253
-                    minLength: 1
-                    type: string
-                  namespace:
-                    description: "Namespace is the namespace of the referenced object. When unspecified, the local namespace is inferred. \n Note that when a namespace different than the local namespace is specified, a ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. \n Support: Core"
-                    maxLength: 63
-                    minLength: 1
-                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
-                    type: string
-                required:
-                - name
-                type: object
-              authType:
-                default: plaintext
-                description: AuthType is the type of the STUN/TURN authentication mechanism.
-                pattern: ^plaintext|static|longterm|ephemeral|timewindowed$
-                type: string
-              dataplane:
-                default: default
-                description: Dataplane defines the dataplane (stunnerd image, version, etc) for STUNner gateways using this GatewayConfig.
-                type: string
-              loadBalancerServiceAnnotations:
-                additionalProperties:
-                  type: string
-                description: "LoadBalancerServiceAnnotations is a list of annotations that will go into the LoadBalancer services created automatically by the operator to wrap Gateways. \n NOTE: removing annotations from a GatewayConfig will not result in the removal of the corresponding annotations from the LoadBalancer service, in order to prevent the accidental removal of an annotation installed there by Kubernetes or the cloud provider. If you really want to remove an annotation, do this manually or simply remove all Gateways (which will remove the corresponding LoadBalancer services), update the GatewayConfig and then recreate the Gateways, so that the newly created LoadBalancer services will contain the required annotations."
-                type: object
-              logLevel:
-                description: LogLevel specifies the default loglevel for the STUNner daemon.
-                type: string
-              password:
-                description: Password defines the `password` credential for "plaintext" authentication.
-                pattern: ^[A-Za-z0-9!#$%&'*+\-.^_\x60|~]+$
-                type: string
-              realm:
-                default: stunner.l7mp.io
-                description: "Realm defines the STUN/TURN authentication realm to be used for clients toauthenticate with STUNner. \n The realm must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character. No other punctuation is allowed."
-                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
-                type: string
-              sharedSecret:
-                description: SharedSecret defines the shared secret to be used for "longterm" authentication.
-                type: string
-              userName:
-                description: Username defines the `username` credential for "plaintext" authentication.
-                pattern: ^[A-Za-z0-9!#$%&'*+\-.^_\x60|~]+$
-                type: string
-            type: object
-        type: object
-    served: true
-    storage: true
-    subresources: {}
+    - additionalPrinterColumns:
+        - jsonPath: ".spec.realm"
+          name: "Realm"
+          type: "string"
+        - jsonPath: ".spec.dataplane"
+          name: "Dataplane"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "GatewayConfig is the Schema for the gatewayconfigs API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "GatewayConfigSpec defines the desired state of GatewayConfig"
+              properties:
+                authLifetime:
+                  description: "AuthLifetime defines the lifetime of \"longterm\" authentication credentials in seconds."
+                  format: "int32"
+                  type: "integer"
+                authRef:
+                  description: "Note that externally set credentials override any inline auth credentials (AuthType, AuthUsername, etc.): if AuthRef is nonempty then it is expected that the referenced Secret exists and *all* authentication credentials are correctly set in the referenced Secret (username/password or shared secret). Mixing of credential sources (inline/external) is not supported."
+                  properties:
+                    group:
+                      default: ""
+                      description: "Group is the group of the referent. For example, \"gateway.networking.k8s.io\". When unspecified or empty string, core API group is inferred."
+                      maxLength: 253
+                      pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                      type: "string"
+                    kind:
+                      default: "Secret"
+                      description: "Kind is kind of the referent. For example \"Secret\"."
+                      maxLength: 63
+                      minLength: 1
+                      pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                      type: "string"
+                    name:
+                      description: "Name is the name of the referent."
+                      maxLength: 253
+                      minLength: 1
+                      type: "string"
+                    namespace:
+                      description: "Namespace is the namespace of the referenced object. When unspecified, the local namespace is inferred. \n Note that when a namespace different than the local namespace is specified, a ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. \n Support: Core"
+                      maxLength: 63
+                      minLength: 1
+                      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                      type: "string"
+                  required:
+                    - "name"
+                  type: "object"
+                authType:
+                  default: "plaintext"
+                  description: "AuthType is the type of the STUN/TURN authentication mechanism."
+                  pattern: "^plaintext|static|longterm|ephemeral|timewindowed$"
+                  type: "string"
+                dataplane:
+                  default: "default"
+                  description: "Dataplane defines the dataplane (stunnerd image, version, etc) for STUNner gateways using this GatewayConfig."
+                  type: "string"
+                loadBalancerServiceAnnotations:
+                  additionalProperties:
+                    type: "string"
+                  description: "LoadBalancerServiceAnnotations is a list of annotations that will go into the LoadBalancer services created automatically by the operator to wrap Gateways. \n NOTE: removing annotations from a GatewayConfig will not result in the removal of the corresponding annotations from the LoadBalancer service, in order to prevent the accidental removal of an annotation installed there by Kubernetes or the cloud provider. If you really want to remove an annotation, do this manually or simply remove all Gateways (which will remove the corresponding LoadBalancer services), update the GatewayConfig and then recreate the Gateways, so that the newly created LoadBalancer services will contain the required annotations."
+                  type: "object"
+                logLevel:
+                  description: "LogLevel specifies the default loglevel for the STUNner daemon."
+                  type: "string"
+                password:
+                  description: "Password defines the `password` credential for \"plaintext\" authentication."
+                  pattern: "^[A-Za-z0-9!#$%&'*+\\-.^_\\x60|~]+$"
+                  type: "string"
+                realm:
+                  default: "stunner.l7mp.io"
+                  description: "Realm defines the STUN/TURN authentication realm to be used for clients toauthenticate with STUNner. \n The realm must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character. No other punctuation is allowed."
+                  pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                  type: "string"
+                sharedSecret:
+                  description: "SharedSecret defines the shared secret to be used for \"longterm\" authentication."
+                  type: "string"
+                userName:
+                  description: "Username defines the `username` credential for \"plaintext\" authentication."
+                  pattern: "^[A-Za-z0-9!#$%&'*+\\-.^_\\x60|~]+$"
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources: {}

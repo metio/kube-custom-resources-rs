@@ -1,963 +1,963 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  name: dexidentityproviders.dex.gpu-ninja.com
+    controller-gen.kubebuilder.io/version: "v0.12.0"
+  name: "dexidentityproviders.dex.gpu-ninja.com"
 spec:
-  group: dex.gpu-ninja.com
+  group: "dex.gpu-ninja.com"
   names:
-    kind: DexIdentityProvider
-    listKind: DexIdentityProviderList
-    plural: dexidentityproviders
+    kind: "DexIdentityProvider"
+    listKind: "DexIdentityProviderList"
+    plural: "dexidentityproviders"
     shortNames:
-    - idp
-    singular: dexidentityprovider
-  scope: Namespaced
+      - "idp"
+    singular: "dexidentityprovider"
+  scope: "Namespaced"
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .status.phase
-      name: Status
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        description: DexIdentityProvider is a Dex identity provider instance.
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: DexIdentityProviderSpec defines the desired state of the Dex identity provider.
-            properties:
-              clientCertificateSecretRef:
-                description: ClientCertificateSecretRef is an optional reference to a secret containing a client certificate that the operator can use for connecting to the Dex API gRPC server.
-                properties:
-                  name:
-                    description: Name is the name of the secret.
-                    type: string
-                required:
-                - name
-                type: object
-              connectors:
-                description: Connectors holds configuration for connectors.
-                items:
-                  description: DexIdentityProviderConnectorSpec holds configuration for a connector.
+    - additionalPrinterColumns:
+        - jsonPath: ".status.phase"
+          name: "Status"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "DexIdentityProvider is a Dex identity provider instance."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "DexIdentityProviderSpec defines the desired state of the Dex identity provider."
+              properties:
+                clientCertificateSecretRef:
+                  description: "ClientCertificateSecretRef is an optional reference to a secret containing a client certificate that the operator can use for connecting to the Dex API gRPC server."
                   properties:
-                    id:
-                      description: ID is the connector ID.
-                      type: string
-                    ldap:
-                      description: LDAP holds configuration for the LDAP connector.
-                      properties:
-                        bindPasswordSecretRef:
-                          description: BindPasswordSecretRef is a reference to a secret containing the bind password. The connector uses these credentials to search for users and groups.
-                          properties:
-                            name:
-                              description: Name is the name of the secret.
-                              type: string
-                          required:
-                          - name
-                          type: object
-                        bindUsername:
-                          description: BindUsername is the DN of the user to bind with. The connector uses these credentials to search for users and groups.
-                          type: string
-                        caSecretRef:
-                          description: CASecretRef is an optional reference to a secret containing the CA certificate.
-                          properties:
-                            name:
-                              description: Name is the name of the secret.
-                              type: string
-                          required:
-                          - name
-                          type: object
-                        clientCertificateSecretRef:
-                          description: ClientCertificateSecretRef is an optional reference to a secret containing the client certificate and key.
-                          properties:
-                            name:
-                              description: Name is the name of the secret.
-                              type: string
-                          required:
-                          - name
-                          type: object
-                        groupSearch:
-                          description: GroupSearch contains configuration for searching LDAP groups.
-                          properties:
-                            baseDN:
-                              description: BaseDN to start the search from. For example "cn=groups,dc=example,dc=com"
-                              type: string
-                            filter:
-                              description: Filter is an optional filter to apply when searching the directory. For example "(objectClass=posixGroup)"
-                              type: string
-                            nameAttr:
-                              description: NameAttr is the attribute of the group that represents its name.
-                              type: string
-                            scope:
-                              description: 'Scope is the optional scope of the search (default "sub"). Can either be: * "sub" - search the whole sub tree * "one" - only search one level'
-                              enum:
-                              - sub
-                              - one
-                              type: string
-                            userMatchers:
-                              description: "UserMatchers is an array of the field pairs used to match a user to a group. See the \"DexIdentityProviderConnectorLDAPGroupSearchUserMatcher\" struct for the exact field names \n Each pair adds an additional requirement to the filter that an attribute in the group match the user's attribute value. For example that the \"members\" attribute of a group matches the \"uid\" of the user. The exact filter being added is: \n (userMatchers[n].<groupAttr>=userMatchers[n].<userAttr value>)"
-                              items:
-                                description: DexIdentityProviderConnectorLDAPGroupSearchUserMatcher holds information about user and group matching.
-                                properties:
-                                  groupAttr:
-                                    description: GroupAttr is the attribute to match against the group ID.
-                                    type: string
-                                  userAttr:
-                                    description: UserAttr is the attribute to match against the user ID.
-                                    type: string
-                                required:
-                                - groupAttr
-                                - userAttr
-                                type: object
-                              type: array
-                          required:
-                          - baseDN
-                          - nameAttr
-                          - userMatchers
-                          type: object
-                        host:
-                          description: Host is the host and optional port of the LDAP server. If port isn't supplied, it will be guessed based on the TLS configuration.
-                          type: string
-                        insecureNoSSL:
-                          description: InsecureNoSSL is required to connect to a server without TLS.
-                          type: boolean
-                        insecureSkipVerify:
-                          description: InsecureSkipVerify allows connecting to a server without verifying the TLS certificate.
-                          type: boolean
-                        startTLS:
-                          description: StartTLS allows connecting to a server that supports the StartTLS command. If unsupplied secure connections will use the LDAPS protocol.
-                          type: boolean
-                        userSearch:
-                          description: UserSearch contains configuration for searching LDAP users.
-                          properties:
-                            baseDN:
-                              description: BaseDN to start the search from. For example "cn=users,dc=example,dc=com"
-                              type: string
-                            emailAttr:
-                              description: EmailAttr is the attribute to use as the user email (default "mail").
-                              type: string
-                            emailSuffix:
-                              description: EmailSuffix if set, will be appended to the idAttr to construct the email claim. This should not include the @ character.
-                              type: string
-                            filter:
-                              description: Filter is an optional filter to apply when searching the directory. For example "(objectClass=person)"
-                              type: string
-                            idAttr:
-                              description: IDAttr is the attribute to use as the user ID (default "uid").
-                              type: string
-                            nameAttr:
-                              description: NameAttr is the attribute to use as the display name for the user.
-                              type: string
-                            preferredUsernameAttr:
-                              description: PreferredUsernameAttr is the attribute to use as the preferred username for the user.
-                              type: string
-                            scope:
-                              description: 'Scope is the optional scope of the search (default "sub"). Can either be: * "sub" - search the whole sub tree * "one" - only search one level'
-                              enum:
-                              - sub
-                              - one
-                              type: string
-                            username:
-                              description: Username is the attribute to match against the inputted username. This will be translated and combined with the other filter as "(<attr>=<username>)".
-                              type: string
-                          required:
-                          - baseDN
-                          - username
-                          type: object
-                        usernamePrompt:
-                          description: UsernamePrompt allows users to override the username attribute (displayed in the username/password prompt). If unset, the handler will use "Username".
-                          type: string
-                      required:
-                      - bindPasswordSecretRef
-                      - bindUsername
-                      - groupSearch
-                      - host
-                      - userSearch
-                      type: object
                     name:
-                      description: Name is the connector name.
-                      type: string
-                    oidc:
-                      description: OIDC holds configuration for the OIDC connector.
-                      properties:
-                        acrValues:
-                          description: AcrValues (Authentication Context Class Reference Values) that specifies the Authentication Context Class Values within the Authentication Request that the Authorization Server is being requested to use for processing requests from this Client, with the values appearing in order of preference.
-                          items:
-                            type: string
-                          type: array
-                        basicAuthUnsupported:
-                          description: "BasicAuthUnsupported causes client_secret to be passed as POST parameters instead of basic auth. This is specifically \"NOT RECOMMENDED\" by the OAuth2 RFC, but some providers require it. \n https://tools.ietf.org/html/rfc6749#section-2.3.1"
-                          type: boolean
-                        caSecretRef:
-                          description: CASecretRef is an optional reference to a secret containing the CA certificate. Only required if your provider uses a self-signed certificate.
-                          properties:
-                            name:
-                              description: Name is the name of the secret.
-                              type: string
-                          required:
-                          - name
-                          type: object
-                        claimMapping:
-                          description: ClaimMapping is used to map non-standard claims to standard claims. Some providers return non-standard claims (eg. mail). https://openid.net/specs/openid-connect-core-1_0.html#Claims
-                          properties:
-                            email:
-                              description: EmailKey is the key which contains the email claims, defaults to "email".
-                              type: string
-                            groups:
-                              description: GroupsKey is the key which contains the groups claims, defaults to "groups".
-                              type: string
-                            preferred_username:
-                              description: PreferredUsernameKey is the key which contains the preferred username claims, defaults to "preferred_username".
-                              type: string
-                          type: object
-                        clientSecretRef:
-                          description: ClientSecretRef is a reference to a secret containing the OAuth client id and secret.
-                          properties:
-                            name:
-                              description: Name is the name of the secret.
-                              type: string
-                          required:
-                          - name
-                          type: object
-                        getUserInfo:
-                          description: GetUserInfo uses the userinfo endpoint to get additional claims for the token. This is especially useful where upstreams return "thin" id tokens
-                          type: boolean
-                        insecureEnableGroups:
-                          description: InsecureEnableGroups enables groups claims.
-                          type: boolean
-                        insecureSkipEmailVerified:
-                          description: InsecureSkipEmailVerified if set will override the value of email_verified to true in the returned claims.
-                          type: boolean
-                        insecureSkipVerify:
-                          description: InsecureSkipVerify disables TLS certificate verification.
-                          type: boolean
-                        issuer:
-                          description: Issuer is the URL of the OIDC issuer.
-                          type: string
-                        overrideClaimMapping:
-                          description: OverrideClaimMapping will be used to override the options defined in claimMappings. i.e. if there are 'email' and `preferred_email` claims available, by default Dex will always use the `email` claim independent of the ClaimMapping.EmailKey. This setting allows you to override the default behavior of Dex and enforce the mappings defined in `claimMapping`. Defaults to false.
-                          type: boolean
-                        promptType:
-                          description: PromptType will be used fot the prompt parameter (when offline_access, by default prompt=consent).
-                          type: string
-                        redirectURI:
-                          description: RedirectURI is the OAuth redirect URI.
-                          type: string
-                        scopes:
-                          description: Scopes is an optional list of scopes to request. If omitted, defaults to "profile" and "email".
-                          items:
-                            type: string
-                          type: array
-                        userIDKey:
-                          description: UserIDKey is the claim key to use for the user ID (default sub).
-                          type: string
-                        userNameKey:
-                          description: UserNameKey is the claim key to use for the username (default name).
-                          type: string
-                      required:
-                      - clientSecretRef
-                      - issuer
-                      - redirectURI
-                      type: object
-                    type:
-                      description: Type is the connector type to use.
-                      enum:
-                      - ldap
-                      - oidc
-                      type: string
+                      description: "Name is the name of the secret."
+                      type: "string"
                   required:
-                  - id
-                  - name
-                  - type
-                  type: object
-                type: array
-              expiry:
-                description: Expiry holds configuration for tokens, signing keys, etc.
-                properties:
-                  authRequests:
-                    description: AuthRequests defines the duration of time for which the AuthRequests will be valid.
-                    type: string
-                  deviceRequests:
-                    description: DeviceRequests defines the duration of time for which the DeviceRequests will be valid.
-                    type: string
-                  idTokens:
-                    description: IDTokens defines the duration of time for which the IdTokens will be valid.
-                    type: string
-                  refreshTokens:
-                    description: RefreshTokens defines refresh tokens expiry policy.
+                    - "name"
+                  type: "object"
+                connectors:
+                  description: "Connectors holds configuration for connectors."
+                  items:
+                    description: "DexIdentityProviderConnectorSpec holds configuration for a connector."
                     properties:
-                      absoluteLifetime:
-                        description: AbsoluteLifetime defines the duration of time after which a refresh token will expire.
-                        type: string
-                      disableRotation:
-                        description: DisableRotation disables refresh token rotation.
-                        type: boolean
-                      reuseInterval:
-                        description: ReuseInterval defines the duration of time after which a refresh token can be reused.
-                        type: string
-                      validIfNotUsedFor:
-                        description: ValidIfNotUsedFor defines the duration of time after which a refresh token will expire if not used.
-                        type: string
-                    type: object
-                  signingKeys:
-                    description: SigningKeys defines the duration of time after which the SigningKeys will be rotated.
-                    type: string
-                type: object
-              frontend:
-                description: Frontend holds the web server's frontend templates and asset configuration.
-                properties:
-                  dir:
-                    description: "Dir is a file path to static web assets. \n It is expected to contain the following directories: * static - Static static served at \"( issuer URL )/static\". * templates - HTML templates controlled by dex. * themes/(theme) - Static static served at \"( issuer URL )/theme\"."
-                    type: string
-                  issuer:
-                    description: Issuer is the name of the issuer, used in the HTML templates. Defaults to "dex".
-                    type: string
-                  logoURL:
-                    description: LogoURL is the URL of the logo to use in the HTML templates. Defaults to "( issuer URL )/theme/logo.png"
-                    type: string
-                  theme:
-                    description: Theme is the name of the theme to use. Defaults to "light".
-                    type: string
-                type: object
-              grpc:
-                description: GRPC holds configuration for the Dex API gRPC server.
-                properties:
-                  annotations:
-                    additionalProperties:
-                      type: string
-                    description: Annotations is an optional map of additional annotations to add to the Dex API gRPC service.
-                    type: object
-                  certificateSecretRef:
-                    description: CertificateSecretRef is an optional reference to a secret containing the TLS certificate and key to use for the Dex API gRPC server.
-                    properties:
-                      name:
-                        description: Name is the name of the secret.
-                        type: string
-                    required:
-                    - name
-                    type: object
-                  clientCASecretRef:
-                    description: ClientCASecretRef is an optional reference to a secret containing the client CA.
-                    properties:
-                      name:
-                        description: Name is the name of the secret.
-                        type: string
-                    required:
-                    - name
-                    type: object
-                  reflection:
-                    description: Reflection enables gRPC server reflection.
-                    type: boolean
-                type: object
-              image:
-                description: Image is the Dex image to use.
-                type: string
-              ingress:
-                description: Ingress is the optional ingress configuration for the Dex identity provider.
-                properties:
-                  annotations:
-                    additionalProperties:
-                      type: string
-                    description: Annotations is an optional map of additional annotations to add to the ingress.
-                    type: object
-                  enabled:
-                    description: Enabled enables ingress for the Dex identity provider.
-                    type: boolean
-                  hosts:
-                    description: Hosts is a list of hosts and paths to route traffic to the Dex identity provider.
-                    items:
-                      description: DexIdentityProviderIngressHostSpec is the ingress host configuration for a Dex identity provider.
-                      properties:
-                        host:
-                          description: Host is the host to route traffic to the Dex identity provider.
-                          type: string
-                        paths:
-                          description: Paths is a list of paths to route traffic to the Dex identity provider.
-                          items:
-                            description: DexIdentityProviderIngressPathSpec is the ingress path configuration for a Dex identity provider.
+                      id:
+                        description: "ID is the connector ID."
+                        type: "string"
+                      ldap:
+                        description: "LDAP holds configuration for the LDAP connector."
+                        properties:
+                          bindPasswordSecretRef:
+                            description: "BindPasswordSecretRef is a reference to a secret containing the bind password. The connector uses these credentials to search for users and groups."
                             properties:
-                              path:
-                                description: Path is matched against the path of an incoming request.
-                                type: string
-                              pathType:
-                                description: PathType determines the interpretation of the Path matching.
-                                enum:
-                                - Exact
-                                - Prefix
-                                - ImplementationSpecific
-                                type: string
+                              name:
+                                description: "Name is the name of the secret."
+                                type: "string"
                             required:
-                            - path
-                            - pathType
-                            type: object
-                          type: array
-                      required:
-                      - host
-                      - paths
-                      type: object
-                    type: array
-                  ingressClassName:
-                    description: IngressClassName is the optional ingress class to use for the Dex identity provider.
-                    type: string
-                  tls:
-                    description: TLS is an optional list of TLS configurations for the ingress.
-                    items:
-                      description: IngressTLS describes the transport layer security associated with an ingress.
+                              - "name"
+                            type: "object"
+                          bindUsername:
+                            description: "BindUsername is the DN of the user to bind with. The connector uses these credentials to search for users and groups."
+                            type: "string"
+                          caSecretRef:
+                            description: "CASecretRef is an optional reference to a secret containing the CA certificate."
+                            properties:
+                              name:
+                                description: "Name is the name of the secret."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          clientCertificateSecretRef:
+                            description: "ClientCertificateSecretRef is an optional reference to a secret containing the client certificate and key."
+                            properties:
+                              name:
+                                description: "Name is the name of the secret."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          groupSearch:
+                            description: "GroupSearch contains configuration for searching LDAP groups."
+                            properties:
+                              baseDN:
+                                description: "BaseDN to start the search from. For example \"cn=groups,dc=example,dc=com\""
+                                type: "string"
+                              filter:
+                                description: "Filter is an optional filter to apply when searching the directory. For example \"(objectClass=posixGroup)\""
+                                type: "string"
+                              nameAttr:
+                                description: "NameAttr is the attribute of the group that represents its name."
+                                type: "string"
+                              scope:
+                                description: "Scope is the optional scope of the search (default \"sub\"). Can either be: * \"sub\" - search the whole sub tree * \"one\" - only search one level"
+                                enum:
+                                  - "sub"
+                                  - "one"
+                                type: "string"
+                              userMatchers:
+                                description: "UserMatchers is an array of the field pairs used to match a user to a group. See the \"DexIdentityProviderConnectorLDAPGroupSearchUserMatcher\" struct for the exact field names \n Each pair adds an additional requirement to the filter that an attribute in the group match the user's attribute value. For example that the \"members\" attribute of a group matches the \"uid\" of the user. The exact filter being added is: \n (userMatchers[n].<groupAttr>=userMatchers[n].<userAttr value>)"
+                                items:
+                                  description: "DexIdentityProviderConnectorLDAPGroupSearchUserMatcher holds information about user and group matching."
+                                  properties:
+                                    groupAttr:
+                                      description: "GroupAttr is the attribute to match against the group ID."
+                                      type: "string"
+                                    userAttr:
+                                      description: "UserAttr is the attribute to match against the user ID."
+                                      type: "string"
+                                  required:
+                                    - "groupAttr"
+                                    - "userAttr"
+                                  type: "object"
+                                type: "array"
+                            required:
+                              - "baseDN"
+                              - "nameAttr"
+                              - "userMatchers"
+                            type: "object"
+                          host:
+                            description: "Host is the host and optional port of the LDAP server. If port isn't supplied, it will be guessed based on the TLS configuration."
+                            type: "string"
+                          insecureNoSSL:
+                            description: "InsecureNoSSL is required to connect to a server without TLS."
+                            type: "boolean"
+                          insecureSkipVerify:
+                            description: "InsecureSkipVerify allows connecting to a server without verifying the TLS certificate."
+                            type: "boolean"
+                          startTLS:
+                            description: "StartTLS allows connecting to a server that supports the StartTLS command. If unsupplied secure connections will use the LDAPS protocol."
+                            type: "boolean"
+                          userSearch:
+                            description: "UserSearch contains configuration for searching LDAP users."
+                            properties:
+                              baseDN:
+                                description: "BaseDN to start the search from. For example \"cn=users,dc=example,dc=com\""
+                                type: "string"
+                              emailAttr:
+                                description: "EmailAttr is the attribute to use as the user email (default \"mail\")."
+                                type: "string"
+                              emailSuffix:
+                                description: "EmailSuffix if set, will be appended to the idAttr to construct the email claim. This should not include the @ character."
+                                type: "string"
+                              filter:
+                                description: "Filter is an optional filter to apply when searching the directory. For example \"(objectClass=person)\""
+                                type: "string"
+                              idAttr:
+                                description: "IDAttr is the attribute to use as the user ID (default \"uid\")."
+                                type: "string"
+                              nameAttr:
+                                description: "NameAttr is the attribute to use as the display name for the user."
+                                type: "string"
+                              preferredUsernameAttr:
+                                description: "PreferredUsernameAttr is the attribute to use as the preferred username for the user."
+                                type: "string"
+                              scope:
+                                description: "Scope is the optional scope of the search (default \"sub\"). Can either be: * \"sub\" - search the whole sub tree * \"one\" - only search one level"
+                                enum:
+                                  - "sub"
+                                  - "one"
+                                type: "string"
+                              username:
+                                description: "Username is the attribute to match against the inputted username. This will be translated and combined with the other filter as \"(<attr>=<username>)\"."
+                                type: "string"
+                            required:
+                              - "baseDN"
+                              - "username"
+                            type: "object"
+                          usernamePrompt:
+                            description: "UsernamePrompt allows users to override the username attribute (displayed in the username/password prompt). If unset, the handler will use \"Username\"."
+                            type: "string"
+                        required:
+                          - "bindPasswordSecretRef"
+                          - "bindUsername"
+                          - "groupSearch"
+                          - "host"
+                          - "userSearch"
+                        type: "object"
+                      name:
+                        description: "Name is the connector name."
+                        type: "string"
+                      oidc:
+                        description: "OIDC holds configuration for the OIDC connector."
+                        properties:
+                          acrValues:
+                            description: "AcrValues (Authentication Context Class Reference Values) that specifies the Authentication Context Class Values within the Authentication Request that the Authorization Server is being requested to use for processing requests from this Client, with the values appearing in order of preference."
+                            items:
+                              type: "string"
+                            type: "array"
+                          basicAuthUnsupported:
+                            description: "BasicAuthUnsupported causes client_secret to be passed as POST parameters instead of basic auth. This is specifically \"NOT RECOMMENDED\" by the OAuth2 RFC, but some providers require it. \n https://tools.ietf.org/html/rfc6749#section-2.3.1"
+                            type: "boolean"
+                          caSecretRef:
+                            description: "CASecretRef is an optional reference to a secret containing the CA certificate. Only required if your provider uses a self-signed certificate."
+                            properties:
+                              name:
+                                description: "Name is the name of the secret."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          claimMapping:
+                            description: "ClaimMapping is used to map non-standard claims to standard claims. Some providers return non-standard claims (eg. mail). https://openid.net/specs/openid-connect-core-1_0.html#Claims"
+                            properties:
+                              email:
+                                description: "EmailKey is the key which contains the email claims, defaults to \"email\"."
+                                type: "string"
+                              groups:
+                                description: "GroupsKey is the key which contains the groups claims, defaults to \"groups\"."
+                                type: "string"
+                              preferred_username:
+                                description: "PreferredUsernameKey is the key which contains the preferred username claims, defaults to \"preferred_username\"."
+                                type: "string"
+                            type: "object"
+                          clientSecretRef:
+                            description: "ClientSecretRef is a reference to a secret containing the OAuth client id and secret."
+                            properties:
+                              name:
+                                description: "Name is the name of the secret."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          getUserInfo:
+                            description: "GetUserInfo uses the userinfo endpoint to get additional claims for the token. This is especially useful where upstreams return \"thin\" id tokens"
+                            type: "boolean"
+                          insecureEnableGroups:
+                            description: "InsecureEnableGroups enables groups claims."
+                            type: "boolean"
+                          insecureSkipEmailVerified:
+                            description: "InsecureSkipEmailVerified if set will override the value of email_verified to true in the returned claims."
+                            type: "boolean"
+                          insecureSkipVerify:
+                            description: "InsecureSkipVerify disables TLS certificate verification."
+                            type: "boolean"
+                          issuer:
+                            description: "Issuer is the URL of the OIDC issuer."
+                            type: "string"
+                          overrideClaimMapping:
+                            description: "OverrideClaimMapping will be used to override the options defined in claimMappings. i.e. if there are 'email' and `preferred_email` claims available, by default Dex will always use the `email` claim independent of the ClaimMapping.EmailKey. This setting allows you to override the default behavior of Dex and enforce the mappings defined in `claimMapping`. Defaults to false."
+                            type: "boolean"
+                          promptType:
+                            description: "PromptType will be used fot the prompt parameter (when offline_access, by default prompt=consent)."
+                            type: "string"
+                          redirectURI:
+                            description: "RedirectURI is the OAuth redirect URI."
+                            type: "string"
+                          scopes:
+                            description: "Scopes is an optional list of scopes to request. If omitted, defaults to \"profile\" and \"email\"."
+                            items:
+                              type: "string"
+                            type: "array"
+                          userIDKey:
+                            description: "UserIDKey is the claim key to use for the user ID (default sub)."
+                            type: "string"
+                          userNameKey:
+                            description: "UserNameKey is the claim key to use for the username (default name)."
+                            type: "string"
+                        required:
+                          - "clientSecretRef"
+                          - "issuer"
+                          - "redirectURI"
+                        type: "object"
+                      type:
+                        description: "Type is the connector type to use."
+                        enum:
+                          - "ldap"
+                          - "oidc"
+                        type: "string"
+                    required:
+                      - "id"
+                      - "name"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                expiry:
+                  description: "Expiry holds configuration for tokens, signing keys, etc."
+                  properties:
+                    authRequests:
+                      description: "AuthRequests defines the duration of time for which the AuthRequests will be valid."
+                      type: "string"
+                    deviceRequests:
+                      description: "DeviceRequests defines the duration of time for which the DeviceRequests will be valid."
+                      type: "string"
+                    idTokens:
+                      description: "IDTokens defines the duration of time for which the IdTokens will be valid."
+                      type: "string"
+                    refreshTokens:
+                      description: "RefreshTokens defines refresh tokens expiry policy."
                       properties:
-                        hosts:
-                          description: hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
-                          items:
-                            type: string
-                          type: array
-                          x-kubernetes-list-type: atomic
-                        secretName:
-                          description: secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the "Host" header field used by an IngressRule, the SNI host is used for termination and value of the "Host" header is used for routing.
-                          type: string
-                      type: object
-                    type: array
-                required:
-                - enabled
-                - hosts
-                type: object
-              issuer:
-                description: Issuer is the base path of Dex and the external name of the OpenID Connect service. This is the canonical URL that all clients MUST use to refer to Dex.
-                type: string
-              logger:
-                description: Logger holds configuration required to customize logging for dex.
-                properties:
-                  format:
-                    description: Format specifies the format to be used for logging.
-                    type: string
-                  level:
-                    description: Level sets logging level severity.
-                    type: string
-                type: object
-              metrics:
-                description: Metrics holds configuration for metrics.
-                properties:
-                  enabled:
-                    description: Enabled enables Prometheus metric scraping.
-                    type: boolean
-                  interval:
-                    description: Interval at which metrics should be scraped If not specified Prometheus' global scrape interval is used.
-                    pattern: ^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$
-                    type: string
-                type: object
-              oauth2:
-                description: OAuth2 holds configuration for OAuth2.
-                properties:
-                  alwaysShowLoginScreen:
-                    description: AlwaysShowLoginScreen, if specified, show the connector selection screen even if there's only one.
-                    type: boolean
-                  grantTypes:
-                    description: GrantTypes is a list of allowed grant types, defaults to all supported types.
-                    items:
-                      type: string
-                    type: array
-                  passwordConnector:
-                    description: PasswordConnector is a specific connector to user for password grants.
-                    type: string
-                  responseTypes:
-                    description: ResponseTypes is a list of allowed response types, defaults to all supported types.
-                    items:
-                      type: string
-                    type: array
-                  skipApprovalScreen:
-                    description: SkipApprovalScreen, if specified, do not prompt the user to approve client authorization. The act of logging in implies authorization.
-                    type: boolean
-                type: object
-              replicas:
-                description: Replicas is the optional number of replicas of the Dex identity provider pod to run. Only supported if using postgresql storage.
-                format: int32
-                type: integer
-              resources:
-                description: Resources allows specifying the resource requirements for the Dex identity provider container.
-                properties:
-                  claims:
-                    description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
-                    items:
-                      description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                        absoluteLifetime:
+                          description: "AbsoluteLifetime defines the duration of time after which a refresh token will expire."
+                          type: "string"
+                        disableRotation:
+                          description: "DisableRotation disables refresh token rotation."
+                          type: "boolean"
+                        reuseInterval:
+                          description: "ReuseInterval defines the duration of time after which a refresh token can be reused."
+                          type: "string"
+                        validIfNotUsedFor:
+                          description: "ValidIfNotUsedFor defines the duration of time after which a refresh token will expire if not used."
+                          type: "string"
+                      type: "object"
+                    signingKeys:
+                      description: "SigningKeys defines the duration of time after which the SigningKeys will be rotated."
+                      type: "string"
+                  type: "object"
+                frontend:
+                  description: "Frontend holds the web server's frontend templates and asset configuration."
+                  properties:
+                    dir:
+                      description: "Dir is a file path to static web assets. \n It is expected to contain the following directories: * static - Static static served at \"( issuer URL )/static\". * templates - HTML templates controlled by dex. * themes/(theme) - Static static served at \"( issuer URL )/theme\"."
+                      type: "string"
+                    issuer:
+                      description: "Issuer is the name of the issuer, used in the HTML templates. Defaults to \"dex\"."
+                      type: "string"
+                    logoURL:
+                      description: "LogoURL is the URL of the logo to use in the HTML templates. Defaults to \"( issuer URL )/theme/logo.png\""
+                      type: "string"
+                    theme:
+                      description: "Theme is the name of the theme to use. Defaults to \"light\"."
+                      type: "string"
+                  type: "object"
+                grpc:
+                  description: "GRPC holds configuration for the Dex API gRPC server."
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations is an optional map of additional annotations to add to the Dex API gRPC service."
+                      type: "object"
+                    certificateSecretRef:
+                      description: "CertificateSecretRef is an optional reference to a secret containing the TLS certificate and key to use for the Dex API gRPC server."
                       properties:
                         name:
-                          description: Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
-                          type: string
+                          description: "Name is the name of the secret."
+                          type: "string"
                       required:
-                      - name
-                      type: object
-                    type: array
-                    x-kubernetes-list-map-keys:
-                    - name
-                    x-kubernetes-list-type: map
-                  limits:
-                    additionalProperties:
-                      anyOf:
-                      - type: integer
-                      - type: string
-                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                      x-kubernetes-int-or-string: true
-                    description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                    type: object
-                  requests:
-                    additionalProperties:
-                      anyOf:
-                      - type: integer
-                      - type: string
-                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                      x-kubernetes-int-or-string: true
-                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                    type: object
-                type: object
-              storage:
-                description: Storage configures the storage for Dex.
-                properties:
-                  postgres:
-                    description: Postgres holds the configuration for the postgres storage type.
-                    properties:
-                      connMaxLifetime:
-                        description: ConnMaxLifetime is the maximum amount of time a connection may be reused (default forever).
-                        type: string
-                      connectionTimeout:
-                        description: ConnectionTimeout is the maximum amount of time to wait for a connection to become available.
-                        type: string
-                      credentialsSecretRef:
-                        description: CredentialsSecretRef is a reference to a secret containing the username and password to use for authentication.
+                        - "name"
+                      type: "object"
+                    clientCASecretRef:
+                      description: "ClientCASecretRef is an optional reference to a secret containing the client CA."
+                      properties:
+                        name:
+                          description: "Name is the name of the secret."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
+                    reflection:
+                      description: "Reflection enables gRPC server reflection."
+                      type: "boolean"
+                  type: "object"
+                image:
+                  description: "Image is the Dex image to use."
+                  type: "string"
+                ingress:
+                  description: "Ingress is the optional ingress configuration for the Dex identity provider."
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations is an optional map of additional annotations to add to the ingress."
+                      type: "object"
+                    enabled:
+                      description: "Enabled enables ingress for the Dex identity provider."
+                      type: "boolean"
+                    hosts:
+                      description: "Hosts is a list of hosts and paths to route traffic to the Dex identity provider."
+                      items:
+                        description: "DexIdentityProviderIngressHostSpec is the ingress host configuration for a Dex identity provider."
+                        properties:
+                          host:
+                            description: "Host is the host to route traffic to the Dex identity provider."
+                            type: "string"
+                          paths:
+                            description: "Paths is a list of paths to route traffic to the Dex identity provider."
+                            items:
+                              description: "DexIdentityProviderIngressPathSpec is the ingress path configuration for a Dex identity provider."
+                              properties:
+                                path:
+                                  description: "Path is matched against the path of an incoming request."
+                                  type: "string"
+                                pathType:
+                                  description: "PathType determines the interpretation of the Path matching."
+                                  enum:
+                                    - "Exact"
+                                    - "Prefix"
+                                    - "ImplementationSpecific"
+                                  type: "string"
+                              required:
+                                - "path"
+                                - "pathType"
+                              type: "object"
+                            type: "array"
+                        required:
+                          - "host"
+                          - "paths"
+                        type: "object"
+                      type: "array"
+                    ingressClassName:
+                      description: "IngressClassName is the optional ingress class to use for the Dex identity provider."
+                      type: "string"
+                    tls:
+                      description: "TLS is an optional list of TLS configurations for the ingress."
+                      items:
+                        description: "IngressTLS describes the transport layer security associated with an ingress."
+                        properties:
+                          hosts:
+                            description: "hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified."
+                            items:
+                              type: "string"
+                            type: "array"
+                            x-kubernetes-list-type: "atomic"
+                          secretName:
+                            description: "secretName is the name of the secret used to terminate TLS traffic on port 443. Field is left optional to allow TLS routing based on SNI hostname alone. If the SNI host in a listener conflicts with the \"Host\" header field used by an IngressRule, the SNI host is used for termination and value of the \"Host\" header is used for routing."
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                  required:
+                    - "enabled"
+                    - "hosts"
+                  type: "object"
+                issuer:
+                  description: "Issuer is the base path of Dex and the external name of the OpenID Connect service. This is the canonical URL that all clients MUST use to refer to Dex."
+                  type: "string"
+                logger:
+                  description: "Logger holds configuration required to customize logging for dex."
+                  properties:
+                    format:
+                      description: "Format specifies the format to be used for logging."
+                      type: "string"
+                    level:
+                      description: "Level sets logging level severity."
+                      type: "string"
+                  type: "object"
+                metrics:
+                  description: "Metrics holds configuration for metrics."
+                  properties:
+                    enabled:
+                      description: "Enabled enables Prometheus metric scraping."
+                      type: "boolean"
+                    interval:
+                      description: "Interval at which metrics should be scraped If not specified Prometheus' global scrape interval is used."
+                      pattern: "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
+                      type: "string"
+                  type: "object"
+                oauth2:
+                  description: "OAuth2 holds configuration for OAuth2."
+                  properties:
+                    alwaysShowLoginScreen:
+                      description: "AlwaysShowLoginScreen, if specified, show the connector selection screen even if there's only one."
+                      type: "boolean"
+                    grantTypes:
+                      description: "GrantTypes is a list of allowed grant types, defaults to all supported types."
+                      items:
+                        type: "string"
+                      type: "array"
+                    passwordConnector:
+                      description: "PasswordConnector is a specific connector to user for password grants."
+                      type: "string"
+                    responseTypes:
+                      description: "ResponseTypes is a list of allowed response types, defaults to all supported types."
+                      items:
+                        type: "string"
+                      type: "array"
+                    skipApprovalScreen:
+                      description: "SkipApprovalScreen, if specified, do not prompt the user to approve client authorization. The act of logging in implies authorization."
+                      type: "boolean"
+                  type: "object"
+                replicas:
+                  description: "Replicas is the optional number of replicas of the Dex identity provider pod to run. Only supported if using postgresql storage."
+                  format: "int32"
+                  type: "integer"
+                resources:
+                  description: "Resources allows specifying the resource requirements for the Dex identity provider container."
+                  properties:
+                    claims:
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
+                      items:
+                        description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                         properties:
                           name:
-                            description: Name is the name of the secret.
-                            type: string
+                            description: "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container."
+                            type: "string"
                         required:
-                        - name
-                        type: object
-                      database:
-                        description: Database is the name of the database to connect to.
-                        type: string
-                      host:
-                        description: Host is the host to connect to.
-                        type: string
-                      maxIdleConns:
-                        description: MaxIdleConns is the maximum number of connections in the idle connection pool (default 5).
-                        type: integer
-                      maxOpenConns:
-                        description: MaxOpenConns is the maximum number of open connections to the database (default 5).
-                        type: integer
-                      port:
-                        description: Port is the port to connect to.
-                        type: integer
-                      ssl:
-                        description: SSL holds optional TLS configuration for postgres.
-                        properties:
-                          caSecretRef:
-                            description: CASecretRef is an optional reference to a secret containing the CA certificate.
-                            properties:
-                              name:
-                                description: Name is the name of the secret.
-                                type: string
-                            required:
-                            - name
-                            type: object
-                          clientCertificateSecretRef:
-                            description: ClientCertificateSecretRef is an optional reference to a secret containing the client certificate and key.
-                            properties:
-                              name:
-                                description: Name is the name of the secret.
-                                type: string
-                            required:
-                            - name
-                            type: object
-                          mode:
-                            description: Mode is the SSL mode to use.
-                            type: string
-                          serverName:
-                            description: ServerName ensures that the certificate matches the given hostname the client is connecting to.
-                            type: string
-                        type: object
-                    required:
-                    - credentialsSecretRef
-                    - database
-                    - host
-                    - port
-                    type: object
-                  sqlite3:
-                    description: Sqlite3 holds the configuration for the sqlite3 storage type.
-                    properties:
-                      file:
-                        description: File is the path to the sqlite3 database file.
-                        type: string
-                    required:
-                    - file
-                    type: object
-                  type:
-                    description: Type is the storage type to use.
-                    enum:
-                    - memory
-                    - sqlite3
-                    - postgres
-                    type: string
-                required:
-                - type
-                type: object
-              volumeClaimTemplates:
-                description: VolumeClaimTemplates are volume claim templates for the Dex identity provider pod.
-                items:
-                  description: PersistentVolumeClaim is a user's request for and claim to a persistent volume
+                          - "name"
+                        type: "object"
+                      type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "name"
+                      x-kubernetes-list-type: "map"
+                    limits:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
+                      description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      type: "object"
+                    requests:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
+                      description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      type: "object"
+                  type: "object"
+                storage:
+                  description: "Storage configures the storage for Dex."
                   properties:
-                    apiVersion:
-                      description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-                      type: string
-                    kind:
-                      description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-                      type: string
-                    metadata:
-                      description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
+                    postgres:
+                      description: "Postgres holds the configuration for the postgres storage type."
                       properties:
-                        annotations:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        finalizers:
-                          items:
-                            type: string
-                          type: array
-                        labels:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        name:
-                          type: string
-                        namespace:
-                          type: string
-                      type: object
-                    spec:
-                      description: 'spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims'
-                      properties:
-                        accessModes:
-                          description: 'accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1'
-                          items:
-                            type: string
-                          type: array
-                        dataSource:
-                          description: 'dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.'
+                        connMaxLifetime:
+                          description: "ConnMaxLifetime is the maximum amount of time a connection may be reused (default forever)."
+                          type: "string"
+                        connectionTimeout:
+                          description: "ConnectionTimeout is the maximum amount of time to wait for a connection to become available."
+                          type: "string"
+                        credentialsSecretRef:
+                          description: "CredentialsSecretRef is a reference to a secret containing the username and password to use for authentication."
                           properties:
-                            apiGroup:
-                              description: APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
-                              type: string
-                            kind:
-                              description: Kind is the type of resource being referenced
-                              type: string
                             name:
-                              description: Name is the name of resource being referenced
-                              type: string
+                              description: "Name is the name of the secret."
+                              type: "string"
                           required:
-                          - kind
-                          - name
-                          type: object
-                          x-kubernetes-map-type: atomic
-                        dataSourceRef:
-                          description: 'dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn''t specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn''t set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.'
+                            - "name"
+                          type: "object"
+                        database:
+                          description: "Database is the name of the database to connect to."
+                          type: "string"
+                        host:
+                          description: "Host is the host to connect to."
+                          type: "string"
+                        maxIdleConns:
+                          description: "MaxIdleConns is the maximum number of connections in the idle connection pool (default 5)."
+                          type: "integer"
+                        maxOpenConns:
+                          description: "MaxOpenConns is the maximum number of open connections to the database (default 5)."
+                          type: "integer"
+                        port:
+                          description: "Port is the port to connect to."
+                          type: "integer"
+                        ssl:
+                          description: "SSL holds optional TLS configuration for postgres."
                           properties:
-                            apiGroup:
-                              description: APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
-                              type: string
-                            kind:
-                              description: Kind is the type of resource being referenced
-                              type: string
-                            name:
-                              description: Name is the name of resource being referenced
-                              type: string
-                            namespace:
-                              description: Namespace is the namespace of resource being referenced Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-                              type: string
-                          required:
-                          - kind
-                          - name
-                          type: object
-                        resources:
-                          description: 'resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources'
-                          properties:
-                            claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
-                              items:
-                                description: ResourceClaim references one entry in PodSpec.ResourceClaims.
-                                properties:
-                                  name:
-                                    description: Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
-                                    type: string
-                                required:
-                                - name
-                                type: object
-                              type: array
-                              x-kubernetes-list-map-keys:
-                              - name
-                              x-kubernetes-list-type: map
-                            limits:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                              type: object
-                            requests:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                              type: object
-                          type: object
-                        selector:
-                          description: selector is a label query over volumes to consider for binding.
-                          properties:
-                            matchExpressions:
-                              description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
-                              items:
-                                description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
-                                properties:
-                                  key:
-                                    description: key is the label key that the selector applies to.
-                                    type: string
-                                  operator:
-                                    description: operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
-                                    type: string
-                                  values:
-                                    description: values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
-                                    items:
-                                      type: string
-                                    type: array
-                                required:
-                                - key
-                                - operator
-                                type: object
-                              type: array
-                            matchLabels:
-                              additionalProperties:
-                                type: string
-                              description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-                              type: object
-                          type: object
-                          x-kubernetes-map-type: atomic
-                        storageClassName:
-                          description: 'storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1'
-                          type: string
-                        volumeMode:
-                          description: volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
-                          type: string
-                        volumeName:
-                          description: volumeName is the binding reference to the PersistentVolume backing this claim.
-                          type: string
-                      type: object
-                    status:
-                      description: 'status represents the current information/status of a persistent volume claim. Read-only. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims'
+                            caSecretRef:
+                              description: "CASecretRef is an optional reference to a secret containing the CA certificate."
+                              properties:
+                                name:
+                                  description: "Name is the name of the secret."
+                                  type: "string"
+                              required:
+                                - "name"
+                              type: "object"
+                            clientCertificateSecretRef:
+                              description: "ClientCertificateSecretRef is an optional reference to a secret containing the client certificate and key."
+                              properties:
+                                name:
+                                  description: "Name is the name of the secret."
+                                  type: "string"
+                              required:
+                                - "name"
+                              type: "object"
+                            mode:
+                              description: "Mode is the SSL mode to use."
+                              type: "string"
+                            serverName:
+                              description: "ServerName ensures that the certificate matches the given hostname the client is connecting to."
+                              type: "string"
+                          type: "object"
+                      required:
+                        - "credentialsSecretRef"
+                        - "database"
+                        - "host"
+                        - "port"
+                      type: "object"
+                    sqlite3:
+                      description: "Sqlite3 holds the configuration for the sqlite3 storage type."
                       properties:
-                        accessModes:
-                          description: 'accessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1'
-                          items:
-                            type: string
-                          type: array
-                        allocatedResourceStatuses:
-                          additionalProperties:
-                            description: When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource that it does not recognizes, then it should ignore that update and let other controllers handle it.
-                            type: string
-                          description: "allocatedResourceStatuses stores status of resource being resized for the given PVC. Key names follow standard Kubernetes label syntax. Valid values are either: * Un-prefixed keys: - storage - the capacity of the volume. * Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\" Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered reserved and hence may not be used. \n ClaimResourceStatus can be in any of following states: - ControllerResizeInProgress: State set when resize controller starts resizing the volume in control-plane. - ControllerResizeFailed: State set when resize has failed in resize controller with a terminal error. - NodeResizePending: State set when resize controller has finished resizing the volume but further resizing of volume is needed on the node. - NodeResizeInProgress: State set when kubelet starts resizing the volume. - NodeResizeFailed: State set when resizing has failed in kubelet with a terminal error. Transient errors don't set NodeResizeFailed. For example: if expanding a PVC for more capacity - this field can be one of the following states: - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\" - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\" - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\" - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\" - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\" When this field is not set, it means that no resize operation is in progress for the given PVC. \n A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus should ignore the update for the purpose it was designed. For example - a controller that only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid resources associated with PVC. \n This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
-                          type: object
-                          x-kubernetes-map-type: granular
-                        allocatedResources:
-                          additionalProperties:
-                            anyOf:
-                            - type: integer
-                            - type: string
-                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                            x-kubernetes-int-or-string: true
-                          description: "allocatedResources tracks the resources allocated to a PVC including its capacity. Key names follow standard Kubernetes label syntax. Valid values are either: * Un-prefixed keys: - storage - the capacity of the volume. * Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\" Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered reserved and hence may not be used. \n Capacity reported here may be larger than the actual capacity when a volume expansion operation is requested. For storage quota, the larger value from allocatedResources and PVC.spec.resources is used. If allocatedResources is not set, PVC.spec.resources alone is used for quota calculation. If a volume expansion capacity request is lowered, allocatedResources is only lowered if there are no expansion operations in progress and if the actual volume capacity is equal or lower than the requested capacity. \n A controller that receives PVC update with previously unknown resourceName should ignore the update for the purpose it was designed. For example - a controller that only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid resources associated with PVC. \n This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
-                          type: object
-                        capacity:
-                          additionalProperties:
-                            anyOf:
-                            - type: integer
-                            - type: string
-                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                            x-kubernetes-int-or-string: true
-                          description: capacity represents the actual resources of the underlying volume.
-                          type: object
-                        conditions:
-                          description: conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'ResizeStarted'.
-                          items:
-                            description: PersistentVolumeClaimCondition contains details about state of pvc
-                            properties:
-                              lastProbeTime:
-                                description: lastProbeTime is the time we probed the condition.
-                                format: date-time
-                                type: string
-                              lastTransitionTime:
-                                description: lastTransitionTime is the time the condition transitioned from one status to another.
-                                format: date-time
-                                type: string
-                              message:
-                                description: message is the human-readable message indicating details about last transition.
-                                type: string
-                              reason:
-                                description: reason is a unique, this should be a short, machine understandable string that gives the reason for condition's last transition. If it reports "ResizeStarted" that means the underlying persistent volume is being resized.
-                                type: string
-                              status:
-                                type: string
-                              type:
-                                description: PersistentVolumeClaimConditionType is a valid value of PersistentVolumeClaimCondition.Type
-                                type: string
-                            required:
-                            - status
-                            - type
-                            type: object
-                          type: array
-                        phase:
-                          description: phase represents the current phase of PersistentVolumeClaim.
-                          type: string
-                      type: object
-                  type: object
-                type: array
-              volumeMounts:
-                description: VolumeMounts are volume mounts for the Dex identity provider container.
-                items:
-                  description: VolumeMount describes a mounting of a Volume within a container.
-                  properties:
-                    mountPath:
-                      description: Path within the container at which the volume should be mounted.  Must not contain ':'.
-                      type: string
-                    mountPropagation:
-                      description: mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
-                      type: string
-                    name:
-                      description: This must match the Name of a Volume.
-                      type: string
-                    readOnly:
-                      description: Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.
-                      type: boolean
-                    subPath:
-                      description: Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
-                      type: string
-                    subPathExpr:
-                      description: Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
-                      type: string
+                        file:
+                          description: "File is the path to the sqlite3 database file."
+                          type: "string"
+                      required:
+                        - "file"
+                      type: "object"
+                    type:
+                      description: "Type is the storage type to use."
+                      enum:
+                        - "memory"
+                        - "sqlite3"
+                        - "postgres"
+                      type: "string"
                   required:
-                  - mountPath
-                  - name
-                  type: object
-                type: array
-              web:
-                description: Web holds configuration for the web server.
-                properties:
-                  allowedOrigins:
-                    description: AllowedOrigins is a list of allowed origins for CORS requests.
-                    items:
-                      type: string
-                    type: array
-                  annotations:
-                    additionalProperties:
-                      type: string
-                    description: Annotations is an optional map of additional annotations to add to the web service.
-                    type: object
-                  certificateSecretRef:
-                    description: CertificateSecretRef is an optional reference to a secret containing the TLS certificate and key to use for HTTPS.
+                    - "type"
+                  type: "object"
+                volumeClaimTemplates:
+                  description: "VolumeClaimTemplates are volume claim templates for the Dex identity provider pod."
+                  items:
+                    description: "PersistentVolumeClaim is a user's request for and claim to a persistent volume"
+                    properties:
+                      apiVersion:
+                        description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+                        type: "string"
+                      kind:
+                        description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                        type: "string"
+                      metadata:
+                        description: "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata"
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          finalizers:
+                            items:
+                              type: "string"
+                            type: "array"
+                          labels:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          name:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                        type: "object"
+                      spec:
+                        description: "spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
+                        properties:
+                          accessModes:
+                            description: "accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1"
+                            items:
+                              type: "string"
+                            type: "array"
+                          dataSource:
+                            description: "dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource."
+                            properties:
+                              apiGroup:
+                                description: "APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required."
+                                type: "string"
+                              kind:
+                                description: "Kind is the type of resource being referenced"
+                                type: "string"
+                              name:
+                                description: "Name is the name of resource being referenced"
+                                type: "string"
+                            required:
+                              - "kind"
+                              - "name"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          dataSourceRef:
+                            description: "dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled."
+                            properties:
+                              apiGroup:
+                                description: "APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required."
+                                type: "string"
+                              kind:
+                                description: "Kind is the type of resource being referenced"
+                                type: "string"
+                              name:
+                                description: "Name is the name of resource being referenced"
+                                type: "string"
+                              namespace:
+                                description: "Namespace is the namespace of resource being referenced Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled."
+                                type: "string"
+                            required:
+                              - "kind"
+                              - "name"
+                            type: "object"
+                          resources:
+                            description: "resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                            properties:
+                              claims:
+                                description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
+                                items:
+                                  description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                                  properties:
+                                    name:
+                                      description: "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container."
+                                      type: "string"
+                                  required:
+                                    - "name"
+                                  type: "object"
+                                type: "array"
+                                x-kubernetes-list-map-keys:
+                                  - "name"
+                                x-kubernetes-list-type: "map"
+                              limits:
+                                additionalProperties:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                  x-kubernetes-int-or-string: true
+                                description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                                type: "object"
+                              requests:
+                                additionalProperties:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                  x-kubernetes-int-or-string: true
+                                description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                                type: "object"
+                            type: "object"
+                          selector:
+                            description: "selector is a label query over volumes to consider for binding."
+                            properties:
+                              matchExpressions:
+                                description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                items:
+                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                  properties:
+                                    key:
+                                      description: "key is the label key that the selector applies to."
+                                      type: "string"
+                                    operator:
+                                      description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                      type: "string"
+                                    values:
+                                      description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  required:
+                                    - "key"
+                                    - "operator"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                type: "object"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          storageClassName:
+                            description: "storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
+                            type: "string"
+                          volumeMode:
+                            description: "volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec."
+                            type: "string"
+                          volumeName:
+                            description: "volumeName is the binding reference to the PersistentVolume backing this claim."
+                            type: "string"
+                        type: "object"
+                      status:
+                        description: "status represents the current information/status of a persistent volume claim. Read-only. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
+                        properties:
+                          accessModes:
+                            description: "accessModes contains the actual access modes the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1"
+                            items:
+                              type: "string"
+                            type: "array"
+                          allocatedResourceStatuses:
+                            additionalProperties:
+                              description: "When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource that it does not recognizes, then it should ignore that update and let other controllers handle it."
+                              type: "string"
+                            description: "allocatedResourceStatuses stores status of resource being resized for the given PVC. Key names follow standard Kubernetes label syntax. Valid values are either: * Un-prefixed keys: - storage - the capacity of the volume. * Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\" Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered reserved and hence may not be used. \n ClaimResourceStatus can be in any of following states: - ControllerResizeInProgress: State set when resize controller starts resizing the volume in control-plane. - ControllerResizeFailed: State set when resize has failed in resize controller with a terminal error. - NodeResizePending: State set when resize controller has finished resizing the volume but further resizing of volume is needed on the node. - NodeResizeInProgress: State set when kubelet starts resizing the volume. - NodeResizeFailed: State set when resizing has failed in kubelet with a terminal error. Transient errors don't set NodeResizeFailed. For example: if expanding a PVC for more capacity - this field can be one of the following states: - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\" - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\" - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\" - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\" - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\" When this field is not set, it means that no resize operation is in progress for the given PVC. \n A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus should ignore the update for the purpose it was designed. For example - a controller that only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid resources associated with PVC. \n This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                            type: "object"
+                            x-kubernetes-map-type: "granular"
+                          allocatedResources:
+                            additionalProperties:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                              x-kubernetes-int-or-string: true
+                            description: "allocatedResources tracks the resources allocated to a PVC including its capacity. Key names follow standard Kubernetes label syntax. Valid values are either: * Un-prefixed keys: - storage - the capacity of the volume. * Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\" Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered reserved and hence may not be used. \n Capacity reported here may be larger than the actual capacity when a volume expansion operation is requested. For storage quota, the larger value from allocatedResources and PVC.spec.resources is used. If allocatedResources is not set, PVC.spec.resources alone is used for quota calculation. If a volume expansion capacity request is lowered, allocatedResources is only lowered if there are no expansion operations in progress and if the actual volume capacity is equal or lower than the requested capacity. \n A controller that receives PVC update with previously unknown resourceName should ignore the update for the purpose it was designed. For example - a controller that only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid resources associated with PVC. \n This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                            type: "object"
+                          capacity:
+                            additionalProperties:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                              x-kubernetes-int-or-string: true
+                            description: "capacity represents the actual resources of the underlying volume."
+                            type: "object"
+                          conditions:
+                            description: "conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'ResizeStarted'."
+                            items:
+                              description: "PersistentVolumeClaimCondition contains details about state of pvc"
+                              properties:
+                                lastProbeTime:
+                                  description: "lastProbeTime is the time we probed the condition."
+                                  format: "date-time"
+                                  type: "string"
+                                lastTransitionTime:
+                                  description: "lastTransitionTime is the time the condition transitioned from one status to another."
+                                  format: "date-time"
+                                  type: "string"
+                                message:
+                                  description: "message is the human-readable message indicating details about last transition."
+                                  type: "string"
+                                reason:
+                                  description: "reason is a unique, this should be a short, machine understandable string that gives the reason for condition's last transition. If it reports \"ResizeStarted\" that means the underlying persistent volume is being resized."
+                                  type: "string"
+                                status:
+                                  type: "string"
+                                type:
+                                  description: "PersistentVolumeClaimConditionType is a valid value of PersistentVolumeClaimCondition.Type"
+                                  type: "string"
+                              required:
+                                - "status"
+                                - "type"
+                              type: "object"
+                            type: "array"
+                          phase:
+                            description: "phase represents the current phase of PersistentVolumeClaim."
+                            type: "string"
+                        type: "object"
+                    type: "object"
+                  type: "array"
+                volumeMounts:
+                  description: "VolumeMounts are volume mounts for the Dex identity provider container."
+                  items:
+                    description: "VolumeMount describes a mounting of a Volume within a container."
+                    properties:
+                      mountPath:
+                        description: "Path within the container at which the volume should be mounted.  Must not contain ':'."
+                        type: "string"
+                      mountPropagation:
+                        description: "mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10."
+                        type: "string"
+                      name:
+                        description: "This must match the Name of a Volume."
+                        type: "string"
+                      readOnly:
+                        description: "Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false."
+                        type: "boolean"
+                      subPath:
+                        description: "Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root)."
+                        type: "string"
+                      subPathExpr:
+                        description: "Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to \"\" (volume's root). SubPathExpr and SubPath are mutually exclusive."
+                        type: "string"
+                    required:
+                      - "mountPath"
+                      - "name"
+                    type: "object"
+                  type: "array"
+                web:
+                  description: "Web holds configuration for the web server."
+                  properties:
+                    allowedOrigins:
+                      description: "AllowedOrigins is a list of allowed origins for CORS requests."
+                      items:
+                        type: "string"
+                      type: "array"
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations is an optional map of additional annotations to add to the web service."
+                      type: "object"
+                    certificateSecretRef:
+                      description: "CertificateSecretRef is an optional reference to a secret containing the TLS certificate and key to use for HTTPS."
+                      properties:
+                        name:
+                          description: "Name is the name of the secret."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
+                  type: "object"
+              required:
+                - "grpc"
+                - "image"
+                - "issuer"
+                - "storage"
+                - "web"
+              type: "object"
+            status:
+              description: "DexIdentityProviderStatus defines the observed state of the Dex identity provider."
+              properties:
+                clientRefs:
+                  description: "ClientRefs is a list of clients that are using this DexIdentityProvider."
+                  items:
                     properties:
                       name:
-                        description: Name is the name of the secret.
-                        type: string
+                        description: "Name of the referenced DexOAuth2Client."
+                        type: "string"
+                      namespace:
+                        description: "Namespace is the optional namespace of the referenced DexOAuth2Client."
+                        type: "string"
                     required:
-                    - name
-                    type: object
-                type: object
-            required:
-            - grpc
-            - image
-            - issuer
-            - storage
-            - web
-            type: object
-          status:
-            description: DexIdentityProviderStatus defines the observed state of the Dex identity provider.
-            properties:
-              clientRefs:
-                description: ClientRefs is a list of clients that are using this DexIdentityProvider.
-                items:
-                  properties:
-                    name:
-                      description: Name of the referenced DexOAuth2Client.
-                      type: string
-                    namespace:
-                      description: Namespace is the optional namespace of the referenced DexOAuth2Client.
-                      type: string
-                  required:
-                  - name
-                  type: object
-                type: array
-              conditions:
-                description: Conditions represents the latest available observations of an DexIdentityProvider's current state.
-                items:
-                  description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
-                  properties:
-                    lastTransitionTime:
-                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
-                      format: date-time
-                      type: string
-                    message:
-                      description: message is a human readable message indicating details about the transition. This may be an empty string.
-                      maxLength: 32768
-                      type: string
-                    observedGeneration:
-                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
-                      format: int64
-                      minimum: 0.0
-                      type: integer
-                    reason:
-                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
-                      maxLength: 1024
-                      minLength: 1
-                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
-                      type: string
-                    status:
-                      description: status of the condition, one of True, False, Unknown.
-                      enum:
-                      - 'True'
-                      - 'False'
-                      - Unknown
-                      type: string
-                    type:
-                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
-                      maxLength: 316
-                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
-                      type: string
-                  required:
-                  - lastTransitionTime
-                  - message
-                  - reason
-                  - status
-                  - type
-                  type: object
-                type: array
-              observedGeneration:
-                description: ObservedGeneration is the most recent generation observed for this DexIdentityProvider by the controller.
-                format: int64
-                type: integer
-              phase:
-                description: Phase is the current state of the Dex identity provider.
-                type: string
-            type: object
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
+                      - "name"
+                    type: "object"
+                  type: "array"
+                conditions:
+                  description: "Conditions represents the latest available observations of an DexIdentityProvider's current state."
+                  items:
+                    description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition. This may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "message"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                observedGeneration:
+                  description: "ObservedGeneration is the most recent generation observed for this DexIdentityProvider by the controller."
+                  format: "int64"
+                  type: "integer"
+                phase:
+                  description: "Phase is the current state of the Dex identity provider."
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

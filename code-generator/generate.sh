@@ -11,6 +11,8 @@ cargo run --package code-generator --bin crd_v1_fetcher "${FILTER}"
 # generate dep5 file
 cargo run --package code-generator --bin dep5_generator
 
+find ./crd-catalog -type f -name '*.yaml' -exec yq --inplace '(.. | select(tag == "!!str") ) style="double"' {} \;
+
 # generate Rust code
 ./code-generator/create-custom-resources.sh "${FILTER}"
 
