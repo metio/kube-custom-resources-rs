@@ -242,6 +242,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws/karpenter-provider-aws",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws/karpenter-provider-aws/blob/main/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
+            "https://github.com/aws/karpenter-provider-aws/blob/main/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
+            "https://github.com/aws/karpenter-provider-aws/blob/main/pkg/apis/crds/karpenter.sh_nodepools.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws/zone-aware-controllers-for-k8s",
         license: APACHE_V2,
         urls: &[
