@@ -1280,6 +1280,17 @@ apiVersion `kamaji.clastix.io/v1alpha1`:
 - `DataStore`
 - `TenantControlPlane`
 
+## karpenter_k8s_aws
+
+apiVersion `karpenter.k8s.aws/v1beta1`:
+- `EC2NodeClass`
+
+## karpenter_sh
+
+apiVersion `karpenter.sh/v1beta1`:
+- `NodeClaim`
+- `NodePool`
+
 ## keda_sh
 
 apiVersion `keda.sh/v1alpha1`:
@@ -2694,6 +2705,10 @@ pub mod k8up_io;
 pub mod kafka_strimzi_io;
 #[cfg(feature = "kamaji_clastix_io")]
 pub mod kamaji_clastix_io;
+#[cfg(feature = "karpenter_k8s_aws")]
+pub mod karpenter_k8s_aws;
+#[cfg(feature = "karpenter_sh")]
+pub mod karpenter_sh;
 #[cfg(feature = "keda_sh")]
 pub mod keda_sh;
 #[cfg(feature = "keycloak_k8s_reddec_net")]
