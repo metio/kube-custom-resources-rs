@@ -1958,6 +1958,13 @@ apiVersion `ps.percona.com/v1alpha1`:
 - `PerconaServerMySQLRestore`
 - `PerconaServerMySQL`
 
+## pxc_percona_com
+
+apiVersion `pxc.percona.com/v1`:
+- `PerconaXtraDBClusterBackup`
+- `PerconaXtraDBClusterRestore`
+- `PerconaXtraDBCluster`
+
 ## quay_redhat_com
 
 apiVersion `quay.redhat.com/v1`:
@@ -2906,6 +2913,8 @@ pub mod projectcontour_io;
 pub mod prometheusservice_services_k8s_aws;
 #[cfg(feature = "ps_percona_com")]
 pub mod ps_percona_com;
+#[cfg(feature = "pxc_percona_com")]
+pub mod pxc_percona_com;
 #[cfg(feature = "quay_redhat_com")]
 pub mod quay_redhat_com;
 #[cfg(feature = "quota_openshift_io")]

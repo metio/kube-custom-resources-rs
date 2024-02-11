@@ -2088,6 +2088,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "percona/percona-xtradb-cluster-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/percona/percona-xtradb-cluster-operator/blob/main/config/crd/bases/pxc.percona.com_perconaxtradbclusterbackups.yaml",
+            "https://github.com/percona/percona-xtradb-cluster-operator/blob/main/config/crd/bases/pxc.percona.com_perconaxtradbclusterrestores.yaml",
+            "https://github.com/percona/percona-xtradb-cluster-operator/blob/main/config/crd/bases/pxc.percona.com_perconaxtradbclusters.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "projectcalico/calico",
         license: APACHE_V2,
         urls: &[
