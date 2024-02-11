@@ -2326,6 +2326,7 @@ apiVersion `theketch.io/v1beta1`:
 ## tinkerbell_org
 
 apiVersion `tinkerbell.org/v1alpha1`:
+- `Stack`
 - `Hardware`
 - `OSIE`
 - `Template`

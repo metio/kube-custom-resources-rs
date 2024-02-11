@@ -1,0 +1,266 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.12.1"
+  name: "stack.tinkerbell.org"
+spec:
+  group: "tinkerbell.org"
+  names:
+    categories:
+      - "stack"
+    kind: "Stack"
+    listKind: "StackList"
+    plural: "stack"
+    singular: "stack"
+  scope: "Namespaced"
+  versions:
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "Stack represents the tinkerbell stack that is being deployed in the kubernetes where the operator is deployed. Tinkerbell operator watches for different resources such as deployment, services, serviceAccounts, etc. One of those CRs is Stack which the operator will install the tink-stack based on its specs. Once the CR is deleted, the operator will delete all tinkerbell resources."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "Spec describes the desired tinkerbell stack state."
+              properties:
+                dnsResolverIP:
+                  description: "DNSResolverIP is indicative of the resolver IP utilized for setting up the nginx server responsible for proxying to the Tinkerbell services and serving the Hook artifacts."
+                  type: "string"
+                imagePullSecrets:
+                  description: "ImagePullSecrets the secret name containing the docker auth config which should exist in the same namespace where the operator is deployed(typically tinkerbell)"
+                  items:
+                    type: "string"
+                  type: "array"
+                registry:
+                  description: "Registry is the registry to use for all images. If this field is set, all tink service deployment images will be prefixed with this value. For example if the value here was set to docker.io, then smee image will be docker.io/tinkerbell/smee."
+                  type: "string"
+                services:
+                  description: "Services contains all Tinkerbell Stack services."
+                  properties:
+                    hegel:
+                      description: "Hegel contains all the information and spec about smee."
+                      properties:
+                        image:
+                          description: "Image specifies the details of a tinkerbell services images"
+                          properties:
+                            repository:
+                              description: "Repository is used to set the image repository for tinkerbell services."
+                              type: "string"
+                            tag:
+                              description: "Tag is used to set the image tag for tinkerbell services."
+                              type: "string"
+                          type: "object"
+                        trustedProxies:
+                          description: "TrustedProxies comma separated allowed CIDRs subnets to be used as trusted proxies"
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    rufio:
+                      description: "Rufio contains all the information and spec about rufio."
+                      properties:
+                        image:
+                          description: "Image specifies the details of a tinkerbell services images"
+                          properties:
+                            repository:
+                              description: "Repository is used to set the image repository for tinkerbell services."
+                              type: "string"
+                            tag:
+                              description: "Tag is used to set the image tag for tinkerbell services."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    smee:
+                      description: "Smee contains all the information and spec about smee."
+                      properties:
+                        backendConfigs:
+                          description: "BackendConfigs contains the configurations for smee backend."
+                          properties:
+                            backendFileMode:
+                              description: "BackendFileMode contains the file backend configurations for DHCP and the HTTP iPXE script."
+                              properties:
+                                filePath:
+                                  description: "FilePath specifies the hardware yaml file path for the file backend."
+                                  type: "string"
+                              required:
+                                - "filePath"
+                              type: "object"
+                            backendKubeMode:
+                              description: "BackendKubeMode contains the Kubernetes backend configurations for DHCP and the HTTP iPXE script."
+                              properties:
+                                configFilePath:
+                                  description: "ConfigFilePath specifies the Kubernetes config file location."
+                                  type: "string"
+                                kubeAPIURL:
+                                  description: "KubeAPIURL specifies the Kubernetes API URL, used for in-cluster client construction."
+                                  type: "string"
+                                kubeNamespace:
+                                  description: "KubeNamespace specifies an optional Kubernetes namespace override to query hardware data from."
+                                  type: "string"
+                              type: "object"
+                          type: "object"
+                        dhcpConfigs:
+                          description: "DHCPConfigs contains the DHCP server configurations."
+                          properties:
+                            IPForPacket:
+                              description: "IPForPacket IP address to use in DHCP packets"
+                              type: "string"
+                            httpIPXEBinaryAddress:
+                              description: "HTTPIPXEBinaryAddress specifies the http ipxe binary server address (IP:Port) to use in DHCP packets."
+                              type: "string"
+                            httpIPXEBinaryURI:
+                              description: "HTTPIPXEBinaryURI specifies the http ipxe script server URL to use in DHCP packets."
+                              type: "string"
+                            ip:
+                              description: "IP is the local IP to listen on to serve TFTP binaries."
+                              type: "string"
+                            port:
+                              description: "Port is the  local port to listen on to serve TFTP binaries."
+                              type: "integer"
+                            syslogIP:
+                              description: "SyslogIP specifies the syslog server IP address to use in DHCP packets."
+                              type: "string"
+                            tftpAddress:
+                              description: "TFTPAddress specifies the tftp server address to use in DHCP packets."
+                              type: "string"
+                          required:
+                            - "ip"
+                            - "port"
+                          type: "object"
+                        image:
+                          description: "Image specifies the image repo and tag for Smee."
+                          properties:
+                            repository:
+                              description: "Repository is used to set the image repository for tinkerbell services."
+                              type: "string"
+                            tag:
+                              description: "Tag is used to set the image tag for tinkerbell services."
+                              type: "string"
+                          type: "object"
+                        ipxeConfigs:
+                          description: "IPXEConfigs contains the iPXE configurations."
+                          properties:
+                            enableHTTPBinary:
+                              description: "EnableHTTPBinary enable iPXE HTTP binary server."
+                              type: "boolean"
+                            enableTLS:
+                              description: "EnableTLS sets if the smee should run with TLS or not."
+                              type: "boolean"
+                            extraKernelArgs:
+                              description: "ExtraKernelArgs specifies extra set of kernel args (k=v k=v) that are appended to the kernel cmdline iPXE script."
+                              type: "string"
+                            hookURL:
+                              description: "HookURL specifies the URL where OSIE(Hook) images are located."
+                              type: "string"
+                            ip:
+                              description: "IP is the local IP to listen on to serve TFTP binaries."
+                              type: "string"
+                            port:
+                              description: "Port is the  local port to listen on to serve TFTP binaries."
+                              type: "integer"
+                            tinkServerAddress:
+                              description: "TinkServerAddress specifies the IP:Port of the tink server."
+                              type: "string"
+                            trustedProxies:
+                              description: "TrustedProxies comma separated allowed CIDRs subnets to be used as trusted proxies."
+                              items:
+                                type: "string"
+                              type: "array"
+                          required:
+                            - "ip"
+                            - "port"
+                          type: "object"
+                        logLevel:
+                          description: "LogLevel sets the debug level for smee."
+                          type: "string"
+                        syslogConfigs:
+                          description: "SyslogConfigs contains the configurations of the syslog server."
+                          properties:
+                            bindAddress:
+                              description: "IP is the local IP to listen on for syslog messages."
+                              type: "string"
+                            port:
+                              description: "Port is the  local port to listen on for syslog messages."
+                              type: "integer"
+                          required:
+                            - "bindAddress"
+                            - "port"
+                          type: "object"
+                        tftpConfigs:
+                          description: "TFTPConfigs contains the configurations of Tinkerbell TFTP server."
+                          properties:
+                            ip:
+                              description: "IP is the local IP to listen on to serve TFTP binaries."
+                              type: "string"
+                            ipxeScriptPatch:
+                              description: "IPXEScriptPatch specifies the iPXE script fragment to patch into served iPXE binaries served via TFTP or HTTP."
+                              type: "string"
+                            port:
+                              description: "Port is the  local port to listen on to serve TFTP binaries."
+                              type: "integer"
+                            tftpTimeout:
+                              description: "TFTPTimeout specifies the iPXE tftp binary server requests timeout."
+                              type: "integer"
+                          required:
+                            - "ip"
+                            - "port"
+                          type: "object"
+                      required:
+                        - "backendConfigs"
+                        - "image"
+                      type: "object"
+                    tinkController:
+                      description: "TinkController contains all the information and spec about tink controller."
+                      properties:
+                        image:
+                          description: "Image specifies the details of a tinkerbell services images"
+                          properties:
+                            repository:
+                              description: "Repository is used to set the image repository for tinkerbell services."
+                              type: "string"
+                            tag:
+                              description: "Tag is used to set the image tag for tinkerbell services."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    tinkServer:
+                      description: "TinkServer contains all the information and spec about tink server."
+                      properties:
+                        enableTLS:
+                          description: "EnableTLS sets if the tink server should run with TLS or not."
+                          type: "boolean"
+                        image:
+                          description: "Image specifies the details of a tinkerbell services images"
+                          properties:
+                            repository:
+                              description: "Repository is used to set the image repository for tinkerbell services."
+                              type: "string"
+                            tag:
+                              description: "Tag is used to set the image tag for tinkerbell services."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                  required:
+                    - "tinkController"
+                    - "tinkServer"
+                  type: "object"
+                version:
+                  description: "Version is the Tinkerbell CRD version."
+                  type: "string"
+              required:
+                - "services"
+                - "version"
+              type: "object"
+          required:
+            - "spec"
+          type: "object"
+      served: true
+      storage: true
