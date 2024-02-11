@@ -723,6 +723,10 @@ Files: crd-catalog/microcks/microcks-ansible-operator/*
 Copyright: The microcks/microcks-ansible-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/migtools/crane-operator/*
+Copyright: The migtools/crane-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/minio/operator/*
 Copyright: The minio/operator Authors
 License: Apache-2.0
