@@ -2340,6 +2340,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "tinkerbell/cluster-api-provider-tinkerbell",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/tinkerbell/cluster-api-provider-tinkerbell/blob/main/config/crd/bases/infrastructure.cluster.x-k8s.io_tinkerbellclusters.yaml",
+            "https://github.com/tinkerbell/cluster-api-provider-tinkerbell/blob/main/config/crd/bases/infrastructure.cluster.x-k8s.io_tinkerbellmachines.yaml",
+            "https://github.com/tinkerbell/cluster-api-provider-tinkerbell/blob/main/config/crd/bases/infrastructure.cluster.x-k8s.io_tinkerbellmachinetemplates.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "tinkerbell/rufio",
         license: APACHE_V2,
         urls: &[
