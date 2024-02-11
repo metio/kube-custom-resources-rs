@@ -863,6 +863,10 @@ Files: crd-catalog/RedisLabs/redis-enterprise-k8s-docs/*
 Copyright: The RedisLabs/redis-enterprise-k8s-docs Authors
 License: Apache-2.0
 
+Files: crd-catalog/ROCm/gpu-operator/*
+Copyright: The ROCm/gpu-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/rook/rook/*
 Copyright: The rook/rook Authors
 License: Apache-2.0
