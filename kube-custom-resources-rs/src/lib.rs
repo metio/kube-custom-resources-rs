@@ -2306,6 +2306,22 @@ apiVersion `sparkoperator.k8s.io/v1beta2`:
 - `ScheduledSparkApplication`
 - `SparkApplication`
 
+## spv_no
+
+apiVersion `spv.no/v1`:
+- `AzureKeyVaultSecret`
+
+apiVersion `spv.no/v1alpha1`:
+- `AzureKeyVaultIdentity`
+- `AzureKeyVaultSecret`
+- `AzureManagedIdentity`
+
+apiVersion `spv.no/v2alpha1`:
+- `AzureKeyVaultSecret`
+
+apiVersion `spv.no/v2beta1`:
+- `AzureKeyVaultSecret`
+
 ## status_gatekeeper_sh
 
 apiVersion `status.gatekeeper.sh/v1beta1`:
@@ -3039,6 +3055,8 @@ pub mod sonataflow_org;
 pub mod source_toolkit_fluxcd_io;
 #[cfg(feature = "sparkoperator_k8s_io")]
 pub mod sparkoperator_k8s_io;
+#[cfg(feature = "spv_no")]
+pub mod spv_no;
 #[cfg(feature = "status_gatekeeper_sh")]
 pub mod status_gatekeeper_sh;
 #[cfg(feature = "storage_kubeblocks_io")]

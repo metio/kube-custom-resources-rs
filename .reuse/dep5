@@ -903,6 +903,10 @@ Files: crd-catalog/solo-io/gloo/*
 Copyright: The solo-io/gloo Authors
 License: MIT
 
+Files: crd-catalog/SparebankenVest/azure-key-vault-to-kubernetes/*
+Copyright: The SparebankenVest/azure-key-vault-to-kubernetes Authors
+License: Apache-2.0
+
 Files: crd-catalog/strimzi/strimzi-kafka-operator/*
 Copyright: The strimzi/strimzi-kafka-operator Authors
 License: Apache-2.0
