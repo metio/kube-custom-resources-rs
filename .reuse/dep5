@@ -899,6 +899,10 @@ Files: crd-catalog/tinkerbell/cluster-api-provider-tinkerbell/*
 Copyright: The tinkerbell/cluster-api-provider-tinkerbell Authors
 License: Apache-2.0
 
+Files: crd-catalog/tinkerbell/operator/*
+Copyright: The tinkerbell/operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/tinkerbell/rufio/*
 Copyright: The tinkerbell/rufio Authors
 License: Apache-2.0

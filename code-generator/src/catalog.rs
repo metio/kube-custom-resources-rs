@@ -2349,6 +2349,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "tinkerbell/operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/tinkerbell/operator/blob/main/config/crd/bases/tinkerbell.org_stack.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "tinkerbell/rufio",
         license: APACHE_V2,
         urls: &[
