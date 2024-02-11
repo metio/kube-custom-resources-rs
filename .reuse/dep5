@@ -203,6 +203,10 @@ Files: crd-catalog/cert-manager/cert-manager/*
 Copyright: The cert-manager/cert-manager Authors
 License: Apache-2.0
 
+Files: crd-catalog/cert-manager/trust-manager/*
+Copyright: The cert-manager/trust-manager Authors
+License: Apache-2.0
+
 Files: crd-catalog/change-metrics/monocle-operator/*
 Copyright: The change-metrics/monocle-operator Authors
 License: Apache-2.0

@@ -550,6 +550,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "cert-manager/trust-manager",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/cert-manager/trust-manager/blob/main/deploy/crds/trust.cert-manager.io_bundles.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "change-metrics/monocle-operator",
         license: APACHE_V2,
         urls: &[
