@@ -1,75 +1,75 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: "v0.7.0"
   labels:
-    longhorn-manager: ''
-  name: recurringjobs.longhorn.io
+    longhorn-manager: ""
+  name: "recurringjobs.longhorn.io"
 spec:
-  group: longhorn.io
+  group: "longhorn.io"
   names:
-    kind: RecurringJob
-    listKind: RecurringJobList
-    plural: recurringjobs
+    kind: "RecurringJob"
+    listKind: "RecurringJobList"
+    plural: "recurringjobs"
     shortNames:
-    - lhrj
-    singular: recurringjob
-  scope: Namespaced
+      - "lhrj"
+    singular: "recurringjob"
+  scope: "Namespaced"
   versions:
-  - additionalPrinterColumns:
-    - description: Sets groupings to the jobs. When set to "default" group will be added to the volume label when no other job label exist in volume
-      jsonPath: .spec.groups
-      name: Groups
-      type: string
-    - description: Should be one of "backup" or "snapshot"
-      jsonPath: .spec.task
-      name: Task
-      type: string
-    - description: The cron expression represents recurring job scheduling
-      jsonPath: .spec.cron
-      name: Cron
-      type: string
-    - description: The number of snapshots/backups to keep for the volume
-      jsonPath: .spec.retain
-      name: Retain
-      type: integer
-    - description: The concurrent job to run by each cron job
-      jsonPath: .spec.concurrency
-      name: Concurrency
-      type: integer
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    - description: Specify the labels
-      jsonPath: .spec.labels
-      name: Labels
-      type: string
-    name: v1beta1
-    schema:
-      openAPIV3Schema:
-        description: RecurringJob is where Longhorn stores recurring job object.
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            x-kubernetes-preserve-unknown-fields: true
-          status:
-            x-kubernetes-preserve-unknown-fields: true
-        type: object
-    served: true
-    storage: false
-    subresources:
-      status: {}
+    - additionalPrinterColumns:
+        - description: "Sets groupings to the jobs. When set to \"default\" group will be added to the volume label when no other job label exist in volume"
+          jsonPath: ".spec.groups"
+          name: "Groups"
+          type: "string"
+        - description: "Should be one of \"backup\" or \"snapshot\""
+          jsonPath: ".spec.task"
+          name: "Task"
+          type: "string"
+        - description: "The cron expression represents recurring job scheduling"
+          jsonPath: ".spec.cron"
+          name: "Cron"
+          type: "string"
+        - description: "The number of snapshots/backups to keep for the volume"
+          jsonPath: ".spec.retain"
+          name: "Retain"
+          type: "integer"
+        - description: "The concurrent job to run by each cron job"
+          jsonPath: ".spec.concurrency"
+          name: "Concurrency"
+          type: "integer"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+        - description: "Specify the labels"
+          jsonPath: ".spec.labels"
+          name: "Labels"
+          type: "string"
+      name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          description: "RecurringJob is where Longhorn stores recurring job object."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              x-kubernetes-preserve-unknown-fields: true
+            status:
+              x-kubernetes-preserve-unknown-fields: true
+          type: "object"
+      served: true
+      storage: false
+      subresources:
+        status: {}
 status:
   acceptedNames:
-    kind: ''
-    plural: ''
+    kind: ""
+    plural: ""
   conditions: []
   storedVersions: []

@@ -1,22 +1,22 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
-  name: microcksinstalls.microcks.github.io
+  name: "microcksinstalls.microcks.github.io"
 spec:
-  group: microcks.github.io
+  group: "microcks.github.io"
   names:
-    kind: MicrocksInstall
-    listKind: MicrocksInstallList
-    plural: microcksinstalls
-    singular: microcksinstall
-  scope: Namespaced
+    kind: "MicrocksInstall"
+    listKind: "MicrocksInstallList"
+    plural: "microcksinstalls"
+    singular: "microcksinstall"
+  scope: "Namespaced"
   versions:
-  - name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        type: object
-        x-kubernetes-preserve-unknown-fields: true
-    served: true
-    storage: true
-    subresources:
-      status: {}
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          type: "object"
+          x-kubernetes-preserve-unknown-fields: true
+      served: true
+      storage: true
+      subresources:
+        status: {}

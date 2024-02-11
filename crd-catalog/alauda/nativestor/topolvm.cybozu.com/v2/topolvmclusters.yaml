@@ -1,231 +1,231 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.5.0
-  name: topolvmclusters.topolvm.cybozu.com
+    controller-gen.kubebuilder.io/version: "v0.5.0"
+  name: "topolvmclusters.topolvm.cybozu.com"
 spec:
-  group: topolvm.cybozu.com
+  group: "topolvm.cybozu.com"
   names:
-    kind: TopolvmCluster
-    listKind: TopolvmClusterList
-    plural: topolvmclusters
-    singular: topolvmcluster
-  scope: Namespaced
+    kind: "TopolvmCluster"
+    listKind: "TopolvmClusterList"
+    plural: "topolvmclusters"
+    singular: "topolvmcluster"
+  scope: "Namespaced"
   versions:
-  - name: v2
-    schema:
-      openAPIV3Schema:
-        description: TopolvmCluster is the Schema for the topolvmclusters API
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: TopolvmClusterSpec defines the desired state of TopolvmCluster
-            properties:
-              certsSecret:
-                type: string
-              cleanup:
-                type: boolean
-              storage:
-                properties:
-                  className:
-                    type: string
-                  deviceClasses:
-                    items:
-                      properties:
-                        classes:
-                          items:
-                            properties:
-                              className:
-                                type: string
-                              default:
-                                type: boolean
-                              devices:
-                                items:
-                                  properties:
-                                    auto:
-                                      type: boolean
-                                    name:
-                                      type: string
-                                    path:
-                                      type: string
-                                    size:
-                                      format: int64
-                                      type: integer
-                                    type:
-                                      type: string
-                                  required:
-                                  - name
-                                  - type
-                                  type: object
-                                type: array
-                              spareGb:
-                                format: int64
-                                type: integer
-                              stripe:
-                                type: integer
-                              stripeSize:
-                                type: string
-                              volumeGroup:
-                                type: string
-                            required:
-                            - className
-                            - devices
-                            - volumeGroup
-                            type: object
-                          type: array
-                        nodeName:
-                          type: string
-                      required:
-                      - classes
-                      - nodeName
-                      type: object
-                    type: array
-                  devices:
-                    items:
-                      properties:
-                        auto:
-                          type: boolean
-                        name:
-                          type: string
-                        path:
-                          type: string
-                        size:
-                          format: int64
-                          type: integer
-                        type:
-                          type: string
-                      required:
-                      - name
-                      - type
-                      type: object
-                    type: array
-                  useAllDevices:
-                    type: boolean
-                  useAllNodes:
-                    type: boolean
-                  useLoop:
-                    type: boolean
-                  volumeGroupName:
-                    type: string
-                required:
-                - useAllDevices
-                - useAllNodes
-                - useLoop
-                type: object
-              topolvmVersion:
-                type: string
-            required:
-            - cleanup
-            - storage
-            - topolvmVersion
-            type: object
-          status:
-            description: TopolvmClusterStatus defines the observed state of TopolvmCluster
-            properties:
-              nodeStorageState:
-                items:
+    - name: "v2"
+      schema:
+        openAPIV3Schema:
+          description: "TopolvmCluster is the Schema for the topolvmclusters API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "TopolvmClusterSpec defines the desired state of TopolvmCluster"
+              properties:
+                certsSecret:
+                  type: "string"
+                cleanup:
+                  type: "boolean"
+                storage:
                   properties:
-                    failClasses:
+                    className:
+                      type: "string"
+                    deviceClasses:
                       items:
                         properties:
-                          className:
-                            type: string
-                          deviceStates:
+                          classes:
                             items:
                               properties:
-                                message:
-                                  type: string
-                                name:
-                                  type: string
-                                state:
-                                  type: string
-                              type: object
-                            type: array
-                          message:
-                            type: string
-                          state:
-                            type: string
-                          vgName:
-                            type: string
-                        type: object
-                      type: array
-                    loops:
-                      items:
-                        properties:
-                          deviceName:
-                            type: string
-                          file:
-                            type: string
-                          message:
-                            type: string
-                          name:
-                            type: string
-                          status:
-                            type: string
+                                className:
+                                  type: "string"
+                                default:
+                                  type: "boolean"
+                                devices:
+                                  items:
+                                    properties:
+                                      auto:
+                                        type: "boolean"
+                                      name:
+                                        type: "string"
+                                      path:
+                                        type: "string"
+                                      size:
+                                        format: "int64"
+                                        type: "integer"
+                                      type:
+                                        type: "string"
+                                    required:
+                                      - "name"
+                                      - "type"
+                                    type: "object"
+                                  type: "array"
+                                spareGb:
+                                  format: "int64"
+                                  type: "integer"
+                                stripe:
+                                  type: "integer"
+                                stripeSize:
+                                  type: "string"
+                                volumeGroup:
+                                  type: "string"
+                              required:
+                                - "className"
+                                - "devices"
+                                - "volumeGroup"
+                              type: "object"
+                            type: "array"
+                          nodeName:
+                            type: "string"
                         required:
-                        - deviceName
-                        - file
-                        - message
-                        - name
-                        - status
-                        type: object
-                      type: array
-                    node:
-                      type: string
-                    phase:
-                      type: string
-                    successClasses:
+                          - "classes"
+                          - "nodeName"
+                        type: "object"
+                      type: "array"
+                    devices:
                       items:
                         properties:
-                          className:
-                            type: string
-                          deviceStates:
-                            items:
-                              properties:
-                                message:
-                                  type: string
-                                name:
-                                  type: string
-                                state:
-                                  type: string
-                              type: object
-                            type: array
-                          message:
-                            type: string
-                          state:
-                            type: string
-                          vgName:
-                            type: string
-                        type: object
-                      type: array
+                          auto:
+                            type: "boolean"
+                          name:
+                            type: "string"
+                          path:
+                            type: "string"
+                          size:
+                            format: "int64"
+                            type: "integer"
+                          type:
+                            type: "string"
+                        required:
+                          - "name"
+                          - "type"
+                        type: "object"
+                      type: "array"
+                    useAllDevices:
+                      type: "boolean"
+                    useAllNodes:
+                      type: "boolean"
+                    useLoop:
+                      type: "boolean"
+                    volumeGroupName:
+                      type: "string"
                   required:
-                  - node
-                  - phase
-                  type: object
-                type: array
-              phase:
-                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file'
-                type: string
-            required:
-            - nodeStorageState
-            - phase
-            type: object
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
+                    - "useAllDevices"
+                    - "useAllNodes"
+                    - "useLoop"
+                  type: "object"
+                topolvmVersion:
+                  type: "string"
+              required:
+                - "cleanup"
+                - "storage"
+                - "topolvmVersion"
+              type: "object"
+            status:
+              description: "TopolvmClusterStatus defines the observed state of TopolvmCluster"
+              properties:
+                nodeStorageState:
+                  items:
+                    properties:
+                      failClasses:
+                        items:
+                          properties:
+                            className:
+                              type: "string"
+                            deviceStates:
+                              items:
+                                properties:
+                                  message:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  state:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                            message:
+                              type: "string"
+                            state:
+                              type: "string"
+                            vgName:
+                              type: "string"
+                          type: "object"
+                        type: "array"
+                      loops:
+                        items:
+                          properties:
+                            deviceName:
+                              type: "string"
+                            file:
+                              type: "string"
+                            message:
+                              type: "string"
+                            name:
+                              type: "string"
+                            status:
+                              type: "string"
+                          required:
+                            - "deviceName"
+                            - "file"
+                            - "message"
+                            - "name"
+                            - "status"
+                          type: "object"
+                        type: "array"
+                      node:
+                        type: "string"
+                      phase:
+                        type: "string"
+                      successClasses:
+                        items:
+                          properties:
+                            className:
+                              type: "string"
+                            deviceStates:
+                              items:
+                                properties:
+                                  message:
+                                    type: "string"
+                                  name:
+                                    type: "string"
+                                  state:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                            message:
+                              type: "string"
+                            state:
+                              type: "string"
+                            vgName:
+                              type: "string"
+                          type: "object"
+                        type: "array"
+                    required:
+                      - "node"
+                      - "phase"
+                    type: "object"
+                  type: "array"
+                phase:
+                  description: "INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run \"make\" to regenerate code after modifying this file"
+                  type: "string"
+              required:
+                - "nodeStorageState"
+                - "phase"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
 status:
   acceptedNames:
-    kind: ''
-    plural: ''
+    kind: ""
+    plural: ""
   conditions: []
   storedVersions: []

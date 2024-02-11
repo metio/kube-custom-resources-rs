@@ -1,246 +1,246 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.6.2
-  name: clusteroperations.kubean.io
+    controller-gen.kubebuilder.io/version: "v0.6.2"
+  name: "clusteroperations.kubean.io"
 spec:
-  group: kubean.io
+  group: "kubean.io"
   names:
-    kind: ClusterOperation
-    listKind: ClusterOperationList
-    plural: clusteroperations
-    singular: clusteroperation
-  scope: Cluster
+    kind: "ClusterOperation"
+    listKind: "ClusterOperationList"
+    plural: "clusteroperations"
+    singular: "clusteroperation"
+  scope: "Cluster"
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        description: ClusterOperation represents the desire state and status of a member cluster.
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: Spec defines the desired state of a member cluster.
-            properties:
-              action:
-                type: string
-              actionSource:
-                default: builtin
-                type: string
-              actionSourceRef:
-                properties:
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                required:
-                - name
-                - namespace
-                type: object
-              actionType:
-                type: string
-              activeDeadlineSeconds:
-                format: int64
-                type: integer
-              cluster:
-                description: Cluster the name of Cluster.kubean.io.
-                type: string
-              entrypointSHRef:
-                description: EntrypointSHRef will be filled by operator when it renders entrypoint.sh.
-                properties:
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                required:
-                - name
-                - namespace
-                type: object
-              extraArgs:
-                type: string
-              hostsConfRef:
-                description: HostsConfRef will be filled by operator when it performs backup.
-                properties:
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                required:
-                - name
-                - namespace
-                type: object
-              image:
-                type: string
-              postHook:
-                items:
+    - additionalPrinterColumns:
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "ClusterOperation represents the desire state and status of a member cluster."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "Spec defines the desired state of a member cluster."
+              properties:
+                action:
+                  type: "string"
+                actionSource:
+                  default: "builtin"
+                  type: "string"
+                actionSourceRef:
                   properties:
-                    action:
-                      type: string
-                    actionSource:
-                      default: builtin
-                      type: string
-                    actionSourceRef:
-                      properties:
-                        name:
-                          type: string
-                        namespace:
-                          type: string
-                      required:
-                      - name
-                      - namespace
-                      type: object
-                    actionType:
-                      type: string
-                    extraArgs:
-                      type: string
+                    name:
+                      type: "string"
+                    namespace:
+                      type: "string"
                   required:
-                  - action
-                  - actionType
-                  type: object
-                type: array
-              preHook:
-                items:
+                    - "name"
+                    - "namespace"
+                  type: "object"
+                actionType:
+                  type: "string"
+                activeDeadlineSeconds:
+                  format: "int64"
+                  type: "integer"
+                cluster:
+                  description: "Cluster the name of Cluster.kubean.io."
+                  type: "string"
+                entrypointSHRef:
+                  description: "EntrypointSHRef will be filled by operator when it renders entrypoint.sh."
                   properties:
-                    action:
-                      type: string
-                    actionSource:
-                      default: builtin
-                      type: string
-                    actionSourceRef:
-                      properties:
-                        name:
-                          type: string
-                        namespace:
-                          type: string
-                      required:
-                      - name
-                      - namespace
-                      type: object
-                    actionType:
-                      type: string
-                    extraArgs:
-                      type: string
+                    name:
+                      type: "string"
+                    namespace:
+                      type: "string"
                   required:
-                  - action
-                  - actionType
-                  type: object
-                type: array
-              resources:
-                description: ResourceRequirements describes the compute resource requirements.
-                properties:
-                  claims:
-                    description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
-                    items:
-                      description: ResourceClaim references one entry in PodSpec.ResourceClaims.
-                      properties:
-                        name:
-                          description: Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
-                          type: string
-                      required:
-                      - name
-                      type: object
-                    type: array
-                    x-kubernetes-list-map-keys:
-                    - name
-                    x-kubernetes-list-type: map
-                  limits:
-                    additionalProperties:
-                      anyOf:
-                      - type: integer
-                      - type: string
-                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                      x-kubernetes-int-or-string: true
-                    description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                    type: object
-                  requests:
-                    additionalProperties:
-                      anyOf:
-                      - type: integer
-                      - type: string
-                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                      x-kubernetes-int-or-string: true
-                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                    type: object
-                type: object
-              sshAuthRef:
-                description: SSHAuthRef will be filled by operator when it performs backup.
-                properties:
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                required:
-                - name
-                - namespace
-                type: object
-              varsConfRef:
-                description: VarsConfRef will be filled by operator when it performs backup.
-                properties:
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                required:
-                - name
-                - namespace
-                type: object
-            required:
-            - action
-            - actionType
-            - cluster
-            - image
-            type: object
-          status:
-            description: Status contains information about the current status of a cluster operation job updated periodically by cluster controller.
-            properties:
-              action:
-                type: string
-              digest:
-                description: Digest is used to avoid the change of clusterOps by others. it will be filled by operator. Do Not change this value.
-                type: string
-              endTime:
-                format: date-time
-                type: string
-              hasModified:
-                description: HasModified indicates the spec has been modified by others after created.
-                type: boolean
-              jobRef:
-                properties:
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                required:
-                - name
-                - namespace
-                type: object
-              startTime:
-                format: date-time
-                type: string
-              status:
-                type: string
-            type: object
-        required:
-        - spec
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
+                    - "name"
+                    - "namespace"
+                  type: "object"
+                extraArgs:
+                  type: "string"
+                hostsConfRef:
+                  description: "HostsConfRef will be filled by operator when it performs backup."
+                  properties:
+                    name:
+                      type: "string"
+                    namespace:
+                      type: "string"
+                  required:
+                    - "name"
+                    - "namespace"
+                  type: "object"
+                image:
+                  type: "string"
+                postHook:
+                  items:
+                    properties:
+                      action:
+                        type: "string"
+                      actionSource:
+                        default: "builtin"
+                        type: "string"
+                      actionSourceRef:
+                        properties:
+                          name:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                        required:
+                          - "name"
+                          - "namespace"
+                        type: "object"
+                      actionType:
+                        type: "string"
+                      extraArgs:
+                        type: "string"
+                    required:
+                      - "action"
+                      - "actionType"
+                    type: "object"
+                  type: "array"
+                preHook:
+                  items:
+                    properties:
+                      action:
+                        type: "string"
+                      actionSource:
+                        default: "builtin"
+                        type: "string"
+                      actionSourceRef:
+                        properties:
+                          name:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                        required:
+                          - "name"
+                          - "namespace"
+                        type: "object"
+                      actionType:
+                        type: "string"
+                      extraArgs:
+                        type: "string"
+                    required:
+                      - "action"
+                      - "actionType"
+                    type: "object"
+                  type: "array"
+                resources:
+                  description: "ResourceRequirements describes the compute resource requirements."
+                  properties:
+                    claims:
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
+                      items:
+                        description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                        properties:
+                          name:
+                            description: "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container."
+                            type: "string"
+                        required:
+                          - "name"
+                        type: "object"
+                      type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "name"
+                      x-kubernetes-list-type: "map"
+                    limits:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
+                      description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      type: "object"
+                    requests:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
+                      description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      type: "object"
+                  type: "object"
+                sshAuthRef:
+                  description: "SSHAuthRef will be filled by operator when it performs backup."
+                  properties:
+                    name:
+                      type: "string"
+                    namespace:
+                      type: "string"
+                  required:
+                    - "name"
+                    - "namespace"
+                  type: "object"
+                varsConfRef:
+                  description: "VarsConfRef will be filled by operator when it performs backup."
+                  properties:
+                    name:
+                      type: "string"
+                    namespace:
+                      type: "string"
+                  required:
+                    - "name"
+                    - "namespace"
+                  type: "object"
+              required:
+                - "action"
+                - "actionType"
+                - "cluster"
+                - "image"
+              type: "object"
+            status:
+              description: "Status contains information about the current status of a cluster operation job updated periodically by cluster controller."
+              properties:
+                action:
+                  type: "string"
+                digest:
+                  description: "Digest is used to avoid the change of clusterOps by others. it will be filled by operator. Do Not change this value."
+                  type: "string"
+                endTime:
+                  format: "date-time"
+                  type: "string"
+                hasModified:
+                  description: "HasModified indicates the spec has been modified by others after created."
+                  type: "boolean"
+                jobRef:
+                  properties:
+                    name:
+                      type: "string"
+                    namespace:
+                      type: "string"
+                  required:
+                    - "name"
+                    - "namespace"
+                  type: "object"
+                startTime:
+                  format: "date-time"
+                  type: "string"
+                status:
+                  type: "string"
+              type: "object"
+          required:
+            - "spec"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
 status:
   acceptedNames:
-    kind: ''
-    plural: ''
+    kind: ""
+    plural: ""
   conditions: []
   storedVersions: []

@@ -1,57 +1,57 @@
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.8.0
-  name: clusterproperties.about.k8s.io
+    controller-gen.kubebuilder.io/version: "v0.8.0"
+  name: "clusterproperties.about.k8s.io"
 spec:
-  group: about.k8s.io
+  group: "about.k8s.io"
   names:
-    kind: ClusterProperty
-    listKind: ClusterPropertyList
-    plural: clusterproperties
-    singular: clusterproperty
-  scope: Cluster
+    kind: "ClusterProperty"
+    listKind: "ClusterPropertyList"
+    plural: "clusterproperties"
+    singular: "clusterproperty"
+  scope: "Cluster"
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .spec.value
-      name: value
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: age
-      type: date
-    name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        description: ClusterProperty is a resource provides a way to store identification related, cluster scoped information for multi-cluster tools while creating flexibility for implementations.
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: Spec represents the desired behavior.
-            properties:
-              value:
-                description: Value is the property-dependent string.
-                minLength: 1
-                type: string
-            required:
-            - value
-            type: object
-        required:
-        - spec
-        type: object
-    served: true
-    storage: true
-    subresources: {}
+    - additionalPrinterColumns:
+        - jsonPath: ".spec.value"
+          name: "value"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "age"
+          type: "date"
+      name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "ClusterProperty is a resource provides a way to store identification related, cluster scoped information for multi-cluster tools while creating flexibility for implementations."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "Spec represents the desired behavior."
+              properties:
+                value:
+                  description: "Value is the property-dependent string."
+                  minLength: 1
+                  type: "string"
+              required:
+                - "value"
+              type: "object"
+          required:
+            - "spec"
+          type: "object"
+      served: true
+      storage: true
+      subresources: {}
 status:
   acceptedNames:
-    kind: ''
-    plural: ''
+    kind: ""
+    plural: ""
   conditions: []
   storedVersions: []
