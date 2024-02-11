@@ -1,0 +1,2115 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.14.0"
+  name: "contourdeployments.projectcontour.io"
+spec:
+  group: "projectcontour.io"
+  names:
+    kind: "ContourDeployment"
+    listKind: "ContourDeploymentList"
+    plural: "contourdeployments"
+    shortNames:
+      - "contourdeploy"
+    singular: "contourdeployment"
+  preserveUnknownFields: false
+  scope: "Namespaced"
+  versions:
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "ContourDeployment is the schema for a Contour Deployment."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "ContourDeploymentSpec specifies options for how a Contour\ninstance should be provisioned."
+              properties:
+                contour:
+                  description: "Contour specifies deployment-time settings for the Contour\npart of the installation, i.e. the xDS server/control plane\nand associated resources, including things like replica count\nfor the Deployment, and node placement constraints for the pods."
+                  properties:
+                    deployment:
+                      description: "Deployment describes the settings for running contour as a `Deployment`."
+                      properties:
+                        replicas:
+                          description: "Replicas is the desired number of replicas."
+                          format: "int32"
+                          minimum: 0.0
+                          type: "integer"
+                        strategy:
+                          description: "Strategy describes the deployment strategy to use to replace existing pods with new pods."
+                          properties:
+                            rollingUpdate:
+                              description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate.\n---\nTODO: Update this to follow our convention for oneOf, whatever we decide it\nto be."
+                              properties:
+                                maxSurge:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  description: "The maximum number of pods that can be scheduled above the desired number of\npods.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nThis can not be 0 if MaxUnavailable is 0.\nAbsolute number is calculated from percentage by rounding up.\nDefaults to 25%.\nExample: when this is set to 30%, the new ReplicaSet can be scaled up immediately when\nthe rolling update starts, such that the total number of old and new pods do not exceed\n130% of desired pods. Once old pods have been killed,\nnew ReplicaSet can be scaled up further, ensuring that total number of pods running\nat any time during the update is at most 130% of desired pods."
+                                  x-kubernetes-int-or-string: true
+                                maxUnavailable:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  description: "The maximum number of pods that can be unavailable during the update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nAbsolute number is calculated from percentage by rounding down.\nThis can not be 0 if MaxSurge is 0.\nDefaults to 25%.\nExample: when this is set to 30%, the old ReplicaSet can be scaled down to 70% of desired pods\nimmediately when the rolling update starts. Once new pods are ready, old ReplicaSet\ncan be scaled down further, followed by scaling up the new ReplicaSet, ensuring\nthat the total number of pods available at all times during the update is at\nleast 70% of desired pods."
+                                  x-kubernetes-int-or-string: true
+                              type: "object"
+                            type:
+                              description: "Type of deployment. Can be \"Recreate\" or \"RollingUpdate\". Default is RollingUpdate."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    disabledFeatures:
+                      description: "DisabledFeatures defines an array of resources that will be ignored by\ncontour reconciler."
+                      items:
+                        enum:
+                          - "grpcroutes"
+                          - "tlsroutes"
+                          - "extensionservices"
+                          - "backendtlspolicies"
+                        type: "string"
+                      maxItems: 42
+                      minItems: 1
+                      type: "array"
+                    kubernetesLogLevel:
+                      description: "KubernetesLogLevel Enable Kubernetes client debug logging with log level. If unset,\ndefaults to 0."
+                      maximum: 9.0
+                      minimum: 0.0
+                      type: "integer"
+                    logLevel:
+                      description: "LogLevel sets the log level for Contour\nAllowed values are \"info\", \"debug\"."
+                      type: "string"
+                    nodePlacement:
+                      description: "NodePlacement describes node scheduling configuration of Contour pods."
+                      properties:
+                        nodeSelector:
+                          additionalProperties:
+                            type: "string"
+                          description: "NodeSelector is the simplest recommended form of node selection constraint\nand specifies a map of key-value pairs. For the pod to be eligible\nto run on a node, the node must have each of the indicated key-value pairs\nas labels (it can have additional labels as well).\nIf unset, the pod(s) will be scheduled to any available node."
+                          type: "object"
+                        tolerations:
+                          description: "Tolerations work with taints to ensure that pods are not scheduled\nonto inappropriate nodes. One or more taints are applied to a node; this\nmarks that the node should not accept any pods that do not tolerate the\ntaints.\nThe default is an empty list.\nSee https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/\nfor additional details."
+                          items:
+                            description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
+                            properties:
+                              effect:
+                                description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                                type: "string"
+                              key:
+                                description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                                type: "string"
+                              operator:
+                                description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                type: "string"
+                              tolerationSeconds:
+                                description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
+                                format: "int64"
+                                type: "integer"
+                              value:
+                                description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
+                                type: "string"
+                            type: "object"
+                          type: "array"
+                      type: "object"
+                    podAnnotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "PodAnnotations defines annotations to add to the Contour pods.\nthe annotations for Prometheus will be appended or overwritten with predefined value."
+                      type: "object"
+                    replicas:
+                      description: "Deprecated: Use `DeploymentSettings.Replicas` instead.\nReplicas is the desired number of Contour replicas. If if unset,\ndefaults to 2.\nif both `DeploymentSettings.Replicas` and this one is set, use `DeploymentSettings.Replicas`."
+                      format: "int32"
+                      minimum: 0.0
+                      type: "integer"
+                    resources:
+                      description: "Compute Resources required by contour container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      properties:
+                        claims:
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                          items:
+                            description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                            properties:
+                              name:
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
+                        limits:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
+                          description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          type: "object"
+                        requests:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
+                          description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          type: "object"
+                      type: "object"
+                    watchNamespaces:
+                      description: "WatchNamespaces is an array of namespaces. Setting it will instruct the contour instance\nto only watch this subset of namespaces."
+                      items:
+                        description: "Namespace refers to a Kubernetes namespace. It must be a RFC 1123 label.\nThis validation is based off of the corresponding Kubernetes validation:\nhttps://github.com/kubernetes/apimachinery/blob/02cfb53916346d085a6c6c7c66f882e3c6b0eca6/pkg/util/validation/validation.go#L187\nThis is used for Namespace name validation here:\nhttps://github.com/kubernetes/apimachinery/blob/02cfb53916346d085a6c6c7c66f882e3c6b0eca6/pkg/api/validation/generic.go#L63\nValid values include:\n* \"example\"\nInvalid values include:\n* \"example.com\" - \".\" is an invalid character"
+                        maxLength: 63
+                        minLength: 1
+                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                        type: "string"
+                      maxItems: 42
+                      minItems: 1
+                      type: "array"
+                  type: "object"
+                envoy:
+                  description: "Envoy specifies deployment-time settings for the Envoy\npart of the installation, i.e. the xDS client/data plane\nand associated resources, including things like the workload\ntype to use (DaemonSet or Deployment), node placement constraints\nfor the pods, and various options for the Envoy service."
+                  properties:
+                    baseID:
+                      description: "The base ID to use when allocating shared memory regions.\nif Envoy needs to be run multiple times on the same machine, each running Envoy will need a unique base ID\nso that the shared memory regions do not conflict.\ndefaults to 0."
+                      format: "int32"
+                      minimum: 0.0
+                      type: "integer"
+                    daemonSet:
+                      description: "DaemonSet describes the settings for running envoy as a `DaemonSet`.\nif `WorkloadType` is `Deployment`,it's must be nil"
+                      properties:
+                        updateStrategy:
+                          description: "Strategy describes the deployment strategy to use to replace existing DaemonSet pods with new pods."
+                          properties:
+                            rollingUpdate:
+                              description: "Rolling update config params. Present only if type = \"RollingUpdate\".\n---\nTODO: Update this to follow our convention for oneOf, whatever we decide it\nto be. Same as Deployment `strategy.rollingUpdate`.\nSee https://github.com/kubernetes/kubernetes/issues/35345"
+                              properties:
+                                maxSurge:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  description: "The maximum number of nodes with an existing available DaemonSet pod that\ncan have an updated DaemonSet pod during during an update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nThis can not be 0 if MaxUnavailable is 0.\nAbsolute number is calculated from percentage by rounding up to a minimum of 1.\nDefault value is 0.\nExample: when this is set to 30%, at most 30% of the total number of nodes\nthat should be running the daemon pod (i.e. status.desiredNumberScheduled)\ncan have their a new pod created before the old pod is marked as deleted.\nThe update starts by launching new pods on 30% of nodes. Once an updated\npod is available (Ready for at least minReadySeconds) the old DaemonSet pod\non that node is marked deleted. If the old pod becomes unavailable for any\nreason (Ready transitions to false, is evicted, or is drained) an updated\npod is immediatedly created on that node without considering surge limits.\nAllowing surge implies the possibility that the resources consumed by the\ndaemonset on any given node can double if the readiness check fails, and\nso resource intensive daemonsets should take into account that they may\ncause evictions during disruption."
+                                  x-kubernetes-int-or-string: true
+                                maxUnavailable:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  description: "The maximum number of DaemonSet pods that can be unavailable during the\nupdate. Value can be an absolute number (ex: 5) or a percentage of total\nnumber of DaemonSet pods at the start of the update (ex: 10%). Absolute\nnumber is calculated from percentage by rounding up.\nThis cannot be 0 if MaxSurge is 0\nDefault value is 1.\nExample: when this is set to 30%, at most 30% of the total number of nodes\nthat should be running the daemon pod (i.e. status.desiredNumberScheduled)\ncan have their pods stopped for an update at any given time. The update\nstarts by stopping at most 30% of those DaemonSet pods and then brings\nup new DaemonSet pods in their place. Once the new pods are available,\nit then proceeds onto other DaemonSet pods, thus ensuring that at least\n70% of original number of DaemonSet pods are available at all times during\nthe update."
+                                  x-kubernetes-int-or-string: true
+                              type: "object"
+                            type:
+                              description: "Type of daemon set update. Can be \"RollingUpdate\" or \"OnDelete\". Default is RollingUpdate."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    deployment:
+                      description: "Deployment describes the settings for running envoy as a `Deployment`.\nif `WorkloadType` is `DaemonSet`,it's must be nil"
+                      properties:
+                        replicas:
+                          description: "Replicas is the desired number of replicas."
+                          format: "int32"
+                          minimum: 0.0
+                          type: "integer"
+                        strategy:
+                          description: "Strategy describes the deployment strategy to use to replace existing pods with new pods."
+                          properties:
+                            rollingUpdate:
+                              description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate.\n---\nTODO: Update this to follow our convention for oneOf, whatever we decide it\nto be."
+                              properties:
+                                maxSurge:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  description: "The maximum number of pods that can be scheduled above the desired number of\npods.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nThis can not be 0 if MaxUnavailable is 0.\nAbsolute number is calculated from percentage by rounding up.\nDefaults to 25%.\nExample: when this is set to 30%, the new ReplicaSet can be scaled up immediately when\nthe rolling update starts, such that the total number of old and new pods do not exceed\n130% of desired pods. Once old pods have been killed,\nnew ReplicaSet can be scaled up further, ensuring that total number of pods running\nat any time during the update is at most 130% of desired pods."
+                                  x-kubernetes-int-or-string: true
+                                maxUnavailable:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  description: "The maximum number of pods that can be unavailable during the update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nAbsolute number is calculated from percentage by rounding down.\nThis can not be 0 if MaxSurge is 0.\nDefaults to 25%.\nExample: when this is set to 30%, the old ReplicaSet can be scaled down to 70% of desired pods\nimmediately when the rolling update starts. Once new pods are ready, old ReplicaSet\ncan be scaled down further, followed by scaling up the new ReplicaSet, ensuring\nthat the total number of pods available at all times during the update is at\nleast 70% of desired pods."
+                                  x-kubernetes-int-or-string: true
+                              type: "object"
+                            type:
+                              description: "Type of deployment. Can be \"Recreate\" or \"RollingUpdate\". Default is RollingUpdate."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    extraVolumeMounts:
+                      description: "ExtraVolumeMounts holds the extra volume mounts to add (normally used with extraVolumes)."
+                      items:
+                        description: "VolumeMount describes a mounting of a Volume within a container."
+                        properties:
+                          mountPath:
+                            description: "Path within the container at which the volume should be mounted.  Must\nnot contain ':'."
+                            type: "string"
+                          mountPropagation:
+                            description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10."
+                            type: "string"
+                          name:
+                            description: "This must match the Name of a Volume."
+                            type: "string"
+                          readOnly:
+                            description: "Mounted read-only if true, read-write otherwise (false or unspecified).\nDefaults to false."
+                            type: "boolean"
+                          subPath:
+                            description: "Path within the volume from which the container's volume should be mounted.\nDefaults to \"\" (volume's root)."
+                            type: "string"
+                          subPathExpr:
+                            description: "Expanded path within the volume from which the container's volume should be mounted.\nBehaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.\nDefaults to \"\" (volume's root).\nSubPathExpr and SubPath are mutually exclusive."
+                            type: "string"
+                        required:
+                          - "mountPath"
+                          - "name"
+                        type: "object"
+                      type: "array"
+                    extraVolumes:
+                      description: "ExtraVolumes holds the extra volumes to add."
+                      items:
+                        description: "Volume represents a named volume in a pod that may be accessed by any container in the pod."
+                        properties:
+                          awsElasticBlockStore:
+                            description: "awsElasticBlockStore represents an AWS Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
+                            properties:
+                              fsType:
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                type: "string"
+                              partition:
+                                description: "partition is the partition in the volume that you want to mount.\nIf omitted, the default is to mount by volume name.\nExamples: For volume /dev/sda1, you specify the partition as \"1\".\nSimilarly, the volume partition for /dev/sda is \"0\" (or you can leave the property empty)."
+                                format: "int32"
+                                type: "integer"
+                              readOnly:
+                                description: "readOnly value true will force the readOnly setting in VolumeMounts.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
+                                type: "boolean"
+                              volumeID:
+                                description: "volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
+                                type: "string"
+                            required:
+                              - "volumeID"
+                            type: "object"
+                          azureDisk:
+                            description: "azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod."
+                            properties:
+                              cachingMode:
+                                description: "cachingMode is the Host Caching mode: None, Read Only, Read Write."
+                                type: "string"
+                              diskName:
+                                description: "diskName is the Name of the data disk in the blob storage"
+                                type: "string"
+                              diskURI:
+                                description: "diskURI is the URI of data disk in the blob storage"
+                                type: "string"
+                              fsType:
+                                description: "fsType is Filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
+                                type: "string"
+                              kind:
+                                description: "kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly Defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
+                                type: "boolean"
+                            required:
+                              - "diskName"
+                              - "diskURI"
+                            type: "object"
+                          azureFile:
+                            description: "azureFile represents an Azure File Service mount on the host and bind mount to the pod."
+                            properties:
+                              readOnly:
+                                description: "readOnly defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
+                                type: "boolean"
+                              secretName:
+                                description: "secretName is the  name of secret that contains Azure Storage Account Name and Key"
+                                type: "string"
+                              shareName:
+                                description: "shareName is the azure share Name"
+                                type: "string"
+                            required:
+                              - "secretName"
+                              - "shareName"
+                            type: "object"
+                          cephfs:
+                            description: "cephFS represents a Ceph FS mount on the host that shares a pod's lifetime"
+                            properties:
+                              monitors:
+                                description: "monitors is Required: Monitors is a collection of Ceph monitors\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              path:
+                                description: "path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly is Optional: Defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts.\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
+                                type: "boolean"
+                              secretFile:
+                                description: "secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
+                                type: "string"
+                              secretRef:
+                                description: "secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
+                                properties:
+                                  name:
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              user:
+                                description: "user is optional: User is the rados user name, default is admin\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
+                                type: "string"
+                            required:
+                              - "monitors"
+                            type: "object"
+                          cinder:
+                            description: "cinder represents a cinder volume attached and mounted on kubelets host machine.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
+                            properties:
+                              fsType:
+                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
+                                type: "boolean"
+                              secretRef:
+                                description: "secretRef is optional: points to a secret object containing parameters used to connect\nto OpenStack."
+                                properties:
+                                  name:
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              volumeID:
+                                description: "volumeID used to identify the volume in cinder.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
+                                type: "string"
+                            required:
+                              - "volumeID"
+                            type: "object"
+                          configMap:
+                            description: "configMap represents a configMap that should populate this volume"
+                            properties:
+                              defaultMode:
+                                description: "defaultMode is optional: mode bits used to set permissions on created files by default.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nDefaults to 0644.\nDirectories within the path are not affected by this setting.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                format: "int32"
+                                type: "integer"
+                              items:
+                                description: "items if unspecified, each key-value pair in the Data field of the referenced\nConfigMap will be projected into the volume as a file whose name is the\nkey and content is the value. If specified, the listed keys will be\nprojected into the specified paths, and unlisted keys will not be\npresent. If a key is specified which is not present in the ConfigMap,\nthe volume setup will error unless it is marked optional. Paths must be\nrelative and may not contain the '..' path or start with '..'."
+                                items:
+                                  description: "Maps a string key to a path within a volume."
+                                  properties:
+                                    key:
+                                      description: "key is the key to project."
+                                      type: "string"
+                                    mode:
+                                      description: "mode is Optional: mode bits used to set permissions on this file.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                      format: "int32"
+                                      type: "integer"
+                                    path:
+                                      description: "path is the relative path of the file to map the key to.\nMay not be an absolute path.\nMay not contain the path element '..'.\nMay not start with the string '..'."
+                                      type: "string"
+                                  required:
+                                    - "key"
+                                    - "path"
+                                  type: "object"
+                                type: "array"
+                              name:
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                type: "string"
+                              optional:
+                                description: "optional specify whether the ConfigMap or its keys must be defined"
+                                type: "boolean"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          csi:
+                            description: "csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature)."
+                            properties:
+                              driver:
+                                description: "driver is the name of the CSI driver that handles this volume.\nConsult with your admin for the correct name as registered in the cluster."
+                                type: "string"
+                              fsType:
+                                description: "fsType to mount. Ex. \"ext4\", \"xfs\", \"ntfs\".\nIf not provided, the empty value is passed to the associated CSI driver\nwhich will determine the default filesystem to apply."
+                                type: "string"
+                              nodePublishSecretRef:
+                                description: "nodePublishSecretRef is a reference to the secret object containing\nsensitive information to pass to the CSI driver to complete the CSI\nNodePublishVolume and NodeUnpublishVolume calls.\nThis field is optional, and  may be empty if no secret is required. If the\nsecret object contains more than one secret, all secret references are passed."
+                                properties:
+                                  name:
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              readOnly:
+                                description: "readOnly specifies a read-only configuration for the volume.\nDefaults to false (read/write)."
+                                type: "boolean"
+                              volumeAttributes:
+                                additionalProperties:
+                                  type: "string"
+                                description: "volumeAttributes stores driver-specific properties that are passed to the CSI\ndriver. Consult your driver's documentation for supported values."
+                                type: "object"
+                            required:
+                              - "driver"
+                            type: "object"
+                          downwardAPI:
+                            description: "downwardAPI represents downward API about the pod that should populate this volume"
+                            properties:
+                              defaultMode:
+                                description: "Optional: mode bits to use on created files by default. Must be a\nOptional: mode bits used to set permissions on created files by default.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nDefaults to 0644.\nDirectories within the path are not affected by this setting.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                format: "int32"
+                                type: "integer"
+                              items:
+                                description: "Items is a list of downward API volume file"
+                                items:
+                                  description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
+                                  properties:
+                                    fieldRef:
+                                      description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
+                                      properties:
+                                        apiVersion:
+                                          description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
+                                          type: "string"
+                                        fieldPath:
+                                          description: "Path of the field to select in the specified API version."
+                                          type: "string"
+                                      required:
+                                        - "fieldPath"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    mode:
+                                      description: "Optional: mode bits used to set permissions on this file, must be an octal value\nbetween 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                      format: "int32"
+                                      type: "integer"
+                                    path:
+                                      description: "Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'"
+                                      type: "string"
+                                    resourceFieldRef:
+                                      description: "Selects a resource of the container: only resources limits and requests\n(limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported."
+                                      properties:
+                                        containerName:
+                                          description: "Container name: required for volumes, optional for env vars"
+                                          type: "string"
+                                        divisor:
+                                          anyOf:
+                                            - type: "integer"
+                                            - type: "string"
+                                          description: "Specifies the output format of the exposed resources, defaults to \"1\""
+                                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                          x-kubernetes-int-or-string: true
+                                        resource:
+                                          description: "Required: resource to select"
+                                          type: "string"
+                                      required:
+                                        - "resource"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                  required:
+                                    - "path"
+                                  type: "object"
+                                type: "array"
+                            type: "object"
+                          emptyDir:
+                            description: "emptyDir represents a temporary directory that shares a pod's lifetime.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir"
+                            properties:
+                              medium:
+                                description: "medium represents what type of storage medium should back this directory.\nThe default is \"\" which means to use the node's default medium.\nMust be an empty string (default) or Memory.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir"
+                                type: "string"
+                              sizeLimit:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                description: "sizeLimit is the total amount of local storage required for this EmptyDir volume.\nThe size limit is also applicable for memory medium.\nThe maximum usage on memory medium EmptyDir would be the minimum value between\nthe SizeLimit specified here and the sum of memory limits of all containers in a pod.\nThe default is nil which means that the limit is undefined.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                            type: "object"
+                          ephemeral:
+                            description: "ephemeral represents a volume that is handled by a cluster storage driver.\nThe volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,\nand deleted when the pod is removed.\nUse this if:\na) the volume is only needed while the pod runs,\nb) features of normal volumes like restoring from snapshot or capacity\n   tracking are needed,\nc) the storage driver is specified through a storage class, and\nd) the storage driver supports dynamic volume provisioning through\n   a PersistentVolumeClaim (see EphemeralVolumeSource for more\n   information on the connection between this volume type\n   and PersistentVolumeClaim).\nUse PersistentVolumeClaim or one of the vendor-specific\nAPIs for volumes that persist for longer than the lifecycle\nof an individual pod.\nUse CSI for light-weight local ephemeral volumes if the CSI driver is meant to\nbe used that way - see the documentation of the driver for\nmore information.\nA pod can use both types of ephemeral volumes and\npersistent volumes at the same time."
+                            properties:
+                              volumeClaimTemplate:
+                                description: "Will be used to create a stand-alone PVC to provision the volume.\nThe pod in which this EphemeralVolumeSource is embedded will be the\nowner of the PVC, i.e. the PVC will be deleted together with the\npod.  The name of the PVC will be `<pod name>-<volume name>` where\n`<volume name>` is the name from the `PodSpec.Volumes` array\nentry. Pod validation will reject the pod if the concatenated name\nis not valid for a PVC (for example, too long).\nAn existing PVC with that name that is not owned by the pod\nwill *not* be used for the pod to avoid using an unrelated\nvolume by mistake. Starting the pod is then blocked until\nthe unrelated PVC is removed. If such a pre-created PVC is\nmeant to be used by the pod, the PVC has to updated with an\nowner reference to the pod once the pod exists. Normally\nthis should not be necessary, but it may be useful when\nmanually reconstructing a broken cluster.\nThis field is read-only and no changes will be made by Kubernetes\nto the PVC after it has been created.\nRequired, must not be nil."
+                                properties:
+                                  metadata:
+                                    description: "May contain labels and annotations that will be copied into the PVC\nwhen creating it. No other fields are allowed and will be rejected during\nvalidation."
+                                    type: "object"
+                                  spec:
+                                    description: "The specification for the PersistentVolumeClaim. The entire content is\ncopied unchanged into the PVC that gets created from this\ntemplate. The same fields as in a PersistentVolumeClaim\nare also valid here."
+                                    properties:
+                                      accessModes:
+                                        description: "accessModes contains the desired access modes the volume should have.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1"
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      dataSource:
+                                        description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
+                                        properties:
+                                          apiGroup:
+                                            description: "APIGroup is the group for the resource being referenced.\nIf APIGroup is not specified, the specified Kind must be in the core API group.\nFor any other third-party types, APIGroup is required."
+                                            type: "string"
+                                          kind:
+                                            description: "Kind is the type of resource being referenced"
+                                            type: "string"
+                                          name:
+                                            description: "Name is the name of resource being referenced"
+                                            type: "string"
+                                        required:
+                                          - "kind"
+                                          - "name"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                      dataSourceRef:
+                                        description: "dataSourceRef specifies the object from which to populate the volume with data, if a non-empty\nvolume is desired. This may be any object from a non-empty API group (non\ncore object) or a PersistentVolumeClaim object.\nWhen this field is specified, volume binding will only succeed if the type of\nthe specified object matches some installed volume populator or dynamic\nprovisioner.\nThis field will replace the functionality of the dataSource field and as such\nif both fields are non-empty, they must have the same value. For backwards\ncompatibility, when namespace isn't specified in dataSourceRef,\nboth fields (dataSource and dataSourceRef) will be set to the same\nvalue automatically if one of them is empty and the other is non-empty.\nWhen namespace is specified in dataSourceRef,\ndataSource isn't set to the same value and must be empty.\nThere are three important differences between dataSource and dataSourceRef:\n* While dataSource only allows two specific types of objects, dataSourceRef\n  allows any non-core object, as well as PersistentVolumeClaim objects.\n* While dataSource ignores disallowed values (dropping them), dataSourceRef\n  preserves all values, and generates an error if a disallowed value is\n  specified.\n* While dataSource only allows local objects, dataSourceRef allows objects\n  in any namespaces.\n(Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.\n(Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled."
+                                        properties:
+                                          apiGroup:
+                                            description: "APIGroup is the group for the resource being referenced.\nIf APIGroup is not specified, the specified Kind must be in the core API group.\nFor any other third-party types, APIGroup is required."
+                                            type: "string"
+                                          kind:
+                                            description: "Kind is the type of resource being referenced"
+                                            type: "string"
+                                          name:
+                                            description: "Name is the name of resource being referenced"
+                                            type: "string"
+                                          namespace:
+                                            description: "Namespace is the namespace of resource being referenced\nNote that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.\n(Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled."
+                                            type: "string"
+                                        required:
+                                          - "kind"
+                                          - "name"
+                                        type: "object"
+                                      resources:
+                                        description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                                        properties:
+                                          limits:
+                                            additionalProperties:
+                                              anyOf:
+                                                - type: "integer"
+                                                - type: "string"
+                                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                              x-kubernetes-int-or-string: true
+                                            description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                                            type: "object"
+                                          requests:
+                                            additionalProperties:
+                                              anyOf:
+                                                - type: "integer"
+                                                - type: "string"
+                                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                              x-kubernetes-int-or-string: true
+                                            description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                                            type: "object"
+                                        type: "object"
+                                      selector:
+                                        description: "selector is a label query over volumes to consider for binding."
+                                        properties:
+                                          matchExpressions:
+                                            description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                            items:
+                                              description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                              properties:
+                                                key:
+                                                  description: "key is the label key that the selector applies to."
+                                                  type: "string"
+                                                operator:
+                                                  description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                                  type: "string"
+                                                values:
+                                                  description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                                  items:
+                                                    type: "string"
+                                                  type: "array"
+                                              required:
+                                                - "key"
+                                                - "operator"
+                                              type: "object"
+                                            type: "array"
+                                          matchLabels:
+                                            additionalProperties:
+                                              type: "string"
+                                            description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                            type: "object"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                      storageClassName:
+                                        description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
+                                        type: "string"
+                                      volumeAttributesClassName:
+                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                                        type: "string"
+                                      volumeMode:
+                                        description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
+                                        type: "string"
+                                      volumeName:
+                                        description: "volumeName is the binding reference to the PersistentVolume backing this claim."
+                                        type: "string"
+                                    type: "object"
+                                required:
+                                  - "spec"
+                                type: "object"
+                            type: "object"
+                          fc:
+                            description: "fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod."
+                            properties:
+                              fsType:
+                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                type: "string"
+                              lun:
+                                description: "lun is Optional: FC target lun number"
+                                format: "int32"
+                                type: "integer"
+                              readOnly:
+                                description: "readOnly is Optional: Defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
+                                type: "boolean"
+                              targetWWNs:
+                                description: "targetWWNs is Optional: FC target worldwide names (WWNs)"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              wwids:
+                                description: "wwids Optional: FC volume world wide identifiers (wwids)\nEither wwids or combination of targetWWNs and lun must be set, but not both simultaneously."
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
+                          flexVolume:
+                            description: "flexVolume represents a generic volume resource that is\nprovisioned/attached using an exec based plugin."
+                            properties:
+                              driver:
+                                description: "driver is the name of the driver to use for this volume."
+                                type: "string"
+                              fsType:
+                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". The default filesystem depends on FlexVolume script."
+                                type: "string"
+                              options:
+                                additionalProperties:
+                                  type: "string"
+                                description: "options is Optional: this field holds extra command options if any."
+                                type: "object"
+                              readOnly:
+                                description: "readOnly is Optional: defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
+                                type: "boolean"
+                              secretRef:
+                                description: "secretRef is Optional: secretRef is reference to the secret object containing\nsensitive information to pass to the plugin scripts. This may be\nempty if no secret object is specified. If the secret object\ncontains more than one secret, all secrets are passed to the plugin\nscripts."
+                                properties:
+                                  name:
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                            required:
+                              - "driver"
+                            type: "object"
+                          flocker:
+                            description: "flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running"
+                            properties:
+                              datasetName:
+                                description: "datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker\nshould be considered as deprecated"
+                                type: "string"
+                              datasetUUID:
+                                description: "datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset"
+                                type: "string"
+                            type: "object"
+                          gcePersistentDisk:
+                            description: "gcePersistentDisk represents a GCE Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
+                            properties:
+                              fsType:
+                                description: "fsType is filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                type: "string"
+                              partition:
+                                description: "partition is the partition in the volume that you want to mount.\nIf omitted, the default is to mount by volume name.\nExamples: For volume /dev/sda1, you specify the partition as \"1\".\nSimilarly, the volume partition for /dev/sda is \"0\" (or you can leave the property empty).\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
+                                format: "int32"
+                                type: "integer"
+                              pdName:
+                                description: "pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly here will force the ReadOnly setting in VolumeMounts.\nDefaults to false.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
+                                type: "boolean"
+                            required:
+                              - "pdName"
+                            type: "object"
+                          gitRepo:
+                            description: "gitRepo represents a git repository at a particular revision.\nDEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an\nEmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir\ninto the Pod's container."
+                            properties:
+                              directory:
+                                description: "directory is the target directory name.\nMust not contain or start with '..'.  If '.' is supplied, the volume directory will be the\ngit repository.  Otherwise, if specified, the volume will contain the git repository in\nthe subdirectory with the given name."
+                                type: "string"
+                              repository:
+                                description: "repository is the URL"
+                                type: "string"
+                              revision:
+                                description: "revision is the commit hash for the specified revision."
+                                type: "string"
+                            required:
+                              - "repository"
+                            type: "object"
+                          glusterfs:
+                            description: "glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md"
+                            properties:
+                              endpoints:
+                                description: "endpoints is the endpoint name that details Glusterfs topology.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod"
+                                type: "string"
+                              path:
+                                description: "path is the Glusterfs volume path.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly here will force the Glusterfs volume to be mounted with read-only permissions.\nDefaults to false.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod"
+                                type: "boolean"
+                            required:
+                              - "endpoints"
+                              - "path"
+                            type: "object"
+                          hostPath:
+                            description: "hostPath represents a pre-existing file or directory on the host\nmachine that is directly exposed to the container. This is generally\nused for system agents or other privileged things that are allowed\nto see the host machine. Most containers will NOT need this.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath\n---\nTODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not\nmount host directories as read/write."
+                            properties:
+                              path:
+                                description: "path of the directory on the host.\nIf the path is a symlink, it will follow the link to the real path.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath"
+                                type: "string"
+                              type:
+                                description: "type for HostPath Volume\nDefaults to \"\"\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath"
+                                type: "string"
+                            required:
+                              - "path"
+                            type: "object"
+                          iscsi:
+                            description: "iscsi represents an ISCSI Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://examples.k8s.io/volumes/iscsi/README.md"
+                            properties:
+                              chapAuthDiscovery:
+                                description: "chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication"
+                                type: "boolean"
+                              chapAuthSession:
+                                description: "chapAuthSession defines whether support iSCSI Session CHAP authentication"
+                                type: "boolean"
+                              fsType:
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                type: "string"
+                              initiatorName:
+                                description: "initiatorName is the custom iSCSI Initiator Name.\nIf initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface\n<target portal>:<volume name> will be created for the connection."
+                                type: "string"
+                              iqn:
+                                description: "iqn is the target iSCSI Qualified Name."
+                                type: "string"
+                              iscsiInterface:
+                                description: "iscsiInterface is the interface Name that uses an iSCSI transport.\nDefaults to 'default' (tcp)."
+                                type: "string"
+                              lun:
+                                description: "lun represents iSCSI Target Lun number."
+                                format: "int32"
+                                type: "integer"
+                              portals:
+                                description: "portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port\nis other than default (typically TCP ports 860 and 3260)."
+                                items:
+                                  type: "string"
+                                type: "array"
+                              readOnly:
+                                description: "readOnly here will force the ReadOnly setting in VolumeMounts.\nDefaults to false."
+                                type: "boolean"
+                              secretRef:
+                                description: "secretRef is the CHAP Secret for iSCSI target and initiator authentication"
+                                properties:
+                                  name:
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              targetPortal:
+                                description: "targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port\nis other than default (typically TCP ports 860 and 3260)."
+                                type: "string"
+                            required:
+                              - "iqn"
+                              - "lun"
+                              - "targetPortal"
+                            type: "object"
+                          name:
+                            description: "name of the volume.\nMust be a DNS_LABEL and unique within the pod.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          nfs:
+                            description: "nfs represents an NFS mount on the host that shares a pod's lifetime\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#nfs"
+                            properties:
+                              path:
+                                description: "path that is exported by the NFS server.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#nfs"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly here will force the NFS export to be mounted with read-only permissions.\nDefaults to false.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#nfs"
+                                type: "boolean"
+                              server:
+                                description: "server is the hostname or IP address of the NFS server.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#nfs"
+                                type: "string"
+                            required:
+                              - "path"
+                              - "server"
+                            type: "object"
+                          persistentVolumeClaim:
+                            description: "persistentVolumeClaimVolumeSource represents a reference to a\nPersistentVolumeClaim in the same namespace.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
+                            properties:
+                              claimName:
+                                description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly Will force the ReadOnly setting in VolumeMounts.\nDefault false."
+                                type: "boolean"
+                            required:
+                              - "claimName"
+                            type: "object"
+                          photonPersistentDisk:
+                            description: "photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine"
+                            properties:
+                              fsType:
+                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
+                                type: "string"
+                              pdID:
+                                description: "pdID is the ID that identifies Photon Controller persistent disk"
+                                type: "string"
+                            required:
+                              - "pdID"
+                            type: "object"
+                          portworxVolume:
+                            description: "portworxVolume represents a portworx volume attached and mounted on kubelets host machine"
+                            properties:
+                              fsType:
+                                description: "fSType represents the filesystem type to mount\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\". Implicitly inferred to be \"ext4\" if unspecified."
+                                type: "string"
+                              readOnly:
+                                description: "readOnly defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
+                                type: "boolean"
+                              volumeID:
+                                description: "volumeID uniquely identifies a Portworx volume"
+                                type: "string"
+                            required:
+                              - "volumeID"
+                            type: "object"
+                          projected:
+                            description: "projected items for all in one resources secrets, configmaps, and downward API"
+                            properties:
+                              defaultMode:
+                                description: "defaultMode are the mode bits used to set permissions on created files by default.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nDirectories within the path are not affected by this setting.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                format: "int32"
+                                type: "integer"
+                              sources:
+                                description: "sources is the list of volume projections"
+                                items:
+                                  description: "Projection that may be projected along with other supported volume types"
+                                  properties:
+                                    clusterTrustBundle:
+                                      description: "ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field\nof ClusterTrustBundle objects in an auto-updating file.\nAlpha, gated by the ClusterTrustBundleProjection feature gate.\nClusterTrustBundle objects can either be selected by name, or by the\ncombination of signer name and a label selector.\nKubelet performs aggressive normalization of the PEM contents written\ninto the pod filesystem.  Esoteric PEM features such as inter-block\ncomments and block headers are stripped.  Certificates are deduplicated.\nThe ordering of certificates within the file is arbitrary, and Kubelet\nmay change the order over time."
+                                      properties:
+                                        labelSelector:
+                                          description: "Select all ClusterTrustBundles that match this label selector.  Only has\neffect if signerName is set.  Mutually-exclusive with name.  If unset,\ninterpreted as \"match nothing\".  If set but empty, interpreted as \"match\neverything\"."
+                                          properties:
+                                            matchExpressions:
+                                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                              items:
+                                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                                properties:
+                                                  key:
+                                                    description: "key is the label key that the selector applies to."
+                                                    type: "string"
+                                                  operator:
+                                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                                    type: "string"
+                                                  values:
+                                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                                    items:
+                                                      type: "string"
+                                                    type: "array"
+                                                required:
+                                                  - "key"
+                                                  - "operator"
+                                                type: "object"
+                                              type: "array"
+                                            matchLabels:
+                                              additionalProperties:
+                                                type: "string"
+                                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                              type: "object"
+                                          type: "object"
+                                          x-kubernetes-map-type: "atomic"
+                                        name:
+                                          description: "Select a single ClusterTrustBundle by object name.  Mutually-exclusive\nwith signerName and labelSelector."
+                                          type: "string"
+                                        optional:
+                                          description: "If true, don't block pod startup if the referenced ClusterTrustBundle(s)\naren't available.  If using name, then the named ClusterTrustBundle is\nallowed not to exist.  If using signerName, then the combination of\nsignerName and labelSelector is allowed to match zero\nClusterTrustBundles."
+                                          type: "boolean"
+                                        path:
+                                          description: "Relative path from the volume root to write the bundle."
+                                          type: "string"
+                                        signerName:
+                                          description: "Select all ClusterTrustBundles that match this signer name.\nMutually-exclusive with name.  The contents of all selected\nClusterTrustBundles will be unified and deduplicated."
+                                          type: "string"
+                                      required:
+                                        - "path"
+                                      type: "object"
+                                    configMap:
+                                      description: "configMap information about the configMap data to project"
+                                      properties:
+                                        items:
+                                          description: "items if unspecified, each key-value pair in the Data field of the referenced\nConfigMap will be projected into the volume as a file whose name is the\nkey and content is the value. If specified, the listed keys will be\nprojected into the specified paths, and unlisted keys will not be\npresent. If a key is specified which is not present in the ConfigMap,\nthe volume setup will error unless it is marked optional. Paths must be\nrelative and may not contain the '..' path or start with '..'."
+                                          items:
+                                            description: "Maps a string key to a path within a volume."
+                                            properties:
+                                              key:
+                                                description: "key is the key to project."
+                                                type: "string"
+                                              mode:
+                                                description: "mode is Optional: mode bits used to set permissions on this file.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                                format: "int32"
+                                                type: "integer"
+                                              path:
+                                                description: "path is the relative path of the file to map the key to.\nMay not be an absolute path.\nMay not contain the path element '..'.\nMay not start with the string '..'."
+                                                type: "string"
+                                            required:
+                                              - "key"
+                                              - "path"
+                                            type: "object"
+                                          type: "array"
+                                        name:
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          type: "string"
+                                        optional:
+                                          description: "optional specify whether the ConfigMap or its keys must be defined"
+                                          type: "boolean"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    downwardAPI:
+                                      description: "downwardAPI information about the downwardAPI data to project"
+                                      properties:
+                                        items:
+                                          description: "Items is a list of DownwardAPIVolume file"
+                                          items:
+                                            description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
+                                            properties:
+                                              fieldRef:
+                                                description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
+                                                properties:
+                                                  apiVersion:
+                                                    description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
+                                                    type: "string"
+                                                  fieldPath:
+                                                    description: "Path of the field to select in the specified API version."
+                                                    type: "string"
+                                                required:
+                                                  - "fieldPath"
+                                                type: "object"
+                                                x-kubernetes-map-type: "atomic"
+                                              mode:
+                                                description: "Optional: mode bits used to set permissions on this file, must be an octal value\nbetween 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                                format: "int32"
+                                                type: "integer"
+                                              path:
+                                                description: "Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'"
+                                                type: "string"
+                                              resourceFieldRef:
+                                                description: "Selects a resource of the container: only resources limits and requests\n(limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported."
+                                                properties:
+                                                  containerName:
+                                                    description: "Container name: required for volumes, optional for env vars"
+                                                    type: "string"
+                                                  divisor:
+                                                    anyOf:
+                                                      - type: "integer"
+                                                      - type: "string"
+                                                    description: "Specifies the output format of the exposed resources, defaults to \"1\""
+                                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                                    x-kubernetes-int-or-string: true
+                                                  resource:
+                                                    description: "Required: resource to select"
+                                                    type: "string"
+                                                required:
+                                                  - "resource"
+                                                type: "object"
+                                                x-kubernetes-map-type: "atomic"
+                                            required:
+                                              - "path"
+                                            type: "object"
+                                          type: "array"
+                                      type: "object"
+                                    secret:
+                                      description: "secret information about the secret data to project"
+                                      properties:
+                                        items:
+                                          description: "items if unspecified, each key-value pair in the Data field of the referenced\nSecret will be projected into the volume as a file whose name is the\nkey and content is the value. If specified, the listed keys will be\nprojected into the specified paths, and unlisted keys will not be\npresent. If a key is specified which is not present in the Secret,\nthe volume setup will error unless it is marked optional. Paths must be\nrelative and may not contain the '..' path or start with '..'."
+                                          items:
+                                            description: "Maps a string key to a path within a volume."
+                                            properties:
+                                              key:
+                                                description: "key is the key to project."
+                                                type: "string"
+                                              mode:
+                                                description: "mode is Optional: mode bits used to set permissions on this file.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                                format: "int32"
+                                                type: "integer"
+                                              path:
+                                                description: "path is the relative path of the file to map the key to.\nMay not be an absolute path.\nMay not contain the path element '..'.\nMay not start with the string '..'."
+                                                type: "string"
+                                            required:
+                                              - "key"
+                                              - "path"
+                                            type: "object"
+                                          type: "array"
+                                        name:
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          type: "string"
+                                        optional:
+                                          description: "optional field specify whether the Secret or its key must be defined"
+                                          type: "boolean"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    serviceAccountToken:
+                                      description: "serviceAccountToken is information about the serviceAccountToken data to project"
+                                      properties:
+                                        audience:
+                                          description: "audience is the intended audience of the token. A recipient of a token\nmust identify itself with an identifier specified in the audience of the\ntoken, and otherwise should reject the token. The audience defaults to the\nidentifier of the apiserver."
+                                          type: "string"
+                                        expirationSeconds:
+                                          description: "expirationSeconds is the requested duration of validity of the service\naccount token. As the token approaches expiration, the kubelet volume\nplugin will proactively rotate the service account token. The kubelet will\nstart trying to rotate the token if the token is older than 80 percent of\nits time to live or if the token is older than 24 hours.Defaults to 1 hour\nand must be at least 10 minutes."
+                                          format: "int64"
+                                          type: "integer"
+                                        path:
+                                          description: "path is the path relative to the mount point of the file to project the\ntoken into."
+                                          type: "string"
+                                      required:
+                                        - "path"
+                                      type: "object"
+                                  type: "object"
+                                type: "array"
+                            type: "object"
+                          quobyte:
+                            description: "quobyte represents a Quobyte mount on the host that shares a pod's lifetime"
+                            properties:
+                              group:
+                                description: "group to map volume access to\nDefault is no group"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly here will force the Quobyte volume to be mounted with read-only permissions.\nDefaults to false."
+                                type: "boolean"
+                              registry:
+                                description: "registry represents a single or multiple Quobyte Registry services\nspecified as a string as host:port pair (multiple entries are separated with commas)\nwhich acts as the central registry for volumes"
+                                type: "string"
+                              tenant:
+                                description: "tenant owning the given Quobyte volume in the Backend\nUsed with dynamically provisioned Quobyte volumes, value is set by the plugin"
+                                type: "string"
+                              user:
+                                description: "user to map volume access to\nDefaults to serivceaccount user"
+                                type: "string"
+                              volume:
+                                description: "volume is a string that references an already created Quobyte volume by name."
+                                type: "string"
+                            required:
+                              - "registry"
+                              - "volume"
+                            type: "object"
+                          rbd:
+                            description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nMore info: https://examples.k8s.io/volumes/rbd/README.md"
+                            properties:
+                              fsType:
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                type: "string"
+                              image:
+                                description: "image is the rados image name.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
+                                type: "string"
+                              keyring:
+                                description: "keyring is the path to key ring for RBDUser.\nDefault is /etc/ceph/keyring.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
+                                type: "string"
+                              monitors:
+                                description: "monitors is a collection of Ceph monitors.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              pool:
+                                description: "pool is the rados pool name.\nDefault is rbd.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
+                                type: "string"
+                              readOnly:
+                                description: "readOnly here will force the ReadOnly setting in VolumeMounts.\nDefaults to false.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
+                                type: "boolean"
+                              secretRef:
+                                description: "secretRef is name of the authentication secret for RBDUser. If provided\noverrides keyring.\nDefault is nil.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
+                                properties:
+                                  name:
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              user:
+                                description: "user is the rados user name.\nDefault is admin.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
+                                type: "string"
+                            required:
+                              - "image"
+                              - "monitors"
+                            type: "object"
+                          scaleIO:
+                            description: "scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes."
+                            properties:
+                              fsType:
+                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\".\nDefault is \"xfs\"."
+                                type: "string"
+                              gateway:
+                                description: "gateway is the host address of the ScaleIO API Gateway."
+                                type: "string"
+                              protectionDomain:
+                                description: "protectionDomain is the name of the ScaleIO Protection Domain for the configured storage."
+                                type: "string"
+                              readOnly:
+                                description: "readOnly Defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
+                                type: "boolean"
+                              secretRef:
+                                description: "secretRef references to the secret for ScaleIO user and other\nsensitive information. If this is not provided, Login operation will fail."
+                                properties:
+                                  name:
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              sslEnabled:
+                                description: "sslEnabled Flag enable/disable SSL communication with Gateway, default false"
+                                type: "boolean"
+                              storageMode:
+                                description: "storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.\nDefault is ThinProvisioned."
+                                type: "string"
+                              storagePool:
+                                description: "storagePool is the ScaleIO Storage Pool associated with the protection domain."
+                                type: "string"
+                              system:
+                                description: "system is the name of the storage system as configured in ScaleIO."
+                                type: "string"
+                              volumeName:
+                                description: "volumeName is the name of a volume already created in the ScaleIO system\nthat is associated with this volume source."
+                                type: "string"
+                            required:
+                              - "gateway"
+                              - "secretRef"
+                              - "system"
+                            type: "object"
+                          secret:
+                            description: "secret represents a secret that should populate this volume.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#secret"
+                            properties:
+                              defaultMode:
+                                description: "defaultMode is Optional: mode bits used to set permissions on created files by default.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values\nfor mode bits. Defaults to 0644.\nDirectories within the path are not affected by this setting.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                format: "int32"
+                                type: "integer"
+                              items:
+                                description: "items If unspecified, each key-value pair in the Data field of the referenced\nSecret will be projected into the volume as a file whose name is the\nkey and content is the value. If specified, the listed keys will be\nprojected into the specified paths, and unlisted keys will not be\npresent. If a key is specified which is not present in the Secret,\nthe volume setup will error unless it is marked optional. Paths must be\nrelative and may not contain the '..' path or start with '..'."
+                                items:
+                                  description: "Maps a string key to a path within a volume."
+                                  properties:
+                                    key:
+                                      description: "key is the key to project."
+                                      type: "string"
+                                    mode:
+                                      description: "mode is Optional: mode bits used to set permissions on this file.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                      format: "int32"
+                                      type: "integer"
+                                    path:
+                                      description: "path is the relative path of the file to map the key to.\nMay not be an absolute path.\nMay not contain the path element '..'.\nMay not start with the string '..'."
+                                      type: "string"
+                                  required:
+                                    - "key"
+                                    - "path"
+                                  type: "object"
+                                type: "array"
+                              optional:
+                                description: "optional field specify whether the Secret or its keys must be defined"
+                                type: "boolean"
+                              secretName:
+                                description: "secretName is the name of the secret in the pod's namespace to use.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#secret"
+                                type: "string"
+                            type: "object"
+                          storageos:
+                            description: "storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes."
+                            properties:
+                              fsType:
+                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
+                                type: "string"
+                              readOnly:
+                                description: "readOnly defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
+                                type: "boolean"
+                              secretRef:
+                                description: "secretRef specifies the secret to use for obtaining the StorageOS API\ncredentials.  If not specified, default values will be attempted."
+                                properties:
+                                  name:
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              volumeName:
+                                description: "volumeName is the human-readable name of the StorageOS volume.  Volume\nnames are only unique within a namespace."
+                                type: "string"
+                              volumeNamespace:
+                                description: "volumeNamespace specifies the scope of the volume within StorageOS.  If no\nnamespace is specified then the Pod's namespace will be used.  This allows the\nKubernetes name scoping to be mirrored within StorageOS for tighter integration.\nSet VolumeName to any name to override the default behaviour.\nSet to \"default\" if you are not using namespaces within StorageOS.\nNamespaces that do not pre-exist within StorageOS will be created."
+                                type: "string"
+                            type: "object"
+                          vsphereVolume:
+                            description: "vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine"
+                            properties:
+                              fsType:
+                                description: "fsType is filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
+                                type: "string"
+                              storagePolicyID:
+                                description: "storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName."
+                                type: "string"
+                              storagePolicyName:
+                                description: "storagePolicyName is the storage Policy Based Management (SPBM) profile name."
+                                type: "string"
+                              volumePath:
+                                description: "volumePath is the path that identifies vSphere volume vmdk"
+                                type: "string"
+                            required:
+                              - "volumePath"
+                            type: "object"
+                        required:
+                          - "name"
+                        type: "object"
+                      type: "array"
+                    logLevel:
+                      description: "LogLevel sets the log level for Envoy.\nAllowed values are \"trace\", \"debug\", \"info\", \"warn\", \"error\", \"critical\", \"off\"."
+                      type: "string"
+                    networkPublishing:
+                      description: "NetworkPublishing defines how to expose Envoy to a network."
+                      properties:
+                        externalTrafficPolicy:
+                          description: "ExternalTrafficPolicy describes how nodes distribute service traffic they\nreceive on one of the Service's \"externally-facing\" addresses (NodePorts, ExternalIPs,\nand LoadBalancer IPs).\nIf unset, defaults to \"Local\"."
+                          type: "string"
+                        ipFamilyPolicy:
+                          description: "IPFamilyPolicy represents the dual-stack-ness requested or required by\nthis Service. If there is no value provided, then this field will be set\nto SingleStack. Services can be \"SingleStack\" (a single IP family),\n\"PreferDualStack\" (two IP families on dual-stack configured clusters or\na single IP family on single-stack clusters), or \"RequireDualStack\"\n(two IP families on dual-stack configured clusters, otherwise fail)."
+                          type: "string"
+                        serviceAnnotations:
+                          additionalProperties:
+                            type: "string"
+                          description: "ServiceAnnotations is the annotations to add to\nthe provisioned Envoy service."
+                          type: "object"
+                        type:
+                          description: "NetworkPublishingType is the type of publishing strategy to use. Valid values are:\n* LoadBalancerService\nIn this configuration, network endpoints for Envoy use container networking.\nA Kubernetes LoadBalancer Service is created to publish Envoy network\nendpoints.\nSee: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer\n* NodePortService\nPublishes Envoy network endpoints using a Kubernetes NodePort Service.\nIn this configuration, Envoy network endpoints use container networking. A Kubernetes\nNodePort Service is created to publish the network endpoints.\nSee: https://kubernetes.io/docs/concepts/services-networking/service/#nodeport\nNOTE:\nWhen provisioning an Envoy `NodePortService`, use Gateway Listeners' port numbers to populate\nthe Service's node port values, there's no way to auto-allocate them.\nSee: https://github.com/projectcontour/contour/issues/4499\n* ClusterIPService\nPublishes Envoy network endpoints using a Kubernetes ClusterIP Service.\nIn this configuration, Envoy network endpoints use container networking. A Kubernetes\nClusterIP Service is created to publish the network endpoints.\nSee: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types\nIf unset, defaults to LoadBalancerService."
+                          type: "string"
+                      type: "object"
+                    nodePlacement:
+                      description: "NodePlacement describes node scheduling configuration of Envoy pods."
+                      properties:
+                        nodeSelector:
+                          additionalProperties:
+                            type: "string"
+                          description: "NodeSelector is the simplest recommended form of node selection constraint\nand specifies a map of key-value pairs. For the pod to be eligible\nto run on a node, the node must have each of the indicated key-value pairs\nas labels (it can have additional labels as well).\nIf unset, the pod(s) will be scheduled to any available node."
+                          type: "object"
+                        tolerations:
+                          description: "Tolerations work with taints to ensure that pods are not scheduled\nonto inappropriate nodes. One or more taints are applied to a node; this\nmarks that the node should not accept any pods that do not tolerate the\ntaints.\nThe default is an empty list.\nSee https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/\nfor additional details."
+                          items:
+                            description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
+                            properties:
+                              effect:
+                                description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                                type: "string"
+                              key:
+                                description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                                type: "string"
+                              operator:
+                                description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                type: "string"
+                              tolerationSeconds:
+                                description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
+                                format: "int64"
+                                type: "integer"
+                              value:
+                                description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
+                                type: "string"
+                            type: "object"
+                          type: "array"
+                      type: "object"
+                    overloadMaxHeapSize:
+                      description: "OverloadMaxHeapSize defines the maximum heap memory of the envoy controlled by the overload manager.\nWhen the value is greater than 0, the overload manager is enabled,\nand when envoy reaches 95% of the maximum heap size, it performs a shrink heap operation,\nWhen it reaches 98% of the maximum heap size, Envoy Will stop accepting requests.\nMore info: https://projectcontour.io/docs/main/config/overload-manager/"
+                      format: "int64"
+                      type: "integer"
+                    podAnnotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "PodAnnotations defines annotations to add to the Envoy pods.\nthe annotations for Prometheus will be appended or overwritten with predefined value."
+                      type: "object"
+                    replicas:
+                      description: "Deprecated: Use `DeploymentSettings.Replicas` instead.\nReplicas is the desired number of Envoy replicas. If WorkloadType\nis not \"Deployment\", this field is ignored. Otherwise, if unset,\ndefaults to 2.\nif both `DeploymentSettings.Replicas` and this one is set, use `DeploymentSettings.Replicas`."
+                      format: "int32"
+                      minimum: 0.0
+                      type: "integer"
+                    resources:
+                      description: "Compute Resources required by envoy container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      properties:
+                        claims:
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                          items:
+                            description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                            properties:
+                              name:
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
+                        limits:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
+                          description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          type: "object"
+                        requests:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
+                          description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          type: "object"
+                      type: "object"
+                    workloadType:
+                      description: "WorkloadType is the type of workload to install Envoy\nas. Choices are DaemonSet and Deployment. If unset, defaults\nto DaemonSet."
+                      type: "string"
+                  type: "object"
+                resourceLabels:
+                  additionalProperties:
+                    type: "string"
+                  description: "ResourceLabels is a set of labels to add to the provisioned Contour resources.\nDeprecated: use Gateway.Spec.Infrastructure.Labels instead. This field will be\nremoved in a future release."
+                  type: "object"
+                runtimeSettings:
+                  description: "RuntimeSettings is a ContourConfiguration spec to be used when\nprovisioning a Contour instance that will influence aspects of\nthe Contour instance's runtime behavior."
+                  properties:
+                    debug:
+                      description: "Debug contains parameters to enable debug logging\nand debug interfaces inside Contour."
+                      properties:
+                        address:
+                          description: "Defines the Contour debug address interface.\nContour's default is \"127.0.0.1\"."
+                          type: "string"
+                        port:
+                          description: "Defines the Contour debug address port.\nContour's default is 6060."
+                          type: "integer"
+                      type: "object"
+                    enableExternalNameService:
+                      description: "EnableExternalNameService allows processing of ExternalNameServices\nContour's default is false for security reasons."
+                      type: "boolean"
+                    envoy:
+                      description: "Envoy contains parameters for Envoy as well\nas how to optionally configure a managed Envoy fleet."
+                      properties:
+                        clientCertificate:
+                          description: "ClientCertificate defines the namespace/name of the Kubernetes\nsecret containing the client certificate and private key\nto be used when establishing TLS connection to upstream\ncluster."
+                          properties:
+                            name:
+                              type: "string"
+                            namespace:
+                              type: "string"
+                          required:
+                            - "name"
+                            - "namespace"
+                          type: "object"
+                        cluster:
+                          description: "Cluster holds various configurable Envoy cluster values that can\nbe set in the config file."
+                          properties:
+                            circuitBreakers:
+                              description: "GlobalCircuitBreakerDefaults specifies default circuit breaker budget across all services.\nIf defined, this will be used as the default for all services."
+                              properties:
+                                maxConnections:
+                                  description: "The maximum number of connections that a single Envoy instance allows to the Kubernetes Service; defaults to 1024."
+                                  format: "int32"
+                                  type: "integer"
+                                maxPendingRequests:
+                                  description: "The maximum number of pending requests that a single Envoy instance allows to the Kubernetes Service; defaults to 1024."
+                                  format: "int32"
+                                  type: "integer"
+                                maxRequests:
+                                  description: "The maximum parallel requests a single Envoy instance allows to the Kubernetes Service; defaults to 1024"
+                                  format: "int32"
+                                  type: "integer"
+                                maxRetries:
+                                  description: "The maximum number of parallel retries a single Envoy instance allows to the Kubernetes Service; defaults to 3."
+                                  format: "int32"
+                                  type: "integer"
+                              type: "object"
+                            dnsLookupFamily:
+                              description: "DNSLookupFamily defines how external names are looked up\nWhen configured as V4, the DNS resolver will only perform a lookup\nfor addresses in the IPv4 family. If V6 is configured, the DNS resolver\nwill only perform a lookup for addresses in the IPv6 family.\nIf AUTO is configured, the DNS resolver will first perform a lookup\nfor addresses in the IPv6 family and fallback to a lookup for addresses\nin the IPv4 family. If ALL is specified, the DNS resolver will perform a lookup for\nboth IPv4 and IPv6 families, and return all resolved addresses.\nWhen this is used, Happy Eyeballs will be enabled for upstream connections.\nRefer to Happy Eyeballs Support for more information.\nNote: This only applies to externalName clusters.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-enum-config-cluster-v3-cluster-dnslookupfamily\nfor more information.\nValues: `auto` (default), `v4`, `v6`, `all`.\nOther values will produce an error."
+                              type: "string"
+                            maxRequestsPerConnection:
+                              description: "Defines the maximum requests for upstream connections. If not specified, there is no limit.\nsee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-msg-config-core-v3-httpprotocoloptions\nfor more information."
+                              format: "int32"
+                              minimum: 1.0
+                              type: "integer"
+                            per-connection-buffer-limit-bytes:
+                              description: "Defines the soft limit on size of the cluster’s new connection read and write buffers in bytes.\nIf unspecified, an implementation defined default is applied (1MiB).\nsee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto#envoy-v3-api-field-config-cluster-v3-cluster-per-connection-buffer-limit-bytes\nfor more information."
+                              format: "int32"
+                              minimum: 1.0
+                              type: "integer"
+                            upstreamTLS:
+                              description: "UpstreamTLS contains the TLS policy parameters for upstream connections"
+                              properties:
+                                cipherSuites:
+                                  description: "CipherSuites defines the TLS ciphers to be supported by Envoy TLS\nlisteners when negotiating TLS 1.2. Ciphers are validated against the\nset that Envoy supports by default. This parameter should only be used\nby advanced users. Note that these will be ignored when TLS 1.3 is in\nuse.\nThis field is optional; when it is undefined, a Contour-managed ciphersuite list\nwill be used, which may be updated to keep it secure.\nContour's default list is:\n  - \"[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]\"\n  - \"[ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]\"\n  - \"ECDHE-ECDSA-AES256-GCM-SHA384\"\n  - \"ECDHE-RSA-AES256-GCM-SHA384\"\nCiphers provided are validated against the following list:\n  - \"[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]\"\n  - \"[ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]\"\n  - \"ECDHE-ECDSA-AES128-GCM-SHA256\"\n  - \"ECDHE-RSA-AES128-GCM-SHA256\"\n  - \"ECDHE-ECDSA-AES128-SHA\"\n  - \"ECDHE-RSA-AES128-SHA\"\n  - \"AES128-GCM-SHA256\"\n  - \"AES128-SHA\"\n  - \"ECDHE-ECDSA-AES256-GCM-SHA384\"\n  - \"ECDHE-RSA-AES256-GCM-SHA384\"\n  - \"ECDHE-ECDSA-AES256-SHA\"\n  - \"ECDHE-RSA-AES256-SHA\"\n  - \"AES256-GCM-SHA384\"\n  - \"AES256-SHA\"\nContour recommends leaving this undefined unless you are sure you must.\nSee: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters\nNote: This list is a superset of what is valid for stock Envoy builds and those using BoringSSL FIPS."
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                maximumProtocolVersion:
+                                  description: "MaximumProtocolVersion is the maximum TLS version this vhost should\nnegotiate.\nValues: `1.2`, `1.3`(default).\nOther values will produce an error."
+                                  type: "string"
+                                minimumProtocolVersion:
+                                  description: "MinimumProtocolVersion is the minimum TLS version this vhost should\nnegotiate.\nValues: `1.2` (default), `1.3`.\nOther values will produce an error."
+                                  type: "string"
+                              type: "object"
+                          type: "object"
+                        defaultHTTPVersions:
+                          description: "DefaultHTTPVersions defines the default set of HTTPS\nversions the proxy should accept. HTTP versions are\nstrings of the form \"HTTP/xx\". Supported versions are\n\"HTTP/1.1\" and \"HTTP/2\".\nValues: `HTTP/1.1`, `HTTP/2` (default: both).\nOther values will produce an error."
+                          items:
+                            description: "HTTPVersionType is the name of a supported HTTP version."
+                            type: "string"
+                          type: "array"
+                        health:
+                          description: "Health defines the endpoint Envoy uses to serve health checks.\nContour's default is { address: \"0.0.0.0\", port: 8002 }."
+                          properties:
+                            address:
+                              description: "Defines the health address interface."
+                              minLength: 1
+                              type: "string"
+                            port:
+                              description: "Defines the health port."
+                              type: "integer"
+                          type: "object"
+                        http:
+                          description: "Defines the HTTP Listener for Envoy.\nContour's default is { address: \"0.0.0.0\", port: 8080, accessLog: \"/dev/stdout\" }."
+                          properties:
+                            accessLog:
+                              description: "AccessLog defines where Envoy logs are outputted for this listener."
+                              type: "string"
+                            address:
+                              description: "Defines an Envoy Listener Address."
+                              minLength: 1
+                              type: "string"
+                            port:
+                              description: "Defines an Envoy listener Port."
+                              type: "integer"
+                          type: "object"
+                        https:
+                          description: "Defines the HTTPS Listener for Envoy.\nContour's default is { address: \"0.0.0.0\", port: 8443, accessLog: \"/dev/stdout\" }."
+                          properties:
+                            accessLog:
+                              description: "AccessLog defines where Envoy logs are outputted for this listener."
+                              type: "string"
+                            address:
+                              description: "Defines an Envoy Listener Address."
+                              minLength: 1
+                              type: "string"
+                            port:
+                              description: "Defines an Envoy listener Port."
+                              type: "integer"
+                          type: "object"
+                        listener:
+                          description: "Listener hold various configurable Envoy listener values."
+                          properties:
+                            connectionBalancer:
+                              description: "ConnectionBalancer. If the value is exact, the listener will use the exact connection balancer\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/listener.proto#envoy-api-msg-listener-connectionbalanceconfig\nfor more information.\nValues: (empty string): use the default ConnectionBalancer, `exact`: use the Exact ConnectionBalancer.\nOther values will produce an error."
+                              type: "string"
+                            disableAllowChunkedLength:
+                              description: "DisableAllowChunkedLength disables the RFC-compliant Envoy behavior to\nstrip the \"Content-Length\" header if \"Transfer-Encoding: chunked\" is\nalso set. This is an emergency off-switch to revert back to Envoy's\ndefault behavior in case of failures. Please file an issue if failures\nare encountered.\nSee: https://github.com/projectcontour/contour/issues/3221\nContour's default is false."
+                              type: "boolean"
+                            disableMergeSlashes:
+                              description: "DisableMergeSlashes disables Envoy's non-standard merge_slashes path transformation option\nwhich strips duplicate slashes from request URL paths.\nContour's default is false."
+                              type: "boolean"
+                            httpMaxConcurrentStreams:
+                              description: "Defines the value for SETTINGS_MAX_CONCURRENT_STREAMS Envoy will advertise in the\nSETTINGS frame in HTTP/2 connections and the limit for concurrent streams allowed\nfor a peer on a single HTTP/2 connection. It is recommended to not set this lower\nthan 100 but this field can be used to bound resource usage by HTTP/2 connections\nand mitigate attacks like CVE-2023-44487. The default value when this is not set is\nunlimited."
+                              format: "int32"
+                              minimum: 1.0
+                              type: "integer"
+                            maxConnectionsPerListener:
+                              description: "Defines the limit on number of active connections to a listener. The limit is applied\nper listener. The default value when this is not set is unlimited."
+                              format: "int32"
+                              minimum: 1.0
+                              type: "integer"
+                            maxRequestsPerConnection:
+                              description: "Defines the maximum requests for downstream connections. If not specified, there is no limit.\nsee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-msg-config-core-v3-httpprotocoloptions\nfor more information."
+                              format: "int32"
+                              minimum: 1.0
+                              type: "integer"
+                            maxRequestsPerIOCycle:
+                              description: "Defines the limit on number of HTTP requests that Envoy will process from a single\nconnection in a single I/O cycle. Requests over this limit are processed in subsequent\nI/O cycles. Can be used as a mitigation for CVE-2023-44487 when abusive traffic is\ndetected. Configures the http.max_requests_per_io_cycle Envoy runtime setting. The default\nvalue when this is not set is no limit."
+                              format: "int32"
+                              minimum: 1.0
+                              type: "integer"
+                            per-connection-buffer-limit-bytes:
+                              description: "Defines the soft limit on size of the listener’s new connection read and write buffers in bytes.\nIf unspecified, an implementation defined default is applied (1MiB).\nsee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/listener/v3/listener.proto#envoy-v3-api-field-config-listener-v3-listener-per-connection-buffer-limit-bytes\nfor more information."
+                              format: "int32"
+                              minimum: 1.0
+                              type: "integer"
+                            serverHeaderTransformation:
+                              description: "Defines the action to be applied to the Server header on the response path.\nWhen configured as overwrite, overwrites any Server header with \"envoy\".\nWhen configured as append_if_absent, if a Server header is present, pass it through, otherwise set it to \"envoy\".\nWhen configured as pass_through, pass through the value of the Server header, and do not append a header if none is present.\nValues: `overwrite` (default), `append_if_absent`, `pass_through`\nOther values will produce an error.\nContour's default is overwrite."
+                              type: "string"
+                            socketOptions:
+                              description: "SocketOptions defines configurable socket options for the listeners.\nSingle set of options are applied to all listeners."
+                              properties:
+                                tos:
+                                  description: "Defines the value for IPv4 TOS field (including 6 bit DSCP field) for IP packets originating from Envoy listeners.\nSingle value is applied to all listeners.\nIf listeners are bound to IPv6-only addresses, setting this option will cause an error."
+                                  format: "int32"
+                                  maximum: 255.0
+                                  minimum: 0.0
+                                  type: "integer"
+                                trafficClass:
+                                  description: "Defines the value for IPv6 Traffic Class field (including 6 bit DSCP field) for IP packets originating from the Envoy listeners.\nSingle value is applied to all listeners.\nIf listeners are bound to IPv4-only addresses, setting this option will cause an error."
+                                  format: "int32"
+                                  maximum: 255.0
+                                  minimum: 0.0
+                                  type: "integer"
+                              type: "object"
+                            tls:
+                              description: "TLS holds various configurable Envoy TLS listener values."
+                              properties:
+                                cipherSuites:
+                                  description: "CipherSuites defines the TLS ciphers to be supported by Envoy TLS\nlisteners when negotiating TLS 1.2. Ciphers are validated against the\nset that Envoy supports by default. This parameter should only be used\nby advanced users. Note that these will be ignored when TLS 1.3 is in\nuse.\nThis field is optional; when it is undefined, a Contour-managed ciphersuite list\nwill be used, which may be updated to keep it secure.\nContour's default list is:\n  - \"[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]\"\n  - \"[ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]\"\n  - \"ECDHE-ECDSA-AES256-GCM-SHA384\"\n  - \"ECDHE-RSA-AES256-GCM-SHA384\"\nCiphers provided are validated against the following list:\n  - \"[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]\"\n  - \"[ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]\"\n  - \"ECDHE-ECDSA-AES128-GCM-SHA256\"\n  - \"ECDHE-RSA-AES128-GCM-SHA256\"\n  - \"ECDHE-ECDSA-AES128-SHA\"\n  - \"ECDHE-RSA-AES128-SHA\"\n  - \"AES128-GCM-SHA256\"\n  - \"AES128-SHA\"\n  - \"ECDHE-ECDSA-AES256-GCM-SHA384\"\n  - \"ECDHE-RSA-AES256-GCM-SHA384\"\n  - \"ECDHE-ECDSA-AES256-SHA\"\n  - \"ECDHE-RSA-AES256-SHA\"\n  - \"AES256-GCM-SHA384\"\n  - \"AES256-SHA\"\nContour recommends leaving this undefined unless you are sure you must.\nSee: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters\nNote: This list is a superset of what is valid for stock Envoy builds and those using BoringSSL FIPS."
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                maximumProtocolVersion:
+                                  description: "MaximumProtocolVersion is the maximum TLS version this vhost should\nnegotiate.\nValues: `1.2`, `1.3`(default).\nOther values will produce an error."
+                                  type: "string"
+                                minimumProtocolVersion:
+                                  description: "MinimumProtocolVersion is the minimum TLS version this vhost should\nnegotiate.\nValues: `1.2` (default), `1.3`.\nOther values will produce an error."
+                                  type: "string"
+                              type: "object"
+                            useProxyProtocol:
+                              description: "Use PROXY protocol for all listeners.\nContour's default is false."
+                              type: "boolean"
+                          type: "object"
+                        logging:
+                          description: "Logging defines how Envoy's logs can be configured."
+                          properties:
+                            accessLogFormat:
+                              description: "AccessLogFormat sets the global access log format.\nValues: `envoy` (default), `json`.\nOther values will produce an error."
+                              type: "string"
+                            accessLogFormatString:
+                              description: "AccessLogFormatString sets the access log format when format is set to `envoy`.\nWhen empty, Envoy's default format is used."
+                              type: "string"
+                            accessLogJSONFields:
+                              description: "AccessLogJSONFields sets the fields that JSON logging will\noutput when AccessLogFormat is json."
+                              items:
+                                type: "string"
+                              type: "array"
+                            accessLogLevel:
+                              description: "AccessLogLevel sets the verbosity level of the access log.\nValues: `info` (default, all requests are logged), `error` (all non-success requests, i.e. 300+ response code, are logged), `critical` (all 5xx requests are logged) and `disabled`.\nOther values will produce an error."
+                              type: "string"
+                          type: "object"
+                        metrics:
+                          description: "Metrics defines the endpoint Envoy uses to serve metrics.\nContour's default is { address: \"0.0.0.0\", port: 8002 }."
+                          properties:
+                            address:
+                              description: "Defines the metrics address interface."
+                              maxLength: 253
+                              minLength: 1
+                              type: "string"
+                            port:
+                              description: "Defines the metrics port."
+                              type: "integer"
+                            tls:
+                              description: "TLS holds TLS file config details.\nMetrics and health endpoints cannot have same port number when metrics is served over HTTPS."
+                              properties:
+                                caFile:
+                                  description: "CA filename."
+                                  type: "string"
+                                certFile:
+                                  description: "Client certificate filename."
+                                  type: "string"
+                                keyFile:
+                                  description: "Client key filename."
+                                  type: "string"
+                              type: "object"
+                          type: "object"
+                        network:
+                          description: "Network holds various configurable Envoy network values."
+                          properties:
+                            adminPort:
+                              description: "Configure the port used to access the Envoy Admin interface.\nIf configured to port \"0\" then the admin interface is disabled.\nContour's default is 9001."
+                              type: "integer"
+                            numTrustedHops:
+                              description: "XffNumTrustedHops defines the number of additional ingress proxy hops from the\nright side of the x-forwarded-for HTTP header to trust when determining the origin\nclient’s IP address.\nSee https://www.envoyproxy.io/docs/envoy/v1.17.0/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto?highlight=xff_num_trusted_hops\nfor more information.\nContour's default is 0."
+                              format: "int32"
+                              type: "integer"
+                          type: "object"
+                        service:
+                          description: "Service holds Envoy service parameters for setting Ingress status.\nContour's default is { namespace: \"projectcontour\", name: \"envoy\" }."
+                          properties:
+                            name:
+                              type: "string"
+                            namespace:
+                              type: "string"
+                          required:
+                            - "name"
+                            - "namespace"
+                          type: "object"
+                        timeouts:
+                          description: "Timeouts holds various configurable timeouts that can\nbe set in the config file."
+                          properties:
+                            connectTimeout:
+                              description: "ConnectTimeout defines how long the proxy should wait when establishing connection to upstream service.\nIf not set, a default value of 2 seconds will be used.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto#envoy-v3-api-field-config-cluster-v3-cluster-connect-timeout\nfor more information."
+                              type: "string"
+                            connectionIdleTimeout:
+                              description: "ConnectionIdleTimeout defines how long the proxy should wait while there are\nno active requests (for HTTP/1.1) or streams (for HTTP/2) before terminating\nan HTTP connection. Set to \"infinity\" to disable the timeout entirely.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-field-config-core-v3-httpprotocoloptions-idle-timeout\nfor more information."
+                              type: "string"
+                            connectionShutdownGracePeriod:
+                              description: "ConnectionShutdownGracePeriod defines how long the proxy will wait between sending an\ninitial GOAWAY frame and a second, final GOAWAY frame when terminating an HTTP/2 connection.\nDuring this grace period, the proxy will continue to respond to new streams. After the final\nGOAWAY frame has been sent, the proxy will refuse new streams.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-drain-timeout\nfor more information."
+                              type: "string"
+                            delayedCloseTimeout:
+                              description: "DelayedCloseTimeout defines how long envoy will wait, once connection\nclose processing has been initiated, for the downstream peer to close\nthe connection before Envoy closes the socket associated with the connection.\nSetting this timeout to 'infinity' will disable it, equivalent to setting it to '0'\nin Envoy. Leaving it unset will result in the Envoy default value being used.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-delayed-close-timeout\nfor more information."
+                              type: "string"
+                            maxConnectionDuration:
+                              description: "MaxConnectionDuration defines the maximum period of time after an HTTP connection\nhas been established from the client to the proxy before it is closed by the proxy,\nregardless of whether there has been activity or not. Omit or set to \"infinity\" for\nno max duration.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-connection-duration\nfor more information."
+                              type: "string"
+                            requestTimeout:
+                              description: "RequestTimeout sets the client request timeout globally for Contour. Note that\nthis is a timeout for the entire request, not an idle timeout. Omit or set to\n\"infinity\" to disable the timeout entirely.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-timeout\nfor more information."
+                              type: "string"
+                            streamIdleTimeout:
+                              description: "StreamIdleTimeout defines how long the proxy should wait while there is no\nrequest activity (for HTTP/1.1) or stream activity (for HTTP/2) before\nterminating the HTTP request or stream. Set to \"infinity\" to disable the\ntimeout entirely.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout\nfor more information."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    featureFlags:
+                      description: "FeatureFlags defines toggle to enable new contour features.\nAvailable toggles are:\nuseEndpointSlices - configures contour to fetch endpoint data\nfrom k8s endpoint slices. defaults to false and reading endpoint\ndata from the k8s endpoints."
+                      items:
+                        type: "string"
+                      type: "array"
+                    gateway:
+                      description: "Gateway contains parameters for the gateway-api Gateway that Contour\nis configured to serve traffic."
+                      properties:
+                        controllerName:
+                          description: "ControllerName is used to determine whether Contour should reconcile a\nGatewayClass. The string takes the form of \"projectcontour.io/<namespace>/contour\".\nIf unset, the gatewayclass controller will not be started.\nExactly one of ControllerName or GatewayRef must be set.\nDeprecated: users should use GatewayRef, or the Gateway provisioner,\nin place of this field. This field will be removed in a future release."
+                          type: "string"
+                        gatewayRef:
+                          description: "GatewayRef defines a specific Gateway that this Contour\ninstance corresponds to. If set, Contour will reconcile\nonly this gateway, and will not reconcile any gateway\nclasses.\nExactly one of ControllerName or GatewayRef must be set."
+                          properties:
+                            name:
+                              type: "string"
+                            namespace:
+                              type: "string"
+                          required:
+                            - "name"
+                            - "namespace"
+                          type: "object"
+                      type: "object"
+                    globalExtAuth:
+                      description: "GlobalExternalAuthorization allows envoys external authorization filter\nto be enabled for all virtual hosts."
+                      properties:
+                        authPolicy:
+                          description: "AuthPolicy sets a default authorization policy for client requests.\nThis policy will be used unless overridden by individual routes."
+                          properties:
+                            context:
+                              additionalProperties:
+                                type: "string"
+                              description: "Context is a set of key/value pairs that are sent to the\nauthentication server in the check request. If a context\nis provided at an enclosing scope, the entries are merged\nsuch that the inner scope overrides matching keys from the\nouter scope."
+                              type: "object"
+                            disabled:
+                              description: "When true, this field disables client request authentication\nfor the scope of the policy."
+                              type: "boolean"
+                          type: "object"
+                        extensionRef:
+                          description: "ExtensionServiceRef specifies the extension resource that will authorize client requests."
+                          properties:
+                            apiVersion:
+                              description: "API version of the referent.\nIf this field is not specified, the default \"projectcontour.io/v1alpha1\" will be used"
+                              minLength: 1
+                              type: "string"
+                            name:
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              minLength: 1
+                              type: "string"
+                            namespace:
+                              description: "Namespace of the referent.\nIf this field is not specifies, the namespace of the resource that targets the referent will be used.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                              minLength: 1
+                              type: "string"
+                          type: "object"
+                        failOpen:
+                          description: "If FailOpen is true, the client request is forwarded to the upstream service\neven if the authorization server fails to respond. This field should not be\nset in most cases. It is intended for use only while migrating applications\nfrom internal authorization to Contour external authorization."
+                          type: "boolean"
+                        responseTimeout:
+                          description: "ResponseTimeout configures maximum time to wait for a check response from the authorization server.\nTimeout durations are expressed in the Go [Duration format](https://godoc.org/time#ParseDuration).\nValid time units are \"ns\", \"us\" (or \"µs\"), \"ms\", \"s\", \"m\", \"h\".\nThe string \"infinity\" is also a valid input and specifies no timeout."
+                          pattern: "^(((\\d*(\\.\\d*)?h)|(\\d*(\\.\\d*)?m)|(\\d*(\\.\\d*)?s)|(\\d*(\\.\\d*)?ms)|(\\d*(\\.\\d*)?us)|(\\d*(\\.\\d*)?µs)|(\\d*(\\.\\d*)?ns))+|infinity|infinite)$"
+                          type: "string"
+                        withRequestBody:
+                          description: "WithRequestBody specifies configuration for sending the client request's body to authorization server."
+                          properties:
+                            allowPartialMessage:
+                              description: "If AllowPartialMessage is true, then Envoy will buffer the body until MaxRequestBytes are reached."
+                              type: "boolean"
+                            maxRequestBytes:
+                              default: 1024
+                              description: "MaxRequestBytes sets the maximum size of message body ExtAuthz filter will hold in-memory."
+                              format: "int32"
+                              minimum: 1.0
+                              type: "integer"
+                            packAsBytes:
+                              description: "If PackAsBytes is true, the body sent to Authorization Server is in raw bytes."
+                              type: "boolean"
+                          type: "object"
+                      type: "object"
+                    health:
+                      description: "Health defines the endpoints Contour uses to serve health checks.\nContour's default is { address: \"0.0.0.0\", port: 8000 }."
+                      properties:
+                        address:
+                          description: "Defines the health address interface."
+                          minLength: 1
+                          type: "string"
+                        port:
+                          description: "Defines the health port."
+                          type: "integer"
+                      type: "object"
+                    httpproxy:
+                      description: "HTTPProxy defines parameters on HTTPProxy."
+                      properties:
+                        disablePermitInsecure:
+                          description: "DisablePermitInsecure disables the use of the\npermitInsecure field in HTTPProxy.\nContour's default is false."
+                          type: "boolean"
+                        fallbackCertificate:
+                          description: "FallbackCertificate defines the namespace/name of the Kubernetes secret to\nuse as fallback when a non-SNI request is received."
+                          properties:
+                            name:
+                              type: "string"
+                            namespace:
+                              type: "string"
+                          required:
+                            - "name"
+                            - "namespace"
+                          type: "object"
+                        rootNamespaces:
+                          description: "Restrict Contour to searching these namespaces for root ingress routes."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    ingress:
+                      description: "Ingress contains parameters for ingress options."
+                      properties:
+                        classNames:
+                          description: "Ingress Class Names Contour should use."
+                          items:
+                            type: "string"
+                          type: "array"
+                        statusAddress:
+                          description: "Address to set in Ingress object status."
+                          type: "string"
+                      type: "object"
+                    metrics:
+                      description: "Metrics defines the endpoint Contour uses to serve metrics.\nContour's default is { address: \"0.0.0.0\", port: 8000 }."
+                      properties:
+                        address:
+                          description: "Defines the metrics address interface."
+                          maxLength: 253
+                          minLength: 1
+                          type: "string"
+                        port:
+                          description: "Defines the metrics port."
+                          type: "integer"
+                        tls:
+                          description: "TLS holds TLS file config details.\nMetrics and health endpoints cannot have same port number when metrics is served over HTTPS."
+                          properties:
+                            caFile:
+                              description: "CA filename."
+                              type: "string"
+                            certFile:
+                              description: "Client certificate filename."
+                              type: "string"
+                            keyFile:
+                              description: "Client key filename."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    policy:
+                      description: "Policy specifies default policy applied if not overridden by the user"
+                      properties:
+                        applyToIngress:
+                          description: "ApplyToIngress determines if the Policies will apply to ingress objects\nContour's default is false."
+                          type: "boolean"
+                        requestHeaders:
+                          description: "RequestHeadersPolicy defines the request headers set/removed on all routes"
+                          properties:
+                            remove:
+                              items:
+                                type: "string"
+                              type: "array"
+                            set:
+                              additionalProperties:
+                                type: "string"
+                              type: "object"
+                          type: "object"
+                        responseHeaders:
+                          description: "ResponseHeadersPolicy defines the response headers set/removed on all routes"
+                          properties:
+                            remove:
+                              items:
+                                type: "string"
+                              type: "array"
+                            set:
+                              additionalProperties:
+                                type: "string"
+                              type: "object"
+                          type: "object"
+                      type: "object"
+                    rateLimitService:
+                      description: "RateLimitService optionally holds properties of the Rate Limit Service\nto be used for global rate limiting."
+                      properties:
+                        defaultGlobalRateLimitPolicy:
+                          description: "DefaultGlobalRateLimitPolicy allows setting a default global rate limit policy for every HTTPProxy.\nHTTPProxy can overwrite this configuration."
+                          properties:
+                            descriptors:
+                              description: "Descriptors defines the list of descriptors that will\nbe generated and sent to the rate limit service. Each\ndescriptor contains 1+ key-value pair entries."
+                              items:
+                                description: "RateLimitDescriptor defines a list of key-value pair generators."
+                                properties:
+                                  entries:
+                                    description: "Entries is the list of key-value pair generators."
+                                    items:
+                                      description: "RateLimitDescriptorEntry is a key-value pair generator. Exactly\none field on this struct must be non-nil."
+                                      properties:
+                                        genericKey:
+                                          description: "GenericKey defines a descriptor entry with a static key and value."
+                                          properties:
+                                            key:
+                                              description: "Key defines the key of the descriptor entry. If not set, the\nkey is set to \"generic_key\"."
+                                              type: "string"
+                                            value:
+                                              description: "Value defines the value of the descriptor entry."
+                                              minLength: 1
+                                              type: "string"
+                                          type: "object"
+                                        remoteAddress:
+                                          description: "RemoteAddress defines a descriptor entry with a key of \"remote_address\"\nand a value equal to the client's IP address (from x-forwarded-for)."
+                                          type: "object"
+                                        requestHeader:
+                                          description: "RequestHeader defines a descriptor entry that's populated only if\na given header is present on the request. The descriptor key is static,\nand the descriptor value is equal to the value of the header."
+                                          properties:
+                                            descriptorKey:
+                                              description: "DescriptorKey defines the key to use on the descriptor entry."
+                                              minLength: 1
+                                              type: "string"
+                                            headerName:
+                                              description: "HeaderName defines the name of the header to look for on the request."
+                                              minLength: 1
+                                              type: "string"
+                                          type: "object"
+                                        requestHeaderValueMatch:
+                                          description: "RequestHeaderValueMatch defines a descriptor entry that's populated\nif the request's headers match a set of 1+ match criteria. The\ndescriptor key is \"header_match\", and the descriptor value is static."
+                                          properties:
+                                            expectMatch:
+                                              default: true
+                                              description: "ExpectMatch defines whether the request must positively match the match\ncriteria in order to generate a descriptor entry (i.e. true), or not\nmatch the match criteria in order to generate a descriptor entry (i.e. false).\nThe default is true."
+                                              type: "boolean"
+                                            headers:
+                                              description: "Headers is a list of 1+ match criteria to apply against the request\nto determine whether to populate the descriptor entry or not."
+                                              items:
+                                                description: "HeaderMatchCondition specifies how to conditionally match against HTTP\nheaders. The Name field is required, only one of Present, NotPresent,\nContains, NotContains, Exact, NotExact and Regex can be set.\nFor negative matching rules only (e.g. NotContains or NotExact) you can set\nTreatMissingAsEmpty.\nIgnoreCase has no effect for Regex."
+                                                properties:
+                                                  contains:
+                                                    description: "Contains specifies a substring that must be present in\nthe header value."
+                                                    type: "string"
+                                                  exact:
+                                                    description: "Exact specifies a string that the header value must be equal to."
+                                                    type: "string"
+                                                  ignoreCase:
+                                                    description: "IgnoreCase specifies that string matching should be case insensitive.\nNote that this has no effect on the Regex parameter."
+                                                    type: "boolean"
+                                                  name:
+                                                    description: "Name is the name of the header to match against. Name is required.\nHeader names are case insensitive."
+                                                    type: "string"
+                                                  notcontains:
+                                                    description: "NotContains specifies a substring that must not be present\nin the header value."
+                                                    type: "string"
+                                                  notexact:
+                                                    description: "NoExact specifies a string that the header value must not be\nequal to. The condition is true if the header has any other value."
+                                                    type: "string"
+                                                  notpresent:
+                                                    description: "NotPresent specifies that condition is true when the named header\nis not present. Note that setting NotPresent to false does not\nmake the condition true if the named header is present."
+                                                    type: "boolean"
+                                                  present:
+                                                    description: "Present specifies that condition is true when the named header\nis present, regardless of its value. Note that setting Present\nto false does not make the condition true if the named header\nis absent."
+                                                    type: "boolean"
+                                                  regex:
+                                                    description: "Regex specifies a regular expression pattern that must match the header\nvalue."
+                                                    type: "string"
+                                                  treatMissingAsEmpty:
+                                                    description: "TreatMissingAsEmpty specifies if the header match rule specified header\ndoes not exist, this header value will be treated as empty. Defaults to false.\nUnlike the underlying Envoy implementation this is **only** supported for\nnegative matches (e.g. NotContains, NotExact)."
+                                                    type: "boolean"
+                                                required:
+                                                  - "name"
+                                                type: "object"
+                                              minItems: 1
+                                              type: "array"
+                                            value:
+                                              description: "Value defines the value of the descriptor entry."
+                                              minLength: 1
+                                              type: "string"
+                                          type: "object"
+                                      type: "object"
+                                    minItems: 1
+                                    type: "array"
+                                type: "object"
+                              minItems: 1
+                              type: "array"
+                            disabled:
+                              description: "Disabled configures the HTTPProxy to not use\nthe default global rate limit policy defined by the Contour configuration."
+                              type: "boolean"
+                          type: "object"
+                        domain:
+                          description: "Domain is passed to the Rate Limit Service."
+                          type: "string"
+                        enableResourceExhaustedCode:
+                          description: "EnableResourceExhaustedCode enables translating error code 429 to\ngrpc code RESOURCE_EXHAUSTED. When disabled it's translated to UNAVAILABLE"
+                          type: "boolean"
+                        enableXRateLimitHeaders:
+                          description: "EnableXRateLimitHeaders defines whether to include the X-RateLimit\nheaders X-RateLimit-Limit, X-RateLimit-Remaining, and X-RateLimit-Reset\n(as defined by the IETF Internet-Draft linked below), on responses\nto clients when the Rate Limit Service is consulted for a request.\nref. https://tools.ietf.org/id/draft-polli-ratelimit-headers-03.html"
+                          type: "boolean"
+                        extensionService:
+                          description: "ExtensionService identifies the extension service defining the RLS."
+                          properties:
+                            name:
+                              type: "string"
+                            namespace:
+                              type: "string"
+                          required:
+                            - "name"
+                            - "namespace"
+                          type: "object"
+                        failOpen:
+                          description: "FailOpen defines whether to allow requests to proceed when the\nRate Limit Service fails to respond with a valid rate limit\ndecision within the timeout defined on the extension service."
+                          type: "boolean"
+                      required:
+                        - "extensionService"
+                      type: "object"
+                    tracing:
+                      description: "Tracing defines properties for exporting trace data to OpenTelemetry."
+                      properties:
+                        customTags:
+                          description: "CustomTags defines a list of custom tags with unique tag name."
+                          items:
+                            description: "CustomTag defines custom tags with unique tag name\nto create tags for the active span."
+                            properties:
+                              literal:
+                                description: "Literal is a static custom tag value.\nPrecisely one of Literal, RequestHeaderName must be set."
+                                type: "string"
+                              requestHeaderName:
+                                description: "RequestHeaderName indicates which request header\nthe label value is obtained from.\nPrecisely one of Literal, RequestHeaderName must be set."
+                                type: "string"
+                              tagName:
+                                description: "TagName is the unique name of the custom tag."
+                                type: "string"
+                            required:
+                              - "tagName"
+                            type: "object"
+                          type: "array"
+                        extensionService:
+                          description: "ExtensionService identifies the extension service defining the otel-collector."
+                          properties:
+                            name:
+                              type: "string"
+                            namespace:
+                              type: "string"
+                          required:
+                            - "name"
+                            - "namespace"
+                          type: "object"
+                        includePodDetail:
+                          description: "IncludePodDetail defines a flag.\nIf it is true, contour will add the pod name and namespace to the span of the trace.\nthe default is true.\nNote: The Envoy pods MUST have the HOSTNAME and CONTOUR_NAMESPACE environment variables set for this to work properly."
+                          type: "boolean"
+                        maxPathTagLength:
+                          description: "MaxPathTagLength defines maximum length of the request path\nto extract and include in the HttpUrl tag.\ncontour's default is 256."
+                          format: "int32"
+                          type: "integer"
+                        overallSampling:
+                          description: "OverallSampling defines the sampling rate of trace data.\ncontour's default is 100."
+                          type: "string"
+                        serviceName:
+                          description: "ServiceName defines the name for the service.\ncontour's default is contour."
+                          type: "string"
+                      required:
+                        - "extensionService"
+                      type: "object"
+                    xdsServer:
+                      description: "XDSServer contains parameters for the xDS server."
+                      properties:
+                        address:
+                          description: "Defines the xDS gRPC API address which Contour will serve.\nContour's default is \"0.0.0.0\"."
+                          minLength: 1
+                          type: "string"
+                        port:
+                          description: "Defines the xDS gRPC API port which Contour will serve.\nContour's default is 8001."
+                          type: "integer"
+                        tls:
+                          description: "TLS holds TLS file config details.\nContour's default is { caFile: \"/certs/ca.crt\", certFile: \"/certs/tls.cert\", keyFile: \"/certs/tls.key\", insecure: false }."
+                          properties:
+                            caFile:
+                              description: "CA filename."
+                              type: "string"
+                            certFile:
+                              description: "Client certificate filename."
+                              type: "string"
+                            insecure:
+                              description: "Allow serving the xDS gRPC API without TLS."
+                              type: "boolean"
+                            keyFile:
+                              description: "Client key filename."
+                              type: "string"
+                          type: "object"
+                        type:
+                          description: "Defines the XDSServer to use for `contour serve`.\nValues: `contour` (default), `envoy`.\nOther values will produce an error."
+                          type: "string"
+                      type: "object"
+                  type: "object"
+              type: "object"
+            status:
+              description: "ContourDeploymentStatus defines the observed state of a ContourDeployment resource."
+              properties:
+                conditions:
+                  description: "Conditions describe the current conditions of the ContourDeployment resource."
+                  items:
+                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "message"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

@@ -2065,6 +2065,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "projectcontour/contour",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/projectcontour/contour/blob/main/examples/contour/01-crds.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "prometheus-operator/prometheus-operator",
         license: APACHE_V2,
         urls: &[
