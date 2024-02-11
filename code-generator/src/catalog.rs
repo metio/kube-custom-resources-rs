@@ -2079,6 +2079,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "percona/percona-server-mysql-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/percona/percona-server-mysql-operator/blob/main/config/crd/bases/ps.percona.com_perconaservermysqlbackups.yaml",
+            "https://github.com/percona/percona-server-mysql-operator/blob/main/config/crd/bases/ps.percona.com_perconaservermysqlrestores.yaml",
+            "https://github.com/percona/percona-server-mysql-operator/blob/main/config/crd/bases/ps.percona.com_perconaservermysqls.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "projectcalico/calico",
         license: APACHE_V2,
         urls: &[
