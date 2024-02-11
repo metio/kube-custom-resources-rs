@@ -1221,6 +1221,13 @@ apiVersion `jaegertracing.io/v1`:
 apiVersion `jobset.x-k8s.io/v1alpha2`:
 - `JobSet`
 
+## k6_io
+
+apiVersion `k6.io/v1alpha1`:
+- `K6`
+- `PrivateLoadZone`
+- `TestRun`
+
 ## k8gb_absa_oss
 
 apiVersion `k8gb.absa.oss/v1beta1`:
@@ -2725,6 +2732,8 @@ pub mod ipam_cluster_x_k8s_io;
 pub mod jaegertracing_io;
 #[cfg(feature = "jobset_x_k8s_io")]
 pub mod jobset_x_k8s_io;
+#[cfg(feature = "k6_io")]
+pub mod k6_io;
 #[cfg(feature = "k8gb_absa_oss")]
 pub mod k8gb_absa_oss;
 #[cfg(feature = "k8s_keycloak_org")]

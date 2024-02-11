@@ -419,6 +419,10 @@ Files: crd-catalog/grafana-operator/grafana-operator/*
 Copyright: The grafana-operator/grafana-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/grafana/k6-operator/*
+Copyright: The grafana/k6-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/grafana/loki/*
 Copyright: The grafana/loki Authors
 License: AGPL-3.0-only

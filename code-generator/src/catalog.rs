@@ -1053,6 +1053,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "grafana/k6-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/grafana/k6-operator/blob/main/config/crd/bases/k6.io_k6s.yaml",
+            "https://github.com/grafana/k6-operator/blob/main/config/crd/bases/k6.io_privateloadzones.yaml",
+            "https://github.com/grafana/k6-operator/blob/main/config/crd/bases/k6.io_testruns.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "grafana/loki",
         license: AGPL_V3_ONLY,
         urls: &[
