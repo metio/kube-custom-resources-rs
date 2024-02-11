@@ -1951,6 +1951,13 @@ apiVersion `prometheusservice.services.k8s.aws/v1alpha1`:
 - `RuleGroupsNamespace`
 - `Workspace`
 
+## ps_percona_com
+
+apiVersion `ps.percona.com/v1alpha1`:
+- `PerconaServerMySQLBackup`
+- `PerconaServerMySQLRestore`
+- `PerconaServerMySQL`
+
 ## quay_redhat_com
 
 apiVersion `quay.redhat.com/v1`:
@@ -2897,6 +2904,8 @@ pub mod postgresql_cnpg_io;
 pub mod projectcontour_io;
 #[cfg(feature = "prometheusservice_services_k8s_aws")]
 pub mod prometheusservice_services_k8s_aws;
+#[cfg(feature = "ps_percona_com")]
+pub mod ps_percona_com;
 #[cfg(feature = "quay_redhat_com")]
 pub mod quay_redhat_com;
 #[cfg(feature = "quota_openshift_io")]
