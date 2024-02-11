@@ -3,6 +3,13 @@
 
 pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
+        project_name: "1Password/onepassword-operator",
+        license: MIT,
+        urls: &[
+            "https://github.com/1Password/onepassword-operator/blob/main/config/crd/bases/onepassword.com_onepassworditems.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "3scale/apicast-operator",
         license: APACHE_V2,
         urls: &[
