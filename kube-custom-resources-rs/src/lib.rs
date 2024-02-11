@@ -1894,6 +1894,13 @@ apiVersion `org.eclipse.che/v1`:
 apiVersion `org.eclipse.che/v2`:
 - `CheCluster`
 
+## pgv2_percona_com
+
+apiVersion `pgv2.percona.com/v2`:
+- `PerconaPGBackup`
+- `PerconaPGCluster`
+- `PerconaPGRestore`
+
 ## pkg_crossplane_io
 
 apiVersion `pkg.crossplane.io/v1`:
@@ -2912,6 +2919,8 @@ pub mod operator_tigera_io;
 pub mod operator_victoriametrics_com;
 #[cfg(feature = "org_eclipse_che")]
 pub mod org_eclipse_che;
+#[cfg(feature = "pgv2_percona_com")]
+pub mod pgv2_percona_com;
 #[cfg(feature = "pkg_crossplane_io")]
 pub mod pkg_crossplane_io;
 #[cfg(feature = "platform_openshift_io")]
