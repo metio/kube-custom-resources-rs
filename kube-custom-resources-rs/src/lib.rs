@@ -623,6 +623,14 @@ apiVersion `clusters.clusternet.io/v1beta1`:
 - `ClusterRegistrationRequest`
 - `ManagedCluster`
 
+## clustertemplate_openshift_io
+
+apiVersion `clustertemplate.openshift.io/v1alpha1`:
+- `ClusterTemplateInstance`
+- `ClusterTemplateQuota`
+- `ClusterTemplate`
+- `ClusterTemplateSetup`
+
 ## config_gatekeeper_sh
 
 apiVersion `config.gatekeeper.sh/v1alpha1`:
@@ -2690,6 +2698,8 @@ pub mod cluster_ipfs_io;
 pub mod cluster_x_k8s_io;
 #[cfg(feature = "clusters_clusternet_io")]
 pub mod clusters_clusternet_io;
+#[cfg(feature = "clustertemplate_openshift_io")]
+pub mod clustertemplate_openshift_io;
 #[cfg(feature = "config_gatekeeper_sh")]
 pub mod config_gatekeeper_sh;
 #[cfg(feature = "config_grafana_com")]

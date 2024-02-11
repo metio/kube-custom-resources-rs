@@ -2385,6 +2385,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "stolostron/cluster-templates-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/stolostron/cluster-templates-operator/blob/main/config/crd/bases/clustertemplate.openshift.io_clustertemplateinstances.yaml",
+            "https://github.com/stolostron/cluster-templates-operator/blob/main/config/crd/bases/clustertemplate.openshift.io_clustertemplatequotas.yaml",
+            "https://github.com/stolostron/cluster-templates-operator/blob/main/config/crd/bases/clustertemplate.openshift.io_clustertemplates.yaml",
+            "https://github.com/stolostron/cluster-templates-operator/blob/main/config/crd/bases/clustertemplate.openshift.io_clustertemplatesetup.yaml",
+            "https://github.com/stolostron/cluster-templates-operator/blob/main/config/crd/bases/clustertemplate.openshift.io_config.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "strimzi/strimzi-kafka-operator",
         license: APACHE_V2,
         urls: &[
