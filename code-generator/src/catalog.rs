@@ -10,6 +10,25 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "3scale/3scale-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/apps.3scale.net_apimanagerbackups.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/apps.3scale.net_apimanagerrestores.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/apps.3scale.net_apimanagers.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_activedocs.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_applications.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_backends.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_custompolicydefinitions.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_developeraccounts.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_developerusers.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_openapis.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_products.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_proxyconfigpromotes.yaml",
+            "https://github.com/3scale/3scale-operator/blob/master/config/crd/bases/capabilities.3scale.net_tenants.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "3scale/apicast-operator",
         license: APACHE_V2,
         urls: &[

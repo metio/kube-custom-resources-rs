@@ -11,6 +11,10 @@ Files: crd-catalog/1Password/onepassword-operator/*
 Copyright: The 1Password/onepassword-operator Authors
 License: MIT
 
+Files: crd-catalog/3scale/3scale-operator/*
+Copyright: The 3scale/3scale-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/3scale/apicast-operator/*
 Copyright: The 3scale/apicast-operator Authors
 License: Apache-2.0
