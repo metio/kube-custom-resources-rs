@@ -783,6 +783,10 @@ Files: crd-catalog/percona/percona-server-mysql-operator/*
 Copyright: The percona/percona-server-mysql-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/percona/percona-xtradb-cluster-operator/*
+Copyright: The percona/percona-xtradb-cluster-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/projectcalico/calico/*
 Copyright: The projectcalico/calico Authors
 License: Apache-2.0
