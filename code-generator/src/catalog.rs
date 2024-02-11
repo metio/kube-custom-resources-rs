@@ -1861,6 +1861,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "migtools/crane-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/migtools/crane-operator/blob/main/config/crd/bases/crane.konveyor.io_operatorconfigs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "minio/operator",
         license: APACHE_V2,
         urls: &[

@@ -741,6 +741,11 @@ apiVersion `couchbase.com/v2`:
 - `CouchbaseScope`
 - `CouchbaseUser`
 
+## crane_konveyor_io
+
+apiVersion `crane.konveyor.io/v1alpha1`:
+- `OperatorConfig`
+
 ## crd_projectcalico_org
 
 apiVersion `crd.projectcalico.org/v1`:
@@ -2722,6 +2727,8 @@ pub mod core_linuxsuren_github_com;
 pub mod core_openfeature_dev;
 #[cfg(feature = "couchbase_com")]
 pub mod couchbase_com;
+#[cfg(feature = "crane_konveyor_io")]
+pub mod crane_konveyor_io;
 #[cfg(feature = "crd_projectcalico_org")]
 pub mod crd_projectcalico_org;
 #[cfg(feature = "data_fluid_io")]
