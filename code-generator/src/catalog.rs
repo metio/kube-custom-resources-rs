@@ -2349,6 +2349,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "tinkerbell/tink",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/tinkerbell/tink/blob/main/config/crd/bases/tinkerbell.org_hardware.yaml",
+            "https://github.com/tinkerbell/tink/blob/main/config/crd/bases/tinkerbell.org_osies.yaml",
+            "https://github.com/tinkerbell/tink/blob/main/config/crd/bases/tinkerbell.org_templates.yaml",
+            "https://github.com/tinkerbell/tink/blob/main/config/crd/bases/tinkerbell.org_workflows.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "traefik/traefik",
         license: MIT,
         urls: &[

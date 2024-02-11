@@ -899,6 +899,10 @@ Files: crd-catalog/tinkerbell/rufio/*
 Copyright: The tinkerbell/rufio Authors
 License: Apache-2.0
 
+Files: crd-catalog/tinkerbell/tink/*
+Copyright: The tinkerbell/tink Authors
+License: Apache-2.0
+
 Files: crd-catalog/traefik/traefik/*
 Copyright: The traefik/traefik Authors
 License: MIT

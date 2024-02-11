@@ -2320,6 +2320,20 @@ apiVersion `theketch.io/v1beta1`:
 - `App`
 - `Job`
 
+## tinkerbell_org
+
+apiVersion `tinkerbell.org/v1alpha1`:
+- `Hardware`
+- `OSIE`
+- `Template`
+- `Workflow`
+
+apiVersion `tinkerbell.org/v1alpha2`:
+- `Hardware`
+- `OSIE`
+- `Template`
+- `Workflow`
+
 ## topology_node_k8s_io
 
 apiVersion `topology.node.k8s.io/v1alpha1`:
@@ -2963,6 +2977,8 @@ pub mod templates_gatekeeper_sh;
 pub mod tests_testkube_io;
 #[cfg(feature = "theketch_io")]
 pub mod theketch_io;
+#[cfg(feature = "tinkerbell_org")]
+pub mod tinkerbell_org;
 #[cfg(feature = "topology_node_k8s_io")]
 pub mod topology_node_k8s_io;
 #[cfg(feature = "topolvm_cybozu_com")]
