@@ -1440,6 +1440,11 @@ apiVersion `kubean.io/v1alpha1`:
 - `Cluster`
 - `Manifest`
 
+## kubecost_com
+
+apiVersion `kubecost.com/v1alpha1`:
+- `TurndownSchedule`
+
 ## kubevious_io
 
 apiVersion `kubevious.io/v1alpha1`:
@@ -2936,6 +2941,8 @@ pub mod kuadrant_io;
 pub mod kube_green_com;
 #[cfg(feature = "kubean_io")]
 pub mod kubean_io;
+#[cfg(feature = "kubecost_com")]
+pub mod kubecost_com;
 #[cfg(feature = "kubevious_io")]
 pub mod kubevious_io;
 #[cfg(feature = "kueue_x_k8s_io")]

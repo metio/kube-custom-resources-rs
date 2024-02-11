@@ -559,6 +559,10 @@ Files: crd-catalog/kubean-io/kubean/*
 Copyright: The kubean-io/kubean Authors
 License: Apache-2.0
 
+Files: crd-catalog/kubecost/cluster-turndown/*
+Copyright: The kubecost/cluster-turndown Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubedl-io/kubedl/*
 Copyright: The kubedl-io/kubedl Authors
 License: Apache-2.0

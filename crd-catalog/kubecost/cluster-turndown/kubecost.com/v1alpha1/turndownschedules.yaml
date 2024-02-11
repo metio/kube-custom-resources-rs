@@ -1,0 +1,80 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "turndownschedules.kubecost.com"
+spec:
+  group: "kubecost.com"
+  names:
+    kind: "TurndownSchedule"
+    plural: "turndownschedules"
+    shortNames:
+      - "td"
+      - "tds"
+    singular: "turndownschedule"
+  scope: "Cluster"
+  versions:
+    - additionalPrinterColumns:
+        - description: "The state of the turndownschedule"
+          jsonPath: ".status.state"
+          name: "State"
+          type: "string"
+        - description: "The next turndown date-time"
+          jsonPath: ".status.nextScaleDownTime"
+          name: "Next Turndown"
+          type: "string"
+        - description: "The next turn up date-time"
+          jsonPath: ".status.nextScaleUpTime"
+          name: "Next Turn Up"
+          type: "string"
+      name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          properties:
+            spec:
+              properties:
+                end:
+                  format: "date-time"
+                  type: "string"
+                repeat:
+                  enum:
+                    - "none"
+                    - "daily"
+                    - "weekly"
+                  type: "string"
+                start:
+                  format: "date-time"
+                  type: "string"
+              type: "object"
+            status:
+              properties:
+                current:
+                  type: "string"
+                lastUpdated:
+                  format: "date-time"
+                  type: "string"
+                nextScaleDownTime:
+                  format: "date-time"
+                  type: "string"
+                nextScaleUpTime:
+                  format: "date-time"
+                  type: "string"
+                scaleDownId:
+                  type: "string"
+                scaleDownMetadata:
+                  additionalProperties:
+                    type: "string"
+                  type: "object"
+                scaleUpID:
+                  type: "string"
+                scaleUpMetadata:
+                  additionalProperties:
+                    type: "string"
+                  type: "object"
+                state:
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
