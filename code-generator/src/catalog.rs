@@ -1230,6 +1230,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "KaotoIO/kaoto-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/KaotoIO/kaoto-operator/blob/main/config/crd/bases/designer.kaoto.io_kaotoes.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "karmada-io/karmada",
         license: APACHE_V2,
         urls: &[
