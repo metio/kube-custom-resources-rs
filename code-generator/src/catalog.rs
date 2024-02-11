@@ -2091,6 +2091,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "percona/percona-server-mongodb-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/percona/percona-server-mongodb-operator/blob/main/config/crd/bases/psmdb.percona.com_perconaservermongodbbackups.yaml",
+            "https://github.com/percona/percona-server-mongodb-operator/blob/main/config/crd/bases/psmdb.percona.com_perconaservermongodbrestores.yaml",
+            "https://github.com/percona/percona-server-mongodb-operator/blob/main/config/crd/bases/psmdb.percona.com_perconaservermongodbs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "percona/percona-server-mysql-operator",
         license: APACHE_V2,
         urls: &[

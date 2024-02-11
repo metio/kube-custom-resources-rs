@@ -1967,6 +1967,12 @@ apiVersion `ps.percona.com/v1alpha1`:
 - `PerconaServerMySQLRestore`
 - `PerconaServerMySQL`
 
+## psmdb_percona_com
+
+apiVersion `psmdb.percona.com/v1`:
+- `PerconaServerMongoDBBackup`
+- `PerconaServerMongoDBRestore`
+
 ## pxc_percona_com
 
 apiVersion `pxc.percona.com/v1`:
@@ -2924,6 +2930,8 @@ pub mod projectcontour_io;
 pub mod prometheusservice_services_k8s_aws;
 #[cfg(feature = "ps_percona_com")]
 pub mod ps_percona_com;
+#[cfg(feature = "psmdb_percona_com")]
+pub mod psmdb_percona_com;
 #[cfg(feature = "pxc_percona_com")]
 pub mod pxc_percona_com;
 #[cfg(feature = "quay_redhat_com")]
