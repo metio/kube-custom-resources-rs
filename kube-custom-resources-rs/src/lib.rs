@@ -377,6 +377,11 @@ apiVersion `batch.volcano.sh/v1alpha1`:
 apiVersion `beat.k8s.elastic.co/v1beta1`:
 - `Beat`
 
+## beegfs_csi_netapp_com
+
+apiVersion `beegfs.csi.netapp.com/v1`:
+- `BeegfsDriver`
+
 ## binding_operators_coreos_com
 
 apiVersion `binding.operators.coreos.com/v1alpha1`:
@@ -2629,6 +2634,8 @@ pub mod b3scale_infra_run;
 pub mod batch_volcano_sh;
 #[cfg(feature = "beat_k8s_elastic_co")]
 pub mod beat_k8s_elastic_co;
+#[cfg(feature = "beegfs_csi_netapp_com")]
+pub mod beegfs_csi_netapp_com;
 #[cfg(feature = "binding_operators_coreos_com")]
 pub mod binding_operators_coreos_com;
 #[cfg(feature = "bitnami_com")]
