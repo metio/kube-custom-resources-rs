@@ -307,6 +307,10 @@ Files: crd-catalog/dmesser/cockroachdb-operator/*
 Copyright: The dmesser/cockroachdb-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/DopplerHQ/kubernetes-operator/*
+Copyright: The DopplerHQ/kubernetes-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/eclipse-che/che-operator/*
 Copyright: The eclipse-che/che-operator Authors
 License: EPL-2.0
