@@ -734,6 +734,11 @@ apiVersion `data.fluid.io/v1alpha1`:
 apiVersion `databases.schemahero.io/v1alpha4`:
 - `Database`
 
+## databases_spotahome_com
+
+apiVersion `databases.spotahome.com/v1`:
+- `RedisFailover`
+
 ## dataprotection_kubeblocks_io
 
 apiVersion `dataprotection.kubeblocks.io/v1alpha1`:
@@ -2577,6 +2582,8 @@ pub mod crd_projectcalico_org;
 pub mod data_fluid_io;
 #[cfg(feature = "databases_schemahero_io")]
 pub mod databases_schemahero_io;
+#[cfg(feature = "databases_spotahome_com")]
+pub mod databases_spotahome_com;
 #[cfg(feature = "dataprotection_kubeblocks_io")]
 pub mod dataprotection_kubeblocks_io;
 #[cfg(feature = "devices_kubeedge_io")]
