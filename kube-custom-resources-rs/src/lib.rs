@@ -1420,6 +1420,14 @@ apiVersion `kms.services.k8s.aws/v1alpha1`:
 - `Grant`
 - `Key`
 
+## kuadrant_io
+
+apiVersion `kuadrant.io/v1beta1`:
+- `Kuadrant`
+
+apiVersion `kuadrant.io/v1beta2`:
+- `RateLimitPolicy`
+
 ## kube_green_com
 
 apiVersion `kube-green.com/v1alpha1`:
@@ -2922,6 +2930,8 @@ pub mod keycloak_org;
 pub mod kibana_k8s_elastic_co;
 #[cfg(feature = "kms_services_k8s_aws")]
 pub mod kms_services_k8s_aws;
+#[cfg(feature = "kuadrant_io")]
+pub mod kuadrant_io;
 #[cfg(feature = "kube_green_com")]
 pub mod kube_green_com;
 #[cfg(feature = "kubean_io")]
