@@ -939,6 +939,10 @@ Files: crd-catalog/theketchio/ketch/*
 Copyright: The theketchio/ketch Authors
 License: Apache-2.0
 
+Files: crd-catalog/ThinkParQ/beegfs-csi-driver/*
+Copyright: The ThinkParQ/beegfs-csi-driver Authors
+License: Apache-2.0
+
 Files: crd-catalog/tinkerbell/cluster-api-provider-tinkerbell/*
 Copyright: The tinkerbell/cluster-api-provider-tinkerbell Authors
 License: Apache-2.0

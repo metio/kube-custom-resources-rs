@@ -2445,6 +2445,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "ThinkParQ/beegfs-csi-driver",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/ThinkParQ/beegfs-csi-driver/blob/master/operator/config/crd/bases/beegfs.csi.netapp.com_beegfsdrivers.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "tinkerbell/cluster-api-provider-tinkerbell",
         license: APACHE_V2,
         urls: &[
