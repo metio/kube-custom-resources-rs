@@ -2350,6 +2350,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "SparebankenVest/azure-key-vault-to-kubernetes",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/SparebankenVest/azure-key-vault-to-kubernetes/blob/master/crds/AzureKeyVaultIdentity.yaml",
+            "https://github.com/SparebankenVest/azure-key-vault-to-kubernetes/blob/master/crds/AzureKeyVaultSecret.yaml",
+            "https://github.com/SparebankenVest/azure-key-vault-to-kubernetes/blob/master/crds/AzureManagedIdentity.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "strimzi/strimzi-kafka-operator",
         license: APACHE_V2,
         urls: &[
