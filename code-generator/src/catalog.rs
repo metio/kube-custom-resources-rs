@@ -1400,6 +1400,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kubecost/cluster-turndown",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubecost/cluster-turndown/blob/develop/artifacts/turndown-schedule-definition.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kubedl-io/kubedl",
         license: APACHE_V2,
         urls: &[
