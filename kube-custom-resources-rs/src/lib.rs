@@ -385,6 +385,13 @@ apiVersion `binding.operators.coreos.com/v1alpha1`:
 apiVersion `bitnami.com/v1alpha1`:
 - `SealedSecret`
 
+## bmc_tinkerbell_org
+
+apiVersion `bmc.tinkerbell.org/v1alpha1`:
+- `Job`
+- `Machine`
+- `Task`
+
 ## boskos_k8s_io
 
 apiVersion `boskos.k8s.io/v1`:
@@ -2510,6 +2517,8 @@ pub mod beat_k8s_elastic_co;
 pub mod binding_operators_coreos_com;
 #[cfg(feature = "bitnami_com")]
 pub mod bitnami_com;
+#[cfg(feature = "bmc_tinkerbell_org")]
+pub mod bmc_tinkerbell_org;
 #[cfg(feature = "boskos_k8s_io")]
 pub mod boskos_k8s_io;
 #[cfg(feature = "bpfd_dev")]
