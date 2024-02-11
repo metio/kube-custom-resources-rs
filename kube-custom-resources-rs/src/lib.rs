@@ -2318,6 +2318,11 @@ apiVersion `training.kubedl.io/v1alpha1`:
 - `XDLJob`
 - `XGBoostJob`
 
+## trust_cert_manager_io
+
+apiVersion `trust.cert-manager.io/v1alpha1`:
+- `Bundle`
+
 ## upgrade_cattle_io
 
 apiVersion `upgrade.cattle.io/v1`:
@@ -2915,6 +2920,8 @@ pub mod topolvm_cybozu_com;
 pub mod traefik_io;
 #[cfg(feature = "training_kubedl_io")]
 pub mod training_kubedl_io;
+#[cfg(feature = "trust_cert_manager_io")]
+pub mod trust_cert_manager_io;
 #[cfg(feature = "upgrade_cattle_io")]
 pub mod upgrade_cattle_io;
 #[cfg(feature = "upgrade_managed_openshift_io")]
