@@ -1571,6 +1571,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kubernetes-sigs/secrets-store-csi-driver",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubernetes-sigs/secrets-store-csi-driver/blob/main/config/crd/bases/secrets-store.csi.x-k8s.io_secretproviderclasses.yaml",
+            "https://github.com/kubernetes-sigs/secrets-store-csi-driver/blob/main/config/crd/bases/secrets-store.csi.x-k8s.io_secretproviderclasspodstatuses.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kubernetes-sigs/security-profiles-operator",
         license: APACHE_V2,
         urls: &[

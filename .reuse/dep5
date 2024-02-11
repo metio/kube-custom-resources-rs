@@ -623,6 +623,10 @@ Files: crd-catalog/kubernetes-sigs/node-feature-discovery-operator/*
 Copyright: The kubernetes-sigs/node-feature-discovery-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/kubernetes-sigs/secrets-store-csi-driver/*
+Copyright: The kubernetes-sigs/secrets-store-csi-driver Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubernetes-sigs/security-profiles-operator/*
 Copyright: The kubernetes-sigs/security-profiles-operator Authors
 License: Apache-2.0

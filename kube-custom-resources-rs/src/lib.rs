@@ -2163,6 +2163,16 @@ apiVersion `secretgenerator.mittwald.de/v1alpha1`:
 - `SSHKeyPair`
 - `StringSecret`
 
+## secrets_store_csi_x_k8s_io
+
+apiVersion `secrets-store.csi.x-k8s.io/v1`:
+- `SecretProviderClass`
+- `SecretProviderClassPodStatus`
+
+apiVersion `secrets-store.csi.x-k8s.io/v1alpha1`:
+- `SecretProviderClass`
+- `SecretProviderClassPodStatus`
+
 ## secrets_crossplane_io
 
 apiVersion `secrets.crossplane.io/v1alpha1`:
@@ -2989,6 +2999,8 @@ pub mod schemas_schemahero_io;
 pub mod scylla_scylladb_com;
 #[cfg(feature = "secretgenerator_mittwald_de")]
 pub mod secretgenerator_mittwald_de;
+#[cfg(feature = "secrets_store_csi_x_k8s_io")]
+pub mod secrets_store_csi_x_k8s_io;
 #[cfg(feature = "secrets_crossplane_io")]
 pub mod secrets_crossplane_io;
 #[cfg(feature = "secrets_doppler_com")]
