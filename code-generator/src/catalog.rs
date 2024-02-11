@@ -2275,6 +2275,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "ROCm/gpu-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/ROCm/gpu-operator/blob/master/config/crd/bases/charts.amd.com_amdgpus.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "rook/rook",
         license: APACHE_V2,
         urls: &[

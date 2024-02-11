@@ -530,6 +530,11 @@ apiVersion `chaos-mesh.org/v1alpha1`:
 apiVersion `chaosblade.io/v1alpha1`:
 - `ChaosBlade`
 
+## charts_amd_com
+
+apiVersion `charts.amd.com/v1alpha1`:
+- `AMDGPU`
+
 ## che_eclipse_org
 
 apiVersion `che.eclipse.org/v1alpha1`:
@@ -2656,6 +2661,8 @@ pub mod cert_manager_io;
 pub mod chaos_mesh_org;
 #[cfg(feature = "chaosblade_io")]
 pub mod chaosblade_io;
+#[cfg(feature = "charts_amd_com")]
+pub mod charts_amd_com;
 #[cfg(feature = "che_eclipse_org")]
 pub mod che_eclipse_org;
 #[cfg(feature = "chisel_operator_io")]
