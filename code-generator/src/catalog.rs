@@ -1348,6 +1348,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "Kuadrant/kuadrant-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/Kuadrant/kuadrant-operator/blob/main/config/crd/bases/kuadrant.io_authpolicies.yaml",
+            "https://github.com/Kuadrant/kuadrant-operator/blob/main/config/crd/bases/kuadrant.io_kuadrants.yaml",
+            "https://github.com/Kuadrant/kuadrant-operator/blob/main/config/crd/bases/kuadrant.io_ratelimitpolicies.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "Kuadrant/limitador-operator",
         license: APACHE_V2,
         urls: &[
