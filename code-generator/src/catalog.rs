@@ -2091,6 +2091,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "percona/percona-postgresql-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/percona/percona-postgresql-operator/blob/main/config/crd/bases/pgv2.percona.com_perconapgclusters.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "percona/percona-server-mongodb-operator",
         license: APACHE_V2,
         urls: &[
