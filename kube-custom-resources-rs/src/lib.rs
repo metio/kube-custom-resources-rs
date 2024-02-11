@@ -798,6 +798,11 @@ apiVersion `dataprotection.kubeblocks.io/v1alpha1`:
 - `BackupSchedule`
 - `Restore`
 
+## designer_kaoto_io
+
+apiVersion `designer.kaoto.io/v1alpha1`:
+- `Kaoto`
+
 ## devices_kubeedge_io
 
 apiVersion `devices.kubeedge.io/v1alpha2`:
@@ -2764,6 +2769,8 @@ pub mod databases_schemahero_io;
 pub mod databases_spotahome_com;
 #[cfg(feature = "dataprotection_kubeblocks_io")]
 pub mod dataprotection_kubeblocks_io;
+#[cfg(feature = "designer_kaoto_io")]
+pub mod designer_kaoto_io;
 #[cfg(feature = "devices_kubeedge_io")]
 pub mod devices_kubeedge_io;
 #[cfg(feature = "dex_gpu_ninja_com")]
