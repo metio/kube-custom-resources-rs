@@ -2340,6 +2340,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "tinkerbell/rufio",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/tinkerbell/rufio/blob/main/config/crd/bases/bmc.tinkerbell.org_jobs.yaml",
+            "https://github.com/tinkerbell/rufio/blob/main/config/crd/bases/bmc.tinkerbell.org_machines.yaml",
+            "https://github.com/tinkerbell/rufio/blob/main/config/crd/bases/bmc.tinkerbell.org_tasks.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "traefik/traefik",
         license: MIT,
         urls: &[
