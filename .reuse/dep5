@@ -883,6 +883,10 @@ Files: crd-catalog/superedge/superedge/*
 Copyright: The superedge/superedge Authors
 License: Apache-2.0
 
+Files: crd-catalog/spotahome/redis-operator/*
+Copyright: The spotahome/redis-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/tektoncd/operator/*
 Copyright: The tektoncd/operator Authors
 License: Apache-2.0

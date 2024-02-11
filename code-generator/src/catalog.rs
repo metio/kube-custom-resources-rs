@@ -2313,6 +2313,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "spotahome/redis-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/spotahome/redis-operator/blob/master/manifests/databases.spotahome.com_redisfailovers.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "tektoncd/operator",
         license: APACHE_V2,
         urls: &[
