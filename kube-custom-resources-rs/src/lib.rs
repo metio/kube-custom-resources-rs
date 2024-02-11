@@ -2034,6 +2034,11 @@ apiVersion `pxc.percona.com/v1`:
 apiVersion `quay.redhat.com/v1`:
 - `QuayRegistry`
 
+## quota_codeflare_dev
+
+apiVersion `quota.codeflare.dev/v1alpha1`:
+- `QuotaSubtree`
+
 ## quota_openshift_io
 
 apiVersion `quota.openshift.io/v1`:
@@ -2549,6 +2554,12 @@ apiVersion `work.karmada.io/v1alpha2`:
 - `ClusterResourceBinding`
 - `ResourceBinding`
 
+## workload_codeflare_dev
+
+apiVersion `workload.codeflare.dev/v1beta1`:
+- `AppWrapper`
+- `SchedulingSpec`
+
 ## workloads_kubeblocks_io
 
 apiVersion `workloads.kubeblocks.io/v1alpha1`:
@@ -3023,6 +3034,8 @@ pub mod psmdb_percona_com;
 pub mod pxc_percona_com;
 #[cfg(feature = "quay_redhat_com")]
 pub mod quay_redhat_com;
+#[cfg(feature = "quota_codeflare_dev")]
+pub mod quota_codeflare_dev;
 #[cfg(feature = "quota_openshift_io")]
 pub mod quota_openshift_io;
 #[cfg(feature = "ray_io")]
@@ -3151,6 +3164,8 @@ pub mod wgpolicyk8s_io;
 pub mod wildfly_org;
 #[cfg(feature = "work_karmada_io")]
 pub mod work_karmada_io;
+#[cfg(feature = "workload_codeflare_dev")]
+pub mod workload_codeflare_dev;
 #[cfg(feature = "workloads_kubeblocks_io")]
 pub mod workloads_kubeblocks_io;
 #[cfg(feature = "zonecontrol_k8s_aws")]

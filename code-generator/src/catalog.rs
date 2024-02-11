@@ -2159,6 +2159,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "project-codeflare/codeflare-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/project-codeflare/codeflare-operator/blob/main/config/crd/crd-appwrapper.yml",
+            "https://github.com/project-codeflare/codeflare-operator/blob/main/config/crd/crd-quotasubtree.yml",
+            "https://github.com/project-codeflare/codeflare-operator/blob/main/config/crd/crd-schedulingspec.yml",
+        ],
+    },
+    UpstreamSource {
         project_name: "projectcalico/calico",
         license: APACHE_V2,
         urls: &[
