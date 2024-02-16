@@ -1160,9 +1160,6 @@ pub struct IssuerVaultAuthAppRoleSecretRef {
 /// Kubernetes authenticates with Vault by passing the ServiceAccount token stored in the named Secret resource to the Vault server.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IssuerVaultAuthKubernetes {
-    /// TokenAudiences is an optional list of extra audiences to include in the token passed to Vault. The default token consisting of the issuer's namespace and name is always included.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub audiences: Option<Vec<String>>,
     /// The Vault mountPath here is the mount path to use when authenticating with Vault. For example, setting a value to `/v1/auth/foo`, will use the path `/v1/auth/foo/login` to authenticate with Vault. If unspecified, the default value "/v1/auth/kubernetes" will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
@@ -1189,6 +1186,9 @@ pub struct IssuerVaultAuthKubernetesSecretRef {
 /// A reference to a service account that will be used to request a bound token (also known as "projected token"). Compared to using "secretRef", using this field means that you don't rely on statically bound tokens. To use this field, you must configure an RBAC rule to let cert-manager request a token.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IssuerVaultAuthKubernetesServiceAccountRef {
+    /// TokenAudiences is an optional list of extra audiences to include in the token passed to Vault. The default token consisting of the issuer's namespace and name is always included.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
     /// Name of the ServiceAccount used to request a token.
     pub name: String,
 }

@@ -2453,9 +2453,21 @@ pub struct CryostatStorageOptionsPvcSpecSelectorMatchExpressions {
 /// Options to configure the Cryostat application's target discovery mechanisms.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CryostatTargetDiscoveryOptions {
-    /// When true, the Cryostat application will disable the built-in discovery mechanisms. Defaults to false
+    /// When true, the Cryostat application will disable the built-in discovery mechanisms. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtInDiscoveryDisabled")]
     pub built_in_discovery_disabled: Option<bool>,
+    /// When true, the Cryostat application will use the default port name jfr-jmx to look for JMX connectable targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableBuiltInPortNames")]
+    pub disable_built_in_port_names: Option<bool>,
+    /// When true, the Cryostat application will use the default port number 9091 to look for JMX connectable targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableBuiltInPortNumbers")]
+    pub disable_built_in_port_numbers: Option<bool>,
+    /// List of port names that the Cryostat application should look for in order to consider a target as JMX connectable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryPortNames")]
+    pub discovery_port_names: Option<Vec<String>>,
+    /// List of port numbers that the Cryostat application should look for in order to consider a target as JMX connectable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryPortNumbers")]
+    pub discovery_port_numbers: Option<Vec<i64>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

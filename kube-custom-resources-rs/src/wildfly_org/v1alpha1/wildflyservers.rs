@@ -32,6 +32,12 @@ pub struct WildFlyServerSpec {
     /// EnvFrom contains environment variables from a source such as a ConfigMap or a Secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<WildFlyServerEnvFrom>>,
+    /// LivenessProbe defines the periodic probe of container liveness. Container will be restarted if the probe fails.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<WildFlyServerLivenessProbe>,
+    /// ReadinessProbe defines the periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<WildFlyServerReadinessProbe>,
     /// Replicas is the desired number of replicas for the application
     pub replicas: i32,
     /// ResourcesSpec defines the resources used by the WildFlyServer, ie CPU and memory, use limits and requests. More info: https://pkg.go.dev/k8s.io/api@v0.18.14/core/v1#ResourceRequirements
@@ -51,6 +57,9 @@ pub struct WildFlyServerSpec {
     /// StandaloneConfigMapSpec defines the desired configMap configuration to obtain the standalone configuration for WildFlyServer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "standaloneConfigMap")]
     pub standalone_config_map: Option<WildFlyServerStandaloneConfigMap>,
+    /// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<WildFlyServerStartupProbe>,
     /// StorageSpec defines specific storage required for the server own data directory. If omitted, an EmptyDir is used (that will not persist data across pod restart).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<WildFlyServerStorage>,
@@ -172,6 +181,130 @@ pub struct WildFlyServerEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
+/// LivenessProbe defines the periodic probe of container liveness. Container will be restarted if the probe fails.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerLivenessProbe {
+    /// Exec specifies a command action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<WildFlyServerLivenessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<WildFlyServerLivenessProbeHttpGet>,
+    /// Number of seconds after the container has started before probes are initiated. It defaults to 60 seconds for liveness probe. It defaults to 10 seconds for readiness probe. It defaults to 0 seconds for startup probe. Minimum value is 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies a command action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerLivenessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerLivenessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<WildFlyServerLivenessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerLivenessProbeHttpGetHttpHeaders {
+    /// The header field name
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// ReadinessProbe defines the periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerReadinessProbe {
+    /// Exec specifies a command action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<WildFlyServerReadinessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<WildFlyServerReadinessProbeHttpGet>,
+    /// Number of seconds after the container has started before probes are initiated. It defaults to 60 seconds for liveness probe. It defaults to 10 seconds for readiness probe. It defaults to 0 seconds for startup probe. Minimum value is 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies a command action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerReadinessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerReadinessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<WildFlyServerReadinessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerReadinessProbeHttpGetHttpHeaders {
+    /// The header field name
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
 /// ResourcesSpec defines the resources used by the WildFlyServer, ie CPU and memory, use limits and requests. More info: https://pkg.go.dev/k8s.io/api@v0.18.14/core/v1#ResourceRequirements
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WildFlyServerResources {
@@ -285,6 +418,68 @@ pub struct WildFlyServerStandaloneConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     pub name: String,
+}
+
+/// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerStartupProbe {
+    /// Exec specifies a command action to take.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<WildFlyServerStartupProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// HTTPGet specifies the http request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<WildFlyServerStartupProbeHttpGet>,
+    /// Number of seconds after the container has started before probes are initiated. It defaults to 60 seconds for liveness probe. It defaults to 10 seconds for readiness probe. It defaults to 0 seconds for startup probe. Minimum value is 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies a command action to take.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerStartupProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies the http request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerStartupProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<WildFlyServerStartupProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WildFlyServerStartupProbeHttpGetHttpHeaders {
+    /// The header field name
+    pub name: String,
+    /// The header field value
+    pub value: String,
 }
 
 /// StorageSpec defines specific storage required for the server own data directory. If omitted, an EmptyDir is used (that will not persist data across pod restart).

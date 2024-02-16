@@ -5,9 +5,14 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// DBSubnetGroupSpec defines the desired state of DBSubnetGroup. 
-///  Contains the details of an Amazon RDS DB subnet group. 
-///  This data type is used as a response element in the DescribeDBSubnetGroups action.
+/// DBSubnetGroupSpec defines the desired state of DBSubnetGroup.
+/// 
+/// 
+/// Contains the details of an Amazon RDS DB subnet group.
+/// 
+/// 
+/// This data type is used as a response element in the DescribeDBSubnetGroups
+/// action.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "rds.services.k8s.aws", version = "v1alpha1", kind = "DBSubnetGroup", plural = "dbsubnetgroups")]
 #[kube(namespaced)]
@@ -16,12 +21,23 @@ use serde::{Serialize, Deserialize};
 pub struct DBSubnetGroupSpec {
     /// The description for the DB subnet group.
     pub description: String,
-    /// The name for the DB subnet group. This value is stored as a lowercase string. 
-    ///  Constraints: 
-    ///  * Must contain no more than 255 letters, numbers, periods, underscores, spaces, or hyphens. 
-    ///  * Must not be default. 
-    ///  * First character must be a letter. 
-    ///  Example: mydbsubnetgroup
+    /// The name for the DB subnet group. This value is stored as a lowercase string.
+    /// 
+    /// 
+    /// Constraints:
+    /// 
+    /// 
+    ///    * Must contain no more than 255 letters, numbers, periods, underscores,
+    ///    spaces, or hyphens.
+    /// 
+    /// 
+    ///    * Must not be default.
+    /// 
+    /// 
+    ///    * First character must be a letter.
+    /// 
+    /// 
+    /// Example: mydbsubnetgroup
     pub name: String,
     /// The EC2 Subnet IDs for the DB subnet group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
@@ -33,24 +49,35 @@ pub struct DBSubnetGroupSpec {
     pub tags: Option<Vec<DBSubnetGroupTags>>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupSubnetRefs {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<DBSubnetGroupSubnetRefsFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupSubnetRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Metadata assigned to an Amazon RDS resource consisting of a key-value pair. 
-///  For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html) in the Amazon RDS User Guide.
+/// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
+/// 
+/// 
+/// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
+/// in the Amazon RDS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -62,10 +89,15 @@ pub struct DBSubnetGroupTags {
 /// DBSubnetGroupStatus defines the observed state of DBSubnetGroup
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DBSubnetGroupStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<DBSubnetGroupStatusConditions>>,
     /// Provides the status of the DB subnet group.
@@ -74,12 +106,24 @@ pub struct DBSubnetGroupStatus {
     /// Contains a list of Subnet elements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<DBSubnetGroupStatusSubnets>>,
-    /// The network type of the DB subnet group. 
-    ///  Valid values: 
-    ///  * IPV4 
-    ///  * DUAL 
-    ///  A DBSubnetGroup can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (DUAL). 
-    ///  For more information, see Working with a DB instance in a VPC (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html) in the Amazon RDS User Guide.
+    /// The network type of the DB subnet group.
+    /// 
+    /// 
+    /// Valid values:
+    /// 
+    /// 
+    ///    * IPV4
+    /// 
+    /// 
+    ///    * DUAL
+    /// 
+    /// 
+    /// A DBSubnetGroup can support only the IPv4 protocol or the IPv4 and the IPv6
+    /// protocols (DUAL).
+    /// 
+    /// 
+    /// For more information, see Working with a DB instance in a VPC (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html)
+    /// in the Amazon RDS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedNetworkTypes")]
     pub supported_network_types: Option<Vec<String>>,
     /// Provides the VpcId of the DB subnet group.
@@ -87,20 +131,32 @@ pub struct DBSubnetGroupStatus {
     pub vpc_id: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupStatusConditions {
     /// Last time the condition transitioned from one status to another.
@@ -119,33 +175,48 @@ pub struct DBSubnetGroupStatusConditions {
     pub r#type: String,
 }
 
-/// This data type is used as a response element for the DescribeDBSubnetGroups operation.
+/// This data type is used as a response element for the DescribeDBSubnetGroups
+/// operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupStatusSubnets {
-    /// Contains Availability Zone information. 
-    ///  This data type is used as an element in the OrderableDBInstanceOption data type.
+    /// Contains Availability Zone information.
+    /// 
+    /// 
+    /// This data type is used as an element in the OrderableDBInstanceOption data
+    /// type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetAvailabilityZone")]
     pub subnet_availability_zone: Option<DBSubnetGroupStatusSubnetsSubnetAvailabilityZone>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIdentifier")]
     pub subnet_identifier: Option<String>,
-    /// A data type that represents an Outpost. 
-    ///  For more information about RDS on Outposts, see Amazon RDS on Amazon Web Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html) in the Amazon RDS User Guide.
+    /// A data type that represents an Outpost.
+    /// 
+    /// 
+    /// For more information about RDS on Outposts, see Amazon RDS on Amazon Web
+    /// Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html)
+    /// in the Amazon RDS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetOutpost")]
     pub subnet_outpost: Option<DBSubnetGroupStatusSubnetsSubnetOutpost>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetStatus")]
     pub subnet_status: Option<String>,
 }
 
-/// Contains Availability Zone information. 
-///  This data type is used as an element in the OrderableDBInstanceOption data type.
+/// Contains Availability Zone information.
+/// 
+/// 
+/// This data type is used as an element in the OrderableDBInstanceOption data
+/// type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupStatusSubnetsSubnetAvailabilityZone {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// A data type that represents an Outpost. 
-///  For more information about RDS on Outposts, see Amazon RDS on Amazon Web Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html) in the Amazon RDS User Guide.
+/// A data type that represents an Outpost.
+/// 
+/// 
+/// For more information about RDS on Outposts, see Amazon RDS on Amazon Web
+/// Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html)
+/// in the Amazon RDS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupStatusSubnetsSubnetOutpost {
     #[serde(default, skip_serializing_if = "Option::is_none")]

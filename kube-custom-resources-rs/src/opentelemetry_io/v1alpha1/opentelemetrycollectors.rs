@@ -3002,7 +3002,7 @@ pub struct OpenTelemetryCollectorTargetAllocator {
     /// If specified, indicates the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<OpenTelemetryCollectorTargetAllocatorAffinity>,
-    /// AllocationStrategy determines which strategy the target allocator should use for allocation. The current options are least-weighted and consistent-hashing. The default option is consistent-hashing
+    /// AllocationStrategy determines which strategy the target allocator should use for allocation. The current options are least-weighted, consistent-hashing and per-node. The default is consistent-hashing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocationStrategy")]
     pub allocation_strategy: Option<OpenTelemetryCollectorTargetAllocatorAllocationStrategy>,
     /// Enabled indicates whether to use a target allocation mechanism for Prometheus targets or not.
@@ -3489,6 +3489,8 @@ pub enum OpenTelemetryCollectorTargetAllocatorAllocationStrategy {
     LeastWeighted,
     #[serde(rename = "consistent-hashing")]
     ConsistentHashing,
+    #[serde(rename = "per-node")]
+    PerNode,
 }
 
 /// EnvVar represents an environment variable present in a Container.

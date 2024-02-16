@@ -88,7 +88,7 @@ pub struct ModuleVariables {
 /// Workspace to execute the module.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleWorkspace {
-    /// Module Workspace ID. Must match pattern: ^ws-[a-zA-Z0-9]+$
+    /// Module Workspace ID. Must match pattern: `^ws-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Module Workspace Name.

@@ -13,43 +13,93 @@ use std::collections::BTreeMap;
 #[kube(status = "HyperParameterTuningJobStatus")]
 #[kube(schema = "disabled")]
 pub struct HyperParameterTuningJobSpec {
-    /// The HyperParameterTuningJobConfig object that describes the tuning job, including the search strategy, the objective metric used to evaluate training jobs, ranges of parameters to search, and resource limits for the tuning job. For more information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html).
+    /// The HyperParameterTuningJobConfig object that describes the tuning job, including
+    /// the search strategy, the objective metric used to evaluate training jobs,
+    /// ranges of parameters to search, and resource limits for the tuning job. For
+    /// more information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html).
     #[serde(rename = "hyperParameterTuningJobConfig")]
     pub hyper_parameter_tuning_job_config: HyperParameterTuningJobHyperParameterTuningJobConfig,
-    /// The name of the tuning job. This name is the prefix for the names of all training jobs that this tuning job launches. The name must be unique within the same Amazon Web Services account and Amazon Web Services Region. The name must have 1 to 32 characters. Valid characters are a-z, A-Z, 0-9, and : + = @ _ % - (hyphen). The name is not case sensitive.
+    /// The name of the tuning job. This name is the prefix for the names of all
+    /// training jobs that this tuning job launches. The name must be unique within
+    /// the same Amazon Web Services account and Amazon Web Services Region. The
+    /// name must have 1 to 32 characters. Valid characters are a-z, A-Z, 0-9, and
+    /// : + = @ _ % - (hyphen). The name is not case sensitive.
     #[serde(rename = "hyperParameterTuningJobName")]
     pub hyper_parameter_tuning_job_name: String,
-    /// An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see Tagging Amazon Web Services Resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). 
-    ///  Tags that you specify for the tuning job are also added to all training jobs that the tuning job launches.
+    /// An array of key-value pairs. You can use tags to categorize your Amazon Web
+    /// Services resources in different ways, for example, by purpose, owner, or
+    /// environment. For more information, see Tagging Amazon Web Services Resources
+    /// (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+    /// 
+    /// 
+    /// Tags that you specify for the tuning job are also added to all training jobs
+    /// that the tuning job launches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<HyperParameterTuningJobTags>>,
-    /// The HyperParameterTrainingJobDefinition object that describes the training jobs that this tuning job launches, including static hyperparameters, input data configuration, output data configuration, resource configuration, and stopping condition.
+    /// The HyperParameterTrainingJobDefinition object that describes the training
+    /// jobs that this tuning job launches, including static hyperparameters, input
+    /// data configuration, output data configuration, resource configuration, and
+    /// stopping condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobDefinition")]
     pub training_job_definition: Option<HyperParameterTuningJobTrainingJobDefinition>,
-    /// A list of the HyperParameterTrainingJobDefinition objects launched for this tuning job.
+    /// A list of the HyperParameterTrainingJobDefinition objects launched for this
+    /// tuning job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobDefinitions")]
     pub training_job_definitions: Option<Vec<HyperParameterTuningJobTrainingJobDefinitions>>,
-    /// Specifies the configuration for starting the hyperparameter tuning job using one or more previous tuning jobs as a starting point. The results of previous tuning jobs are used to inform which combinations of hyperparameters to search over in the new tuning job. 
-    ///  All training jobs launched by the new hyperparameter tuning job are evaluated by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM as the WarmStartType value for the warm start configuration, the training job that performs the best in the new tuning job is compared to the best training jobs from the parent tuning jobs. From these, the training job that performs the best as measured by the objective metric is returned as the overall best training job. 
-    ///  All training jobs launched by parent hyperparameter tuning jobs and the new hyperparameter tuning jobs count against the limit of training jobs for the tuning job.
+    /// Specifies the configuration for starting the hyperparameter tuning job using
+    /// one or more previous tuning jobs as a starting point. The results of previous
+    /// tuning jobs are used to inform which combinations of hyperparameters to search
+    /// over in the new tuning job.
+    /// 
+    /// 
+    /// All training jobs launched by the new hyperparameter tuning job are evaluated
+    /// by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM
+    /// as the WarmStartType value for the warm start configuration, the training
+    /// job that performs the best in the new tuning job is compared to the best
+    /// training jobs from the parent tuning jobs. From these, the training job that
+    /// performs the best as measured by the objective metric is returned as the
+    /// overall best training job.
+    /// 
+    /// 
+    /// All training jobs launched by parent hyperparameter tuning jobs and the new
+    /// hyperparameter tuning jobs count against the limit of training jobs for the
+    /// tuning job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmStartConfig")]
     pub warm_start_config: Option<HyperParameterTuningJobWarmStartConfig>,
 }
 
-/// The HyperParameterTuningJobConfig object that describes the tuning job, including the search strategy, the objective metric used to evaluate training jobs, ranges of parameters to search, and resource limits for the tuning job. For more information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html).
+/// The HyperParameterTuningJobConfig object that describes the tuning job, including
+/// the search strategy, the objective metric used to evaluate training jobs,
+/// ranges of parameters to search, and resource limits for the tuning job. For
+/// more information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfig {
-    /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter.
+    /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
+    /// tuning uses the value of this metric to evaluate the training jobs it launches,
+    /// and returns the training job that results in either the highest or lowest
+    /// value for this metric, depending on the value you specify for the Type parameter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterTuningJobObjective")]
     pub hyper_parameter_tuning_job_objective: Option<HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTuningJobObjective>,
-    /// Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. 
-    ///  The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified.
+    /// Specifies ranges of integer, continuous, and categorical hyperparameters
+    /// that a hyperparameter tuning job searches. The hyperparameter tuning job
+    /// launches training jobs with hyperparameter values within these ranges to
+    /// find the combination of values that result in the training job with the best
+    /// performance as measured by the objective metric of the hyperparameter tuning
+    /// job.
+    /// 
+    /// 
+    /// The maximum number of items specified for Array Members refers to the maximum
+    /// number of hyperparameters for each range and also the maximum for the hyperparameter
+    /// tuning job itself. That is, the sum of the number of hyperparameters for
+    /// all the ranges can't exceed the maximum number specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterRanges")]
     pub parameter_ranges: Option<HyperParameterTuningJobHyperParameterTuningJobConfigParameterRanges>,
-    /// Specifies the maximum number of training jobs and parallel training jobs that a hyperparameter tuning job can launch.
+    /// Specifies the maximum number of training jobs and parallel training jobs
+    /// that a hyperparameter tuning job can launch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLimits")]
     pub resource_limits: Option<HyperParameterTuningJobHyperParameterTuningJobConfigResourceLimits>,
-    /// The strategy hyperparameter tuning uses to find the best combination of hyperparameters for your model.
+    /// The strategy hyperparameter tuning uses to find the best combination of hyperparameters
+    /// for your model.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobEarlyStoppingType")]
@@ -59,7 +109,10 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfig {
     pub tuning_job_completion_criteria: Option<HyperParameterTuningJobHyperParameterTuningJobConfigTuningJobCompletionCriteria>,
 }
 
-/// Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter.
+/// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
+/// tuning uses the value of this metric to evaluate the training jobs it launches,
+/// and returns the training job that results in either the highest or lowest
+/// value for this metric, depending on the value you specify for the Type parameter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTuningJobObjective {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
@@ -68,8 +121,18 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTun
     pub r#type: Option<String>,
 }
 
-/// Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. 
-///  The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified.
+/// Specifies ranges of integer, continuous, and categorical hyperparameters
+/// that a hyperparameter tuning job searches. The hyperparameter tuning job
+/// launches training jobs with hyperparameter values within these ranges to
+/// find the combination of values that result in the training job with the best
+/// performance as measured by the objective metric of the hyperparameter tuning
+/// job.
+/// 
+/// 
+/// The maximum number of items specified for Array Members refers to the maximum
+/// number of hyperparameters for each range and also the maximum for the hyperparameter
+/// tuning job itself. That is, the sum of the number of hyperparameters for
+/// all the ranges can't exceed the maximum number specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "categoricalParameterRanges")]
@@ -102,7 +165,8 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesCo
     pub scaling_type: Option<String>,
 }
 
-/// For a hyperparameter of the integer type, specifies the range that a hyperparameter tuning job searches.
+/// For a hyperparameter of the integer type, specifies the range that a hyperparameter
+/// tuning job searches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesIntegerParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxValue")]
@@ -115,7 +179,8 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesIn
     pub scaling_type: Option<String>,
 }
 
-/// Specifies the maximum number of training jobs and parallel training jobs that a hyperparameter tuning job can launch.
+/// Specifies the maximum number of training jobs and parallel training jobs
+/// that a hyperparameter tuning job can launch.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigResourceLimits {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfTrainingJobs")]
@@ -131,9 +196,21 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigTuningJobCompleti
     pub target_objective_metric_value: Option<f64>,
 }
 
-/// A tag object that consists of a key and an optional value, used to manage metadata for SageMaker Amazon Web Services resources. 
-///  You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints. For more information on adding tags to SageMaker resources, see AddTags. 
-///  For more information on adding metadata to your Amazon Web Services resources with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). For advice on best practices for managing Amazon Web Services resources with tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
+/// A tag object that consists of a key and an optional value, used to manage
+/// metadata for SageMaker Amazon Web Services resources.
+/// 
+/// 
+/// You can add tags to notebook instances, training jobs, hyperparameter tuning
+/// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
+/// and endpoints. For more information on adding tags to SageMaker resources,
+/// see AddTags.
+/// 
+/// 
+/// For more information on adding metadata to your Amazon Web Services resources
+/// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+/// For advice on best practices for managing Amazon Web Services resources with
+/// tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services
+/// Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -142,13 +219,18 @@ pub struct HyperParameterTuningJobTags {
     pub value: Option<String>,
 }
 
-/// The HyperParameterTrainingJobDefinition object that describes the training jobs that this tuning job launches, including static hyperparameters, input data configuration, output data configuration, resource configuration, and stopping condition.
+/// The HyperParameterTrainingJobDefinition object that describes the training
+/// jobs that this tuning job launches, including static hyperparameters, input
+/// data configuration, output data configuration, resource configuration, and
+/// stopping condition.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinition {
-    /// Specifies which training algorithm to use for training jobs that a hyperparameter tuning job launches and the metrics to monitor.
+    /// Specifies which training algorithm to use for training jobs that a hyperparameter
+    /// tuning job launches and the metrics to monitor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmSpecification")]
     pub algorithm_specification: Option<HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification>,
-    /// Contains information about the output location for managed spot training checkpoint data.
+    /// Contains information about the output location for managed spot training
+    /// checkpoint data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkpointConfig")]
     pub checkpoint_config: Option<HyperParameterTuningJobTrainingJobDefinitionCheckpointConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionName")]
@@ -159,8 +241,18 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
     pub enable_managed_spot_training: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
-    /// Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. 
-    ///  The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified.
+    /// Specifies ranges of integer, continuous, and categorical hyperparameters
+    /// that a hyperparameter tuning job searches. The hyperparameter tuning job
+    /// launches training jobs with hyperparameter values within these ranges to
+    /// find the combination of values that result in the training job with the best
+    /// performance as measured by the objective metric of the hyperparameter tuning
+    /// job.
+    /// 
+    /// 
+    /// The maximum number of items specified for Array Members refers to the maximum
+    /// number of hyperparameters for each range and also the maximum for the hyperparameter
+    /// tuning job itself. That is, the sum of the number of hyperparameters for
+    /// all the ranges can't exceed the maximum number specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterRanges")]
     pub hyper_parameter_ranges: Option<HyperParameterTuningJobTrainingJobDefinitionHyperParameterRanges>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputDataConfig")]
@@ -168,31 +260,61 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
     /// Provides information about how to store model training results (model artifacts).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputDataConfig")]
     pub output_data_config: Option<HyperParameterTuningJobTrainingJobDefinitionOutputDataConfig>,
-    /// Describes the resources, including machine learning (ML) compute instances and ML storage volumes, to use for model training.
+    /// Describes the resources, including machine learning (ML) compute instances
+    /// and ML storage volumes, to use for model training.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceConfig")]
     pub resource_config: Option<HyperParameterTuningJobTrainingJobDefinitionResourceConfig>,
-    /// The retry strategy to use when a training job fails due to an InternalServerError. RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob requests. You can add the StoppingCondition parameter to the request to limit the training time for the complete job.
+    /// The retry strategy to use when a training job fails due to an InternalServerError.
+    /// RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob
+    /// requests. You can add the StoppingCondition parameter to the request to limit
+    /// the training time for the complete job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<HyperParameterTuningJobTrainingJobDefinitionRetryStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
     pub role_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticHyperParameters")]
     pub static_hyper_parameters: Option<BTreeMap<String, String>>,
-    /// Specifies a limit to how long a model training job or model compilation job can run. It also specifies how long a managed spot training job has to complete. When the job reaches the time limit, SageMaker ends the training or compilation job. Use this API to cap model training costs. 
-    ///  To stop a training job, SageMaker sends the algorithm the SIGTERM signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. 
-    ///  The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with CreateModel. 
-    ///  The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete.
+    /// Specifies a limit to how long a model training job or model compilation job
+    /// can run. It also specifies how long a managed spot training job has to complete.
+    /// When the job reaches the time limit, SageMaker ends the training or compilation
+    /// job. Use this API to cap model training costs.
+    /// 
+    /// 
+    /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
+    /// which delays job termination for 120 seconds. Algorithms can use this 120-second
+    /// window to save the model artifacts, so the results of training are not lost.
+    /// 
+    /// 
+    /// The training algorithms provided by SageMaker automatically save the intermediate
+    /// results of a model training job when possible. This attempt to save artifacts
+    /// is only a best effort case as model might not be in a state from which it
+    /// can be saved. For example, if training has just started, the model might
+    /// not be ready to save. When saved, this intermediate data is a valid model
+    /// artifact. You can use it to create a model with CreateModel.
+    /// 
+    /// 
+    /// The Neural Topic Model (NTM) currently does not support saving intermediate
+    /// model artifacts. When training NTMs, make sure that the maximum runtime is
+    /// sufficient for the training job to complete.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppingCondition")]
     pub stopping_condition: Option<HyperParameterTuningJobTrainingJobDefinitionStoppingCondition>,
-    /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter.
+    /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
+    /// tuning uses the value of this metric to evaluate the training jobs it launches,
+    /// and returns the training job that results in either the highest or lowest
+    /// value for this metric, depending on the value you specify for the Type parameter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tuningObjective")]
     pub tuning_objective: Option<HyperParameterTuningJobTrainingJobDefinitionTuningObjective>,
-    /// Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+    /// Specifies a VPC that your training jobs and hosted models have access to.
+    /// Control access to and from your training and model containers by configuring
+    /// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
+    /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
+    /// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
     pub vpc_config: Option<HyperParameterTuningJobTrainingJobDefinitionVpcConfig>,
 }
 
-/// Specifies which training algorithm to use for training jobs that a hyperparameter tuning job launches and the metrics to monitor.
+/// Specifies which training algorithm to use for training jobs that a hyperparameter
+/// tuning job launches and the metrics to monitor.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmName")]
@@ -201,21 +323,59 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification {
     pub metric_definitions: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecificationMetricDefinitions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingImage")]
     pub training_image: Option<String>,
-    /// The training input mode that the algorithm supports. For more information about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html). 
-    ///  Pipe mode 
-    ///  If an algorithm supports Pipe mode, Amazon SageMaker streams data directly from Amazon S3 to the container. 
-    ///  File mode 
-    ///  If an algorithm supports File mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container. 
-    ///  You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any. 
-    ///  For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training. 
-    ///  FastFile mode 
-    ///  If an algorithm supports FastFile mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk. 
-    ///  FastFile mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided.
+    /// The training input mode that the algorithm supports. For more information
+    /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
+    /// 
+    /// 
+    /// Pipe mode
+    /// 
+    /// 
+    /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
+    /// from Amazon S3 to the container.
+    /// 
+    /// 
+    /// File mode
+    /// 
+    /// 
+    /// If an algorithm supports File mode, SageMaker downloads the training data
+    /// from S3 to the provisioned ML storage volume, and mounts the directory to
+    /// the Docker volume for the training container.
+    /// 
+    /// 
+    /// You must provision the ML storage volume with sufficient capacity to accommodate
+    /// the data downloaded from S3. In addition to the training data, the ML storage
+    /// volume also stores the output model. The algorithm container uses the ML
+    /// storage volume to also store intermediate information, if any.
+    /// 
+    /// 
+    /// For distributed algorithms, training data is distributed uniformly. Your
+    /// training duration is predictable if the input data objects sizes are approximately
+    /// the same. SageMaker does not split the files any further for model training.
+    /// If the object sizes are skewed, training won't be optimal as the data distribution
+    /// is also skewed when one host in a training cluster is overloaded, thus becoming
+    /// a bottleneck in training.
+    /// 
+    /// 
+    /// FastFile mode
+    /// 
+    /// 
+    /// If an algorithm supports FastFile mode, SageMaker streams data directly from
+    /// S3 to the container with no code changes, and provides file system access
+    /// to the data. Users can author their training script to interact with these
+    /// files as if they were stored on disk.
+    /// 
+    /// 
+    /// FastFile mode works best when the data is read sequentially. Augmented manifest
+    /// files aren't supported. The startup time is lower when there are fewer files
+    /// in the S3 bucket provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingInputMode")]
     pub training_input_mode: Option<String>,
 }
 
-/// Specifies a metric that the training algorithm writes to stderr or stdout. SageMakerhyperparameter tuning captures all defined metrics. You specify one metric that a hyperparameter tuning job uses as its objective metric to choose the best training job.
+/// Specifies a metric that the training algorithm writes to stderr or stdout.
+/// SageMakerhyperparameter tuning captures all defined metrics. You specify
+/// one metric that a hyperparameter tuning job uses as its objective metric
+/// to choose the best training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecificationMetricDefinitions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -224,7 +384,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecificationMet
     pub regex: Option<String>,
 }
 
-/// Contains information about the output location for managed spot training checkpoint data.
+/// Contains information about the output location for managed spot training
+/// checkpoint data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionCheckpointConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
@@ -233,8 +394,18 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionCheckpointConfig {
     pub s3_uri: Option<String>,
 }
 
-/// Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. 
-///  The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified.
+/// Specifies ranges of integer, continuous, and categorical hyperparameters
+/// that a hyperparameter tuning job searches. The hyperparameter tuning job
+/// launches training jobs with hyperparameter values within these ranges to
+/// find the combination of values that result in the training job with the best
+/// performance as measured by the objective metric of the hyperparameter tuning
+/// job.
+/// 
+/// 
+/// The maximum number of items specified for Array Members refers to the maximum
+/// number of hyperparameters for each range and also the maximum for the hyperparameter
+/// tuning job itself. That is, the sum of the number of hyperparameters for
+/// all the ranges can't exceed the maximum number specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "categoricalParameterRanges")]
@@ -267,7 +438,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesConti
     pub scaling_type: Option<String>,
 }
 
-/// For a hyperparameter of the integer type, specifies the range that a hyperparameter tuning job searches.
+/// For a hyperparameter of the integer type, specifies the range that a hyperparameter
+/// tuning job searches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesIntegerParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxValue")]
@@ -292,22 +464,70 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfig {
     /// Describes the location of the channel data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource>,
-    /// The training input mode that the algorithm supports. For more information about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html). 
-    ///  Pipe mode 
-    ///  If an algorithm supports Pipe mode, Amazon SageMaker streams data directly from Amazon S3 to the container. 
-    ///  File mode 
-    ///  If an algorithm supports File mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container. 
-    ///  You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any. 
-    ///  For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training. 
-    ///  FastFile mode 
-    ///  If an algorithm supports FastFile mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk. 
-    ///  FastFile mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided.
+    /// The training input mode that the algorithm supports. For more information
+    /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
+    /// 
+    /// 
+    /// Pipe mode
+    /// 
+    /// 
+    /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
+    /// from Amazon S3 to the container.
+    /// 
+    /// 
+    /// File mode
+    /// 
+    /// 
+    /// If an algorithm supports File mode, SageMaker downloads the training data
+    /// from S3 to the provisioned ML storage volume, and mounts the directory to
+    /// the Docker volume for the training container.
+    /// 
+    /// 
+    /// You must provision the ML storage volume with sufficient capacity to accommodate
+    /// the data downloaded from S3. In addition to the training data, the ML storage
+    /// volume also stores the output model. The algorithm container uses the ML
+    /// storage volume to also store intermediate information, if any.
+    /// 
+    /// 
+    /// For distributed algorithms, training data is distributed uniformly. Your
+    /// training duration is predictable if the input data objects sizes are approximately
+    /// the same. SageMaker does not split the files any further for model training.
+    /// If the object sizes are skewed, training won't be optimal as the data distribution
+    /// is also skewed when one host in a training cluster is overloaded, thus becoming
+    /// a bottleneck in training.
+    /// 
+    /// 
+    /// FastFile mode
+    /// 
+    /// 
+    /// If an algorithm supports FastFile mode, SageMaker streams data directly from
+    /// S3 to the container with no code changes, and provides file system access
+    /// to the data. Users can author their training script to interact with these
+    /// files as if they were stored on disk.
+    /// 
+    /// 
+    /// FastFile mode works best when the data is read sequentially. Augmented manifest
+    /// files aren't supported. The startup time is lower when there are fewer files
+    /// in the S3 bucket provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputMode")]
     pub input_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordWrapperType")]
     pub record_wrapper_type: Option<String>,
-    /// A configuration for a shuffle option for input data in a channel. If you use S3Prefix for S3DataType, the results of the S3 key prefix matches are shuffled. If you use ManifestFile, the order of the S3 object references in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling order is determined using the Seed value. 
-    ///  For Pipe input mode, when ShuffleConfig is specified shuffling is done at the start of every epoch. With large datasets, this ensures that the order of the training data is different for each epoch, and it helps reduce bias and possible overfitting. In a multi-node training job when ShuffleConfig is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled across nodes so that the content sent to a particular node on the first epoch might be sent to a different node on the second epoch.
+    /// A configuration for a shuffle option for input data in a channel. If you
+    /// use S3Prefix for S3DataType, the results of the S3 key prefix matches are
+    /// shuffled. If you use ManifestFile, the order of the S3 object references
+    /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
+    /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
+    /// order is determined using the Seed value.
+    /// 
+    /// 
+    /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
+    /// the start of every epoch. With large datasets, this ensures that the order
+    /// of the training data is different for each epoch, and it helps reduce bias
+    /// and possible overfitting. In a multi-node training job when ShuffleConfig
+    /// is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled
+    /// across nodes so that the content sent to a particular node on the first epoch
+    /// might be sent to a different node on the second epoch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shuffleConfig")]
     pub shuffle_config: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigShuffleConfig>,
 }
@@ -351,8 +571,21 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource
     pub s3_uri: Option<String>,
 }
 
-/// A configuration for a shuffle option for input data in a channel. If you use S3Prefix for S3DataType, the results of the S3 key prefix matches are shuffled. If you use ManifestFile, the order of the S3 object references in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling order is determined using the Seed value. 
-///  For Pipe input mode, when ShuffleConfig is specified shuffling is done at the start of every epoch. With large datasets, this ensures that the order of the training data is different for each epoch, and it helps reduce bias and possible overfitting. In a multi-node training job when ShuffleConfig is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled across nodes so that the content sent to a particular node on the first epoch might be sent to a different node on the second epoch.
+/// A configuration for a shuffle option for input data in a channel. If you
+/// use S3Prefix for S3DataType, the results of the S3 key prefix matches are
+/// shuffled. If you use ManifestFile, the order of the S3 object references
+/// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
+/// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
+/// order is determined using the Seed value.
+/// 
+/// 
+/// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
+/// the start of every epoch. With large datasets, this ensures that the order
+/// of the training data is different for each epoch, and it helps reduce bias
+/// and possible overfitting. In a multi-node training job when ShuffleConfig
+/// is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled
+/// across nodes so that the content sent to a particular node on the first epoch
+/// might be sent to a different node on the second epoch.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigShuffleConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -368,7 +601,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionOutputDataConfig {
     pub s3_output_path: Option<String>,
 }
 
-/// Describes the resources, including machine learning (ML) compute instances and ML storage volumes, to use for model training.
+/// Describes the resources, including machine learning (ML) compute instances
+/// and ML storage volumes, to use for model training.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
@@ -385,7 +619,9 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfig {
     pub volume_size_in_gb: Option<i64>,
 }
 
-/// Defines an instance group for heterogeneous cluster training. When requesting a training job using the CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html) API, you can configure multiple instance groups .
+/// Defines an instance group for heterogeneous cluster training. When requesting
+/// a training job using the CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
+/// API, you can configure multiple instance groups .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGroups {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
@@ -396,17 +632,38 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGro
     pub instance_type: Option<String>,
 }
 
-/// The retry strategy to use when a training job fails due to an InternalServerError. RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob requests. You can add the StoppingCondition parameter to the request to limit the training time for the complete job.
+/// The retry strategy to use when a training job fails due to an InternalServerError.
+/// RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob
+/// requests. You can add the StoppingCondition parameter to the request to limit
+/// the training time for the complete job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionRetryStrategy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
 }
 
-/// Specifies a limit to how long a model training job or model compilation job can run. It also specifies how long a managed spot training job has to complete. When the job reaches the time limit, SageMaker ends the training or compilation job. Use this API to cap model training costs. 
-///  To stop a training job, SageMaker sends the algorithm the SIGTERM signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. 
-///  The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with CreateModel. 
-///  The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete.
+/// Specifies a limit to how long a model training job or model compilation job
+/// can run. It also specifies how long a managed spot training job has to complete.
+/// When the job reaches the time limit, SageMaker ends the training or compilation
+/// job. Use this API to cap model training costs.
+/// 
+/// 
+/// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
+/// which delays job termination for 120 seconds. Algorithms can use this 120-second
+/// window to save the model artifacts, so the results of training are not lost.
+/// 
+/// 
+/// The training algorithms provided by SageMaker automatically save the intermediate
+/// results of a model training job when possible. This attempt to save artifacts
+/// is only a best effort case as model might not be in a state from which it
+/// can be saved. For example, if training has just started, the model might
+/// not be ready to save. When saved, this intermediate data is a valid model
+/// artifact. You can use it to create a model with CreateModel.
+/// 
+/// 
+/// The Neural Topic Model (NTM) currently does not support saving intermediate
+/// model artifacts. When training NTMs, make sure that the maximum runtime is
+/// sufficient for the training job to complete.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionStoppingCondition {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
@@ -415,7 +672,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionStoppingCondition {
     pub max_wait_time_in_seconds: Option<i64>,
 }
 
-/// Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter.
+/// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
+/// tuning uses the value of this metric to evaluate the training jobs it launches,
+/// and returns the training job that results in either the highest or lowest
+/// value for this metric, depending on the value you specify for the Type parameter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionTuningObjective {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
@@ -424,7 +684,11 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionTuningObjective {
     pub r#type: Option<String>,
 }
 
-/// Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+/// Specifies a VPC that your training jobs and hosted models have access to.
+/// Control access to and from your training and model containers by configuring
+/// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
+/// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
+/// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionVpcConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -436,10 +700,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionVpcConfig {
 /// Defines the training jobs launched by a hyperparameter tuning job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitions {
-    /// Specifies which training algorithm to use for training jobs that a hyperparameter tuning job launches and the metrics to monitor.
+    /// Specifies which training algorithm to use for training jobs that a hyperparameter
+    /// tuning job launches and the metrics to monitor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmSpecification")]
     pub algorithm_specification: Option<HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification>,
-    /// Contains information about the output location for managed spot training checkpoint data.
+    /// Contains information about the output location for managed spot training
+    /// checkpoint data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkpointConfig")]
     pub checkpoint_config: Option<HyperParameterTuningJobTrainingJobDefinitionsCheckpointConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionName")]
@@ -450,8 +716,18 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
     pub enable_managed_spot_training: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
-    /// Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. 
-    ///  The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified.
+    /// Specifies ranges of integer, continuous, and categorical hyperparameters
+    /// that a hyperparameter tuning job searches. The hyperparameter tuning job
+    /// launches training jobs with hyperparameter values within these ranges to
+    /// find the combination of values that result in the training job with the best
+    /// performance as measured by the objective metric of the hyperparameter tuning
+    /// job.
+    /// 
+    /// 
+    /// The maximum number of items specified for Array Members refers to the maximum
+    /// number of hyperparameters for each range and also the maximum for the hyperparameter
+    /// tuning job itself. That is, the sum of the number of hyperparameters for
+    /// all the ranges can't exceed the maximum number specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterRanges")]
     pub hyper_parameter_ranges: Option<HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRanges>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputDataConfig")]
@@ -459,31 +735,61 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
     /// Provides information about how to store model training results (model artifacts).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputDataConfig")]
     pub output_data_config: Option<HyperParameterTuningJobTrainingJobDefinitionsOutputDataConfig>,
-    /// Describes the resources, including machine learning (ML) compute instances and ML storage volumes, to use for model training.
+    /// Describes the resources, including machine learning (ML) compute instances
+    /// and ML storage volumes, to use for model training.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceConfig")]
     pub resource_config: Option<HyperParameterTuningJobTrainingJobDefinitionsResourceConfig>,
-    /// The retry strategy to use when a training job fails due to an InternalServerError. RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob requests. You can add the StoppingCondition parameter to the request to limit the training time for the complete job.
+    /// The retry strategy to use when a training job fails due to an InternalServerError.
+    /// RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob
+    /// requests. You can add the StoppingCondition parameter to the request to limit
+    /// the training time for the complete job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<HyperParameterTuningJobTrainingJobDefinitionsRetryStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
     pub role_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticHyperParameters")]
     pub static_hyper_parameters: Option<BTreeMap<String, String>>,
-    /// Specifies a limit to how long a model training job or model compilation job can run. It also specifies how long a managed spot training job has to complete. When the job reaches the time limit, SageMaker ends the training or compilation job. Use this API to cap model training costs. 
-    ///  To stop a training job, SageMaker sends the algorithm the SIGTERM signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. 
-    ///  The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with CreateModel. 
-    ///  The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete.
+    /// Specifies a limit to how long a model training job or model compilation job
+    /// can run. It also specifies how long a managed spot training job has to complete.
+    /// When the job reaches the time limit, SageMaker ends the training or compilation
+    /// job. Use this API to cap model training costs.
+    /// 
+    /// 
+    /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
+    /// which delays job termination for 120 seconds. Algorithms can use this 120-second
+    /// window to save the model artifacts, so the results of training are not lost.
+    /// 
+    /// 
+    /// The training algorithms provided by SageMaker automatically save the intermediate
+    /// results of a model training job when possible. This attempt to save artifacts
+    /// is only a best effort case as model might not be in a state from which it
+    /// can be saved. For example, if training has just started, the model might
+    /// not be ready to save. When saved, this intermediate data is a valid model
+    /// artifact. You can use it to create a model with CreateModel.
+    /// 
+    /// 
+    /// The Neural Topic Model (NTM) currently does not support saving intermediate
+    /// model artifacts. When training NTMs, make sure that the maximum runtime is
+    /// sufficient for the training job to complete.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppingCondition")]
     pub stopping_condition: Option<HyperParameterTuningJobTrainingJobDefinitionsStoppingCondition>,
-    /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter.
+    /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
+    /// tuning uses the value of this metric to evaluate the training jobs it launches,
+    /// and returns the training job that results in either the highest or lowest
+    /// value for this metric, depending on the value you specify for the Type parameter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tuningObjective")]
     pub tuning_objective: Option<HyperParameterTuningJobTrainingJobDefinitionsTuningObjective>,
-    /// Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+    /// Specifies a VPC that your training jobs and hosted models have access to.
+    /// Control access to and from your training and model containers by configuring
+    /// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
+    /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
+    /// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
     pub vpc_config: Option<HyperParameterTuningJobTrainingJobDefinitionsVpcConfig>,
 }
 
-/// Specifies which training algorithm to use for training jobs that a hyperparameter tuning job launches and the metrics to monitor.
+/// Specifies which training algorithm to use for training jobs that a hyperparameter
+/// tuning job launches and the metrics to monitor.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmName")]
@@ -492,21 +798,59 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification {
     pub metric_definitions: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecificationMetricDefinitions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingImage")]
     pub training_image: Option<String>,
-    /// The training input mode that the algorithm supports. For more information about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html). 
-    ///  Pipe mode 
-    ///  If an algorithm supports Pipe mode, Amazon SageMaker streams data directly from Amazon S3 to the container. 
-    ///  File mode 
-    ///  If an algorithm supports File mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container. 
-    ///  You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any. 
-    ///  For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training. 
-    ///  FastFile mode 
-    ///  If an algorithm supports FastFile mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk. 
-    ///  FastFile mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided.
+    /// The training input mode that the algorithm supports. For more information
+    /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
+    /// 
+    /// 
+    /// Pipe mode
+    /// 
+    /// 
+    /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
+    /// from Amazon S3 to the container.
+    /// 
+    /// 
+    /// File mode
+    /// 
+    /// 
+    /// If an algorithm supports File mode, SageMaker downloads the training data
+    /// from S3 to the provisioned ML storage volume, and mounts the directory to
+    /// the Docker volume for the training container.
+    /// 
+    /// 
+    /// You must provision the ML storage volume with sufficient capacity to accommodate
+    /// the data downloaded from S3. In addition to the training data, the ML storage
+    /// volume also stores the output model. The algorithm container uses the ML
+    /// storage volume to also store intermediate information, if any.
+    /// 
+    /// 
+    /// For distributed algorithms, training data is distributed uniformly. Your
+    /// training duration is predictable if the input data objects sizes are approximately
+    /// the same. SageMaker does not split the files any further for model training.
+    /// If the object sizes are skewed, training won't be optimal as the data distribution
+    /// is also skewed when one host in a training cluster is overloaded, thus becoming
+    /// a bottleneck in training.
+    /// 
+    /// 
+    /// FastFile mode
+    /// 
+    /// 
+    /// If an algorithm supports FastFile mode, SageMaker streams data directly from
+    /// S3 to the container with no code changes, and provides file system access
+    /// to the data. Users can author their training script to interact with these
+    /// files as if they were stored on disk.
+    /// 
+    /// 
+    /// FastFile mode works best when the data is read sequentially. Augmented manifest
+    /// files aren't supported. The startup time is lower when there are fewer files
+    /// in the S3 bucket provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingInputMode")]
     pub training_input_mode: Option<String>,
 }
 
-/// Specifies a metric that the training algorithm writes to stderr or stdout. SageMakerhyperparameter tuning captures all defined metrics. You specify one metric that a hyperparameter tuning job uses as its objective metric to choose the best training job.
+/// Specifies a metric that the training algorithm writes to stderr or stdout.
+/// SageMakerhyperparameter tuning captures all defined metrics. You specify
+/// one metric that a hyperparameter tuning job uses as its objective metric
+/// to choose the best training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecificationMetricDefinitions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -515,7 +859,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecificationMe
     pub regex: Option<String>,
 }
 
-/// Contains information about the output location for managed spot training checkpoint data.
+/// Contains information about the output location for managed spot training
+/// checkpoint data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsCheckpointConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
@@ -524,8 +869,18 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsCheckpointConfig {
     pub s3_uri: Option<String>,
 }
 
-/// Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. 
-///  The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified.
+/// Specifies ranges of integer, continuous, and categorical hyperparameters
+/// that a hyperparameter tuning job searches. The hyperparameter tuning job
+/// launches training jobs with hyperparameter values within these ranges to
+/// find the combination of values that result in the training job with the best
+/// performance as measured by the objective metric of the hyperparameter tuning
+/// job.
+/// 
+/// 
+/// The maximum number of items specified for Array Members refers to the maximum
+/// number of hyperparameters for each range and also the maximum for the hyperparameter
+/// tuning job itself. That is, the sum of the number of hyperparameters for
+/// all the ranges can't exceed the maximum number specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "categoricalParameterRanges")]
@@ -558,7 +913,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesCont
     pub scaling_type: Option<String>,
 }
 
-/// For a hyperparameter of the integer type, specifies the range that a hyperparameter tuning job searches.
+/// For a hyperparameter of the integer type, specifies the range that a hyperparameter
+/// tuning job searches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesIntegerParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxValue")]
@@ -583,22 +939,70 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig {
     /// Describes the location of the channel data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSource>,
-    /// The training input mode that the algorithm supports. For more information about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html). 
-    ///  Pipe mode 
-    ///  If an algorithm supports Pipe mode, Amazon SageMaker streams data directly from Amazon S3 to the container. 
-    ///  File mode 
-    ///  If an algorithm supports File mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container. 
-    ///  You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any. 
-    ///  For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training. 
-    ///  FastFile mode 
-    ///  If an algorithm supports FastFile mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk. 
-    ///  FastFile mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided.
+    /// The training input mode that the algorithm supports. For more information
+    /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
+    /// 
+    /// 
+    /// Pipe mode
+    /// 
+    /// 
+    /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
+    /// from Amazon S3 to the container.
+    /// 
+    /// 
+    /// File mode
+    /// 
+    /// 
+    /// If an algorithm supports File mode, SageMaker downloads the training data
+    /// from S3 to the provisioned ML storage volume, and mounts the directory to
+    /// the Docker volume for the training container.
+    /// 
+    /// 
+    /// You must provision the ML storage volume with sufficient capacity to accommodate
+    /// the data downloaded from S3. In addition to the training data, the ML storage
+    /// volume also stores the output model. The algorithm container uses the ML
+    /// storage volume to also store intermediate information, if any.
+    /// 
+    /// 
+    /// For distributed algorithms, training data is distributed uniformly. Your
+    /// training duration is predictable if the input data objects sizes are approximately
+    /// the same. SageMaker does not split the files any further for model training.
+    /// If the object sizes are skewed, training won't be optimal as the data distribution
+    /// is also skewed when one host in a training cluster is overloaded, thus becoming
+    /// a bottleneck in training.
+    /// 
+    /// 
+    /// FastFile mode
+    /// 
+    /// 
+    /// If an algorithm supports FastFile mode, SageMaker streams data directly from
+    /// S3 to the container with no code changes, and provides file system access
+    /// to the data. Users can author their training script to interact with these
+    /// files as if they were stored on disk.
+    /// 
+    /// 
+    /// FastFile mode works best when the data is read sequentially. Augmented manifest
+    /// files aren't supported. The startup time is lower when there are fewer files
+    /// in the S3 bucket provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputMode")]
     pub input_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordWrapperType")]
     pub record_wrapper_type: Option<String>,
-    /// A configuration for a shuffle option for input data in a channel. If you use S3Prefix for S3DataType, the results of the S3 key prefix matches are shuffled. If you use ManifestFile, the order of the S3 object references in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling order is determined using the Seed value. 
-    ///  For Pipe input mode, when ShuffleConfig is specified shuffling is done at the start of every epoch. With large datasets, this ensures that the order of the training data is different for each epoch, and it helps reduce bias and possible overfitting. In a multi-node training job when ShuffleConfig is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled across nodes so that the content sent to a particular node on the first epoch might be sent to a different node on the second epoch.
+    /// A configuration for a shuffle option for input data in a channel. If you
+    /// use S3Prefix for S3DataType, the results of the S3 key prefix matches are
+    /// shuffled. If you use ManifestFile, the order of the S3 object references
+    /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
+    /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
+    /// order is determined using the Seed value.
+    /// 
+    /// 
+    /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
+    /// the start of every epoch. With large datasets, this ensures that the order
+    /// of the training data is different for each epoch, and it helps reduce bias
+    /// and possible overfitting. In a multi-node training job when ShuffleConfig
+    /// is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled
+    /// across nodes so that the content sent to a particular node on the first epoch
+    /// might be sent to a different node on the second epoch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shuffleConfig")]
     pub shuffle_config: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigShuffleConfig>,
 }
@@ -642,8 +1046,21 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourc
     pub s3_uri: Option<String>,
 }
 
-/// A configuration for a shuffle option for input data in a channel. If you use S3Prefix for S3DataType, the results of the S3 key prefix matches are shuffled. If you use ManifestFile, the order of the S3 object references in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling order is determined using the Seed value. 
-///  For Pipe input mode, when ShuffleConfig is specified shuffling is done at the start of every epoch. With large datasets, this ensures that the order of the training data is different for each epoch, and it helps reduce bias and possible overfitting. In a multi-node training job when ShuffleConfig is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled across nodes so that the content sent to a particular node on the first epoch might be sent to a different node on the second epoch.
+/// A configuration for a shuffle option for input data in a channel. If you
+/// use S3Prefix for S3DataType, the results of the S3 key prefix matches are
+/// shuffled. If you use ManifestFile, the order of the S3 object references
+/// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
+/// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
+/// order is determined using the Seed value.
+/// 
+/// 
+/// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
+/// the start of every epoch. With large datasets, this ensures that the order
+/// of the training data is different for each epoch, and it helps reduce bias
+/// and possible overfitting. In a multi-node training job when ShuffleConfig
+/// is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled
+/// across nodes so that the content sent to a particular node on the first epoch
+/// might be sent to a different node on the second epoch.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigShuffleConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -659,7 +1076,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsOutputDataConfig {
     pub s3_output_path: Option<String>,
 }
 
-/// Describes the resources, including machine learning (ML) compute instances and ML storage volumes, to use for model training.
+/// Describes the resources, including machine learning (ML) compute instances
+/// and ML storage volumes, to use for model training.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
@@ -676,7 +1094,9 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfig {
     pub volume_size_in_gb: Option<i64>,
 }
 
-/// Defines an instance group for heterogeneous cluster training. When requesting a training job using the CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html) API, you can configure multiple instance groups .
+/// Defines an instance group for heterogeneous cluster training. When requesting
+/// a training job using the CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
+/// API, you can configure multiple instance groups .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGroups {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
@@ -687,17 +1107,38 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGr
     pub instance_type: Option<String>,
 }
 
-/// The retry strategy to use when a training job fails due to an InternalServerError. RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob requests. You can add the StoppingCondition parameter to the request to limit the training time for the complete job.
+/// The retry strategy to use when a training job fails due to an InternalServerError.
+/// RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob
+/// requests. You can add the StoppingCondition parameter to the request to limit
+/// the training time for the complete job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsRetryStrategy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
 }
 
-/// Specifies a limit to how long a model training job or model compilation job can run. It also specifies how long a managed spot training job has to complete. When the job reaches the time limit, SageMaker ends the training or compilation job. Use this API to cap model training costs. 
-///  To stop a training job, SageMaker sends the algorithm the SIGTERM signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. 
-///  The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with CreateModel. 
-///  The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete.
+/// Specifies a limit to how long a model training job or model compilation job
+/// can run. It also specifies how long a managed spot training job has to complete.
+/// When the job reaches the time limit, SageMaker ends the training or compilation
+/// job. Use this API to cap model training costs.
+/// 
+/// 
+/// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
+/// which delays job termination for 120 seconds. Algorithms can use this 120-second
+/// window to save the model artifacts, so the results of training are not lost.
+/// 
+/// 
+/// The training algorithms provided by SageMaker automatically save the intermediate
+/// results of a model training job when possible. This attempt to save artifacts
+/// is only a best effort case as model might not be in a state from which it
+/// can be saved. For example, if training has just started, the model might
+/// not be ready to save. When saved, this intermediate data is a valid model
+/// artifact. You can use it to create a model with CreateModel.
+/// 
+/// 
+/// The Neural Topic Model (NTM) currently does not support saving intermediate
+/// model artifacts. When training NTMs, make sure that the maximum runtime is
+/// sufficient for the training job to complete.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsStoppingCondition {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
@@ -706,7 +1147,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsStoppingCondition {
     pub max_wait_time_in_seconds: Option<i64>,
 }
 
-/// Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter.
+/// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
+/// tuning uses the value of this metric to evaluate the training jobs it launches,
+/// and returns the training job that results in either the highest or lowest
+/// value for this metric, depending on the value you specify for the Type parameter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsTuningObjective {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
@@ -715,7 +1159,11 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsTuningObjective {
     pub r#type: Option<String>,
 }
 
-/// Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+/// Specifies a VPC that your training jobs and hosted models have access to.
+/// Control access to and from your training and model containers by configuring
+/// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
+/// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
+/// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsVpcConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -724,9 +1172,24 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsVpcConfig {
     pub subnets: Option<Vec<String>>,
 }
 
-/// Specifies the configuration for starting the hyperparameter tuning job using one or more previous tuning jobs as a starting point. The results of previous tuning jobs are used to inform which combinations of hyperparameters to search over in the new tuning job. 
-///  All training jobs launched by the new hyperparameter tuning job are evaluated by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM as the WarmStartType value for the warm start configuration, the training job that performs the best in the new tuning job is compared to the best training jobs from the parent tuning jobs. From these, the training job that performs the best as measured by the objective metric is returned as the overall best training job. 
-///  All training jobs launched by parent hyperparameter tuning jobs and the new hyperparameter tuning jobs count against the limit of training jobs for the tuning job.
+/// Specifies the configuration for starting the hyperparameter tuning job using
+/// one or more previous tuning jobs as a starting point. The results of previous
+/// tuning jobs are used to inform which combinations of hyperparameters to search
+/// over in the new tuning job.
+/// 
+/// 
+/// All training jobs launched by the new hyperparameter tuning job are evaluated
+/// by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM
+/// as the WarmStartType value for the warm start configuration, the training
+/// job that performs the best in the new tuning job is compared to the best
+/// training jobs from the parent tuning jobs. From these, the training job that
+/// performs the best as measured by the objective metric is returned as the
+/// overall best training job.
+/// 
+/// 
+/// All training jobs launched by parent hyperparameter tuning jobs and the new
+/// hyperparameter tuning jobs count against the limit of training jobs for the
+/// tuning job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobWarmStartConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentHyperParameterTuningJobs")]
@@ -735,7 +1198,8 @@ pub struct HyperParameterTuningJobWarmStartConfig {
     pub warm_start_type: Option<String>,
 }
 
-/// A previously completed or stopped hyperparameter tuning job to be used as a starting point for a new hyperparameter tuning job.
+/// A previously completed or stopped hyperparameter tuning job to be used as
+/// a starting point for a new hyperparameter tuning job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobWarmStartConfigParentHyperParameterTuningJobs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterTuningJobName")]
@@ -745,47 +1209,70 @@ pub struct HyperParameterTuningJobWarmStartConfigParentHyperParameterTuningJobs 
 /// HyperParameterTuningJobStatus defines the observed state of HyperParameterTuningJob
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<HyperParameterTuningJobStatusAckResourceMetadata>,
-    /// A TrainingJobSummary object that describes the training job that completed with the best current HyperParameterTuningJobObjective.
+    /// A TrainingJobSummary object that describes the training job that completed
+    /// with the best current HyperParameterTuningJobObjective.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bestTrainingJob")]
     pub best_training_job: Option<HyperParameterTuningJobStatusBestTrainingJob>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<HyperParameterTuningJobStatusConditions>>,
     /// If the tuning job failed, the reason it failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// The status of the tuning job: InProgress, Completed, Failed, Stopping, or Stopped.
+    /// The status of the tuning job: InProgress, Completed, Failed, Stopping, or
+    /// Stopped.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterTuningJobStatus")]
     pub hyper_parameter_tuning_job_status: Option<String>,
-    /// If the hyperparameter tuning job is an warm start tuning job with a WarmStartType of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training job with the best objective metric value of all training jobs launched by this tuning job and all parent jobs specified for the warm start tuning job.
+    /// If the hyperparameter tuning job is an warm start tuning job with a WarmStartType
+    /// of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training
+    /// job with the best objective metric value of all training jobs launched by
+    /// this tuning job and all parent jobs specified for the warm start tuning job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "overallBestTrainingJob")]
     pub overall_best_training_job: Option<HyperParameterTuningJobStatusOverallBestTrainingJob>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// A TrainingJobSummary object that describes the training job that completed with the best current HyperParameterTuningJobObjective.
+/// A TrainingJobSummary object that describes the training job that completed
+/// with the best current HyperParameterTuningJobObjective.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusBestTrainingJob {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// Shows the latest objective metric emitted by a training job that was launched by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective parameter of HyperParameterTuningJobConfig.
+    /// Shows the latest objective metric emitted by a training job that was launched
+    /// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
+    /// parameter of HyperParameterTuningJobConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "finalHyperParameterTuningJobObjectiveMetric")]
     pub final_hyper_parameter_tuning_job_objective_metric: Option<HyperParameterTuningJobStatusBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectiveStatus")]
@@ -808,7 +1295,9 @@ pub struct HyperParameterTuningJobStatusBestTrainingJob {
     pub tuning_job_name: Option<String>,
 }
 
-/// Shows the latest objective metric emitted by a training job that was launched by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective parameter of HyperParameterTuningJobConfig.
+/// Shows the latest objective metric emitted by a training job that was launched
+/// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
+/// parameter of HyperParameterTuningJobConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
@@ -819,7 +1308,9 @@ pub struct HyperParameterTuningJobStatusBestTrainingJobFinalHyperParameterTuning
     pub value: Option<f64>,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusConditions {
     /// Last time the condition transitioned from one status to another.
@@ -838,14 +1329,19 @@ pub struct HyperParameterTuningJobStatusConditions {
     pub r#type: String,
 }
 
-/// If the hyperparameter tuning job is an warm start tuning job with a WarmStartType of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training job with the best objective metric value of all training jobs launched by this tuning job and all parent jobs specified for the warm start tuning job.
+/// If the hyperparameter tuning job is an warm start tuning job with a WarmStartType
+/// of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training
+/// job with the best objective metric value of all training jobs launched by
+/// this tuning job and all parent jobs specified for the warm start tuning job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusOverallBestTrainingJob {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// Shows the latest objective metric emitted by a training job that was launched by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective parameter of HyperParameterTuningJobConfig.
+    /// Shows the latest objective metric emitted by a training job that was launched
+    /// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
+    /// parameter of HyperParameterTuningJobConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "finalHyperParameterTuningJobObjectiveMetric")]
     pub final_hyper_parameter_tuning_job_objective_metric: Option<HyperParameterTuningJobStatusOverallBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectiveStatus")]
@@ -868,7 +1364,9 @@ pub struct HyperParameterTuningJobStatusOverallBestTrainingJob {
     pub tuning_job_name: Option<String>,
 }
 
-/// Shows the latest objective metric emitted by a training job that was launched by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective parameter of HyperParameterTuningJobConfig.
+/// Shows the latest objective metric emitted by a training job that was launched
+/// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
+/// parameter of HyperParameterTuningJobConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusOverallBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]

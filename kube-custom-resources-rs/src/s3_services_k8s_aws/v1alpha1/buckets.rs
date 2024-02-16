@@ -5,8 +5,12 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// BucketSpec defines the desired state of Bucket. 
-///  In terms of implementation, a Bucket is a resource. An Amazon S3 bucket name is globally unique, and the namespace is shared by all Amazon Web Services accounts.
+/// BucketSpec defines the desired state of Bucket.
+/// 
+/// 
+/// In terms of implementation, a Bucket is a resource. An Amazon S3 bucket name
+/// is globally unique, and the namespace is shared by all Amazon Web Services
+/// accounts.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "s3.services.k8s.aws", version = "v1alpha1", kind = "Bucket", plural = "buckets")]
 #[kube(namespaced)]
@@ -21,7 +25,10 @@ pub struct BucketSpec {
     pub acl: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub analytics: Option<Vec<BucketAnalytics>>,
-    /// Describes the cross-origin access configuration for objects in an Amazon S3 bucket. For more information, see Enabling Cross-Origin Resource Sharing (https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html) in the Amazon S3 User Guide.
+    /// Describes the cross-origin access configuration for objects in an Amazon
+    /// S3 bucket. For more information, see Enabling Cross-Origin Resource Sharing
+    /// (https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html) in the Amazon
+    /// S3 User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cors: Option<BucketCors>,
     /// The configuration information for the bucket.
@@ -30,7 +37,8 @@ pub struct BucketSpec {
     /// Specifies the default server-side-encryption configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encryption: Option<BucketEncryption>,
-    /// Allows grantee the read, write, read ACP, and write ACP permissions on the bucket.
+    /// Allows grantee the read, write, read ACP, and write ACP permissions on the
+    /// bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantFullControl")]
     pub grant_full_control: Option<String>,
     /// Allows grantee to list the objects in the bucket.
@@ -39,8 +47,11 @@ pub struct BucketSpec {
     /// Allows grantee to read the bucket ACL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantReadACP")]
     pub grant_read_acp: Option<String>,
-    /// Allows grantee to create new objects in the bucket. 
-    ///  For the bucket and object owners of existing objects, also allows deletions and overwrites of those objects.
+    /// Allows grantee to create new objects in the bucket.
+    /// 
+    /// 
+    /// For the bucket and object owners of existing objects, also allows deletions
+    /// and overwrites of those objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantWrite")]
     pub grant_write: Option<String>,
     /// Allows grantee to write the ACL for the applicable bucket.
@@ -60,7 +71,8 @@ pub struct BucketSpec {
     pub metrics: Option<Vec<BucketMetrics>>,
     /// The name of the bucket to create.
     pub name: String,
-    /// A container for specifying the notification configuration of the bucket. If this element is empty, notifications are turned off for the bucket.
+    /// A container for specifying the notification configuration of the bucket.
+    /// If this element is empty, notifications are turned off for the bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub notification: Option<BucketNotification>,
     /// Specifies whether you want S3 Object Lock to be enabled for the new bucket.
@@ -68,16 +80,22 @@ pub struct BucketSpec {
     pub object_lock_enabled_for_bucket: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOwnership")]
     pub object_ownership: Option<String>,
-    /// The OwnershipControls (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter) that you want to apply to this Amazon S3 bucket.
+    /// The OwnershipControls (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter)
+    /// that you want to apply to this Amazon S3 bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownershipControls")]
     pub ownership_controls: Option<BucketOwnershipControls>,
     /// The bucket policy as a JSON document.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
-    /// The PublicAccessBlock configuration that you want to apply to this Amazon S3 bucket. You can enable the configuration options in any combination. For more information about when Amazon S3 considers a bucket or object public, see The Meaning of "Public" (https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-policy-status) in the Amazon S3 User Guide.
+    /// The PublicAccessBlock configuration that you want to apply to this Amazon
+    /// S3 bucket. You can enable the configuration options in any combination. For
+    /// more information about when Amazon S3 considers a bucket or object public,
+    /// see The Meaning of "Public" (https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-policy-status)
+    /// in the Amazon S3 User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicAccessBlock")]
     pub public_access_block: Option<BucketPublicAccessBlock>,
-    /// A container for replication rules. You can add up to 1,000 rules. The maximum size of a replication configuration is 2 MB.
+    /// A container for replication rules. You can add up to 1,000 rules. The maximum
+    /// size of a replication configuration is 2 MB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replication: Option<BucketReplication>,
     /// Container for Payer.
@@ -101,23 +119,32 @@ pub struct BucketAccelerate {
     pub status: Option<String>,
 }
 
-/// Specifies the configuration and any analyses for the analytics filter of an Amazon S3 bucket.
+/// Specifies the configuration and any analyses for the analytics filter of
+/// an Amazon S3 bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAnalytics {
-    /// The filter used to describe a set of objects for analyses. A filter must have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator). If no filter is provided, all objects will be considered in any analysis.
+    /// The filter used to describe a set of objects for analyses. A filter must
+    /// have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator).
+    /// If no filter is provided, all objects will be considered in any analysis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketAnalyticsFilter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// Specifies data related to access patterns to be collected and made available to analyze the tradeoffs between different storage classes for an Amazon S3 bucket.
+    /// Specifies data related to access patterns to be collected and made available
+    /// to analyze the tradeoffs between different storage classes for an Amazon
+    /// S3 bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassAnalysis")]
     pub storage_class_analysis: Option<BucketAnalyticsStorageClassAnalysis>,
 }
 
-/// The filter used to describe a set of objects for analyses. A filter must have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator). If no filter is provided, all objects will be considered in any analysis.
+/// The filter used to describe a set of objects for analyses. A filter must
+/// have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator).
+/// If no filter is provided, all objects will be considered in any analysis.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAnalyticsFilter {
-    /// A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates in any combination, and an object must match all of the predicates for the filter to apply.
+    /// A conjunction (logical AND) of predicates, which is used in evaluating a
+    /// metrics filter. The operator must have at least two predicates in any combination,
+    /// and an object must match all of the predicates for the filter to apply.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub and: Option<BucketAnalyticsFilterAnd>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -127,7 +154,9 @@ pub struct BucketAnalyticsFilter {
     pub tag: Option<BucketAnalyticsFilterTag>,
 }
 
-/// A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates in any combination, and an object must match all of the predicates for the filter to apply.
+/// A conjunction (logical AND) of predicates, which is used in evaluating a
+/// metrics filter. The operator must have at least two predicates in any combination,
+/// and an object must match all of the predicates for the filter to apply.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAnalyticsFilterAnd {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -154,15 +183,19 @@ pub struct BucketAnalyticsFilterTag {
     pub value: Option<String>,
 }
 
-/// Specifies data related to access patterns to be collected and made available to analyze the tradeoffs between different storage classes for an Amazon S3 bucket.
+/// Specifies data related to access patterns to be collected and made available
+/// to analyze the tradeoffs between different storage classes for an Amazon
+/// S3 bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAnalyticsStorageClassAnalysis {
-    /// Container for data related to the storage class analysis for an Amazon S3 bucket for export.
+    /// Container for data related to the storage class analysis for an Amazon S3
+    /// bucket for export.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataExport")]
     pub data_export: Option<BucketAnalyticsStorageClassAnalysisDataExport>,
 }
 
-/// Container for data related to the storage class analysis for an Amazon S3 bucket for export.
+/// Container for data related to the storage class analysis for an Amazon S3
+/// bucket for export.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAnalyticsStorageClassAnalysisDataExport {
     /// Where to publish the analytics results.
@@ -193,7 +226,10 @@ pub struct BucketAnalyticsStorageClassAnalysisDataExportDestinationS3BucketDesti
     pub prefix: Option<String>,
 }
 
-/// Describes the cross-origin access configuration for objects in an Amazon S3 bucket. For more information, see Enabling Cross-Origin Resource Sharing (https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html) in the Amazon S3 User Guide.
+/// Describes the cross-origin access configuration for objects in an Amazon
+/// S3 bucket. For more information, see Enabling Cross-Origin Resource Sharing
+/// (https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html) in the Amazon
+/// S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketCors {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "corsRules")]
@@ -234,14 +270,30 @@ pub struct BucketEncryption {
 /// Specifies the default server-side encryption configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketEncryptionRules {
-    /// Describes the default server-side encryption to apply to new objects in the bucket. If a PUT Object request doesn't specify any server-side encryption, this default encryption will be applied. If you don't specify a customer managed key at configuration, Amazon S3 automatically creates an Amazon Web Services KMS key in your Amazon Web Services account the first time that you add an object encrypted with SSE-KMS to a bucket. By default, Amazon S3 uses this KMS key for SSE-KMS. For more information, see PUT Bucket encryption (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTencryption.html) in the Amazon S3 API Reference.
+    /// Describes the default server-side encryption to apply to new objects in the
+    /// bucket. If a PUT Object request doesn't specify any server-side encryption,
+    /// this default encryption will be applied. If you don't specify a customer
+    /// managed key at configuration, Amazon S3 automatically creates an Amazon Web
+    /// Services KMS key in your Amazon Web Services account the first time that
+    /// you add an object encrypted with SSE-KMS to a bucket. By default, Amazon
+    /// S3 uses this KMS key for SSE-KMS. For more information, see PUT Bucket encryption
+    /// (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTencryption.html)
+    /// in the Amazon S3 API Reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyServerSideEncryptionByDefault")]
     pub apply_server_side_encryption_by_default: Option<BucketEncryptionRulesApplyServerSideEncryptionByDefault>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketKeyEnabled")]
     pub bucket_key_enabled: Option<bool>,
 }
 
-/// Describes the default server-side encryption to apply to new objects in the bucket. If a PUT Object request doesn't specify any server-side encryption, this default encryption will be applied. If you don't specify a customer managed key at configuration, Amazon S3 automatically creates an Amazon Web Services KMS key in your Amazon Web Services account the first time that you add an object encrypted with SSE-KMS to a bucket. By default, Amazon S3 uses this KMS key for SSE-KMS. For more information, see PUT Bucket encryption (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTencryption.html) in the Amazon S3 API Reference.
+/// Describes the default server-side encryption to apply to new objects in the
+/// bucket. If a PUT Object request doesn't specify any server-side encryption,
+/// this default encryption will be applied. If you don't specify a customer
+/// managed key at configuration, Amazon S3 automatically creates an Amazon Web
+/// Services KMS key in your Amazon Web Services account the first time that
+/// you add an object encrypted with SSE-KMS to a bucket. By default, Amazon
+/// S3 uses this KMS key for SSE-KMS. For more information, see PUT Bucket encryption
+/// (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTencryption.html)
+/// in the Amazon S3 API Reference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketEncryptionRulesApplyServerSideEncryptionByDefault {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyID")]
@@ -250,11 +302,16 @@ pub struct BucketEncryptionRulesApplyServerSideEncryptionByDefault {
     pub sse_algorithm: Option<String>,
 }
 
-/// Specifies the S3 Intelligent-Tiering configuration for an Amazon S3 bucket. 
-///  For information about the S3 Intelligent-Tiering storage class, see Storage class for automatically optimizing frequently and infrequently accessed objects (https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access).
+/// Specifies the S3 Intelligent-Tiering configuration for an Amazon S3 bucket.
+/// 
+/// 
+/// For information about the S3 Intelligent-Tiering storage class, see Storage
+/// class for automatically optimizing frequently and infrequently accessed objects
+/// (https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketIntelligentTiering {
-    /// The Filter is used to identify objects that the S3 Intelligent-Tiering configuration applies to.
+    /// The Filter is used to identify objects that the S3 Intelligent-Tiering configuration
+    /// applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketIntelligentTieringFilter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -265,10 +322,12 @@ pub struct BucketIntelligentTiering {
     pub tierings: Option<Vec<BucketIntelligentTieringTierings>>,
 }
 
-/// The Filter is used to identify objects that the S3 Intelligent-Tiering configuration applies to.
+/// The Filter is used to identify objects that the S3 Intelligent-Tiering configuration
+/// applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketIntelligentTieringFilter {
-    /// A container for specifying S3 Intelligent-Tiering filters. The filters determine the subset of objects to which the rule applies.
+    /// A container for specifying S3 Intelligent-Tiering filters. The filters determine
+    /// the subset of objects to which the rule applies.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub and: Option<BucketIntelligentTieringFilterAnd>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -278,7 +337,8 @@ pub struct BucketIntelligentTieringFilter {
     pub tag: Option<BucketIntelligentTieringFilterTag>,
 }
 
-/// A container for specifying S3 Intelligent-Tiering filters. The filters determine the subset of objects to which the rule applies.
+/// A container for specifying S3 Intelligent-Tiering filters. The filters determine
+/// the subset of objects to which the rule applies.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketIntelligentTieringFilterAnd {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -305,7 +365,9 @@ pub struct BucketIntelligentTieringFilterTag {
     pub value: Option<String>,
 }
 
-/// The S3 Intelligent-Tiering storage class is designed to optimize storage costs by automatically moving data to the most cost-effective storage access tier, without additional operational overhead.
+/// The S3 Intelligent-Tiering storage class is designed to optimize storage
+/// costs by automatically moving data to the most cost-effective storage access
+/// tier, without additional operational overhead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketIntelligentTieringTierings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTier")]
@@ -314,13 +376,16 @@ pub struct BucketIntelligentTieringTierings {
     pub days: Option<i64>,
 }
 
-/// Specifies the inventory configuration for an Amazon S3 bucket. For more information, see GET Bucket inventory (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGETInventoryConfig.html) in the Amazon S3 API Reference.
+/// Specifies the inventory configuration for an Amazon S3 bucket. For more information,
+/// see GET Bucket inventory (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGETInventoryConfig.html)
+/// in the Amazon S3 API Reference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketInventory {
     /// Specifies the inventory configuration for an Amazon S3 bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<BucketInventoryDestination>,
-    /// Specifies an inventory filter. The inventory only includes objects that meet the filter's criteria.
+    /// Specifies an inventory filter. The inventory only includes objects that meet
+    /// the filter's criteria.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketInventoryFilter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -339,19 +404,22 @@ pub struct BucketInventory {
 /// Specifies the inventory configuration for an Amazon S3 bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketInventoryDestination {
-    /// Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where inventory results are published.
+    /// Contains the bucket name, file format, bucket owner (optional), and prefix
+    /// (optional) where inventory results are published.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3BucketDestination")]
     pub s3_bucket_destination: Option<BucketInventoryDestinationS3BucketDestination>,
 }
 
-/// Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where inventory results are published.
+/// Contains the bucket name, file format, bucket owner (optional), and prefix
+/// (optional) where inventory results are published.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketInventoryDestinationS3BucketDestination {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountID")]
     pub account_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
-    /// Contains the type of server-side encryption used to encrypt the inventory results.
+    /// Contains the type of server-side encryption used to encrypt the inventory
+    /// results.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encryption: Option<BucketInventoryDestinationS3BucketDestinationEncryption>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -360,7 +428,8 @@ pub struct BucketInventoryDestinationS3BucketDestination {
     pub prefix: Option<String>,
 }
 
-/// Contains the type of server-side encryption used to encrypt the inventory results.
+/// Contains the type of server-side encryption used to encrypt the inventory
+/// results.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketInventoryDestinationS3BucketDestinationEncryption {
     /// Specifies the use of SSE-KMS to encrypt delivered inventory reports.
@@ -375,7 +444,8 @@ pub struct BucketInventoryDestinationS3BucketDestinationEncryptionSseKms {
     pub key_id: Option<String>,
 }
 
-/// Specifies an inventory filter. The inventory only includes objects that meet the filter's criteria.
+/// Specifies an inventory filter. The inventory only includes objects that meet
+/// the filter's criteria.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketInventoryFilter {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -399,18 +469,27 @@ pub struct BucketLifecycle {
 /// A lifecycle rule for individual objects in an Amazon S3 bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRules {
-    /// Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload. For more information, see Aborting Incomplete Multipart Uploads Using a Bucket Lifecycle Policy (https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config) in the Amazon S3 User Guide.
+    /// Specifies the days since the initiation of an incomplete multipart upload
+    /// that Amazon S3 will wait before permanently removing all parts of the upload.
+    /// For more information, see Aborting Incomplete Multipart Uploads Using a Bucket
+    /// Lifecycle Policy (https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config)
+    /// in the Amazon S3 User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "abortIncompleteMultipartUpload")]
     pub abort_incomplete_multipart_upload: Option<BucketLifecycleRulesAbortIncompleteMultipartUpload>,
     /// Container for the expiration for the lifecycle of the object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expiration: Option<BucketLifecycleRulesExpiration>,
-    /// The Filter is used to identify objects that a Lifecycle Rule applies to. A Filter must have exactly one of Prefix, Tag, or And specified.
+    /// The Filter is used to identify objects that a Lifecycle Rule applies to.
+    /// A Filter must have exactly one of Prefix, Tag, or And specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketLifecycleRulesFilter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// Specifies when noncurrent object versions expire. Upon expiration, Amazon S3 permanently deletes the noncurrent object versions. You set this lifecycle configuration action on a bucket that has versioning enabled (or suspended) to request that Amazon S3 delete noncurrent object versions at a specific period in the object's lifetime.
+    /// Specifies when noncurrent object versions expire. Upon expiration, Amazon
+    /// S3 permanently deletes the noncurrent object versions. You set this lifecycle
+    /// configuration action on a bucket that has versioning enabled (or suspended)
+    /// to request that Amazon S3 delete noncurrent object versions at a specific
+    /// period in the object's lifetime.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noncurrentVersionExpiration")]
     pub noncurrent_version_expiration: Option<BucketLifecycleRulesNoncurrentVersionExpiration>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noncurrentVersionTransitions")]
@@ -423,7 +502,11 @@ pub struct BucketLifecycleRules {
     pub transitions: Option<Vec<BucketLifecycleRulesTransitions>>,
 }
 
-/// Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload. For more information, see Aborting Incomplete Multipart Uploads Using a Bucket Lifecycle Policy (https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config) in the Amazon S3 User Guide.
+/// Specifies the days since the initiation of an incomplete multipart upload
+/// that Amazon S3 will wait before permanently removing all parts of the upload.
+/// For more information, see Aborting Incomplete Multipart Uploads Using a Bucket
+/// Lifecycle Policy (https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesAbortIncompleteMultipartUpload {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "daysAfterInitiation")]
@@ -441,10 +524,13 @@ pub struct BucketLifecycleRulesExpiration {
     pub expired_object_delete_marker: Option<bool>,
 }
 
-/// The Filter is used to identify objects that a Lifecycle Rule applies to. A Filter must have exactly one of Prefix, Tag, or And specified.
+/// The Filter is used to identify objects that a Lifecycle Rule applies to.
+/// A Filter must have exactly one of Prefix, Tag, or And specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesFilter {
-    /// This is used in a Lifecycle Rule Filter to apply a logical AND to two or more predicates. The Lifecycle Rule will apply to any object matching all of the predicates configured inside the And operator.
+    /// This is used in a Lifecycle Rule Filter to apply a logical AND to two or
+    /// more predicates. The Lifecycle Rule will apply to any object matching all
+    /// of the predicates configured inside the And operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub and: Option<BucketLifecycleRulesFilterAnd>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSizeGreaterThan")]
@@ -458,7 +544,9 @@ pub struct BucketLifecycleRulesFilter {
     pub tag: Option<BucketLifecycleRulesFilterTag>,
 }
 
-/// This is used in a Lifecycle Rule Filter to apply a logical AND to two or more predicates. The Lifecycle Rule will apply to any object matching all of the predicates configured inside the And operator.
+/// This is used in a Lifecycle Rule Filter to apply a logical AND to two or
+/// more predicates. The Lifecycle Rule will apply to any object matching all
+/// of the predicates configured inside the And operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesFilterAnd {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSizeGreaterThan")]
@@ -489,7 +577,11 @@ pub struct BucketLifecycleRulesFilterTag {
     pub value: Option<String>,
 }
 
-/// Specifies when noncurrent object versions expire. Upon expiration, Amazon S3 permanently deletes the noncurrent object versions. You set this lifecycle configuration action on a bucket that has versioning enabled (or suspended) to request that Amazon S3 delete noncurrent object versions at a specific period in the object's lifetime.
+/// Specifies when noncurrent object versions expire. Upon expiration, Amazon
+/// S3 permanently deletes the noncurrent object versions. You set this lifecycle
+/// configuration action on a bucket that has versioning enabled (or suspended)
+/// to request that Amazon S3 delete noncurrent object versions at a specific
+/// period in the object's lifetime.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesNoncurrentVersionExpiration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "newerNoncurrentVersions")]
@@ -498,7 +590,13 @@ pub struct BucketLifecycleRulesNoncurrentVersionExpiration {
     pub noncurrent_days: Option<i64>,
 }
 
-/// Container for the transition rule that describes when noncurrent objects transition to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class at a specific period in the object's lifetime.
+/// Container for the transition rule that describes when noncurrent objects
+/// transition to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR,
+/// GLACIER, or DEEP_ARCHIVE storage class. If your bucket is versioning-enabled
+/// (or versioning is suspended), you can set this action to request that Amazon
+/// S3 transition noncurrent object versions to the STANDARD_IA, ONEZONE_IA,
+/// INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class at
+/// a specific period in the object's lifetime.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesNoncurrentVersionTransitions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "newerNoncurrentVersions")]
@@ -509,7 +607,10 @@ pub struct BucketLifecycleRulesNoncurrentVersionTransitions {
     pub storage_class: Option<String>,
 }
 
-/// Specifies when an object transitions to a specified storage class. For more information about Amazon S3 lifecycle configuration rules, see Transitioning Objects Using Amazon S3 Lifecycle (https://docs.aws.amazon.com/AmazonS3/latest/dev/lifecycle-transition-general-considerations.html) in the Amazon S3 User Guide.
+/// Specifies when an object transitions to a specified storage class. For more
+/// information about Amazon S3 lifecycle configuration rules, see Transitioning
+/// Objects Using Amazon S3 Lifecycle (https://docs.aws.amazon.com/AmazonS3/latest/dev/lifecycle-transition-general-considerations.html)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesTransitions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -523,12 +624,18 @@ pub struct BucketLifecycleRulesTransitions {
 /// Container for logging status information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLogging {
-    /// Describes where logs are stored and the prefix that Amazon S3 assigns to all log object keys for a bucket. For more information, see PUT Bucket logging (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTlogging.html) in the Amazon S3 API Reference.
+    /// Describes where logs are stored and the prefix that Amazon S3 assigns to
+    /// all log object keys for a bucket. For more information, see PUT Bucket logging
+    /// (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTlogging.html)
+    /// in the Amazon S3 API Reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingEnabled")]
     pub logging_enabled: Option<BucketLoggingLoggingEnabled>,
 }
 
-/// Describes where logs are stored and the prefix that Amazon S3 assigns to all log object keys for a bucket. For more information, see PUT Bucket logging (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTlogging.html) in the Amazon S3 API Reference.
+/// Describes where logs are stored and the prefix that Amazon S3 assigns to
+/// all log object keys for a bucket. For more information, see PUT Bucket logging
+/// (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTlogging.html)
+/// in the Amazon S3 API Reference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLoggingLoggingEnabled {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetBucket")]
@@ -539,8 +646,13 @@ pub struct BucketLoggingLoggingEnabled {
     pub target_prefix: Option<String>,
 }
 
-/// Container for granting information. 
-///  Buckets that use the bucket owner enforced setting for Object Ownership don't support target grants. For more information, see Permissions server access log delivery (https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general) in the Amazon S3 User Guide.
+/// Container for granting information.
+/// 
+/// 
+/// Buckets that use the bucket owner enforced setting for Object Ownership don't
+/// support target grants. For more information, see Permissions server access
+/// log delivery (https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLoggingLoggingEnabledTargetGrants {
     /// Container for the person being granted permissions.
@@ -565,22 +677,35 @@ pub struct BucketLoggingLoggingEnabledTargetGrantsGrantee {
     pub u_ri: Option<String>,
 }
 
-/// Specifies a metrics configuration for the CloudWatch request metrics (specified by the metrics configuration ID) from an Amazon S3 bucket. If you're updating an existing metrics configuration, note that this is a full replacement of the existing metrics configuration. If you don't include the elements you want to keep, they are erased. For more information, see PutBucketMetricsConfiguration (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTMetricConfiguration.html).
+/// Specifies a metrics configuration for the CloudWatch request metrics (specified
+/// by the metrics configuration ID) from an Amazon S3 bucket. If you're updating
+/// an existing metrics configuration, note that this is a full replacement of
+/// the existing metrics configuration. If you don't include the elements you
+/// want to keep, they are erased. For more information, see PutBucketMetricsConfiguration
+/// (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTMetricConfiguration.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketMetrics {
-    /// Specifies a metrics configuration filter. The metrics configuration only includes objects that meet the filter's criteria. A filter must be a prefix, an object tag, an access point ARN, or a conjunction (MetricsAndOperator). For more information, see PutBucketMetricsConfiguration (https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketMetricsConfiguration.html).
+    /// Specifies a metrics configuration filter. The metrics configuration only
+    /// includes objects that meet the filter's criteria. A filter must be a prefix,
+    /// an object tag, an access point ARN, or a conjunction (MetricsAndOperator).
+    /// For more information, see PutBucketMetricsConfiguration (https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketMetricsConfiguration.html).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketMetricsFilter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
 
-/// Specifies a metrics configuration filter. The metrics configuration only includes objects that meet the filter's criteria. A filter must be a prefix, an object tag, an access point ARN, or a conjunction (MetricsAndOperator). For more information, see PutBucketMetricsConfiguration (https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketMetricsConfiguration.html).
+/// Specifies a metrics configuration filter. The metrics configuration only
+/// includes objects that meet the filter's criteria. A filter must be a prefix,
+/// an object tag, an access point ARN, or a conjunction (MetricsAndOperator).
+/// For more information, see PutBucketMetricsConfiguration (https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketMetricsConfiguration.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketMetricsFilter {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessPointARN")]
     pub access_point_arn: Option<String>,
-    /// A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates, and an object must match all of the predicates in order for the filter to apply.
+    /// A conjunction (logical AND) of predicates, which is used in evaluating a
+    /// metrics filter. The operator must have at least two predicates, and an object
+    /// must match all of the predicates in order for the filter to apply.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub and: Option<BucketMetricsFilterAnd>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -590,7 +715,9 @@ pub struct BucketMetricsFilter {
     pub tag: Option<BucketMetricsFilterTag>,
 }
 
-/// A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates, and an object must match all of the predicates in order for the filter to apply.
+/// A conjunction (logical AND) of predicates, which is used in evaluating a
+/// metrics filter. The operator must have at least two predicates, and an object
+/// must match all of the predicates in order for the filter to apply.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketMetricsFilterAnd {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessPointARN")]
@@ -619,7 +746,8 @@ pub struct BucketMetricsFilterTag {
     pub value: Option<String>,
 }
 
-/// A container for specifying the notification configuration of the bucket. If this element is empty, notifications are turned off for the bucket.
+/// A container for specifying the notification configuration of the bucket.
+/// If this element is empty, notifications are turned off for the bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotification {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionConfigurations")]
@@ -635,17 +763,22 @@ pub struct BucketNotification {
 pub struct BucketNotificationLambdaFunctionConfigurations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<String>>,
-    /// Specifies object key name filtering rules. For information about key name filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
+    /// Specifies object key name filtering rules. For information about key name
+    /// filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html)
+    /// in the Amazon S3 User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketNotificationLambdaFunctionConfigurationsFilter>,
-    /// An optional unique identifier for configurations in a notification configuration. If you don't provide one, Amazon S3 will assign an ID.
+    /// An optional unique identifier for configurations in a notification configuration.
+    /// If you don't provide one, Amazon S3 will assign an ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionARN")]
     pub lambda_function_arn: Option<String>,
 }
 
-/// Specifies object key name filtering rules. For information about key name filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
+/// Specifies object key name filtering rules. For information about key name
+/// filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationLambdaFunctionConfigurationsFilter {
     /// A container for object key name prefix and suffix filtering rules.
@@ -656,12 +789,14 @@ pub struct BucketNotificationLambdaFunctionConfigurationsFilter {
 /// A container for object key name prefix and suffix filtering rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationLambdaFunctionConfigurationsFilterKey {
-    /// A list of containers for the key-value pair that defines the criteria for the filter rule.
+    /// A list of containers for the key-value pair that defines the criteria for
+    /// the filter rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRules")]
     pub filter_rules: Option<Vec<BucketNotificationLambdaFunctionConfigurationsFilterKeyFilterRules>>,
 }
 
-/// Specifies the Amazon S3 object key name to filter on and whether to filter on the suffix or prefix of the key name.
+/// Specifies the Amazon S3 object key name to filter on and whether to filter
+/// on the suffix or prefix of the key name.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationLambdaFunctionConfigurationsFilterKeyFilterRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -670,22 +805,28 @@ pub struct BucketNotificationLambdaFunctionConfigurationsFilterKeyFilterRules {
     pub value: Option<String>,
 }
 
-/// Specifies the configuration for publishing messages to an Amazon Simple Queue Service (Amazon SQS) queue when Amazon S3 detects specified events.
+/// Specifies the configuration for publishing messages to an Amazon Simple Queue
+/// Service (Amazon SQS) queue when Amazon S3 detects specified events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationQueueConfigurations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<String>>,
-    /// Specifies object key name filtering rules. For information about key name filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
+    /// Specifies object key name filtering rules. For information about key name
+    /// filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html)
+    /// in the Amazon S3 User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketNotificationQueueConfigurationsFilter>,
-    /// An optional unique identifier for configurations in a notification configuration. If you don't provide one, Amazon S3 will assign an ID.
+    /// An optional unique identifier for configurations in a notification configuration.
+    /// If you don't provide one, Amazon S3 will assign an ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueARN")]
     pub queue_arn: Option<String>,
 }
 
-/// Specifies object key name filtering rules. For information about key name filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
+/// Specifies object key name filtering rules. For information about key name
+/// filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationQueueConfigurationsFilter {
     /// A container for object key name prefix and suffix filtering rules.
@@ -696,12 +837,14 @@ pub struct BucketNotificationQueueConfigurationsFilter {
 /// A container for object key name prefix and suffix filtering rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationQueueConfigurationsFilterKey {
-    /// A list of containers for the key-value pair that defines the criteria for the filter rule.
+    /// A list of containers for the key-value pair that defines the criteria for
+    /// the filter rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRules")]
     pub filter_rules: Option<Vec<BucketNotificationQueueConfigurationsFilterKeyFilterRules>>,
 }
 
-/// Specifies the Amazon S3 object key name to filter on and whether to filter on the suffix or prefix of the key name.
+/// Specifies the Amazon S3 object key name to filter on and whether to filter
+/// on the suffix or prefix of the key name.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationQueueConfigurationsFilterKeyFilterRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -710,22 +853,29 @@ pub struct BucketNotificationQueueConfigurationsFilterKeyFilterRules {
     pub value: Option<String>,
 }
 
-/// A container for specifying the configuration for publication of messages to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3 detects specified events.
+/// A container for specifying the configuration for publication of messages
+/// to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3
+/// detects specified events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationTopicConfigurations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<String>>,
-    /// Specifies object key name filtering rules. For information about key name filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
+    /// Specifies object key name filtering rules. For information about key name
+    /// filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html)
+    /// in the Amazon S3 User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketNotificationTopicConfigurationsFilter>,
-    /// An optional unique identifier for configurations in a notification configuration. If you don't provide one, Amazon S3 will assign an ID.
+    /// An optional unique identifier for configurations in a notification configuration.
+    /// If you don't provide one, Amazon S3 will assign an ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicARN")]
     pub topic_arn: Option<String>,
 }
 
-/// Specifies object key name filtering rules. For information about key name filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
+/// Specifies object key name filtering rules. For information about key name
+/// filtering, see Configuring Event Notifications (https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationTopicConfigurationsFilter {
     /// A container for object key name prefix and suffix filtering rules.
@@ -736,12 +886,14 @@ pub struct BucketNotificationTopicConfigurationsFilter {
 /// A container for object key name prefix and suffix filtering rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationTopicConfigurationsFilterKey {
-    /// A list of containers for the key-value pair that defines the criteria for the filter rule.
+    /// A list of containers for the key-value pair that defines the criteria for
+    /// the filter rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRules")]
     pub filter_rules: Option<Vec<BucketNotificationTopicConfigurationsFilterKeyFilterRules>>,
 }
 
-/// Specifies the Amazon S3 object key name to filter on and whether to filter on the suffix or prefix of the key name.
+/// Specifies the Amazon S3 object key name to filter on and whether to filter
+/// on the suffix or prefix of the key name.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotificationTopicConfigurationsFilterKeyFilterRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -750,7 +902,8 @@ pub struct BucketNotificationTopicConfigurationsFilterKeyFilterRules {
     pub value: Option<String>,
 }
 
-/// The OwnershipControls (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter) that you want to apply to this Amazon S3 bucket.
+/// The OwnershipControls (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter)
+/// that you want to apply to this Amazon S3 bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketOwnershipControls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -760,15 +913,32 @@ pub struct BucketOwnershipControls {
 /// The container element for an ownership control rule.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketOwnershipControlsRules {
-    /// The container element for object ownership for a bucket's ownership controls. 
-    ///  BucketOwnerPreferred - Objects uploaded to the bucket change ownership to the bucket owner if the objects are uploaded with the bucket-owner-full-control canned ACL. 
-    ///  ObjectWriter - The uploading account will own the object if the object is uploaded with the bucket-owner-full-control canned ACL. 
-    ///  BucketOwnerEnforced - Access control lists (ACLs) are disabled and no longer affect permissions. The bucket owner automatically owns and has full control over every object in the bucket. The bucket only accepts PUT requests that don't specify an ACL or bucket owner full control ACLs, such as the bucket-owner-full-control canned ACL or an equivalent form of this ACL expressed in the XML format.
+    /// The container element for object ownership for a bucket's ownership controls.
+    /// 
+    /// 
+    /// BucketOwnerPreferred - Objects uploaded to the bucket change ownership to
+    /// the bucket owner if the objects are uploaded with the bucket-owner-full-control
+    /// canned ACL.
+    /// 
+    /// 
+    /// ObjectWriter - The uploading account will own the object if the object is
+    /// uploaded with the bucket-owner-full-control canned ACL.
+    /// 
+    /// 
+    /// BucketOwnerEnforced - Access control lists (ACLs) are disabled and no longer
+    /// affect permissions. The bucket owner automatically owns and has full control
+    /// over every object in the bucket. The bucket only accepts PUT requests that
+    /// don't specify an ACL or bucket owner full control ACLs, such as the bucket-owner-full-control
+    /// canned ACL or an equivalent form of this ACL expressed in the XML format.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOwnership")]
     pub object_ownership: Option<String>,
 }
 
-/// The PublicAccessBlock configuration that you want to apply to this Amazon S3 bucket. You can enable the configuration options in any combination. For more information about when Amazon S3 considers a bucket or object public, see The Meaning of "Public" (https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-policy-status) in the Amazon S3 User Guide.
+/// The PublicAccessBlock configuration that you want to apply to this Amazon
+/// S3 bucket. You can enable the configuration options in any combination. For
+/// more information about when Amazon S3 considers a bucket or object public,
+/// see The Meaning of "Public" (https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-policy-status)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketPublicAccessBlock {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockPublicACLs")]
@@ -781,7 +951,8 @@ pub struct BucketPublicAccessBlock {
     pub restrict_public_buckets: Option<bool>,
 }
 
-/// A container for replication rules. You can add up to 1,000 rules. The maximum size of a replication configuration is 2 MB.
+/// A container for replication rules. You can add up to 1,000 rules. The maximum
+/// size of a replication configuration is 2 MB.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplication {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -793,18 +964,34 @@ pub struct BucketReplication {
 /// Specifies which Amazon S3 objects to replicate and where to store the replicas.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRules {
-    /// Specifies whether Amazon S3 replicates delete markers. If you specify a Filter in your replication configuration, you must also include a DeleteMarkerReplication element. If your Filter includes a Tag element, the DeleteMarkerReplication Status must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see Basic Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config). 
-    ///  For more information about delete marker replication, see Basic Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html). 
-    ///  If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see Backward Compatibility (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).
+    /// Specifies whether Amazon S3 replicates delete markers. If you specify a Filter
+    /// in your replication configuration, you must also include a DeleteMarkerReplication
+    /// element. If your Filter includes a Tag element, the DeleteMarkerReplication
+    /// Status must be set to Disabled, because Amazon S3 does not support replicating
+    /// delete markers for tag-based rules. For an example configuration, see Basic
+    /// Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config).
+    /// 
+    /// 
+    /// For more information about delete marker replication, see Basic Rule Configuration
+    /// (https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html).
+    /// 
+    /// 
+    /// If you are using an earlier version of the replication configuration, Amazon
+    /// S3 handles replication of delete markers differently. For more information,
+    /// see Backward Compatibility (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteMarkerReplication")]
     pub delete_marker_replication: Option<BucketReplicationRulesDeleteMarkerReplication>,
-    /// Specifies information about where to publish analysis or configuration results for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).
+    /// Specifies information about where to publish analysis or configuration results
+    /// for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<BucketReplicationRulesDestination>,
-    /// Optional configuration to replicate existing source bucket objects. For more information, see Replicating Existing Objects (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication) in the Amazon S3 User Guide.
+    /// Optional configuration to replicate existing source bucket objects. For more
+    /// information, see Replicating Existing Objects (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication)
+    /// in the Amazon S3 User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "existingObjectReplication")]
     pub existing_object_replication: Option<BucketReplicationRulesExistingObjectReplication>,
-    /// A filter that identifies the subset of objects to which the replication rule applies. A Filter must specify exactly one Prefix, Tag, or an And child element.
+    /// A filter that identifies the subset of objects to which the replication rule
+    /// applies. A Filter must specify exactly one Prefix, Tag, or an And child element.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<BucketReplicationRulesFilter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -813,23 +1000,41 @@ pub struct BucketReplicationRules {
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
-    /// A container that describes additional filters for identifying the source objects that you want to replicate. You can choose to enable or disable the replication of these objects. Currently, Amazon S3 supports only the filter that you can specify for objects created with server-side encryption using a customer managed key stored in Amazon Web Services Key Management Service (SSE-KMS).
+    /// A container that describes additional filters for identifying the source
+    /// objects that you want to replicate. You can choose to enable or disable the
+    /// replication of these objects. Currently, Amazon S3 supports only the filter
+    /// that you can specify for objects created with server-side encryption using
+    /// a customer managed key stored in Amazon Web Services Key Management Service
+    /// (SSE-KMS).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceSelectionCriteria")]
     pub source_selection_criteria: Option<BucketReplicationRulesSourceSelectionCriteria>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
 
-/// Specifies whether Amazon S3 replicates delete markers. If you specify a Filter in your replication configuration, you must also include a DeleteMarkerReplication element. If your Filter includes a Tag element, the DeleteMarkerReplication Status must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see Basic Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config). 
-///  For more information about delete marker replication, see Basic Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html). 
-///  If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see Backward Compatibility (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).
+/// Specifies whether Amazon S3 replicates delete markers. If you specify a Filter
+/// in your replication configuration, you must also include a DeleteMarkerReplication
+/// element. If your Filter includes a Tag element, the DeleteMarkerReplication
+/// Status must be set to Disabled, because Amazon S3 does not support replicating
+/// delete markers for tag-based rules. For an example configuration, see Basic
+/// Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config).
+/// 
+/// 
+/// For more information about delete marker replication, see Basic Rule Configuration
+/// (https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html).
+/// 
+/// 
+/// If you are using an earlier version of the replication configuration, Amazon
+/// S3 handles replication of delete markers differently. For more information,
+/// see Backward Compatibility (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDeleteMarkerReplication {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
 
-/// Specifies information about where to publish analysis or configuration results for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).
+/// Specifies information about where to publish analysis or configuration results
+/// for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDestination {
     /// A container for information about access control for replicas.
@@ -839,13 +1044,18 @@ pub struct BucketReplicationRulesDestination {
     pub account: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
-    /// Specifies encryption-related information for an Amazon S3 bucket that is a destination for replicated objects.
+    /// Specifies encryption-related information for an Amazon S3 bucket that is
+    /// a destination for replicated objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionConfiguration")]
     pub encryption_configuration: Option<BucketReplicationRulesDestinationEncryptionConfiguration>,
-    /// A container specifying replication metrics-related settings enabling replication metrics and events.
+    /// A container specifying replication metrics-related settings enabling replication
+    /// metrics and events.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<BucketReplicationRulesDestinationMetrics>,
-    /// A container specifying S3 Replication Time Control (S3 RTC) related information, including whether S3 RTC is enabled and the time when all objects and operations on objects must be replicated. Must be specified together with a Metrics block.
+    /// A container specifying S3 Replication Time Control (S3 RTC) related information,
+    /// including whether S3 RTC is enabled and the time when all objects and operations
+    /// on objects must be replicated. Must be specified together with a Metrics
+    /// block.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationTime")]
     pub replication_time: Option<BucketReplicationRulesDestinationReplicationTime>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
@@ -859,61 +1069,83 @@ pub struct BucketReplicationRulesDestinationAccessControlTranslation {
     pub owner: Option<String>,
 }
 
-/// Specifies encryption-related information for an Amazon S3 bucket that is a destination for replicated objects.
+/// Specifies encryption-related information for an Amazon S3 bucket that is
+/// a destination for replicated objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDestinationEncryptionConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaKMSKeyID")]
     pub replica_kms_key_id: Option<String>,
 }
 
-/// A container specifying replication metrics-related settings enabling replication metrics and events.
+/// A container specifying replication metrics-related settings enabling replication
+/// metrics and events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDestinationMetrics {
-    /// A container specifying the time value for S3 Replication Time Control (S3 RTC) and replication metrics EventThreshold.
+    /// A container specifying the time value for S3 Replication Time Control (S3
+    /// RTC) and replication metrics EventThreshold.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventThreshold")]
     pub event_threshold: Option<BucketReplicationRulesDestinationMetricsEventThreshold>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
 
-/// A container specifying the time value for S3 Replication Time Control (S3 RTC) and replication metrics EventThreshold.
+/// A container specifying the time value for S3 Replication Time Control (S3
+/// RTC) and replication metrics EventThreshold.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDestinationMetricsEventThreshold {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minutes: Option<i64>,
 }
 
-/// A container specifying S3 Replication Time Control (S3 RTC) related information, including whether S3 RTC is enabled and the time when all objects and operations on objects must be replicated. Must be specified together with a Metrics block.
+/// A container specifying S3 Replication Time Control (S3 RTC) related information,
+/// including whether S3 RTC is enabled and the time when all objects and operations
+/// on objects must be replicated. Must be specified together with a Metrics
+/// block.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDestinationReplicationTime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    /// A container specifying the time value for S3 Replication Time Control (S3 RTC) and replication metrics EventThreshold.
+    /// A container specifying the time value for S3 Replication Time Control (S3
+    /// RTC) and replication metrics EventThreshold.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<BucketReplicationRulesDestinationReplicationTimeTime>,
 }
 
-/// A container specifying the time value for S3 Replication Time Control (S3 RTC) and replication metrics EventThreshold.
+/// A container specifying the time value for S3 Replication Time Control (S3
+/// RTC) and replication metrics EventThreshold.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDestinationReplicationTimeTime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minutes: Option<i64>,
 }
 
-/// Optional configuration to replicate existing source bucket objects. For more information, see Replicating Existing Objects (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication) in the Amazon S3 User Guide.
+/// Optional configuration to replicate existing source bucket objects. For more
+/// information, see Replicating Existing Objects (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesExistingObjectReplication {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
 
-/// A filter that identifies the subset of objects to which the replication rule applies. A Filter must specify exactly one Prefix, Tag, or an And child element.
+/// A filter that identifies the subset of objects to which the replication rule
+/// applies. A Filter must specify exactly one Prefix, Tag, or an And child element.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesFilter {
-    /// A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. 
-    ///  For example: 
-    ///  * If you specify both a Prefix and a Tag filter, wrap these filters in an And tag. 
-    ///  * If you specify a filter based on multiple tags, wrap the Tag elements in an And tag.
+    /// A container for specifying rule filters. The filters determine the subset
+    /// of objects to which the rule applies. This element is required only if you
+    /// specify more than one filter.
+    /// 
+    /// 
+    /// For example:
+    /// 
+    /// 
+    ///    * If you specify both a Prefix and a Tag filter, wrap these filters in
+    ///    an And tag.
+    /// 
+    /// 
+    ///    * If you specify a filter based on multiple tags, wrap the Tag elements
+    ///    in an And tag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub and: Option<BucketReplicationRulesFilterAnd>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -923,10 +1155,20 @@ pub struct BucketReplicationRulesFilter {
     pub tag: Option<BucketReplicationRulesFilterTag>,
 }
 
-/// A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. 
-///  For example: 
-///  * If you specify both a Prefix and a Tag filter, wrap these filters in an And tag. 
-///  * If you specify a filter based on multiple tags, wrap the Tag elements in an And tag.
+/// A container for specifying rule filters. The filters determine the subset
+/// of objects to which the rule applies. This element is required only if you
+/// specify more than one filter.
+/// 
+/// 
+/// For example:
+/// 
+/// 
+///    * If you specify both a Prefix and a Tag filter, wrap these filters in
+///    an And tag.
+/// 
+/// 
+///    * If you specify a filter based on multiple tags, wrap the Tag elements
+///    in an And tag.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesFilterAnd {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -953,27 +1195,50 @@ pub struct BucketReplicationRulesFilterTag {
     pub value: Option<String>,
 }
 
-/// A container that describes additional filters for identifying the source objects that you want to replicate. You can choose to enable or disable the replication of these objects. Currently, Amazon S3 supports only the filter that you can specify for objects created with server-side encryption using a customer managed key stored in Amazon Web Services Key Management Service (SSE-KMS).
+/// A container that describes additional filters for identifying the source
+/// objects that you want to replicate. You can choose to enable or disable the
+/// replication of these objects. Currently, Amazon S3 supports only the filter
+/// that you can specify for objects created with server-side encryption using
+/// a customer managed key stored in Amazon Web Services Key Management Service
+/// (SSE-KMS).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesSourceSelectionCriteria {
-    /// A filter that you can specify for selection for modifications on replicas. Amazon S3 doesn't replicate replica modifications by default. In the latest version of replication configuration (when Filter is specified), you can specify this element and set the status to Enabled to replicate modifications on replicas. 
-    ///  If you don't specify the Filter element, Amazon S3 assumes that the replication configuration is the earlier version, V1. In the earlier version, this element is not allowed.
+    /// A filter that you can specify for selection for modifications on replicas.
+    /// Amazon S3 doesn't replicate replica modifications by default. In the latest
+    /// version of replication configuration (when Filter is specified), you can
+    /// specify this element and set the status to Enabled to replicate modifications
+    /// on replicas.
+    /// 
+    /// 
+    /// If you don't specify the Filter element, Amazon S3 assumes that the replication
+    /// configuration is the earlier version, V1. In the earlier version, this element
+    /// is not allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaModifications")]
     pub replica_modifications: Option<BucketReplicationRulesSourceSelectionCriteriaReplicaModifications>,
-    /// A container for filter information for the selection of S3 objects encrypted with Amazon Web Services KMS.
+    /// A container for filter information for the selection of S3 objects encrypted
+    /// with Amazon Web Services KMS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseKMSEncryptedObjects")]
     pub sse_kms_encrypted_objects: Option<BucketReplicationRulesSourceSelectionCriteriaSseKmsEncryptedObjects>,
 }
 
-/// A filter that you can specify for selection for modifications on replicas. Amazon S3 doesn't replicate replica modifications by default. In the latest version of replication configuration (when Filter is specified), you can specify this element and set the status to Enabled to replicate modifications on replicas. 
-///  If you don't specify the Filter element, Amazon S3 assumes that the replication configuration is the earlier version, V1. In the earlier version, this element is not allowed.
+/// A filter that you can specify for selection for modifications on replicas.
+/// Amazon S3 doesn't replicate replica modifications by default. In the latest
+/// version of replication configuration (when Filter is specified), you can
+/// specify this element and set the status to Enabled to replicate modifications
+/// on replicas.
+/// 
+/// 
+/// If you don't specify the Filter element, Amazon S3 assumes that the replication
+/// configuration is the earlier version, V1. In the earlier version, this element
+/// is not allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesSourceSelectionCriteriaReplicaModifications {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
 
-/// A container for filter information for the selection of S3 objects encrypted with Amazon Web Services KMS.
+/// A container for filter information for the selection of S3 objects encrypted
+/// with Amazon Web Services KMS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesSourceSelectionCriteriaSseKmsEncryptedObjects {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1019,7 +1284,8 @@ pub struct BucketWebsite {
     /// Container for the Suffix element.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexDocument")]
     pub index_document: Option<BucketWebsiteIndexDocument>,
-    /// Specifies the redirect behavior of all requests to a website endpoint of an Amazon S3 bucket.
+    /// Specifies the redirect behavior of all requests to a website endpoint of
+    /// an Amazon S3 bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectAllRequestsTo")]
     pub redirect_all_requests_to: Option<BucketWebsiteRedirectAllRequestsTo>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingRules")]
@@ -1040,7 +1306,8 @@ pub struct BucketWebsiteIndexDocument {
     pub suffix: Option<String>,
 }
 
-/// Specifies the redirect behavior of all requests to a website endpoint of an Amazon S3 bucket.
+/// Specifies the redirect behavior of all requests to a website endpoint of
+/// an Amazon S3 bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketWebsiteRedirectAllRequestsTo {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostName")]
@@ -1049,18 +1316,28 @@ pub struct BucketWebsiteRedirectAllRequestsTo {
     pub protocol: Option<String>,
 }
 
-/// Specifies the redirect behavior and when a redirect is applied. For more information about routing rules, see Configuring advanced conditional redirects (https://docs.aws.amazon.com/AmazonS3/latest/dev/how-to-page-redirect.html#advanced-conditional-redirects) in the Amazon S3 User Guide.
+/// Specifies the redirect behavior and when a redirect is applied. For more
+/// information about routing rules, see Configuring advanced conditional redirects
+/// (https://docs.aws.amazon.com/AmazonS3/latest/dev/how-to-page-redirect.html#advanced-conditional-redirects)
+/// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketWebsiteRoutingRules {
-    /// A container for describing a condition that must be met for the specified redirect to apply. For example, 1. If request is for pages in the /docs folder, redirect to the /documents folder. 2. If request results in HTTP error 4xx, redirect request to another host where you might process the error.
+    /// A container for describing a condition that must be met for the specified
+    /// redirect to apply. For example, 1. If request is for pages in the /docs folder,
+    /// redirect to the /documents folder. 2. If request results in HTTP error 4xx,
+    /// redirect request to another host where you might process the error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<BucketWebsiteRoutingRulesCondition>,
-    /// Specifies how requests are redirected. In the event of an error, you can specify a different error code to return.
+    /// Specifies how requests are redirected. In the event of an error, you can
+    /// specify a different error code to return.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<BucketWebsiteRoutingRulesRedirect>,
 }
 
-/// A container for describing a condition that must be met for the specified redirect to apply. For example, 1. If request is for pages in the /docs folder, redirect to the /documents folder. 2. If request results in HTTP error 4xx, redirect request to another host where you might process the error.
+/// A container for describing a condition that must be met for the specified
+/// redirect to apply. For example, 1. If request is for pages in the /docs folder,
+/// redirect to the /documents folder. 2. If request results in HTTP error 4xx,
+/// redirect request to another host where you might process the error.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketWebsiteRoutingRulesCondition {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpErrorCodeReturnedEquals")]
@@ -1069,7 +1346,8 @@ pub struct BucketWebsiteRoutingRulesCondition {
     pub key_prefix_equals: Option<String>,
 }
 
-/// Specifies how requests are redirected. In the event of an error, you can specify a different error code to return.
+/// Specifies how requests are redirected. In the event of an error, you can
+/// specify a different error code to return.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketWebsiteRoutingRulesRedirect {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostName")]
@@ -1087,10 +1365,15 @@ pub struct BucketWebsiteRoutingRulesRedirect {
 /// BucketStatus defines the observed state of Bucket
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<BucketStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<BucketStatusConditions>>,
     /// A forward slash followed by the name of the bucket.
@@ -1098,20 +1381,32 @@ pub struct BucketStatus {
     pub location: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketStatusConditions {
     /// Last time the condition transitioned from one status to another.

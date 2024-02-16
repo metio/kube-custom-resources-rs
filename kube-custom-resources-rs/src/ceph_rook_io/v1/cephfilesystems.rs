@@ -40,6 +40,9 @@ pub struct CephFilesystemSpec {
 /// NamedPoolSpec represents the named ceph pool spec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemDataPools {
+    /// The application name to set on the pool. Only expected to be set for rgw pools.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub application: Option<String>,
     /// DEPRECATED: use Parameters instead, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephFilesystemDataPoolsCompressionMode>,
@@ -216,6 +219,9 @@ pub struct CephFilesystemDataPoolsStatusCheckMirror {
 /// The metadata pool settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataPool {
+    /// The application name to set on the pool. Only expected to be set for rgw pools.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub application: Option<String>,
     /// DEPRECATED: use Parameters instead, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephFilesystemMetadataPoolCompressionMode>,

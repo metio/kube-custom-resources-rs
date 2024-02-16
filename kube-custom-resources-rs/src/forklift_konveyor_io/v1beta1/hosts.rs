@@ -28,9 +28,6 @@ pub struct HostSpec {
     pub provider: HostProvider,
     /// Credentials.
     pub secret: HostSecret,
-    /// Certificate SHA-1 fingerprint, called thumbprint by VMware.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub thumbprint: Option<String>,
     /// Type used to qualify the name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,

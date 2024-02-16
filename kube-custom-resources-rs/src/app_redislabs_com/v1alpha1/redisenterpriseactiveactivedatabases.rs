@@ -89,6 +89,9 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     /// In-memory database replication. When enabled, database will have replica shard for every master - leading to higher availability.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replication: Option<bool>,
+    /// Whether this database supports RESP3 protocol. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resp3: Option<bool>,
     /// The size of the RAM portion of an RoF database. Similarly to "memorySize" use formats like 100MB, 0.1GB It must be at least 10% of combined memory size (RAM+Flash), as specified by "memorySize".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rofRamSize")]
     pub rof_ram_size: Option<String>,
@@ -98,6 +101,9 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     /// Number of database server-side shards
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardCount")]
     pub shard_count: Option<i64>,
+    /// Toggles database sharding for REAADBs (Active Active databases) and enabled by default. This field is blocked for REDB (non-Active Active databases) and sharding is toggled via the shardCount field - when shardCount is 1 this is disabled otherwise enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingEnabled")]
+    pub sharding_enabled: Option<bool>,
     /// Control the density of shards - should they reside on as few or as many nodes as possible. Available options are "dense" or "sparse". If left unset, defaults to "dense".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardsPlacement")]
     pub shards_placement: Option<String>,

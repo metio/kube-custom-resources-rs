@@ -107,6 +107,8 @@ pub struct RedisEnterpriseClusterSpec {
     pub redis_on_flash_spec: Option<RedisEnterpriseClusterRedisOnFlashSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisUpgradePolicy")]
     pub redis_upgrade_policy: Option<RedisEnterpriseClusterRedisUpgradePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resp3Default")]
+    pub resp3_default: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

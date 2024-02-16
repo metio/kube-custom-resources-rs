@@ -2233,9 +2233,23 @@ pub enum LokiStackStatusConditionsStatus {
 /// Storage provides summary of all changes that have occurred to the storage configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackStatusStorage {
+    /// CredentialMode contains the authentication mode used for accessing the object storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialMode")]
+    pub credential_mode: Option<LokiStackStatusStorageCredentialMode>,
     /// Schemas is a list of schemas which have been applied to the LokiStack.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schemas: Option<Vec<LokiStackStatusStorageSchemas>>,
+}
+
+/// Storage provides summary of all changes that have occurred to the storage configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LokiStackStatusStorageCredentialMode {
+    #[serde(rename = "static")]
+    Static,
+    #[serde(rename = "token")]
+    Token,
+    #[serde(rename = "managed")]
+    Managed,
 }
 
 /// ObjectStorageSchema defines the requirements needed to configure a new storage schema.

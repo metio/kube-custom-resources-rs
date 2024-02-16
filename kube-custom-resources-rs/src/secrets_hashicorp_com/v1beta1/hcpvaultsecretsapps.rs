@@ -56,16 +56,14 @@ pub struct HCPVaultSecretsAppDestination {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HCPVaultSecretsAppDestinationTransformation {
     /// ExcludeRaw data from the destination Secret. Exclusion policy can be set globally by including 'exclude-raw` in the '--global-transformation-options' command line flag. If set, the command line flag always takes precedence over this configuration.
-    #[serde(rename = "excludeRaw")]
-    pub exclude_raw: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRaw")]
+    pub exclude_raw: Option<bool>,
     /// Excludes contains regex patterns used to filter top-level source secret data fields for exclusion from the final K8s Secret data. These pattern filters are never applied to templated fields as defined in Templates. They are always applied before any inclusion patterns. To exclude all source secret data fields, you can configure the single pattern ".*".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub excludes: Option<Vec<String>>,
     /// Includes contains regex patterns used to filter top-level source secret data fields for inclusion in the final K8s Secret data. These pattern filters are never applied to templated fields as defined in Templates. They are always applied last.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub includes: Option<Vec<String>>,
-    /// Resync the Secret on updates to any configured TransformationRefs.
-    pub resync: bool,
     /// Templates maps a template name to its Template. Templates are always included in the rendered K8s Secret, and take precedence over templates defined in a SecretTransformation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub templates: Option<BTreeMap<String, HCPVaultSecretsAppDestinationTransformationTemplates>>,
@@ -134,6 +132,9 @@ pub enum HCPVaultSecretsAppRolloutRestartTargetsKind {
 /// HCPVaultSecretsAppStatus defines the observed state of HCPVaultSecretsApp
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HCPVaultSecretsAppStatus {
+    /// LastGeneration is the Generation of the last reconciled resource.
+    #[serde(rename = "lastGeneration")]
+    pub last_generation: i64,
     /// SecretMAC used when deciding whether new Vault secret data should be synced. 
     ///  The controller will compare the "new" HCP Vault Secrets App data to this value using HMAC, if they are different, then the data will be synced to the Destination. 
     ///  The SecretMac is also used to detect drift in the Destination Secret's Data. If drift is detected the data will be synced to the Destination.

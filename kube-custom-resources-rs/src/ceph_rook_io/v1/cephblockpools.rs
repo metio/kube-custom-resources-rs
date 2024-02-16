@@ -13,6 +13,9 @@ use std::collections::BTreeMap;
 #[kube(status = "CephBlockPoolStatus")]
 #[kube(schema = "disabled")]
 pub struct CephBlockPoolSpec {
+    /// The application name to set on the pool. Only expected to be set for rgw pools.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub application: Option<String>,
     /// DEPRECATED: use Parameters instead, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephBlockPoolCompressionMode>,
@@ -122,8 +125,8 @@ pub struct CephBlockPoolMirroringSnapshotSchedules {
 /// NamedBlockPoolSpec allows a block pool to be created with a non-default name.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CephBlockPoolName {
-    #[serde(rename = "device_health_metrics")]
-    DeviceHealthMetrics,
+    #[serde(rename = ".rgw.root")]
+    RgwRoot,
     #[serde(rename = ".nfs")]
     Nfs,
     #[serde(rename = ".mgr")]

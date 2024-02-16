@@ -223,14 +223,13 @@ spec:
                             required:
                               - "name"
                               - "region"
-                              - "zone"
                             type: "object"
                           serverType:
                             description: "Type of the machines in the nodepool. Currently, only AMD64 machines are supported."
                             type: "string"
                           storageDiskSize:
-                            description: "Size of the storage disk on the nodes in the nodepool in GB. The OS disk is created automatically with predefined size of 100GB for kubernetes nodes and 50GB for Loadbalancer nodes."
-                            format: "int64"
+                            description: "Size of the storage disk on the nodes in the nodepool in GB. The OS disk is created automatically with predefined size of 100GB for kubernetes nodes and 50GB for Loadbalancer nodes. The value must be either -1 (no disk is created), or >= 50. If no value is specified, 50 is used."
+                            format: "int32"
                             type: "integer"
                           taints:
                             description: "User defined taints for this nodepool."
@@ -346,6 +345,7 @@ spec:
                           - "azure"
                           - "cloudflare"
                           - "hetznerdns"
+                          - "genesiscloud"
                         type: "string"
                       secretRef:
                         description: "SecretReference represents a Secret Reference. It has enough information to retrieve secret in any namespace"

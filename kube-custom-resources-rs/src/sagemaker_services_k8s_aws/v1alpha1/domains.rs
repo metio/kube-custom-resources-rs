@@ -12,19 +12,32 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "DomainStatus")]
 #[kube(schema = "disabled")]
 pub struct DomainSpec {
-    /// Specifies the VPC used for non-EFS traffic. The default value is PublicInternetOnly. 
-    ///  * PublicInternetOnly - Non-EFS traffic is through a VPC managed by Amazon SageMaker, which allows direct internet access 
-    ///  * VpcOnly - All Studio traffic is through the specified VPC and subnets
+    /// Specifies the VPC used for non-EFS traffic. The default value is PublicInternetOnly.
+    /// 
+    /// 
+    ///    * PublicInternetOnly - Non-EFS traffic is through a VPC managed by Amazon
+    ///    SageMaker, which allows direct internet access
+    /// 
+    /// 
+    ///    * VpcOnly - All Studio traffic is through the specified VPC and subnets
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appNetworkAccessType")]
     pub app_network_access_type: Option<String>,
-    /// The entity that creates and manages the required security groups for inter-app communication in VPCOnly mode. Required when CreateDomain.AppNetworkAccessType is VPCOnly and DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn is provided.
+    /// The entity that creates and manages the required security groups for inter-app
+    /// communication in VPCOnly mode. Required when CreateDomain.AppNetworkAccessType
+    /// is VPCOnly and DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn
+    /// is provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appSecurityGroupManagement")]
     pub app_security_group_management: Option<String>,
     /// The mode of authentication that members use to access the domain.
     #[serde(rename = "authMode")]
     pub auth_mode: String,
-    /// The default settings to use to create a user profile when UserSettings isn't specified in the call to the CreateUserProfile API. 
-    ///  SecurityGroups is aggregated when specified in both calls. For all other settings in UserSettings, the values specified in CreateUserProfile take precedence over those specified in CreateDomain.
+    /// The default settings to use to create a user profile when UserSettings isn't
+    /// specified in the call to the CreateUserProfile API.
+    /// 
+    /// 
+    /// SecurityGroups is aggregated when specified in both calls. For all other
+    /// settings in UserSettings, the values specified in CreateUserProfile take
+    /// precedence over those specified in CreateDomain.
     #[serde(rename = "defaultUserSettings")]
     pub default_user_settings: DomainDefaultUserSettings,
     /// A name for the domain.
@@ -36,14 +49,21 @@ pub struct DomainSpec {
     /// Use KmsKeyId.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "homeEFSFileSystemKMSKeyID")]
     pub home_efs_file_system_kms_key_id: Option<String>,
-    /// SageMaker uses Amazon Web Services KMS to encrypt the EFS volume attached to the domain with an Amazon Web Services managed key by default. For more control, specify a customer managed key.
+    /// SageMaker uses Amazon Web Services KMS to encrypt the EFS volume attached
+    /// to the domain with an Amazon Web Services managed key by default. For more
+    /// control, specify a customer managed key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// The VPC subnets that Studio uses for communication.
     #[serde(rename = "subnetIDs")]
     pub subnet_i_ds: Vec<String>,
-    /// Tags to associated with the Domain. Each tag consists of a key and an optional value. Tag keys must be unique per resource. Tags are searchable using the Search API. 
-    ///  Tags that you specify for the Domain are also added to all Apps that the Domain launches.
+    /// Tags to associated with the Domain. Each tag consists of a key and an optional
+    /// value. Tag keys must be unique per resource. Tags are searchable using the
+    /// Search API.
+    /// 
+    /// 
+    /// Tags that you specify for the Domain are also added to all Apps that the
+    /// Domain launches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<DomainTags>>,
     /// The ID of the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.
@@ -51,8 +71,13 @@ pub struct DomainSpec {
     pub vpc_id: String,
 }
 
-/// The default settings to use to create a user profile when UserSettings isn't specified in the call to the CreateUserProfile API. 
-///  SecurityGroups is aggregated when specified in both calls. For all other settings in UserSettings, the values specified in CreateUserProfile take precedence over those specified in CreateDomain.
+/// The default settings to use to create a user profile when UserSettings isn't
+/// specified in the call to the CreateUserProfile API.
+/// 
+/// 
+/// SecurityGroups is aggregated when specified in both calls. For all other
+/// settings in UserSettings, the values specified in CreateUserProfile take
+/// precedence over those specified in CreateDomain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRole")]
@@ -63,12 +88,17 @@ pub struct DomainDefaultUserSettings {
     /// The KernelGateway app settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelGatewayAppSettings")]
     pub kernel_gateway_app_settings: Option<DomainDefaultUserSettingsKernelGatewayAppSettings>,
-    /// A collection of settings that configure user interaction with the RStudioServerPro app. RStudioServerProAppSettings cannot be updated. The RStudioServerPro app must be deleted and a new one created to make any changes.
+    /// A collection of settings that configure user interaction with the RStudioServerPro
+    /// app. RStudioServerProAppSettings cannot be updated. The RStudioServerPro
+    /// app must be deleted and a new one created to make any changes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rStudioServerProAppSettings")]
     pub r_studio_server_pro_app_settings: Option<DomainDefaultUserSettingsRStudioServerProAppSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<String>>,
-    /// Specifies options for sharing SageMaker Studio notebooks. These settings are specified as part of DefaultUserSettings when the CreateDomain API is called, and as part of UserSettings when the CreateUserProfile API is called. When SharingSettings is not specified, notebook sharing isn't allowed.
+    /// Specifies options for sharing SageMaker Studio notebooks. These settings
+    /// are specified as part of DefaultUserSettings when the CreateDomain API is
+    /// called, and as part of UserSettings when the CreateUserProfile API is called.
+    /// When SharingSettings is not specified, notebook sharing isn't allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharingSettings")]
     pub sharing_settings: Option<DomainDefaultUserSettingsSharingSettings>,
     /// The TensorBoard app settings.
@@ -79,14 +109,16 @@ pub struct DomainDefaultUserSettings {
 /// The JupyterServer app settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsJupyterServerAppSettings {
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+    /// the instance type that the version runs on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDefaultUserSettingsJupyterServerAppSettingsDefaultResourceSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+/// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsJupyterServerAppSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -104,14 +136,16 @@ pub struct DomainDefaultUserSettingsJupyterServerAppSettingsDefaultResourceSpec 
 pub struct DomainDefaultUserSettingsKernelGatewayAppSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImages")]
     pub custom_images: Option<Vec<DomainDefaultUserSettingsKernelGatewayAppSettingsCustomImages>>,
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+    /// the instance type that the version runs on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDefaultUserSettingsKernelGatewayAppSettingsDefaultResourceSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
-/// A custom SageMaker image. For more information, see Bring your own SageMaker image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).
+/// A custom SageMaker image. For more information, see Bring your own SageMaker
+/// image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsKernelGatewayAppSettingsCustomImages {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appImageConfigName")]
@@ -122,7 +156,8 @@ pub struct DomainDefaultUserSettingsKernelGatewayAppSettingsCustomImages {
     pub image_version_number: Option<i64>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+/// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsKernelGatewayAppSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -135,7 +170,9 @@ pub struct DomainDefaultUserSettingsKernelGatewayAppSettingsDefaultResourceSpec 
     pub sage_maker_image_version_arn: Option<String>,
 }
 
-/// A collection of settings that configure user interaction with the RStudioServerPro app. RStudioServerProAppSettings cannot be updated. The RStudioServerPro app must be deleted and a new one created to make any changes.
+/// A collection of settings that configure user interaction with the RStudioServerPro
+/// app. RStudioServerProAppSettings cannot be updated. The RStudioServerPro
+/// app must be deleted and a new one created to make any changes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsRStudioServerProAppSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStatus")]
@@ -144,7 +181,10 @@ pub struct DomainDefaultUserSettingsRStudioServerProAppSettings {
     pub user_group: Option<String>,
 }
 
-/// Specifies options for sharing SageMaker Studio notebooks. These settings are specified as part of DefaultUserSettings when the CreateDomain API is called, and as part of UserSettings when the CreateUserProfile API is called. When SharingSettings is not specified, notebook sharing isn't allowed.
+/// Specifies options for sharing SageMaker Studio notebooks. These settings
+/// are specified as part of DefaultUserSettings when the CreateDomain API is
+/// called, and as part of UserSettings when the CreateUserProfile API is called.
+/// When SharingSettings is not specified, notebook sharing isn't allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsSharingSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notebookOutputOption")]
@@ -158,12 +198,14 @@ pub struct DomainDefaultUserSettingsSharingSettings {
 /// The TensorBoard app settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsTensorBoardAppSettings {
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+    /// the instance type that the version runs on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDefaultUserSettingsTensorBoardAppSettingsDefaultResourceSpec>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+/// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsTensorBoardAppSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -179,17 +221,20 @@ pub struct DomainDefaultUserSettingsTensorBoardAppSettingsDefaultResourceSpec {
 /// A collection of Domain settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDomainSettings {
-    /// A collection of settings that configure the RStudioServerPro Domain-level app.
+    /// A collection of settings that configure the RStudioServerPro Domain-level
+    /// app.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rStudioServerProDomainSettings")]
     pub r_studio_server_pro_domain_settings: Option<DomainDomainSettingsRStudioServerProDomainSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
 }
 
-/// A collection of settings that configure the RStudioServerPro Domain-level app.
+/// A collection of settings that configure the RStudioServerPro Domain-level
+/// app.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDomainSettingsRStudioServerProDomainSettings {
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+    /// the instance type that the version runs on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDomainSettingsRStudioServerProDomainSettingsDefaultResourceSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainExecutionRoleARN")]
@@ -200,7 +245,8 @@ pub struct DomainDomainSettingsRStudioServerProDomainSettings {
     pub r_studio_package_manager_url: Option<String>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+/// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDomainSettingsRStudioServerProDomainSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -213,9 +259,21 @@ pub struct DomainDomainSettingsRStudioServerProDomainSettingsDefaultResourceSpec
     pub sage_maker_image_version_arn: Option<String>,
 }
 
-/// A tag object that consists of a key and an optional value, used to manage metadata for SageMaker Amazon Web Services resources. 
-///  You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints. For more information on adding tags to SageMaker resources, see AddTags. 
-///  For more information on adding metadata to your Amazon Web Services resources with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). For advice on best practices for managing Amazon Web Services resources with tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
+/// A tag object that consists of a key and an optional value, used to manage
+/// metadata for SageMaker Amazon Web Services resources.
+/// 
+/// 
+/// You can add tags to notebook instances, training jobs, hyperparameter tuning
+/// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
+/// and endpoints. For more information on adding tags to SageMaker resources,
+/// see AddTags.
+/// 
+/// 
+/// For more information on adding metadata to your Amazon Web Services resources
+/// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+/// For advice on best practices for managing Amazon Web Services resources with
+/// tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services
+/// Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -227,10 +285,15 @@ pub struct DomainTags {
 /// DomainStatus defines the observed state of Domain
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DomainStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<DomainStatusConditions>>,
     /// The domain ID.
@@ -244,20 +307,32 @@ pub struct DomainStatus {
     pub url: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainStatusConditions {
     /// Last time the condition transitioned from one status to another.

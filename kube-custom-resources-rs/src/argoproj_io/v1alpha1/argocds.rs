@@ -45,7 +45,7 @@ pub struct ArgoCDSpec {
     /// GATrackingID is the google analytics tracking ID to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gaTrackingID")]
     pub ga_tracking_id: Option<String>,
-    /// Grafana defines the Grafana server options for ArgoCD.
+    /// Deprecated: Grafana defines the Grafana server options for ArgoCD.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grafana: Option<ArgoCDGrafana>,
     /// HA options for High Availability support for the Redis component.
@@ -587,7 +587,7 @@ pub struct ArgoCDDexResourcesClaims {
     pub name: String,
 }
 
-/// Grafana defines the Grafana server options for ArgoCD.
+/// Deprecated: Grafana defines the Grafana server options for ArgoCD.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDGrafana {
     /// Enabled will toggle Grafana support globally for ArgoCD.

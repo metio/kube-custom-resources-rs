@@ -62,10 +62,10 @@ pub struct MariaDBSpec {
     /// LivenessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MariaDBLivenessProbe>,
-    /// MaxScale is the MaxScale specification that defines the MaxScale instance that will be used with MariaDB. When enabling this field, MaxScaleRef is automatically set.
+    /// MaxScale is the MaxScale specification that defines the MaxScale resource to be used with the current MariaDB. When enabling this field, MaxScaleRef is automatically set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScale")]
     pub max_scale: Option<MariaDBMaxScale>,
-    /// MaxScaleRef is a reference to a MaxScale instance that is forwarding the traffic to the current MariaDB instance. Providing this field implies delegating high availability tasks such as primary failover to MaxScale.
+    /// MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB. Providing this field implies delegating high availability tasks such as primary failover to MaxScale.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScaleRef")]
     pub max_scale_ref: Option<MariaDBMaxScaleRef>,
     /// Metrics configures metrics and how to scrape them.
@@ -1841,7 +1841,7 @@ pub struct MariaDBEnvFromSecretRef {
 /// Replication configures high availability via Galera.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBGalera {
-    /// GaleraAgent is a sidecar agent that co-operates with mariadb-operator. More info: https://github.com/mariadb-operator/agent.
+    /// GaleraAgent is a sidecar agent that co-operates with mariadb-operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agent: Option<MariaDBGaleraAgent>,
     /// Enabled is a flag to enable Galera.
@@ -1867,7 +1867,7 @@ pub struct MariaDBGalera {
     pub volume_claim_template: Option<MariaDBGaleraVolumeClaimTemplate>,
 }
 
-/// GaleraAgent is a sidecar agent that co-operates with mariadb-operator. More info: https://github.com/mariadb-operator/agent.
+/// GaleraAgent is a sidecar agent that co-operates with mariadb-operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBGaleraAgent {
     /// Args to be used in the Container.
@@ -2030,7 +2030,7 @@ pub struct MariaDBGaleraAgentEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// GaleraAgent is a sidecar agent that co-operates with mariadb-operator. More info: https://github.com/mariadb-operator/agent.
+/// GaleraAgent is a sidecar agent that co-operates with mariadb-operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MariaDBGaleraAgentImagePullPolicy {
     Always,
@@ -3612,7 +3612,7 @@ pub struct MariaDBLivenessProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// MaxScale is the MaxScale specification that defines the MaxScale instance that will be used with MariaDB. When enabling this field, MaxScaleRef is automatically set.
+/// MaxScale is the MaxScale specification that defines the MaxScale resource to be used with the current MariaDB. When enabling this field, MaxScaleRef is automatically set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBMaxScale {
     /// Admin configures the admin REST API and GUI.
@@ -3636,7 +3636,7 @@ pub struct MariaDBMaxScale {
     /// Connection provides a template to define the Connection for MaxScale.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<MariaDBMaxScaleConnection>,
-    /// Enabled is a flag to enable Metrics
+    /// Enabled is a flag to enable a MaxScale instance to be used with the current MariaDB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Env represents the environment variables to be injected in a container.
@@ -3663,7 +3663,7 @@ pub struct MariaDBMaxScale {
     /// LivenessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MariaDBMaxScaleLivenessProbe>,
-    /// Monitor monitors MariaDB server instances. It is required if 'spec.mariaDbRef' is not provided.
+    /// Monitor monitors MariaDB server instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<MariaDBMaxScaleMonitor>,
     /// NodeSelector to be used in the Pod.
@@ -3684,7 +3684,7 @@ pub struct MariaDBMaxScale {
     /// Replicas indicates the number of desired instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// RequeueInterval is used to perform requeue reconcilizations. If not defined, it defaults to 10s.
+    /// RequeueInterval is used to perform requeue reconcilizations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
     pub requeue_interval: Option<String>,
     /// Resouces describes the compute resource requirements.
@@ -3696,7 +3696,7 @@ pub struct MariaDBMaxScale {
     /// ServiceAccountName is the name of the ServiceAccount to be used by the Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    /// Services define how the traffic is forwarded to the MariaDB servers. It is defaulted if not provided.
+    /// Services define how the traffic is forwarded to the MariaDB servers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<MariaDBMaxScaleServices>>,
     /// SidecarContainers to be used in the Pod.
@@ -4257,7 +4257,7 @@ pub struct MariaDBMaxScaleAuthSyncPasswordSecretKeyRef {
 /// Config defines the MaxScale configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBMaxScaleConfig {
-    /// Params is a key value pair of parameters to be used in the MaxScale static configuration file.
+    /// Params is a key value pair of parameters to be used in the MaxScale static configuration file. Any parameter supported by MaxScale may be specified here. See reference: https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#global-settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
     /// Sync defines how to replicate configuration across MaxScale replicas. It is defaulted when HA is enabled.
@@ -4572,7 +4572,7 @@ pub struct MariaDBMaxScaleEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// MaxScale is the MaxScale specification that defines the MaxScale instance that will be used with MariaDB. When enabling this field, MaxScaleRef is automatically set.
+/// MaxScale is the MaxScale specification that defines the MaxScale resource to be used with the current MariaDB. When enabling this field, MaxScaleRef is automatically set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MariaDBMaxScaleImagePullPolicy {
     Always,
@@ -5203,7 +5203,7 @@ pub struct MariaDBMaxScaleLivenessProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Monitor monitors MariaDB server instances. It is required if 'spec.mariaDbRef' is not provided.
+/// Monitor monitors MariaDB server instances.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBMaxScaleMonitor {
     /// CooperativeMonitoring enables coordination between multiple MaxScale instances running monitors. It is defaulted when HA is enabled.
@@ -5218,7 +5218,7 @@ pub struct MariaDBMaxScaleMonitor {
     /// Name is the identifier of the monitor. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Params defines extra parameters to pass to the monitor.
+    /// Params defines extra parameters to pass to the monitor. Any parameter supported by MaxScale may be specified here. See reference: https://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/. Monitor specific parameter are also suported: https://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters. https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
     /// Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this.
@@ -5226,7 +5226,7 @@ pub struct MariaDBMaxScaleMonitor {
     pub suspend: Option<bool>,
 }
 
-/// Monitor monitors MariaDB server instances. It is required if 'spec.mariaDbRef' is not provided.
+/// Monitor monitors MariaDB server instances.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MariaDBMaxScaleMonitorCooperativeMonitoring {
     #[serde(rename = "majority_of_all")]
@@ -5555,7 +5555,7 @@ pub struct MariaDBMaxScaleServices {
     pub listener: MariaDBMaxScaleServicesListener,
     /// Name is the identifier of the MaxScale service.
     pub name: String,
-    /// Params defines extra parameters to pass to the monitor.
+    /// Params defines extra parameters to pass to the monitor. Any parameter supported by MaxScale may be specified here. See reference: https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1. Router specific parameter are also suported: https://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration. https://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
     /// Router is the type of router to use.
@@ -5571,7 +5571,7 @@ pub struct MariaDBMaxScaleServicesListener {
     /// Name is the identifier of the listener. It is defaulted if not provided
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Params defines extra parameters to pass to the listener.
+    /// Params defines extra parameters to pass to the listener. Any parameter supported by MaxScale may be specified here. See reference: https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#listener_1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
     /// Port is the network port where the MaxScale server will listen.
@@ -7174,7 +7174,7 @@ pub struct MariaDBMaxScaleVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// MaxScaleRef is a reference to a MaxScale instance that is forwarding the traffic to the current MariaDB instance. Providing this field implies delegating high availability tasks such as primary failover to MaxScale.
+/// MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB. Providing this field implies delegating high availability tasks such as primary failover to MaxScale.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MariaDBMaxScaleRef {
     /// API version of the referent.

@@ -5,8 +5,13 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// FeatureGroupSpec defines the desired state of FeatureGroup. 
-///  Amazon SageMaker Feature Store stores features in a collection called Feature Group. A Feature Group can be visualized as a table which has rows, with a unique identifier for each row where each column in the table is a feature. In principle, a Feature Group is composed of features and values per features.
+/// FeatureGroupSpec defines the desired state of FeatureGroup.
+/// 
+/// 
+/// Amazon SageMaker Feature Store stores features in a collection called Feature
+/// Group. A Feature Group can be visualized as a table which has rows, with
+/// a unique identifier for each row where each column in the table is a feature.
+/// In principle, a Feature Group is composed of features and values per features.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "FeatureGroup", plural = "featuregroups")]
 #[kube(namespaced)]
@@ -16,44 +21,105 @@ pub struct FeatureGroupSpec {
     /// A free-form description of a FeatureGroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// The name of the feature that stores the EventTime of a Record in a FeatureGroup. 
-    ///  An EventTime is a point in time when a new event occurs that corresponds to the creation or update of a Record in a FeatureGroup. All Records in the FeatureGroup must have a corresponding EventTime. 
-    ///  An EventTime can be a String or Fractional. 
-    ///  * Fractional: EventTime feature values must be a Unix timestamp in seconds. 
-    ///  * String: EventTime feature values must be an ISO-8601 string in the format. The following formats are supported yyyy-MM-dd'T'HH:mm:ssZ and yyyy-MM-dd'T'HH:mm:ss.SSSZ where yyyy, MM, and dd represent the year, month, and day respectively and HH, mm, ss, and if applicable, SSS represent the hour, month, second and milliseconds respsectively. 'T' and Z are constants.
+    /// The name of the feature that stores the EventTime of a Record in a FeatureGroup.
+    /// 
+    /// 
+    /// An EventTime is a point in time when a new event occurs that corresponds
+    /// to the creation or update of a Record in a FeatureGroup. All Records in the
+    /// FeatureGroup must have a corresponding EventTime.
+    /// 
+    /// 
+    /// An EventTime can be a String or Fractional.
+    /// 
+    /// 
+    ///    * Fractional: EventTime feature values must be a Unix timestamp in seconds.
+    /// 
+    /// 
+    ///    * String: EventTime feature values must be an ISO-8601 string in the format.
+    ///    The following formats are supported yyyy-MM-dd'T'HH:mm:ssZ and yyyy-MM-dd'T'HH:mm:ss.SSSZ
+    ///    where yyyy, MM, and dd represent the year, month, and day respectively
+    ///    and HH, mm, ss, and if applicable, SSS represent the hour, month, second
+    ///    and milliseconds respsectively. 'T' and Z are constants.
     #[serde(rename = "eventTimeFeatureName")]
     pub event_time_feature_name: String,
-    /// A list of Feature names and types. Name and Type is compulsory per Feature. 
-    ///  Valid feature FeatureTypes are Integral, Fractional and String. 
-    ///  FeatureNames cannot be any of the following: is_deleted, write_time, api_invocation_time 
-    ///  You can create up to 2,500 FeatureDefinitions per FeatureGroup.
+    /// A list of Feature names and types. Name and Type is compulsory per Feature.
+    /// 
+    /// 
+    /// Valid feature FeatureTypes are Integral, Fractional and String.
+    /// 
+    /// 
+    /// FeatureNames cannot be any of the following: is_deleted, write_time, api_invocation_time
+    /// 
+    /// 
+    /// You can create up to 2,500 FeatureDefinitions per FeatureGroup.
     #[serde(rename = "featureDefinitions")]
     pub feature_definitions: Vec<FeatureGroupFeatureDefinitions>,
-    /// The name of the FeatureGroup. The name must be unique within an Amazon Web Services Region in an Amazon Web Services account. The name: 
-    ///  * Must start and end with an alphanumeric character. 
-    ///  * Can only contain alphanumeric character and hyphens. Spaces are not allowed.
+    /// The name of the FeatureGroup. The name must be unique within an Amazon Web
+    /// Services Region in an Amazon Web Services account. The name:
+    /// 
+    /// 
+    ///    * Must start and end with an alphanumeric character.
+    /// 
+    /// 
+    ///    * Can only contain alphanumeric character and hyphens. Spaces are not
+    ///    allowed.
     #[serde(rename = "featureGroupName")]
     pub feature_group_name: String,
-    /// Use this to configure an OfflineFeatureStore. This parameter allows you to specify: 
-    ///  * The Amazon Simple Storage Service (Amazon S3) location of an OfflineStore. 
-    ///  * A configuration for an Amazon Web Services Glue or Amazon Web Services Hive data catalog. 
-    ///  * An KMS encryption key to encrypt the Amazon S3 location used for OfflineStore. If KMS encryption key is not specified, by default we encrypt all data at rest using Amazon Web Services KMS key. By defining your bucket-level key (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html) for SSE, you can reduce Amazon Web Services KMS requests costs by up to 99 percent. 
-    ///  * Format for the offline store table. Supported formats are Glue (Default) and Apache Iceberg (https://iceberg.apache.org/). 
-    ///  To learn more about this parameter, see OfflineStoreConfig.
+    /// Use this to configure an OfflineFeatureStore. This parameter allows you to
+    /// specify:
+    /// 
+    /// 
+    ///    * The Amazon Simple Storage Service (Amazon S3) location of an OfflineStore.
+    /// 
+    /// 
+    ///    * A configuration for an Amazon Web Services Glue or Amazon Web Services
+    ///    Hive data catalog.
+    /// 
+    /// 
+    ///    * An KMS encryption key to encrypt the Amazon S3 location used for OfflineStore.
+    ///    If KMS encryption key is not specified, by default we encrypt all data
+    ///    at rest using Amazon Web Services KMS key. By defining your bucket-level
+    ///    key (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html)
+    ///    for SSE, you can reduce Amazon Web Services KMS requests costs by up to
+    ///    99 percent.
+    /// 
+    /// 
+    ///    * Format for the offline store table. Supported formats are Glue (Default)
+    ///    and Apache Iceberg (https://iceberg.apache.org/).
+    /// 
+    /// 
+    /// To learn more about this parameter, see OfflineStoreConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineStoreConfig")]
     pub offline_store_config: Option<FeatureGroupOfflineStoreConfig>,
-    /// You can turn the OnlineStore on or off by specifying True for the EnableOnlineStore flag in OnlineStoreConfig; the default value is False. 
-    ///  You can also include an Amazon Web Services KMS key ID (KMSKeyId) for at-rest encryption of the OnlineStore.
+    /// You can turn the OnlineStore on or off by specifying True for the EnableOnlineStore
+    /// flag in OnlineStoreConfig; the default value is False.
+    /// 
+    /// 
+    /// You can also include an Amazon Web Services KMS key ID (KMSKeyId) for at-rest
+    /// encryption of the OnlineStore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineStoreConfig")]
     pub online_store_config: Option<FeatureGroupOnlineStoreConfig>,
-    /// The name of the Feature whose value uniquely identifies a Record defined in the FeatureStore. Only the latest record per identifier value will be stored in the OnlineStore. RecordIdentifierFeatureName must be one of feature definitions' names. 
-    ///  You use the RecordIdentifierFeatureName to access data in a FeatureStore. 
-    ///  This name: 
-    ///  * Must start and end with an alphanumeric character. 
-    ///  * Can only contains alphanumeric characters, hyphens, underscores. Spaces are not allowed.
+    /// The name of the Feature whose value uniquely identifies a Record defined
+    /// in the FeatureStore. Only the latest record per identifier value will be
+    /// stored in the OnlineStore. RecordIdentifierFeatureName must be one of feature
+    /// definitions' names.
+    /// 
+    /// 
+    /// You use the RecordIdentifierFeatureName to access data in a FeatureStore.
+    /// 
+    /// 
+    /// This name:
+    /// 
+    /// 
+    ///    * Must start and end with an alphanumeric character.
+    /// 
+    /// 
+    ///    * Can only contains alphanumeric characters, hyphens, underscores. Spaces
+    ///    are not allowed.
     #[serde(rename = "recordIdentifierFeatureName")]
     pub record_identifier_feature_name: String,
-    /// The Amazon Resource Name (ARN) of the IAM execution role used to persist data into the OfflineStore if an OfflineStoreConfig is provided.
+    /// The Amazon Resource Name (ARN) of the IAM execution role used to persist
+    /// data into the OfflineStore if an OfflineStoreConfig is provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
     pub role_arn: Option<String>,
     /// Tags used to identify Features in each FeatureGroup.
@@ -61,7 +127,8 @@ pub struct FeatureGroupSpec {
     pub tags: Option<Vec<FeatureGroupTags>>,
 }
 
-/// A list of features. You must include FeatureName and FeatureType. Valid feature FeatureTypes are Integral, Fractional and String.
+/// A list of features. You must include FeatureName and FeatureType. Valid feature
+/// FeatureTypes are Integral, Fractional and String.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupFeatureDefinitions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureName")]
@@ -70,12 +137,30 @@ pub struct FeatureGroupFeatureDefinitions {
     pub feature_type: Option<String>,
 }
 
-/// Use this to configure an OfflineFeatureStore. This parameter allows you to specify: 
-///  * The Amazon Simple Storage Service (Amazon S3) location of an OfflineStore. 
-///  * A configuration for an Amazon Web Services Glue or Amazon Web Services Hive data catalog. 
-///  * An KMS encryption key to encrypt the Amazon S3 location used for OfflineStore. If KMS encryption key is not specified, by default we encrypt all data at rest using Amazon Web Services KMS key. By defining your bucket-level key (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html) for SSE, you can reduce Amazon Web Services KMS requests costs by up to 99 percent. 
-///  * Format for the offline store table. Supported formats are Glue (Default) and Apache Iceberg (https://iceberg.apache.org/). 
-///  To learn more about this parameter, see OfflineStoreConfig.
+/// Use this to configure an OfflineFeatureStore. This parameter allows you to
+/// specify:
+/// 
+/// 
+///    * The Amazon Simple Storage Service (Amazon S3) location of an OfflineStore.
+/// 
+/// 
+///    * A configuration for an Amazon Web Services Glue or Amazon Web Services
+///    Hive data catalog.
+/// 
+/// 
+///    * An KMS encryption key to encrypt the Amazon S3 location used for OfflineStore.
+///    If KMS encryption key is not specified, by default we encrypt all data
+///    at rest using Amazon Web Services KMS key. By defining your bucket-level
+///    key (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html)
+///    for SSE, you can reduce Amazon Web Services KMS requests costs by up to
+///    99 percent.
+/// 
+/// 
+///    * Format for the offline store table. Supported formats are Glue (Default)
+///    and Apache Iceberg (https://iceberg.apache.org/).
+/// 
+/// 
+/// To learn more about this parameter, see OfflineStoreConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupOfflineStoreConfig {
     /// The meta data of the Glue table which serves as data catalog for the OfflineStore.
@@ -83,7 +168,8 @@ pub struct FeatureGroupOfflineStoreConfig {
     pub data_catalog_config: Option<FeatureGroupOfflineStoreConfigDataCatalogConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableGlueTableCreation")]
     pub disable_glue_table_creation: Option<bool>,
-    /// The Amazon Simple Storage (Amazon S3) location and and security configuration for OfflineStore.
+    /// The Amazon Simple Storage (Amazon S3) location and and security configuration
+    /// for OfflineStore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3StorageConfig")]
     pub s3_storage_config: Option<FeatureGroupOfflineStoreConfigS3StorageConfig>,
 }
@@ -99,7 +185,8 @@ pub struct FeatureGroupOfflineStoreConfigDataCatalogConfig {
     pub table_name: Option<String>,
 }
 
-/// The Amazon Simple Storage (Amazon S3) location and and security configuration for OfflineStore.
+/// The Amazon Simple Storage (Amazon S3) location and and security configuration
+/// for OfflineStore.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupOfflineStoreConfigS3StorageConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
@@ -110,8 +197,12 @@ pub struct FeatureGroupOfflineStoreConfigS3StorageConfig {
     pub s3_uri: Option<String>,
 }
 
-/// You can turn the OnlineStore on or off by specifying True for the EnableOnlineStore flag in OnlineStoreConfig; the default value is False. 
-///  You can also include an Amazon Web Services KMS key ID (KMSKeyId) for at-rest encryption of the OnlineStore.
+/// You can turn the OnlineStore on or off by specifying True for the EnableOnlineStore
+/// flag in OnlineStoreConfig; the default value is False.
+/// 
+/// 
+/// You can also include an Amazon Web Services KMS key ID (KMSKeyId) for at-rest
+/// encryption of the OnlineStore.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupOnlineStoreConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOnlineStore")]
@@ -128,9 +219,21 @@ pub struct FeatureGroupOnlineStoreConfigSecurityConfig {
     pub kms_key_id: Option<String>,
 }
 
-/// A tag object that consists of a key and an optional value, used to manage metadata for SageMaker Amazon Web Services resources. 
-///  You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints. For more information on adding tags to SageMaker resources, see AddTags. 
-///  For more information on adding metadata to your Amazon Web Services resources with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). For advice on best practices for managing Amazon Web Services resources with tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
+/// A tag object that consists of a key and an optional value, used to manage
+/// metadata for SageMaker Amazon Web Services resources.
+/// 
+/// 
+/// You can add tags to notebook instances, training jobs, hyperparameter tuning
+/// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
+/// and endpoints. For more information on adding tags to SageMaker resources,
+/// see AddTags.
+/// 
+/// 
+/// For more information on adding metadata to your Amazon Web Services resources
+/// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+/// For advice on best practices for managing Amazon Web Services resources with
+/// tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services
+/// Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -142,15 +245,25 @@ pub struct FeatureGroupTags {
 /// FeatureGroupStatus defines the observed state of FeatureGroup
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<FeatureGroupStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<FeatureGroupStatusConditions>>,
-    /// The reason that the FeatureGroup failed to be replicated in the OfflineStore. This is failure can occur because: 
-    ///  * The FeatureGroup could not be created in the OfflineStore. 
-    ///  * The FeatureGroup could not be deleted from the OfflineStore.
+    /// The reason that the FeatureGroup failed to be replicated in the OfflineStore.
+    /// This is failure can occur because:
+    /// 
+    /// 
+    ///    * The FeatureGroup could not be created in the OfflineStore.
+    /// 
+    /// 
+    ///    * The FeatureGroup could not be deleted from the OfflineStore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// The status of the feature group.
@@ -158,20 +271,32 @@ pub struct FeatureGroupStatus {
     pub feature_group_status: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupStatusConditions {
     /// Last time the condition transitioned from one status to another.

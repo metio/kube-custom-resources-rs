@@ -150,6 +150,9 @@ pub struct RedisEnterpriseClusterSpec {
     /// Redis upgrade policy to be set on the Redis Enterprise Cluster. Possible values: major/latest This value is used by the cluster to choose the Redis version of the database when an upgrade is performed. The Redis Enterprise Cluster includes multiple versions of OSS Redis that can be used for databases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisUpgradePolicy")]
     pub redis_upgrade_policy: Option<RedisEnterpriseClusterRedisUpgradePolicy>,
+    /// Whether databases will turn on RESP3 compatibility upon database upgrade. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resp3Default")]
+    pub resp3_default: Option<bool>,
     /// Name of the service account to use
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,

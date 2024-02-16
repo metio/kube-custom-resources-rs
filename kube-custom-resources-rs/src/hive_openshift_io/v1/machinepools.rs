@@ -56,9 +56,6 @@ pub struct MachinePoolClusterDeploymentRef {
 /// Platform is configuration for machine pool specific to the platform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolPlatform {
-    /// AlibabaCloud is the configuration used when installing on Alibaba Cloud.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub alibabacloud: Option<MachinePoolPlatformAlibabacloud>,
     /// AWS is the configuration used when installing on AWS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws: Option<MachinePoolPlatformAws>,
@@ -80,37 +77,6 @@ pub struct MachinePoolPlatform {
     /// VSphere is the configuration used when installing on vSphere
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vsphere: Option<MachinePoolPlatformVsphere>,
-}
-
-/// AlibabaCloud is the configuration used when installing on Alibaba Cloud.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachinePoolPlatformAlibabacloud {
-    /// ImageID is the Image ID that should be used to create ECS instance. If set, the ImageID should belong to the same region as the cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageID")]
-    pub image_id: Option<String>,
-    /// InstanceType defines the ECS instance type. eg. ecs.g6.large
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
-    pub instance_type: Option<String>,
-    /// SystemDiskCategory defines the category of the system disk.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemDiskCategory")]
-    pub system_disk_category: Option<MachinePoolPlatformAlibabacloudSystemDiskCategory>,
-    /// SystemDiskSize defines the size of the system disk in gibibytes (GiB).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemDiskSize")]
-    pub system_disk_size: Option<i64>,
-    /// Zones is list of availability zones that can be used. eg. ["cn-hangzhou-i", "cn-hangzhou-h", "cn-hangzhou-j"]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub zones: Option<Vec<String>>,
-}
-
-/// AlibabaCloud is the configuration used when installing on Alibaba Cloud.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum MachinePoolPlatformAlibabacloudSystemDiskCategory {
-    #[serde(rename = "")]
-    KopiumEmpty,
-    #[serde(rename = "cloud_efficiency")]
-    CloudEfficiency,
-    #[serde(rename = "cloud_essd")]
-    CloudEssd,
 }
 
 /// AWS is the configuration used when installing on AWS.

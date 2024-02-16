@@ -67,6 +67,9 @@ pub struct VaultPKISecretSpec {
     /// The requested URI SANs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uriSans")]
     pub uri_sans: Option<Vec<String>>,
+    /// User ID (OID 0.9.2342.19200300.100.1.1) Subject values to be placed on the signed certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userIDs")]
+    pub user_i_ds: Option<Vec<String>>,
     /// VaultAuthRef to the VaultAuth resource, can be prefixed with a namespace, eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator will default to the `default` VaultAuth, configured in the operator's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthRef")]
     pub vault_auth_ref: Option<String>,
@@ -99,16 +102,14 @@ pub struct VaultPKISecretDestination {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultPKISecretDestinationTransformation {
     /// ExcludeRaw data from the destination Secret. Exclusion policy can be set globally by including 'exclude-raw` in the '--global-transformation-options' command line flag. If set, the command line flag always takes precedence over this configuration.
-    #[serde(rename = "excludeRaw")]
-    pub exclude_raw: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRaw")]
+    pub exclude_raw: Option<bool>,
     /// Excludes contains regex patterns used to filter top-level source secret data fields for exclusion from the final K8s Secret data. These pattern filters are never applied to templated fields as defined in Templates. They are always applied before any inclusion patterns. To exclude all source secret data fields, you can configure the single pattern ".*".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub excludes: Option<Vec<String>>,
     /// Includes contains regex patterns used to filter top-level source secret data fields for inclusion in the final K8s Secret data. These pattern filters are never applied to templated fields as defined in Templates. They are always applied last.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub includes: Option<Vec<String>>,
-    /// Resync the Secret on updates to any configured TransformationRefs.
-    pub resync: bool,
     /// Templates maps a template name to its Template. Templates are always included in the rendered K8s Secret, and take precedence over templates defined in a SecretTransformation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub templates: Option<BTreeMap<String, VaultPKISecretDestinationTransformationTemplates>>,

@@ -12,39 +12,73 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "StateMachineStatus")]
 #[kube(schema = "disabled")]
 pub struct StateMachineSpec {
-    /// The Amazon States Language definition of the state machine. See Amazon States Language (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html).
+    /// The Amazon States Language definition of the state machine. See Amazon States
+    /// Language (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html).
     pub definition: String,
-    /// Defines what execution history events are logged and where they are logged. 
-    ///  By default, the level is set to OFF. For more information see Log Levels (https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html) in the AWS Step Functions User Guide.
+    /// Defines what execution history events are logged and where they are logged.
+    /// 
+    /// 
+    /// By default, the level is set to OFF. For more information see Log Levels
+    /// (https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html)
+    /// in the AWS Step Functions User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingConfiguration")]
     pub logging_configuration: Option<StateMachineLoggingConfiguration>,
-    /// The name of the state machine. 
-    ///  A name must not contain: 
-    ///  * white space 
-    ///  * brackets < > { } [ ] 
-    ///  * wildcard characters ? * 
-    ///  * special characters " # % \ ^ | ~ ` $ & , ; : / 
-    ///  * control characters (U+0000-001F, U+007F-009F) 
-    ///  To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.
+    /// The name of the state machine.
+    /// 
+    /// 
+    /// A name must not contain:
+    /// 
+    /// 
+    ///    * white space
+    /// 
+    /// 
+    ///    * brackets < > { } [ ]
+    /// 
+    /// 
+    ///    * wildcard characters ? *
+    /// 
+    /// 
+    ///    * special characters " # % \ ^ | ~ ` $ & , ; : /
+    /// 
+    /// 
+    ///    * control characters (U+0000-001F, U+007F-009F)
+    /// 
+    /// 
+    /// To enable logging with CloudWatch Logs, the name should only contain 0-9,
+    /// A-Z, a-z, - and _.
     pub name: String,
     /// The Amazon Resource Name (ARN) of the IAM role to use for this state machine.
     #[serde(rename = "roleARN")]
     pub role_arn: String,
-    /// Tags to be added when creating a state machine. 
-    ///  An array of key-value pairs. For more information, see Using Cost Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html) in the AWS Billing and Cost Management User Guide, and Controlling Access Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html). 
-    ///  Tags may only contain Unicode letters, digits, white space, or these symbols: _ . : / = + - @.
+    /// Tags to be added when creating a state machine.
+    /// 
+    /// 
+    /// An array of key-value pairs. For more information, see Using Cost Allocation
+    /// Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)
+    /// in the AWS Billing and Cost Management User Guide, and Controlling Access
+    /// Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).
+    /// 
+    /// 
+    /// Tags may only contain Unicode letters, digits, white space, or these symbols:
+    /// _ . : / = + - @.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<StateMachineTags>>,
     /// Selects whether AWS X-Ray tracing is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfiguration")]
     pub tracing_configuration: Option<StateMachineTracingConfiguration>,
-    /// Determines whether a Standard or Express state machine is created. The default is STANDARD. You cannot update the type of a state machine once it has been created.
+    /// Determines whether a Standard or Express state machine is created. The default
+    /// is STANDARD. You cannot update the type of a state machine once it has been
+    /// created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
 }
 
-/// Defines what execution history events are logged and where they are logged. 
-///  By default, the level is set to OFF. For more information see Log Levels (https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html) in the AWS Step Functions User Guide.
+/// Defines what execution history events are logged and where they are logged.
+/// 
+/// 
+/// By default, the level is set to OFF. For more information see Log Levels
+/// (https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html)
+/// in the AWS Step Functions User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StateMachineLoggingConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -67,9 +101,18 @@ pub struct StateMachineLoggingConfigurationDestinationsCloudWatchLogsLogGroup {
     pub log_group_arn: Option<String>,
 }
 
-/// Tags are key-value pairs that can be associated with Step Functions state machines and activities. 
-///  An array of key-value pairs. For more information, see Using Cost Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html) in the AWS Billing and Cost Management User Guide, and Controlling Access Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html). 
-///  Tags may only contain Unicode letters, digits, white space, or these symbols: _ . : / = + - @.
+/// Tags are key-value pairs that can be associated with Step Functions state
+/// machines and activities.
+/// 
+/// 
+/// An array of key-value pairs. For more information, see Using Cost Allocation
+/// Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)
+/// in the AWS Billing and Cost Management User Guide, and Controlling Access
+/// Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).
+/// 
+/// 
+/// Tags may only contain Unicode letters, digits, white space, or these symbols:
+/// _ . : / = + - @.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StateMachineTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -88,10 +131,15 @@ pub struct StateMachineTracingConfiguration {
 /// StateMachineStatus defines the observed state of StateMachine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StateMachineStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<StateMachineStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<StateMachineStatusConditions>>,
     /// The date the state machine is created.
@@ -99,20 +147,32 @@ pub struct StateMachineStatus {
     pub creation_date: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StateMachineStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StateMachineStatusConditions {
     /// Last time the condition transitioned from one status to another.

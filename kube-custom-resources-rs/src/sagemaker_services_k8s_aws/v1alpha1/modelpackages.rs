@@ -6,22 +6,30 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
-/// ModelPackageSpec defines the desired state of ModelPackage. 
-///  A versioned model that can be deployed for SageMaker inference.
+/// ModelPackageSpec defines the desired state of ModelPackage.
+/// 
+/// 
+/// A versioned model that can be deployed for SageMaker inference.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ModelPackage", plural = "modelpackages")]
 #[kube(namespaced)]
 #[kube(status = "ModelPackageStatus")]
 #[kube(schema = "disabled")]
 pub struct ModelPackageSpec {
-    /// An array of additional Inference Specification objects. Each additional Inference Specification specifies artifacts based on this model package that can be used on inference endpoints. Generally used with SageMaker Neo to store the compiled artifacts.
+    /// An array of additional Inference Specification objects. Each additional Inference
+    /// Specification specifies artifacts based on this model package that can be
+    /// used on inference endpoints. Generally used with SageMaker Neo to store the
+    /// compiled artifacts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalInferenceSpecifications")]
     pub additional_inference_specifications: Option<Vec<ModelPackageAdditionalInferenceSpecifications>>,
     /// A description for the approval status of the model.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "approvalDescription")]
     pub approval_description: Option<String>,
-    /// Whether to certify the model package for listing on Amazon Web Services Marketplace. 
-    ///  This parameter is optional for unversioned models, and does not apply to versioned models.
+    /// Whether to certify the model package for listing on Amazon Web Services Marketplace.
+    /// 
+    /// 
+    /// This parameter is optional for unversioned models, and does not apply to
+    /// versioned models.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certifyForMarketplace")]
     pub certify_for_marketplace: Option<bool>,
     /// A unique token that guarantees that the call to this API is idempotent.
@@ -30,24 +38,44 @@ pub struct ModelPackageSpec {
     /// The metadata properties associated with the model package versions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customerMetadataProperties")]
     pub customer_metadata_properties: Option<BTreeMap<String, String>>,
-    /// The machine learning domain of your model package and its components. Common machine learning domains include computer vision and natural language processing.
+    /// The machine learning domain of your model package and its components. Common
+    /// machine learning domains include computer vision and natural language processing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domain: Option<String>,
-    /// Represents the drift check baselines that can be used when the model monitor is set using the model package. For more information, see the topic on Drift Detection against Previous Baselines in SageMaker Pipelines (https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-quality-clarify-baseline-lifecycle.html#pipelines-quality-clarify-baseline-drift-detection) in the Amazon SageMaker Developer Guide.
+    /// Represents the drift check baselines that can be used when the model monitor
+    /// is set using the model package. For more information, see the topic on Drift
+    /// Detection against Previous Baselines in SageMaker Pipelines (https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-quality-clarify-baseline-lifecycle.html#pipelines-quality-clarify-baseline-drift-detection)
+    /// in the Amazon SageMaker Developer Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "driftCheckBaselines")]
     pub drift_check_baselines: Option<ModelPackageDriftCheckBaselines>,
-    /// Specifies details about inference jobs that can be run with models based on this model package, including the following: 
-    ///  * The Amazon ECR paths of containers that contain the inference code and model artifacts. 
-    ///  * The instance types that the model package supports for transform jobs and real-time endpoints used for inference. 
-    ///  * The input and output content formats that the model package supports for inference.
+    /// Specifies details about inference jobs that can be run with models based
+    /// on this model package, including the following:
+    /// 
+    /// 
+    ///    * The Amazon ECR paths of containers that contain the inference code and
+    ///    model artifacts.
+    /// 
+    /// 
+    ///    * The instance types that the model package supports for transform jobs
+    ///    and real-time endpoints used for inference.
+    /// 
+    /// 
+    ///    * The input and output content formats that the model package supports
+    ///    for inference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferenceSpecification")]
     pub inference_specification: Option<ModelPackageInferenceSpecification>,
     /// Metadata properties of the tracking entity, trial, or trial component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataProperties")]
     pub metadata_properties: Option<ModelPackageMetadataProperties>,
-    /// Whether the model is approved for deployment. 
-    ///  This parameter is optional for versioned models, and does not apply to unversioned models. 
-    ///  For versioned models, the value of this parameter must be set to Approved to deploy the model.
+    /// Whether the model is approved for deployment.
+    /// 
+    /// 
+    /// This parameter is optional for versioned models, and does not apply to unversioned
+    /// models.
+    /// 
+    /// 
+    /// For versioned models, the value of this parameter must be set to Approved
+    /// to deploy the model.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelApprovalStatus")]
     pub model_approval_status: Option<String>,
     /// A structure that contains model metrics reports.
@@ -56,33 +84,57 @@ pub struct ModelPackageSpec {
     /// A description of the model package.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageDescription")]
     pub model_package_description: Option<String>,
-    /// The name or Amazon Resource Name (ARN) of the model package group that this model version belongs to. 
-    ///  This parameter is required for versioned models, and does not apply to unversioned models.
+    /// The name or Amazon Resource Name (ARN) of the model package group that this
+    /// model version belongs to.
+    /// 
+    /// 
+    /// This parameter is required for versioned models, and does not apply to unversioned
+    /// models.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageGroupName")]
     pub model_package_group_name: Option<String>,
-    /// The name of the model package. The name must have 1 to 63 characters. Valid characters are a-z, A-Z, 0-9, and - (hyphen). 
-    ///  This parameter is required for unversioned models. It is not applicable to versioned models.
+    /// The name of the model package. The name must have 1 to 63 characters. Valid
+    /// characters are a-z, A-Z, 0-9, and - (hyphen).
+    /// 
+    /// 
+    /// This parameter is required for unversioned models. It is not applicable to
+    /// versioned models.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageName")]
     pub model_package_name: Option<String>,
-    /// The Amazon Simple Storage Service (Amazon S3) path where the sample payload is stored. This path must point to a single gzip compressed tar archive (.tar.gz suffix). This archive can hold multiple files that are all equally used in the load test. Each file in the archive must satisfy the size constraints of the InvokeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax) call.
+    /// The Amazon Simple Storage Service (Amazon S3) path where the sample payload
+    /// is stored. This path must point to a single gzip compressed tar archive (.tar.gz
+    /// suffix). This archive can hold multiple files that are all equally used in
+    /// the load test. Each file in the archive must satisfy the size constraints
+    /// of the InvokeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax)
+    /// call.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "samplePayloadURL")]
     pub sample_payload_url: Option<String>,
     /// Details about the algorithm that was used to create the model package.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAlgorithmSpecification")]
     pub source_algorithm_specification: Option<ModelPackageSourceAlgorithmSpecification>,
-    /// A list of key value pairs associated with the model. For more information, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html) in the Amazon Web Services General Reference Guide.
+    /// A list of key value pairs associated with the model. For more information,
+    /// see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
+    /// in the Amazon Web Services General Reference Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ModelPackageTags>>,
-    /// The machine learning task your model package accomplishes. Common machine learning tasks include object detection and image classification. The following tasks are supported by Inference Recommender: "IMAGE_CLASSIFICATION" | "OBJECT_DETECTION" | "TEXT_GENERATION" |"IMAGE_SEGMENTATION" | "FILL_MASK" | "CLASSIFICATION" | "REGRESSION" | "OTHER". 
-    ///  Specify "OTHER" if none of the tasks listed fit your use case.
+    /// The machine learning task your model package accomplishes. Common machine
+    /// learning tasks include object detection and image classification. The following
+    /// tasks are supported by Inference Recommender: "IMAGE_CLASSIFICATION" | "OBJECT_DETECTION"
+    /// | "TEXT_GENERATION" |"IMAGE_SEGMENTATION" | "FILL_MASK" | "CLASSIFICATION"
+    /// | "REGRESSION" | "OTHER".
+    /// 
+    /// 
+    /// Specify "OTHER" if none of the tasks listed fit your use case.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub task: Option<String>,
-    /// Specifies configurations for one or more transform jobs that SageMaker runs to test the model package.
+    /// Specifies configurations for one or more transform jobs that SageMaker runs
+    /// to test the model package.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationSpecification")]
     pub validation_specification: Option<ModelPackageValidationSpecification>,
 }
 
-/// A structure of additional Inference Specification. Additional Inference Specification specifies details about inference jobs that can be run with models based on this model package
+/// A structure of additional Inference Specification. Additional Inference Specification
+/// specifies details about inference jobs that can be run with models based
+/// on this model package
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageAdditionalInferenceSpecifications {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -134,24 +186,32 @@ pub struct ModelPackageAdditionalInferenceSpecificationsContainersModelInput {
     pub data_input_config: Option<String>,
 }
 
-/// Represents the drift check baselines that can be used when the model monitor is set using the model package. For more information, see the topic on Drift Detection against Previous Baselines in SageMaker Pipelines (https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-quality-clarify-baseline-lifecycle.html#pipelines-quality-clarify-baseline-drift-detection) in the Amazon SageMaker Developer Guide.
+/// Represents the drift check baselines that can be used when the model monitor
+/// is set using the model package. For more information, see the topic on Drift
+/// Detection against Previous Baselines in SageMaker Pipelines (https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-quality-clarify-baseline-lifecycle.html#pipelines-quality-clarify-baseline-drift-detection)
+/// in the Amazon SageMaker Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselines {
-    /// Represents the drift check bias baselines that can be used when the model monitor is set using the model package.
+    /// Represents the drift check bias baselines that can be used when the model
+    /// monitor is set using the model package.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bias: Option<ModelPackageDriftCheckBaselinesBias>,
-    /// Represents the drift check explainability baselines that can be used when the model monitor is set using the model package.
+    /// Represents the drift check explainability baselines that can be used when
+    /// the model monitor is set using the model package.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub explainability: Option<ModelPackageDriftCheckBaselinesExplainability>,
-    /// Represents the drift check data quality baselines that can be used when the model monitor is set using the model package.
+    /// Represents the drift check data quality baselines that can be used when the
+    /// model monitor is set using the model package.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataQuality")]
     pub model_data_quality: Option<ModelPackageDriftCheckBaselinesModelDataQuality>,
-    /// Represents the drift check model quality baselines that can be used when the model monitor is set using the model package.
+    /// Represents the drift check model quality baselines that can be used when
+    /// the model monitor is set using the model package.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelQuality")]
     pub model_quality: Option<ModelPackageDriftCheckBaselinesModelQuality>,
 }
 
-/// Represents the drift check bias baselines that can be used when the model monitor is set using the model package.
+/// Represents the drift check bias baselines that can be used when the model
+/// monitor is set using the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesBias {
     /// Contains details regarding the file source.
@@ -198,7 +258,8 @@ pub struct ModelPackageDriftCheckBaselinesBiasPreTrainingConstraints {
     pub s3_uri: Option<String>,
 }
 
-/// Represents the drift check explainability baselines that can be used when the model monitor is set using the model package.
+/// Represents the drift check explainability baselines that can be used when
+/// the model monitor is set using the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesExplainability {
     /// Contains details regarding the file source.
@@ -231,7 +292,8 @@ pub struct ModelPackageDriftCheckBaselinesExplainabilityConstraints {
     pub s3_uri: Option<String>,
 }
 
-/// Represents the drift check data quality baselines that can be used when the model monitor is set using the model package.
+/// Represents the drift check data quality baselines that can be used when the
+/// model monitor is set using the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesModelDataQuality {
     /// Details about the metrics source.
@@ -264,7 +326,8 @@ pub struct ModelPackageDriftCheckBaselinesModelDataQualityStatistics {
     pub s3_uri: Option<String>,
 }
 
-/// Represents the drift check model quality baselines that can be used when the model monitor is set using the model package.
+/// Represents the drift check model quality baselines that can be used when
+/// the model monitor is set using the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesModelQuality {
     /// Details about the metrics source.
@@ -297,10 +360,20 @@ pub struct ModelPackageDriftCheckBaselinesModelQualityStatistics {
     pub s3_uri: Option<String>,
 }
 
-/// Specifies details about inference jobs that can be run with models based on this model package, including the following: 
-///  * The Amazon ECR paths of containers that contain the inference code and model artifacts. 
-///  * The instance types that the model package supports for transform jobs and real-time endpoints used for inference. 
-///  * The input and output content formats that the model package supports for inference.
+/// Specifies details about inference jobs that can be run with models based
+/// on this model package, including the following:
+/// 
+/// 
+///    * The Amazon ECR paths of containers that contain the inference code and
+///    model artifacts.
+/// 
+/// 
+///    * The instance types that the model package supports for transform jobs
+///    and real-time endpoints used for inference.
+/// 
+/// 
+///    * The input and output content formats that the model package supports
+///    for inference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageInferenceSpecification {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -517,7 +590,9 @@ pub struct ModelPackageSourceAlgorithmSpecification {
     pub source_algorithms: Option<Vec<ModelPackageSourceAlgorithmSpecificationSourceAlgorithms>>,
 }
 
-/// Specifies an algorithm that was used to create the model package. The algorithm must be either an algorithm resource in your SageMaker account or an algorithm in Amazon Web Services Marketplace that you are subscribed to.
+/// Specifies an algorithm that was used to create the model package. The algorithm
+/// must be either an algorithm resource in your SageMaker account or an algorithm
+/// in Amazon Web Services Marketplace that you are subscribed to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageSourceAlgorithmSpecificationSourceAlgorithms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmName")]
@@ -526,9 +601,21 @@ pub struct ModelPackageSourceAlgorithmSpecificationSourceAlgorithms {
     pub model_data_url: Option<String>,
 }
 
-/// A tag object that consists of a key and an optional value, used to manage metadata for SageMaker Amazon Web Services resources. 
-///  You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints. For more information on adding tags to SageMaker resources, see AddTags. 
-///  For more information on adding metadata to your Amazon Web Services resources with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). For advice on best practices for managing Amazon Web Services resources with tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
+/// A tag object that consists of a key and an optional value, used to manage
+/// metadata for SageMaker Amazon Web Services resources.
+/// 
+/// 
+/// You can add tags to notebook instances, training jobs, hyperparameter tuning
+/// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
+/// and endpoints. For more information on adding tags to SageMaker resources,
+/// see AddTags.
+/// 
+/// 
+/// For more information on adding metadata to your Amazon Web Services resources
+/// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+/// For advice on best practices for managing Amazon Web Services resources with
+/// tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services
+/// Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -537,7 +624,8 @@ pub struct ModelPackageTags {
     pub value: Option<String>,
 }
 
-/// Specifies configurations for one or more transform jobs that SageMaker runs to test the model package.
+/// Specifies configurations for one or more transform jobs that SageMaker runs
+/// to test the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageValidationSpecification {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationProfiles")]
@@ -546,18 +634,24 @@ pub struct ModelPackageValidationSpecification {
     pub validation_role: Option<String>,
 }
 
-/// Contains data, such as the inputs and targeted instance types that are used in the process of validating the model package. 
-///  The data provided in the validation profile is made available to your buyers on Amazon Web Services Marketplace.
+/// Contains data, such as the inputs and targeted instance types that are used
+/// in the process of validating the model package.
+/// 
+/// 
+/// The data provided in the validation profile is made available to your buyers
+/// on Amazon Web Services Marketplace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageValidationSpecificationValidationProfiles {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "profileName")]
     pub profile_name: Option<String>,
-    /// Defines the input needed to run a transform job using the inference specification specified in the algorithm.
+    /// Defines the input needed to run a transform job using the inference specification
+    /// specified in the algorithm.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformJobDefinition")]
     pub transform_job_definition: Option<ModelPackageValidationSpecificationValidationProfilesTransformJobDefinition>,
 }
 
-/// Defines the input needed to run a transform job using the inference specification specified in the algorithm.
+/// Defines the input needed to run a transform job using the inference specification
+/// specified in the algorithm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinition {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchStrategy")]
@@ -568,18 +662,21 @@ pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefi
     pub max_concurrent_transforms: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPayloadInMB")]
     pub max_payload_in_mb: Option<i64>,
-    /// Describes the input source of a transform job and the way the transform job consumes it.
+    /// Describes the input source of a transform job and the way the transform job
+    /// consumes it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformInput")]
     pub transform_input: Option<ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformInput>,
     /// Describes the results of a transform job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformOutput")]
     pub transform_output: Option<ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformOutput>,
-    /// Describes the resources, including ML instance types and ML instance count, to use for transform job.
+    /// Describes the resources, including ML instance types and ML instance count,
+    /// to use for transform job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformResources")]
     pub transform_resources: Option<ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformResources>,
 }
 
-/// Describes the input source of a transform job and the way the transform job consumes it.
+/// Describes the input source of a transform job and the way the transform job
+/// consumes it.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformInput {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
@@ -623,7 +720,8 @@ pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefi
     pub s3_output_path: Option<String>,
 }
 
-/// Describes the resources, including ML instance types and ML instance count, to use for transform job.
+/// Describes the resources, including ML instance types and ML instance count,
+/// to use for transform job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformResources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
@@ -637,10 +735,15 @@ pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefi
 /// ModelPackageStatus defines the observed state of ModelPackage
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ModelPackageStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ModelPackageStatusConditions>>,
     /// A timestamp specifying when the model package was created.
@@ -657,20 +760,32 @@ pub struct ModelPackageStatus {
     pub model_package_status_details: Option<ModelPackageStatusModelPackageStatusDetails>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageStatusConditions {
     /// Last time the condition transitioned from one status to another.

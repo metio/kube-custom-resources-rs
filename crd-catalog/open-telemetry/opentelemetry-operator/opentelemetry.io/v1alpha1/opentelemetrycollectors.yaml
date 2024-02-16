@@ -3688,10 +3688,11 @@ spec:
                       type: "object"
                     allocationStrategy:
                       default: "consistent-hashing"
-                      description: "AllocationStrategy determines which strategy the target allocator should use for allocation. The current options are least-weighted and consistent-hashing. The default option is consistent-hashing"
+                      description: "AllocationStrategy determines which strategy the target allocator should use for allocation. The current options are least-weighted, consistent-hashing and per-node. The default is consistent-hashing."
                       enum:
                         - "least-weighted"
                         - "consistent-hashing"
+                        - "per-node"
                       type: "string"
                     enabled:
                       description: "Enabled indicates whether to use a target allocation mechanism for Prometheus targets or not."

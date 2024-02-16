@@ -461,6 +461,9 @@ spec:
                     replication:
                       description: "In-memory database replication. When enabled, database will have replica shard for every master - leading to higher availability."
                       type: "boolean"
+                    resp3:
+                      description: "Whether this database supports RESP3 protocol. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info."
+                      type: "boolean"
                     rofRamSize:
                       description: "The size of the RAM portion of an RoF database. Similarly to \"memorySize\" use formats like 100MB, 0.1GB It must be at least 10% of combined memory size (RAM+Flash), as specified by \"memorySize\"."
                       type: "string"
@@ -487,6 +490,9 @@ spec:
                     shardCount:
                       description: "Number of database server-side shards"
                       type: "integer"
+                    shardingEnabled:
+                      description: "Toggles database sharding for REAADBs (Active Active databases) and enabled by default. This field is blocked for REDB (non-Active Active databases) and sharding is toggled via the shardCount field - when shardCount is 1 this is disabled otherwise enabled."
+                      type: "boolean"
                     shardsPlacement:
                       description: "Control the density of shards - should they reside on as few or as many nodes as possible. Available options are \"dense\" or \"sparse\". If left unset, defaults to \"dense\"."
                       type: "string"

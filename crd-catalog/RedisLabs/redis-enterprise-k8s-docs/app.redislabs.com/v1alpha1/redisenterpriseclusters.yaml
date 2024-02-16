@@ -3292,6 +3292,8 @@ spec:
                     - "major"
                     - "latest"
                   type: "string"
+                resp3Default:
+                  type: "boolean"
                 serviceAccountName:
                   type: "string"
                 services:

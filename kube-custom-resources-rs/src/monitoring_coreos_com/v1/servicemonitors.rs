@@ -151,8 +151,7 @@ pub struct ServiceMonitorEndpoints {
     ///  If empty, Prometheus uses the global scrape timeout unless it is less than the target's scrape interval value in which the latter is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
-    /// Name or number of the target port of the `Pod` object behind the Service, the port must be specified with container port property. 
-    ///  Deprecated: use `port` instead.
+    /// Name or number of the target port of the `Pod` object behind the Service. The port must be specified with the container's port property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
     /// TLS configuration to use when scraping the target.

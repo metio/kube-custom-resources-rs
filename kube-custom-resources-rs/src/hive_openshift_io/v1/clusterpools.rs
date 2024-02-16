@@ -123,9 +123,6 @@ pub struct ClusterPoolPlatform {
     /// AgentBareMetal is the configuration used when performing an Assisted Agent based installation to bare metal.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentBareMetal")]
     pub agent_bare_metal: Option<ClusterPoolPlatformAgentBareMetal>,
-    /// AlibabaCloud is the configuration used when installing on Alibaba Cloud
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub alibabacloud: Option<ClusterPoolPlatformAlibabacloud>,
     /// AWS is the configuration used when installing on AWS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws: Option<ClusterPoolPlatformAws>,
@@ -184,24 +181,6 @@ pub struct ClusterPoolPlatformAgentBareMetalAgentSelectorMatchExpressions {
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
-}
-
-/// AlibabaCloud is the configuration used when installing on Alibaba Cloud
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPoolPlatformAlibabacloud {
-    /// CredentialsSecretRef refers to a secret that contains Alibaba Cloud account access credentials.
-    #[serde(rename = "credentialsSecretRef")]
-    pub credentials_secret_ref: ClusterPoolPlatformAlibabacloudCredentialsSecretRef,
-    /// Region specifies the Alibaba Cloud region where the cluster will be created.
-    pub region: String,
-}
-
-/// CredentialsSecretRef refers to a secret that contains Alibaba Cloud account access credentials.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPoolPlatformAlibabacloudCredentialsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 /// AWS is the configuration used when installing on AWS.

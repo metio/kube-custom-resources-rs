@@ -20,6 +20,9 @@ pub struct EC2NodeClassSpec {
     /// AMISelectorTerms is a list of or ami selector terms. The terms are ORed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "amiSelectorTerms")]
     pub ami_selector_terms: Option<Vec<EC2NodeClassAmiSelectorTerms>>,
+    /// AssociatePublicIPAddress controls if public IP addresses are assigned to instances that are launched with the nodeclass.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "associatePublicIPAddress")]
+    pub associate_public_ip_address: Option<bool>,
     /// BlockDeviceMappings to be applied to provisioned nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockDeviceMappings")]
     pub block_device_mappings: Option<Vec<EC2NodeClassBlockDeviceMappings>>,

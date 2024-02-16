@@ -32,9 +32,6 @@ pub struct ClusterDeprovisionSpec {
 /// Platform contains platform-specific configuration for a ClusterDeprovision
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeprovisionPlatform {
-    /// AlibabaCloud contains Alibaba Cloud specific deprovision settings
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub alibabacloud: Option<ClusterDeprovisionPlatformAlibabacloud>,
     /// AWS contains AWS-specific deprovision settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws: Option<ClusterDeprovisionPlatformAws>,
@@ -56,27 +53,6 @@ pub struct ClusterDeprovisionPlatform {
     /// VSphere contains VMWare vSphere-specific deprovision settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vsphere: Option<ClusterDeprovisionPlatformVsphere>,
-}
-
-/// AlibabaCloud contains Alibaba Cloud specific deprovision settings
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDeprovisionPlatformAlibabacloud {
-    /// BaseDomain is the DNS base domain. TODO: Use the non-platform-specific BaseDomain field.
-    #[serde(rename = "baseDomain")]
-    pub base_domain: String,
-    /// CredentialsSecretRef is the Alibaba account credentials to use for deprovisioning the cluster
-    #[serde(rename = "credentialsSecretRef")]
-    pub credentials_secret_ref: ClusterDeprovisionPlatformAlibabacloudCredentialsSecretRef,
-    /// Region is the Alibaba region for this deprovision
-    pub region: String,
-}
-
-/// CredentialsSecretRef is the Alibaba account credentials to use for deprovisioning the cluster
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDeprovisionPlatformAlibabacloudCredentialsSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 /// AWS contains AWS-specific deprovision settings

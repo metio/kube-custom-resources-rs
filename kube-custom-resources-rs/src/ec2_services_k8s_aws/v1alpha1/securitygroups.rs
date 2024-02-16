@@ -5,36 +5,58 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// SecurityGroupSpec defines the desired state of SecurityGroup. 
-///  Describes a security group.
+/// SecurityGroupSpec defines the desired state of SecurityGroup.
+/// 
+/// 
+/// Describes a security group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "SecurityGroup", plural = "securitygroups")]
 #[kube(namespaced)]
 #[kube(status = "SecurityGroupStatus")]
 #[kube(schema = "disabled")]
 pub struct SecurityGroupSpec {
-    /// A description for the security group. This is informational only. 
-    ///  Constraints: Up to 255 characters in length 
-    ///  Constraints for EC2-Classic: ASCII characters 
-    ///  Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&;{}!$*
+    /// A description for the security group. This is informational only.
+    /// 
+    /// 
+    /// Constraints: Up to 255 characters in length
+    /// 
+    /// 
+    /// Constraints for EC2-Classic: ASCII characters
+    /// 
+    /// 
+    /// Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&;{}!$*
     pub description: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressRules")]
     pub egress_rules: Option<Vec<SecurityGroupEgressRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressRules")]
     pub ingress_rules: Option<Vec<SecurityGroupIngressRules>>,
-    /// The name of the security group. 
-    ///  Constraints: Up to 255 characters in length. Cannot start with sg-. 
-    ///  Constraints for EC2-Classic: ASCII characters 
-    ///  Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&;{}!$*
+    /// The name of the security group.
+    /// 
+    /// 
+    /// Constraints: Up to 255 characters in length. Cannot start with sg-.
+    /// 
+    /// 
+    /// Constraints for EC2-Classic: ASCII characters
+    /// 
+    /// 
+    /// Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&;{}!$*
     pub name: String,
-    /// The tags. The value parameter is required, but if you don't want the tag to have a value, specify the parameter with no value, and we set the value to an empty string.
+    /// The tags. The value parameter is required, but if you don't want the tag
+    /// to have a value, specify the parameter with no value, and we set the value
+    /// to an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<SecurityGroupTags>>,
     /// [EC2-VPC] The ID of the VPC. Required for EC2-VPC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
     pub vpc_id: Option<String>,
-    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-    ///  from: name: my-api
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 
+    /// 	from:
+    /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
     pub vpc_ref: Option<SecurityGroupVpcRef>,
 }
@@ -85,8 +107,13 @@ pub struct SecurityGroupEgressRulesPrefixListIDs {
     pub prefix_list_id: Option<String>,
 }
 
-/// Describes a security group and Amazon Web Services account ID pair. 
-///  We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate from EC2-Classic to a VPC. For more information, see Migrate from EC2-Classic to a VPC (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html) in the Amazon Elastic Compute Cloud User Guide.
+/// Describes a security group and Amazon Web Services account ID pair.
+/// 
+/// 
+/// We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate
+/// from EC2-Classic to a VPC. For more information, see Migrate from EC2-Classic
+/// to a VPC (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html)
+/// in the Amazon Elastic Compute Cloud User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupEgressRulesUserIdGroupPairs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -151,8 +178,13 @@ pub struct SecurityGroupIngressRulesPrefixListIDs {
     pub prefix_list_id: Option<String>,
 }
 
-/// Describes a security group and Amazon Web Services account ID pair. 
-///  We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate from EC2-Classic to a VPC. For more information, see Migrate from EC2-Classic to a VPC (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html) in the Amazon Elastic Compute Cloud User Guide.
+/// Describes a security group and Amazon Web Services account ID pair.
+/// 
+/// 
+/// We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate
+/// from EC2-Classic to a VPC. For more information, see Migrate from EC2-Classic
+/// to a VPC (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html)
+/// in the Amazon Elastic Compute Cloud User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupIngressRulesUserIdGroupPairs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -180,16 +212,24 @@ pub struct SecurityGroupTags {
     pub value: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupVpcRef {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<SecurityGroupVpcRefFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupVpcRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -199,10 +239,15 @@ pub struct SecurityGroupVpcRefFrom {
 /// SecurityGroupStatus defines the observed state of SecurityGroup
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<SecurityGroupStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<SecurityGroupStatusConditions>>,
     /// The ID of the security group.
@@ -213,20 +258,32 @@ pub struct SecurityGroupStatus {
     pub rules: Option<Vec<SecurityGroupStatusRules>>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityGroupStatusConditions {
     /// Last time the condition transitioned from one status to another.
