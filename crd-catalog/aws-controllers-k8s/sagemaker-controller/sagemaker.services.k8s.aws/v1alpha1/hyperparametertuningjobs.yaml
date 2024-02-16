@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.9.2"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "hyperparametertuningjobs.sagemaker.services.k8s.aws"
 spec:
   group: "sagemaker.services.k8s.aws"
@@ -27,10 +27,10 @@ spec:
           description: "HyperParameterTuningJob is the Schema for the HyperParameterTuningJobs API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -38,10 +38,10 @@ spec:
               description: "HyperParameterTuningJobSpec defines the desired state of HyperParameterTuningJob."
               properties:
                 hyperParameterTuningJobConfig:
-                  description: "The HyperParameterTuningJobConfig object that describes the tuning job, including the search strategy, the objective metric used to evaluate training jobs, ranges of parameters to search, and resource limits for the tuning job. For more information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html)."
+                  description: "The HyperParameterTuningJobConfig object that describes the tuning job, including\nthe search strategy, the objective metric used to evaluate training jobs,\nranges of parameters to search, and resource limits for the tuning job. For\nmore information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html)."
                   properties:
                     hyperParameterTuningJobObjective:
-                      description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter."
+                      description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter."
                       properties:
                         metricName:
                           type: "string"
@@ -49,7 +49,7 @@ spec:
                           type: "string"
                       type: "object"
                     parameterRanges:
-                      description: "Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. \n The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified."
+                      description: "Specifies ranges of integer, continuous, and categorical hyperparameters\nthat a hyperparameter tuning job searches. The hyperparameter tuning job\nlaunches training jobs with hyperparameter values within these ranges to\nfind the combination of values that result in the training job with the best\nperformance as measured by the objective metric of the hyperparameter tuning\njob.\n\n\nThe maximum number of items specified for Array Members refers to the maximum\nnumber of hyperparameters for each range and also the maximum for the hyperparameter\ntuning job itself. That is, the sum of the number of hyperparameters for\nall the ranges can't exceed the maximum number specified."
                       properties:
                         categoricalParameterRanges:
                           items:
@@ -79,7 +79,7 @@ spec:
                           type: "array"
                         integerParameterRanges:
                           items:
-                            description: "For a hyperparameter of the integer type, specifies the range that a hyperparameter tuning job searches."
+                            description: "For a hyperparameter of the integer type, specifies the range that a hyperparameter\ntuning job searches."
                             properties:
                               maxValue:
                                 type: "string"
@@ -93,7 +93,7 @@ spec:
                           type: "array"
                       type: "object"
                     resourceLimits:
-                      description: "Specifies the maximum number of training jobs and parallel training jobs that a hyperparameter tuning job can launch."
+                      description: "Specifies the maximum number of training jobs and parallel training jobs\nthat a hyperparameter tuning job can launch."
                       properties:
                         maxNumberOfTrainingJobs:
                           format: "int64"
@@ -103,7 +103,7 @@ spec:
                           type: "integer"
                       type: "object"
                     strategy:
-                      description: "The strategy hyperparameter tuning uses to find the best combination of hyperparameters for your model."
+                      description: "The strategy hyperparameter tuning uses to find the best combination of hyperparameters\nfor your model."
                       type: "string"
                     trainingJobEarlyStoppingType:
                       type: "string"
@@ -115,12 +115,12 @@ spec:
                       type: "object"
                   type: "object"
                 hyperParameterTuningJobName:
-                  description: "The name of the tuning job. This name is the prefix for the names of all training jobs that this tuning job launches. The name must be unique within the same Amazon Web Services account and Amazon Web Services Region. The name must have 1 to 32 characters. Valid characters are a-z, A-Z, 0-9, and : + = @ _ % - (hyphen). The name is not case sensitive."
+                  description: "The name of the tuning job. This name is the prefix for the names of all\ntraining jobs that this tuning job launches. The name must be unique within\nthe same Amazon Web Services account and Amazon Web Services Region. The\nname must have 1 to 32 characters. Valid characters are a-z, A-Z, 0-9, and\n: + = @ _ % - (hyphen). The name is not case sensitive."
                   type: "string"
                 tags:
-                  description: "An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see Tagging Amazon Web Services Resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). \n Tags that you specify for the tuning job are also added to all training jobs that the tuning job launches."
+                  description: "An array of key-value pairs. You can use tags to categorize your Amazon Web\nServices resources in different ways, for example, by purpose, owner, or\nenvironment. For more information, see Tagging Amazon Web Services Resources\n(https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\n\n\nTags that you specify for the tuning job are also added to all training jobs\nthat the tuning job launches."
                   items:
-                    description: "A tag object that consists of a key and an optional value, used to manage metadata for SageMaker Amazon Web Services resources. \n You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints. For more information on adding tags to SageMaker resources, see AddTags. \n For more information on adding metadata to your Amazon Web Services resources with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). For advice on best practices for managing Amazon Web Services resources with tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
+                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags.\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
                     properties:
                       key:
                         type: "string"
@@ -129,16 +129,16 @@ spec:
                     type: "object"
                   type: "array"
                 trainingJobDefinition:
-                  description: "The HyperParameterTrainingJobDefinition object that describes the training jobs that this tuning job launches, including static hyperparameters, input data configuration, output data configuration, resource configuration, and stopping condition."
+                  description: "The HyperParameterTrainingJobDefinition object that describes the training\njobs that this tuning job launches, including static hyperparameters, input\ndata configuration, output data configuration, resource configuration, and\nstopping condition."
                   properties:
                     algorithmSpecification:
-                      description: "Specifies which training algorithm to use for training jobs that a hyperparameter tuning job launches and the metrics to monitor."
+                      description: "Specifies which training algorithm to use for training jobs that a hyperparameter\ntuning job launches and the metrics to monitor."
                       properties:
                         algorithmName:
                           type: "string"
                         metricDefinitions:
                           items:
-                            description: "Specifies a metric that the training algorithm writes to stderr or stdout. SageMakerhyperparameter tuning captures all defined metrics. You specify one metric that a hyperparameter tuning job uses as its objective metric to choose the best training job."
+                            description: "Specifies a metric that the training algorithm writes to stderr or stdout.\nSageMakerhyperparameter tuning captures all defined metrics. You specify\none metric that a hyperparameter tuning job uses as its objective metric\nto choose the best training job."
                             properties:
                               name:
                                 type: "string"
@@ -149,11 +149,11 @@ spec:
                         trainingImage:
                           type: "string"
                         trainingInputMode:
-                          description: "The training input mode that the algorithm supports. For more information about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html). \n Pipe mode \n If an algorithm supports Pipe mode, Amazon SageMaker streams data directly from Amazon S3 to the container. \n File mode \n If an algorithm supports File mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container. \n You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any. \n For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training. \n FastFile mode \n If an algorithm supports FastFile mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk. \n FastFile mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided."
+                          description: "The training input mode that the algorithm supports. For more information\nabout input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).\n\n\nPipe mode\n\n\nIf an algorithm supports Pipe mode, Amazon SageMaker streams data directly\nfrom Amazon S3 to the container.\n\n\nFile mode\n\n\nIf an algorithm supports File mode, SageMaker downloads the training data\nfrom S3 to the provisioned ML storage volume, and mounts the directory to\nthe Docker volume for the training container.\n\n\nYou must provision the ML storage volume with sufficient capacity to accommodate\nthe data downloaded from S3. In addition to the training data, the ML storage\nvolume also stores the output model. The algorithm container uses the ML\nstorage volume to also store intermediate information, if any.\n\n\nFor distributed algorithms, training data is distributed uniformly. Your\ntraining duration is predictable if the input data objects sizes are approximately\nthe same. SageMaker does not split the files any further for model training.\nIf the object sizes are skewed, training won't be optimal as the data distribution\nis also skewed when one host in a training cluster is overloaded, thus becoming\na bottleneck in training.\n\n\nFastFile mode\n\n\nIf an algorithm supports FastFile mode, SageMaker streams data directly from\nS3 to the container with no code changes, and provides file system access\nto the data. Users can author their training script to interact with these\nfiles as if they were stored on disk.\n\n\nFastFile mode works best when the data is read sequentially. Augmented manifest\nfiles aren't supported. The startup time is lower when there are fewer files\nin the S3 bucket provided."
                           type: "string"
                       type: "object"
                     checkpointConfig:
-                      description: "Contains information about the output location for managed spot training checkpoint data."
+                      description: "Contains information about the output location for managed spot training\ncheckpoint data."
                       properties:
                         localPath:
                           type: "string"
@@ -169,7 +169,7 @@ spec:
                     enableNetworkIsolation:
                       type: "boolean"
                     hyperParameterRanges:
-                      description: "Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. \n The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified."
+                      description: "Specifies ranges of integer, continuous, and categorical hyperparameters\nthat a hyperparameter tuning job searches. The hyperparameter tuning job\nlaunches training jobs with hyperparameter values within these ranges to\nfind the combination of values that result in the training job with the best\nperformance as measured by the objective metric of the hyperparameter tuning\njob.\n\n\nThe maximum number of items specified for Array Members refers to the maximum\nnumber of hyperparameters for each range and also the maximum for the hyperparameter\ntuning job itself. That is, the sum of the number of hyperparameters for\nall the ranges can't exceed the maximum number specified."
                       properties:
                         categoricalParameterRanges:
                           items:
@@ -199,7 +199,7 @@ spec:
                           type: "array"
                         integerParameterRanges:
                           items:
-                            description: "For a hyperparameter of the integer type, specifies the range that a hyperparameter tuning job searches."
+                            description: "For a hyperparameter of the integer type, specifies the range that a hyperparameter\ntuning job searches."
                             properties:
                               maxValue:
                                 type: "string"
@@ -257,12 +257,12 @@ spec:
                                 type: "object"
                             type: "object"
                           inputMode:
-                            description: "The training input mode that the algorithm supports. For more information about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html). \n Pipe mode \n If an algorithm supports Pipe mode, Amazon SageMaker streams data directly from Amazon S3 to the container. \n File mode \n If an algorithm supports File mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container. \n You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any. \n For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training. \n FastFile mode \n If an algorithm supports FastFile mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk. \n FastFile mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided."
+                            description: "The training input mode that the algorithm supports. For more information\nabout input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).\n\n\nPipe mode\n\n\nIf an algorithm supports Pipe mode, Amazon SageMaker streams data directly\nfrom Amazon S3 to the container.\n\n\nFile mode\n\n\nIf an algorithm supports File mode, SageMaker downloads the training data\nfrom S3 to the provisioned ML storage volume, and mounts the directory to\nthe Docker volume for the training container.\n\n\nYou must provision the ML storage volume with sufficient capacity to accommodate\nthe data downloaded from S3. In addition to the training data, the ML storage\nvolume also stores the output model. The algorithm container uses the ML\nstorage volume to also store intermediate information, if any.\n\n\nFor distributed algorithms, training data is distributed uniformly. Your\ntraining duration is predictable if the input data objects sizes are approximately\nthe same. SageMaker does not split the files any further for model training.\nIf the object sizes are skewed, training won't be optimal as the data distribution\nis also skewed when one host in a training cluster is overloaded, thus becoming\na bottleneck in training.\n\n\nFastFile mode\n\n\nIf an algorithm supports FastFile mode, SageMaker streams data directly from\nS3 to the container with no code changes, and provides file system access\nto the data. Users can author their training script to interact with these\nfiles as if they were stored on disk.\n\n\nFastFile mode works best when the data is read sequentially. Augmented manifest\nfiles aren't supported. The startup time is lower when there are fewer files\nin the S3 bucket provided."
                             type: "string"
                           recordWrapperType:
                             type: "string"
                           shuffleConfig:
-                            description: "A configuration for a shuffle option for input data in a channel. If you use S3Prefix for S3DataType, the results of the S3 key prefix matches are shuffled. If you use ManifestFile, the order of the S3 object references in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling order is determined using the Seed value. \n For Pipe input mode, when ShuffleConfig is specified shuffling is done at the start of every epoch. With large datasets, this ensures that the order of the training data is different for each epoch, and it helps reduce bias and possible overfitting. In a multi-node training job when ShuffleConfig is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled across nodes so that the content sent to a particular node on the first epoch might be sent to a different node on the second epoch."
+                            description: "A configuration for a shuffle option for input data in a channel. If you\nuse S3Prefix for S3DataType, the results of the S3 key prefix matches are\nshuffled. If you use ManifestFile, the order of the S3 object references\nin the ManifestFile is shuffled. If you use AugmentedManifestFile, the order\nof the JSON lines in the AugmentedManifestFile is shuffled. The shuffling\norder is determined using the Seed value.\n\n\nFor Pipe input mode, when ShuffleConfig is specified shuffling is done at\nthe start of every epoch. With large datasets, this ensures that the order\nof the training data is different for each epoch, and it helps reduce bias\nand possible overfitting. In a multi-node training job when ShuffleConfig\nis combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled\nacross nodes so that the content sent to a particular node on the first epoch\nmight be sent to a different node on the second epoch."
                             properties:
                               seed:
                                 format: "int64"
@@ -279,14 +279,14 @@ spec:
                           type: "string"
                       type: "object"
                     resourceConfig:
-                      description: "Describes the resources, including machine learning (ML) compute instances and ML storage volumes, to use for model training."
+                      description: "Describes the resources, including machine learning (ML) compute instances\nand ML storage volumes, to use for model training."
                       properties:
                         instanceCount:
                           format: "int64"
                           type: "integer"
                         instanceGroups:
                           items:
-                            description: "Defines an instance group for heterogeneous cluster training. When requesting a training job using the CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html) API, you can configure multiple instance groups ."
+                            description: "Defines an instance group for heterogeneous cluster training. When requesting\na training job using the CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)\nAPI, you can configure multiple instance groups ."
                             properties:
                               instanceCount:
                                 format: "int64"
@@ -309,7 +309,7 @@ spec:
                           type: "integer"
                       type: "object"
                     retryStrategy:
-                      description: "The retry strategy to use when a training job fails due to an InternalServerError. RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob requests. You can add the StoppingCondition parameter to the request to limit the training time for the complete job."
+                      description: "The retry strategy to use when a training job fails due to an InternalServerError.\nRetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob\nrequests. You can add the StoppingCondition parameter to the request to limit\nthe training time for the complete job."
                       properties:
                         maximumRetryAttempts:
                           format: "int64"
@@ -322,7 +322,7 @@ spec:
                         type: "string"
                       type: "object"
                     stoppingCondition:
-                      description: "Specifies a limit to how long a model training job or model compilation job can run. It also specifies how long a managed spot training job has to complete. When the job reaches the time limit, SageMaker ends the training or compilation job. Use this API to cap model training costs. \n To stop a training job, SageMaker sends the algorithm the SIGTERM signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. \n The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with CreateModel. \n The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete."
+                      description: "Specifies a limit to how long a model training job or model compilation job\ncan run. It also specifies how long a managed spot training job has to complete.\nWhen the job reaches the time limit, SageMaker ends the training or compilation\njob. Use this API to cap model training costs.\n\n\nTo stop a training job, SageMaker sends the algorithm the SIGTERM signal,\nwhich delays job termination for 120 seconds. Algorithms can use this 120-second\nwindow to save the model artifacts, so the results of training are not lost.\n\n\nThe training algorithms provided by SageMaker automatically save the intermediate\nresults of a model training job when possible. This attempt to save artifacts\nis only a best effort case as model might not be in a state from which it\ncan be saved. For example, if training has just started, the model might\nnot be ready to save. When saved, this intermediate data is a valid model\nartifact. You can use it to create a model with CreateModel.\n\n\nThe Neural Topic Model (NTM) currently does not support saving intermediate\nmodel artifacts. When training NTMs, make sure that the maximum runtime is\nsufficient for the training job to complete."
                       properties:
                         maxRuntimeInSeconds:
                           format: "int64"
@@ -332,7 +332,7 @@ spec:
                           type: "integer"
                       type: "object"
                     tuningObjective:
-                      description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter."
+                      description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter."
                       properties:
                         metricName:
                           type: "string"
@@ -340,7 +340,7 @@ spec:
                           type: "string"
                       type: "object"
                     vpcConfig:
-                      description: "Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
+                      description: "Specifies a VPC that your training jobs and hosted models have access to.\nControl access to and from your training and model containers by configuring\nthe VPC. For more information, see Protect Endpoints by Using an Amazon Virtual\nPrivate Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)\nand Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
                       properties:
                         securityGroupIDs:
                           items:
@@ -353,18 +353,18 @@ spec:
                       type: "object"
                   type: "object"
                 trainingJobDefinitions:
-                  description: "A list of the HyperParameterTrainingJobDefinition objects launched for this tuning job."
+                  description: "A list of the HyperParameterTrainingJobDefinition objects launched for this\ntuning job."
                   items:
                     description: "Defines the training jobs launched by a hyperparameter tuning job."
                     properties:
                       algorithmSpecification:
-                        description: "Specifies which training algorithm to use for training jobs that a hyperparameter tuning job launches and the metrics to monitor."
+                        description: "Specifies which training algorithm to use for training jobs that a hyperparameter\ntuning job launches and the metrics to monitor."
                         properties:
                           algorithmName:
                             type: "string"
                           metricDefinitions:
                             items:
-                              description: "Specifies a metric that the training algorithm writes to stderr or stdout. SageMakerhyperparameter tuning captures all defined metrics. You specify one metric that a hyperparameter tuning job uses as its objective metric to choose the best training job."
+                              description: "Specifies a metric that the training algorithm writes to stderr or stdout.\nSageMakerhyperparameter tuning captures all defined metrics. You specify\none metric that a hyperparameter tuning job uses as its objective metric\nto choose the best training job."
                               properties:
                                 name:
                                   type: "string"
@@ -375,11 +375,11 @@ spec:
                           trainingImage:
                             type: "string"
                           trainingInputMode:
-                            description: "The training input mode that the algorithm supports. For more information about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html). \n Pipe mode \n If an algorithm supports Pipe mode, Amazon SageMaker streams data directly from Amazon S3 to the container. \n File mode \n If an algorithm supports File mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container. \n You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any. \n For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training. \n FastFile mode \n If an algorithm supports FastFile mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk. \n FastFile mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided."
+                            description: "The training input mode that the algorithm supports. For more information\nabout input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).\n\n\nPipe mode\n\n\nIf an algorithm supports Pipe mode, Amazon SageMaker streams data directly\nfrom Amazon S3 to the container.\n\n\nFile mode\n\n\nIf an algorithm supports File mode, SageMaker downloads the training data\nfrom S3 to the provisioned ML storage volume, and mounts the directory to\nthe Docker volume for the training container.\n\n\nYou must provision the ML storage volume with sufficient capacity to accommodate\nthe data downloaded from S3. In addition to the training data, the ML storage\nvolume also stores the output model. The algorithm container uses the ML\nstorage volume to also store intermediate information, if any.\n\n\nFor distributed algorithms, training data is distributed uniformly. Your\ntraining duration is predictable if the input data objects sizes are approximately\nthe same. SageMaker does not split the files any further for model training.\nIf the object sizes are skewed, training won't be optimal as the data distribution\nis also skewed when one host in a training cluster is overloaded, thus becoming\na bottleneck in training.\n\n\nFastFile mode\n\n\nIf an algorithm supports FastFile mode, SageMaker streams data directly from\nS3 to the container with no code changes, and provides file system access\nto the data. Users can author their training script to interact with these\nfiles as if they were stored on disk.\n\n\nFastFile mode works best when the data is read sequentially. Augmented manifest\nfiles aren't supported. The startup time is lower when there are fewer files\nin the S3 bucket provided."
                             type: "string"
                         type: "object"
                       checkpointConfig:
-                        description: "Contains information about the output location for managed spot training checkpoint data."
+                        description: "Contains information about the output location for managed spot training\ncheckpoint data."
                         properties:
                           localPath:
                             type: "string"
@@ -395,7 +395,7 @@ spec:
                       enableNetworkIsolation:
                         type: "boolean"
                       hyperParameterRanges:
-                        description: "Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job. \n The maximum number of items specified for Array Members refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified."
+                        description: "Specifies ranges of integer, continuous, and categorical hyperparameters\nthat a hyperparameter tuning job searches. The hyperparameter tuning job\nlaunches training jobs with hyperparameter values within these ranges to\nfind the combination of values that result in the training job with the best\nperformance as measured by the objective metric of the hyperparameter tuning\njob.\n\n\nThe maximum number of items specified for Array Members refers to the maximum\nnumber of hyperparameters for each range and also the maximum for the hyperparameter\ntuning job itself. That is, the sum of the number of hyperparameters for\nall the ranges can't exceed the maximum number specified."
                         properties:
                           categoricalParameterRanges:
                             items:
@@ -425,7 +425,7 @@ spec:
                             type: "array"
                           integerParameterRanges:
                             items:
-                              description: "For a hyperparameter of the integer type, specifies the range that a hyperparameter tuning job searches."
+                              description: "For a hyperparameter of the integer type, specifies the range that a hyperparameter\ntuning job searches."
                               properties:
                                 maxValue:
                                   type: "string"
@@ -483,12 +483,12 @@ spec:
                                   type: "object"
                               type: "object"
                             inputMode:
-                              description: "The training input mode that the algorithm supports. For more information about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html). \n Pipe mode \n If an algorithm supports Pipe mode, Amazon SageMaker streams data directly from Amazon S3 to the container. \n File mode \n If an algorithm supports File mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container. \n You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any. \n For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training. \n FastFile mode \n If an algorithm supports FastFile mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk. \n FastFile mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided."
+                              description: "The training input mode that the algorithm supports. For more information\nabout input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).\n\n\nPipe mode\n\n\nIf an algorithm supports Pipe mode, Amazon SageMaker streams data directly\nfrom Amazon S3 to the container.\n\n\nFile mode\n\n\nIf an algorithm supports File mode, SageMaker downloads the training data\nfrom S3 to the provisioned ML storage volume, and mounts the directory to\nthe Docker volume for the training container.\n\n\nYou must provision the ML storage volume with sufficient capacity to accommodate\nthe data downloaded from S3. In addition to the training data, the ML storage\nvolume also stores the output model. The algorithm container uses the ML\nstorage volume to also store intermediate information, if any.\n\n\nFor distributed algorithms, training data is distributed uniformly. Your\ntraining duration is predictable if the input data objects sizes are approximately\nthe same. SageMaker does not split the files any further for model training.\nIf the object sizes are skewed, training won't be optimal as the data distribution\nis also skewed when one host in a training cluster is overloaded, thus becoming\na bottleneck in training.\n\n\nFastFile mode\n\n\nIf an algorithm supports FastFile mode, SageMaker streams data directly from\nS3 to the container with no code changes, and provides file system access\nto the data. Users can author their training script to interact with these\nfiles as if they were stored on disk.\n\n\nFastFile mode works best when the data is read sequentially. Augmented manifest\nfiles aren't supported. The startup time is lower when there are fewer files\nin the S3 bucket provided."
                               type: "string"
                             recordWrapperType:
                               type: "string"
                             shuffleConfig:
-                              description: "A configuration for a shuffle option for input data in a channel. If you use S3Prefix for S3DataType, the results of the S3 key prefix matches are shuffled. If you use ManifestFile, the order of the S3 object references in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling order is determined using the Seed value. \n For Pipe input mode, when ShuffleConfig is specified shuffling is done at the start of every epoch. With large datasets, this ensures that the order of the training data is different for each epoch, and it helps reduce bias and possible overfitting. In a multi-node training job when ShuffleConfig is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled across nodes so that the content sent to a particular node on the first epoch might be sent to a different node on the second epoch."
+                              description: "A configuration for a shuffle option for input data in a channel. If you\nuse S3Prefix for S3DataType, the results of the S3 key prefix matches are\nshuffled. If you use ManifestFile, the order of the S3 object references\nin the ManifestFile is shuffled. If you use AugmentedManifestFile, the order\nof the JSON lines in the AugmentedManifestFile is shuffled. The shuffling\norder is determined using the Seed value.\n\n\nFor Pipe input mode, when ShuffleConfig is specified shuffling is done at\nthe start of every epoch. With large datasets, this ensures that the order\nof the training data is different for each epoch, and it helps reduce bias\nand possible overfitting. In a multi-node training job when ShuffleConfig\nis combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled\nacross nodes so that the content sent to a particular node on the first epoch\nmight be sent to a different node on the second epoch."
                               properties:
                                 seed:
                                   format: "int64"
@@ -505,14 +505,14 @@ spec:
                             type: "string"
                         type: "object"
                       resourceConfig:
-                        description: "Describes the resources, including machine learning (ML) compute instances and ML storage volumes, to use for model training."
+                        description: "Describes the resources, including machine learning (ML) compute instances\nand ML storage volumes, to use for model training."
                         properties:
                           instanceCount:
                             format: "int64"
                             type: "integer"
                           instanceGroups:
                             items:
-                              description: "Defines an instance group for heterogeneous cluster training. When requesting a training job using the CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html) API, you can configure multiple instance groups ."
+                              description: "Defines an instance group for heterogeneous cluster training. When requesting\na training job using the CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)\nAPI, you can configure multiple instance groups ."
                               properties:
                                 instanceCount:
                                   format: "int64"
@@ -535,7 +535,7 @@ spec:
                             type: "integer"
                         type: "object"
                       retryStrategy:
-                        description: "The retry strategy to use when a training job fails due to an InternalServerError. RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob requests. You can add the StoppingCondition parameter to the request to limit the training time for the complete job."
+                        description: "The retry strategy to use when a training job fails due to an InternalServerError.\nRetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob\nrequests. You can add the StoppingCondition parameter to the request to limit\nthe training time for the complete job."
                         properties:
                           maximumRetryAttempts:
                             format: "int64"
@@ -548,7 +548,7 @@ spec:
                           type: "string"
                         type: "object"
                       stoppingCondition:
-                        description: "Specifies a limit to how long a model training job or model compilation job can run. It also specifies how long a managed spot training job has to complete. When the job reaches the time limit, SageMaker ends the training or compilation job. Use this API to cap model training costs. \n To stop a training job, SageMaker sends the algorithm the SIGTERM signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. \n The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with CreateModel. \n The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete."
+                        description: "Specifies a limit to how long a model training job or model compilation job\ncan run. It also specifies how long a managed spot training job has to complete.\nWhen the job reaches the time limit, SageMaker ends the training or compilation\njob. Use this API to cap model training costs.\n\n\nTo stop a training job, SageMaker sends the algorithm the SIGTERM signal,\nwhich delays job termination for 120 seconds. Algorithms can use this 120-second\nwindow to save the model artifacts, so the results of training are not lost.\n\n\nThe training algorithms provided by SageMaker automatically save the intermediate\nresults of a model training job when possible. This attempt to save artifacts\nis only a best effort case as model might not be in a state from which it\ncan be saved. For example, if training has just started, the model might\nnot be ready to save. When saved, this intermediate data is a valid model\nartifact. You can use it to create a model with CreateModel.\n\n\nThe Neural Topic Model (NTM) currently does not support saving intermediate\nmodel artifacts. When training NTMs, make sure that the maximum runtime is\nsufficient for the training job to complete."
                         properties:
                           maxRuntimeInSeconds:
                             format: "int64"
@@ -558,7 +558,7 @@ spec:
                             type: "integer"
                         type: "object"
                       tuningObjective:
-                        description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter tuning uses the value of this metric to evaluate the training jobs it launches, and returns the training job that results in either the highest or lowest value for this metric, depending on the value you specify for the Type parameter."
+                        description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter."
                         properties:
                           metricName:
                             type: "string"
@@ -566,7 +566,7 @@ spec:
                             type: "string"
                         type: "object"
                       vpcConfig:
-                        description: "Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
+                        description: "Specifies a VPC that your training jobs and hosted models have access to.\nControl access to and from your training and model containers by configuring\nthe VPC. For more information, see Protect Endpoints by Using an Amazon Virtual\nPrivate Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)\nand Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
                         properties:
                           securityGroupIDs:
                             items:
@@ -580,11 +580,11 @@ spec:
                     type: "object"
                   type: "array"
                 warmStartConfig:
-                  description: "Specifies the configuration for starting the hyperparameter tuning job using one or more previous tuning jobs as a starting point. The results of previous tuning jobs are used to inform which combinations of hyperparameters to search over in the new tuning job. \n All training jobs launched by the new hyperparameter tuning job are evaluated by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM as the WarmStartType value for the warm start configuration, the training job that performs the best in the new tuning job is compared to the best training jobs from the parent tuning jobs. From these, the training job that performs the best as measured by the objective metric is returned as the overall best training job. \n All training jobs launched by parent hyperparameter tuning jobs and the new hyperparameter tuning jobs count against the limit of training jobs for the tuning job."
+                  description: "Specifies the configuration for starting the hyperparameter tuning job using\none or more previous tuning jobs as a starting point. The results of previous\ntuning jobs are used to inform which combinations of hyperparameters to search\nover in the new tuning job.\n\n\nAll training jobs launched by the new hyperparameter tuning job are evaluated\nby using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM\nas the WarmStartType value for the warm start configuration, the training\njob that performs the best in the new tuning job is compared to the best\ntraining jobs from the parent tuning jobs. From these, the training job that\nperforms the best as measured by the objective metric is returned as the\noverall best training job.\n\n\nAll training jobs launched by parent hyperparameter tuning jobs and the new\nhyperparameter tuning jobs count against the limit of training jobs for the\ntuning job."
                   properties:
                     parentHyperParameterTuningJobs:
                       items:
-                        description: "A previously completed or stopped hyperparameter tuning job to be used as a starting point for a new hyperparameter tuning job."
+                        description: "A previously completed or stopped hyperparameter tuning job to be used as\na starting point for a new hyperparameter tuning job."
                         properties:
                           hyperParameterTuningJobName:
                             type: "string"
@@ -601,13 +601,13 @@ spec:
               description: "HyperParameterTuningJobStatus defines the observed state of HyperParameterTuningJob"
               properties:
                 ackResourceMetadata:
-                  description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource"
+                  description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an \"adopted\" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
-                      description: "OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource."
+                      description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
@@ -617,7 +617,7 @@ spec:
                     - "region"
                   type: "object"
                 bestTrainingJob:
-                  description: "A TrainingJobSummary object that describes the training job that completed with the best current HyperParameterTuningJobObjective."
+                  description: "A TrainingJobSummary object that describes the training job that completed\nwith the best current HyperParameterTuningJobObjective."
                   properties:
                     creationTime:
                       format: "date-time"
@@ -625,7 +625,7 @@ spec:
                     failureReason:
                       type: "string"
                     finalHyperParameterTuningJobObjectiveMetric:
-                      description: "Shows the latest objective metric emitted by a training job that was launched by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective parameter of HyperParameterTuningJobConfig."
+                      description: "Shows the latest objective metric emitted by a training job that was launched\nby a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective\nparameter of HyperParameterTuningJobConfig."
                       properties:
                         metricName:
                           type: "string"
@@ -658,9 +658,9 @@ spec:
                       type: "string"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource"
+                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
-                    description: "Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource"
+                    description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:
                       lastTransitionTime:
                         description: "Last time the condition transitioned from one status to another."
@@ -687,10 +687,10 @@ spec:
                   description: "If the tuning job failed, the reason it failed."
                   type: "string"
                 hyperParameterTuningJobStatus:
-                  description: "The status of the tuning job: InProgress, Completed, Failed, Stopping, or Stopped."
+                  description: "The status of the tuning job: InProgress, Completed, Failed, Stopping, or\nStopped."
                   type: "string"
                 overallBestTrainingJob:
-                  description: "If the hyperparameter tuning job is an warm start tuning job with a WarmStartType of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training job with the best objective metric value of all training jobs launched by this tuning job and all parent jobs specified for the warm start tuning job."
+                  description: "If the hyperparameter tuning job is an warm start tuning job with a WarmStartType\nof IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training\njob with the best objective metric value of all training jobs launched by\nthis tuning job and all parent jobs specified for the warm start tuning job."
                   properties:
                     creationTime:
                       format: "date-time"
@@ -698,7 +698,7 @@ spec:
                     failureReason:
                       type: "string"
                     finalHyperParameterTuningJobObjectiveMetric:
-                      description: "Shows the latest objective metric emitted by a training job that was launched by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective parameter of HyperParameterTuningJobConfig."
+                      description: "Shows the latest objective metric emitted by a training job that was launched\nby a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective\nparameter of HyperParameterTuningJobConfig."
                       properties:
                         metricName:
                           type: "string"

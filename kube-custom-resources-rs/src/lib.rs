@@ -34,6 +34,10 @@ apiVersion `actions.summerwind.dev/v1alpha1`:
 
 ## addons_cluster_x_k8s_io
 
+apiVersion `addons.cluster.x-k8s.io/v1alpha3`:
+- `ClusterResourceSetBinding`
+- `ClusterResourceSet`
+
 apiVersion `addons.cluster.x-k8s.io/v1alpha4`:
 - `ClusterResourceSet`
 
@@ -598,6 +602,14 @@ apiVersion `cluster.ipfs.io/v1alpha1`:
 - `IpfsCluster`
 
 ## cluster_x_k8s_io
+
+apiVersion `cluster.x-k8s.io/v1alpha3`:
+- `Cluster`
+- `MachineDeployment`
+- `MachineHealthCheck`
+- `MachinePool`
+- `Machine`
+- `MachineSet`
 
 apiVersion `cluster.x-k8s.io/v1alpha4`:
 - `ClusterClass`
@@ -1212,6 +1224,25 @@ apiVersion `infrastructure.cluster.x-k8s.io/v1alpha1`:
 - `KubevirtClusterTemplate`
 - `KubevirtMachine`
 - `KubevirtMachineTemplate`
+
+apiVersion `infrastructure.cluster.x-k8s.io/v1alpha3`:
+- `VSphereClusterIdentity`
+- `VSphereCluster`
+- `VSphereDeploymentZone`
+- `VSphereFailureDomain`
+- `VSphereMachine`
+- `VSphereMachineTemplate`
+- `VSphereVM`
+
+apiVersion `infrastructure.cluster.x-k8s.io/v1alpha4`:
+- `VSphereClusterIdentity`
+- `VSphereCluster`
+- `VSphereClusterTemplate`
+- `VSphereDeploymentZone`
+- `VSphereFailureDomain`
+- `VSphereMachine`
+- `VSphereMachineTemplate`
+- `VSphereVM`
 
 apiVersion `infrastructure.cluster.x-k8s.io/v1beta1`:
 - `IBMPowerVSCluster`

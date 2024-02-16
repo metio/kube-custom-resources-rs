@@ -86,6 +86,9 @@ pub struct ClusterSecretStoreProvider {
     /// AzureKV configures this store to sync secrets using Azure Key Vault provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub azurekv: Option<ClusterSecretStoreProviderAzurekv>,
+    /// Chef configures this store to sync secrets with chef server
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chef: Option<ClusterSecretStoreProviderChef>,
     /// Conjur configures this store to sync secrets using conjur provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conjur: Option<ClusterSecretStoreProviderConjur>,
@@ -120,6 +123,9 @@ pub struct ClusterSecretStoreProvider {
     /// Oracle configures this store to sync secrets using Oracle Vault provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oracle: Option<ClusterSecretStoreProviderOracle>,
+    /// Pulumi configures this store to sync secrets using the Pulumi provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pulumi: Option<ClusterSecretStoreProviderPulumi>,
     /// Scaleway
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scaleway: Option<ClusterSecretStoreProviderScaleway>,
@@ -676,6 +682,50 @@ pub struct ClusterSecretStoreProviderAzurekvServiceAccountRef {
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Chef configures this store to sync secrets with chef server
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderChef {
+    /// Auth defines the information necessary to authenticate against chef Server
+    pub auth: ClusterSecretStoreProviderChefAuth,
+    /// ServerURL is the chef server URL used to connect to. If using orgs you should include your org in the url and terminate the url with a "/"
+    #[serde(rename = "serverUrl")]
+    pub server_url: String,
+    /// UserName should be the user ID on the chef server
+    pub username: String,
+}
+
+/// Auth defines the information necessary to authenticate against chef Server
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderChefAuth {
+    /// ChefAuthSecretRef holds secret references for chef server login credentials.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: ClusterSecretStoreProviderChefAuthSecretRef,
+}
+
+/// ChefAuthSecretRef holds secret references for chef server login credentials.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderChefAuthSecretRef {
+    /// SecretKey is the Signing Key in PEM format, used for authentication.
+    #[serde(rename = "privateKeySecretRef")]
+    pub private_key_secret_ref: ClusterSecretStoreProviderChefAuthSecretRefPrivateKeySecretRef,
+}
+
+/// SecretKey is the Signing Key in PEM format, used for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderChefAuthSecretRefPrivateKeySecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
     /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1518,6 +1568,49 @@ pub struct ClusterSecretStoreProviderOracleServiceAccountRef {
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Pulumi configures this store to sync secrets using the Pulumi provider
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderPulumi {
+    /// AccessToken is the access tokens to sign in to the Pulumi Cloud Console.
+    #[serde(rename = "accessToken")]
+    pub access_token: ClusterSecretStoreProviderPulumiAccessToken,
+    /// APIURL is the URL of the Pulumi API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiUrl")]
+    pub api_url: Option<String>,
+    /// Environment are YAML documents composed of static key-value pairs, programmatic expressions,
+    /// dynamically retrieved values from supported providers including all major clouds,
+    /// and other Pulumi ESC environments.
+    /// To create a new environment, visit https://www.pulumi.com/docs/esc/environments/ for more information.
+    pub environment: String,
+    /// Organization are a space to collaborate on shared projects and stacks.
+    /// To create a new organization, visit https://app.pulumi.com/ and click "New Organization".
+    pub organization: String,
+}
+
+/// AccessToken is the access tokens to sign in to the Pulumi Cloud Console.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderPulumiAccessToken {
+    /// SecretRef is a reference to a secret containing the Pulumi API token.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ClusterSecretStoreProviderPulumiAccessTokenSecretRef>,
+}
+
+/// SecretRef is a reference to a secret containing the Pulumi API token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderPulumiAccessTokenSecretRef {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
     /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -73,7 +73,7 @@ pub struct FlowCollectorAgentEbpf {
     /// interfaces contains the interface names from where flows will be collected. If empty, the agent will fetch all the interfaces in the system, excepting the ones listed in ExcludeInterfaces. If an entry is enclosed by slashes (such as `/br-/`), it will match as regular expression, otherwise it will be matched as a case-sensitive string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<String>>,
-    /// kafkaBatchSize limits the maximum size of a request in bytes before being sent to a partition. Ignored when not using Kafka. Default: 10MB.
+    /// kafkaBatchSize limits the maximum size of a request in bytes before being sent to a partition. Ignored when not using Kafka. Default: 1MB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaBatchSize")]
     pub kafka_batch_size: Option<i64>,
     /// logLevel defines the log level for the NetObserv eBPF Agent

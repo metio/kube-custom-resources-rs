@@ -5,40 +5,57 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// RepositorySpec defines the desired state of Repository. 
-///  An object representing a repository.
+/// RepositorySpec defines the desired state of Repository.
+/// 
+/// 
+/// An object representing a repository.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ecr.services.k8s.aws", version = "v1alpha1", kind = "Repository", plural = "repositories")]
 #[kube(namespaced)]
 #[kube(status = "RepositoryStatus")]
 #[kube(schema = "disabled")]
 pub struct RepositorySpec {
-    /// The encryption configuration for the repository. This determines how the contents of your repository are encrypted at rest.
+    /// The encryption configuration for the repository. This determines how the
+    /// contents of your repository are encrypted at rest.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionConfiguration")]
     pub encryption_configuration: Option<RepositoryEncryptionConfiguration>,
-    /// The image scanning configuration for the repository. This determines whether images are scanned for known vulnerabilities after being pushed to the repository.
+    /// The image scanning configuration for the repository. This determines whether
+    /// images are scanned for known vulnerabilities after being pushed to the repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageScanningConfiguration")]
     pub image_scanning_configuration: Option<RepositoryImageScanningConfiguration>,
-    /// The tag mutability setting for the repository. If this parameter is omitted, the default setting of MUTABLE will be used which will allow image tags to be overwritten. If IMMUTABLE is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.
+    /// The tag mutability setting for the repository. If this parameter is omitted,
+    /// the default setting of MUTABLE will be used which will allow image tags to
+    /// be overwritten. If IMMUTABLE is specified, all image tags within the repository
+    /// will be immutable which will prevent them from being overwritten.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTagMutability")]
     pub image_tag_mutability: Option<String>,
     /// The JSON repository policy text to apply to the repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecyclePolicy")]
     pub lifecycle_policy: Option<String>,
-    /// The name to use for the repository. The repository name may be specified on its own (such as nginx-web-app) or it can be prepended with a namespace to group the repository into a category (such as project-a/nginx-web-app).
+    /// The name to use for the repository. The repository name may be specified
+    /// on its own (such as nginx-web-app) or it can be prepended with a namespace
+    /// to group the repository into a category (such as project-a/nginx-web-app).
     pub name: String,
-    /// The JSON repository policy text to apply to the repository. For more information, see Amazon ECR repository policies (https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html) in the Amazon Elastic Container Registry User Guide.
+    /// The JSON repository policy text to apply to the repository. For more information,
+    /// see Amazon ECR repository policies (https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html)
+    /// in the Amazon Elastic Container Registry User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
-    /// The Amazon Web Services account ID associated with the registry to create the repository. If you do not specify a registry, the default registry is assumed.
+    /// The Amazon Web Services account ID associated with the registry to create
+    /// the repository. If you do not specify a registry, the default registry is
+    /// assumed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryID")]
     pub registry_id: Option<String>,
-    /// The metadata that you apply to the repository to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.
+    /// The metadata that you apply to the repository to help you categorize and
+    /// organize them. Each tag consists of a key and an optional value, both of
+    /// which you define. Tag keys can have a maximum character length of 128 characters,
+    /// and tag values can have a maximum length of 256 characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<RepositoryTags>>,
 }
 
-/// The encryption configuration for the repository. This determines how the contents of your repository are encrypted at rest.
+/// The encryption configuration for the repository. This determines how the
+/// contents of your repository are encrypted at rest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RepositoryEncryptionConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionType")]
@@ -47,14 +64,18 @@ pub struct RepositoryEncryptionConfiguration {
     pub kms_key: Option<String>,
 }
 
-/// The image scanning configuration for the repository. This determines whether images are scanned for known vulnerabilities after being pushed to the repository.
+/// The image scanning configuration for the repository. This determines whether
+/// images are scanned for known vulnerabilities after being pushed to the repository.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RepositoryImageScanningConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scanOnPush")]
     pub scan_on_push: Option<bool>,
 }
 
-/// The metadata to apply to a resource to help you categorize and organize them. Each tag consists of a key and a value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.
+/// The metadata to apply to a resource to help you categorize and organize them.
+/// Each tag consists of a key and a value, both of which you define. Tag keys
+/// can have a maximum character length of 128 characters, and tag values can
+/// have a maximum length of 256 characters.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RepositoryTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -66,34 +87,52 @@ pub struct RepositoryTags {
 /// RepositoryStatus defines the observed state of Repository
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RepositoryStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<RepositoryStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<RepositoryStatusConditions>>,
     /// The date and time, in JavaScript date format, when the repository was created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdAt")]
     pub created_at: Option<String>,
-    /// The URI for the repository. You can use this URI for container image push and pull operations.
+    /// The URI for the repository. You can use this URI for container image push
+    /// and pull operations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryURI")]
     pub repository_uri: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RepositoryStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RepositoryStatusConditions {
     /// Last time the condition transitioned from one status to another.

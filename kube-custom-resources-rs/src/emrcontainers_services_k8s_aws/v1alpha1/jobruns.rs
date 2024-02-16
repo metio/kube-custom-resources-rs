@@ -6,8 +6,12 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
-/// JobRunSpec defines the desired state of JobRun. 
-///  This entity describes a job run. A job run is a unit of work, such as a Spark jar, PySpark script, or SparkSQL query, that you submit to Amazon EMR on EKS.
+/// JobRunSpec defines the desired state of JobRun.
+/// 
+/// 
+/// This entity describes a job run. A job run is a unit of work, such as a Spark
+/// jar, PySpark script, or SparkSQL query, that you submit to Amazon EMR on
+/// EKS.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "emrcontainers.services.k8s.aws", version = "v1alpha1", kind = "JobRun", plural = "jobruns")]
 #[kube(namespaced)]
@@ -34,8 +38,14 @@ pub struct JobRunSpec {
     /// The virtual cluster ID for which the job run request is submitted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualClusterID")]
     pub virtual_cluster_id: Option<String>,
-    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-    ///  from: name: my-api
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 
+    /// 	from:
+    /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualClusterRef")]
     pub virtual_cluster_ref: Option<JobRunVirtualClusterRef>,
 }
@@ -59,16 +69,24 @@ pub struct JobRunJobDriverSparkSubmitJobDriver {
     pub spark_submit_parameters: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobRunVirtualClusterRef {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<JobRunVirtualClusterRefFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobRunVirtualClusterRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -78,10 +96,15 @@ pub struct JobRunVirtualClusterRefFrom {
 /// JobRunStatus defines the observed state of JobRun
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobRunStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<JobRunStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<JobRunStatusConditions>>,
     /// This output displays the started job run ID.
@@ -92,20 +115,32 @@ pub struct JobRunStatus {
     pub state: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobRunStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobRunStatusConditions {
     /// Last time the condition transitioned from one status to another.

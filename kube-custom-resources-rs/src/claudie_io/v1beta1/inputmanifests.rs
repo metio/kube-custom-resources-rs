@@ -171,9 +171,9 @@ pub struct InputManifestNodePoolsDynamic {
     /// Type of the machines in the nodepool. Currently, only AMD64 machines are supported.
     #[serde(rename = "serverType")]
     pub server_type: String,
-    /// Size of the storage disk on the nodes in the nodepool in GB. The OS disk is created automatically with predefined size of 100GB for kubernetes nodes and 50GB for Loadbalancer nodes.
+    /// Size of the storage disk on the nodes in the nodepool in GB. The OS disk is created automatically with predefined size of 100GB for kubernetes nodes and 50GB for Loadbalancer nodes. The value must be either -1 (no disk is created), or >= 50. If no value is specified, 50 is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageDiskSize")]
-    pub storage_disk_size: Option<i64>,
+    pub storage_disk_size: Option<i32>,
     /// User defined taints for this nodepool.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<InputManifestNodePoolsDynamicTaints>>,
@@ -207,7 +207,8 @@ pub struct InputManifestNodePoolsDynamicProviderSpec {
     /// Region of the nodepool.
     pub region: String,
     /// Zone of the nodepool.
-    pub zone: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zone: Option<String>,
 }
 
 /// The node this Taint is attached to has the "effect" on any pod that does not tolerate the Taint.
@@ -304,6 +305,8 @@ pub enum InputManifestProvidersProviderType {
     Cloudflare,
     #[serde(rename = "hetznerdns")]
     Hetznerdns,
+    #[serde(rename = "genesiscloud")]
+    Genesiscloud,
 }
 
 /// SecretReference represents a Secret Reference. It has enough information to retrieve secret in any namespace

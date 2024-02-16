@@ -48,6 +48,9 @@ pub struct QuayRegistryComponentsOverrides {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    /// Resources describes the resource limits and requests for a component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<QuayRegistryComponentsOverridesResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSize")]
     pub volume_size: Option<IntOrString>,
 }
@@ -536,6 +539,17 @@ pub struct QuayRegistryComponentsOverridesEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Resources describes the resource limits and requests for a component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct QuayRegistryComponentsOverridesResources {
+    /// ResourceList is a set of (resource name, quantity) pairs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// ResourceList is a set of (resource name, quantity) pairs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
 /// QuayRegistryStatus defines the observed state of QuayRegistry.

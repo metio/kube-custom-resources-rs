@@ -86,6 +86,9 @@ pub struct ManagementCenterExternalConnectivityIngress {
     /// IngressClassName of the ingress object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
+    /// Path of the ingress rule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
 }
 
 /// OpenShift Route configuration of Management Center

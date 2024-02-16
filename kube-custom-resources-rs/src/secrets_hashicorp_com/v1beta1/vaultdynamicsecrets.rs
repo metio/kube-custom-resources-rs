@@ -72,16 +72,14 @@ pub struct VaultDynamicSecretDestination {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultDynamicSecretDestinationTransformation {
     /// ExcludeRaw data from the destination Secret. Exclusion policy can be set globally by including 'exclude-raw` in the '--global-transformation-options' command line flag. If set, the command line flag always takes precedence over this configuration.
-    #[serde(rename = "excludeRaw")]
-    pub exclude_raw: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRaw")]
+    pub exclude_raw: Option<bool>,
     /// Excludes contains regex patterns used to filter top-level source secret data fields for exclusion from the final K8s Secret data. These pattern filters are never applied to templated fields as defined in Templates. They are always applied before any inclusion patterns. To exclude all source secret data fields, you can configure the single pattern ".*".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub excludes: Option<Vec<String>>,
     /// Includes contains regex patterns used to filter top-level source secret data fields for inclusion in the final K8s Secret data. These pattern filters are never applied to templated fields as defined in Templates. They are always applied last.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub includes: Option<Vec<String>>,
-    /// Resync the Secret on updates to any configured TransformationRefs.
-    pub resync: bool,
     /// Templates maps a template name to its Template. Templates are always included in the rendered K8s Secret, and take precedence over templates defined in a SecretTransformation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub templates: Option<BTreeMap<String, VaultDynamicSecretDestinationTransformationTemplates>>,

@@ -45,6 +45,9 @@ spec:
                   items:
                     description: "NamedPoolSpec represents the named ceph pool spec"
                     properties:
+                      application:
+                        description: "The application name to set on the pool. Only expected to be set for rgw pools."
+                        type: "string"
                       compressionMode:
                         description: "DEPRECATED: use Parameters instead, e.g."
                         enum:
@@ -213,6 +216,9 @@ spec:
                   description: "The metadata pool settings"
                   nullable: true
                   properties:
+                    application:
+                      description: "The application name to set on the pool. Only expected to be set for rgw pools."
+                      type: "string"
                     compressionMode:
                       description: "DEPRECATED: use Parameters instead, e.g."
                       enum:

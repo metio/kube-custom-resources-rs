@@ -37,7 +37,7 @@ spec:
                   description: "Terraform Cloud Agents allow Terraform Cloud to communicate with isolated, private, or on-premises infrastructure. More information: - https://developer.hashicorp.com/terraform/cloud-docs/agents"
                   properties:
                     id:
-                      description: "Agent Pool ID. Must match pattern: ^apool-[a-zA-Z0-9]+$"
+                      description: "Agent Pool ID. Must match pattern: `^apool-[a-zA-Z0-9]+$`"
                       pattern: "^apool-[a-zA-Z0-9]+$"
                       type: "string"
                     name:
@@ -188,7 +188,7 @@ spec:
                           - "slack"
                         type: "string"
                       url:
-                        description: "The URL of the notification. Must match pattern: ^https?://.*"
+                        description: "The URL of the notification. Must match pattern: `^https?://.*`"
                         pattern: "^https?://.*"
                         type: "string"
                     required:
@@ -205,7 +205,7 @@ spec:
                   description: "Projects let you organize your workspaces into groups. Default: default organization project. More information: - https://developer.hashicorp.com/terraform/tutorials/cloud/projects"
                   properties:
                     id:
-                      description: "Project ID. Must match pattern: ^prj-[a-zA-Z0-9]+$"
+                      description: "Project ID. Must match pattern: `^prj-[a-zA-Z0-9]+$`"
                       pattern: "^prj-[a-zA-Z0-9]+$"
                       type: "string"
                     name:
@@ -226,7 +226,7 @@ spec:
                         description: "ConsumerWorkspace allows access to the state for specific workspaces within the same organization. Only one of the fields `ID` or `Name` is allowed. At least one of the fields `ID` or `Name` is mandatory. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#remote-state-access-controls"
                         properties:
                           id:
-                            description: "Consumer Workspace ID. Must match pattern: ^ws-[a-zA-Z0-9]+$"
+                            description: "Consumer Workspace ID. Must match pattern: `^ws-[a-zA-Z0-9]+$`"
                             pattern: "^ws-[a-zA-Z0-9]+$"
                             type: "string"
                           name:
@@ -248,7 +248,7 @@ spec:
                         pattern: "^(advisory|mandatory)$"
                         type: "string"
                       id:
-                        description: "Run Task ID. Must match pattern: ^task-[a-zA-Z0-9]+$"
+                        description: "Run Task ID. Must match pattern: `^task-[a-zA-Z0-9]+$`"
                         pattern: "^task-[a-zA-Z0-9]+$"
                         type: "string"
                       name:
@@ -269,7 +269,7 @@ spec:
                     description: "RunTrigger allows you to connect this workspace to one or more source workspaces. These connections allow runs to queue automatically in this workspace on successful apply of runs in any of the source workspaces. Only one of the fields `ID` or `Name` is allowed. At least one of the fields `ID` or `Name` is mandatory. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers"
                     properties:
                       id:
-                        description: "Source Workspace ID. Must match pattern: ^ws-[a-zA-Z0-9]+$"
+                        description: "Source Workspace ID. Must match pattern: `^ws-[a-zA-Z0-9]+$`"
                         pattern: "^ws-[a-zA-Z0-9]+$"
                         type: "string"
                       name:
@@ -283,7 +283,7 @@ spec:
                   description: "SSH key used to clone Terraform modules. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/ssh-keys"
                   properties:
                     id:
-                      description: "SSH key ID. Must match pattern: ^sshkey-[a-zA-Z0-9]+$"
+                      description: "SSH key ID. Must match pattern: `^sshkey-[a-zA-Z0-9]+$`"
                       pattern: "^sshkey-[a-zA-Z0-9]+$"
                       type: "string"
                     name:
@@ -343,7 +343,7 @@ spec:
                         description: "Team to grant access. More information: - https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/teams"
                         properties:
                           id:
-                            description: "Team ID. Must match pattern: ^team-[a-zA-Z0-9]+$"
+                            description: "Team ID. Must match pattern: `^team-[a-zA-Z0-9]+$`"
                             pattern: "^team-[a-zA-Z0-9]+$"
                             type: "string"
                           name:
@@ -424,7 +424,7 @@ spec:
                   minItems: 1
                   type: "array"
                 terraformVersion:
-                  description: "The version of Terraform to use for this workspace. If not specified, the latest available version will be used. Must match pattern: ^\\\\d{1}\\\\.\\\\d{1,2}\\\\.\\\\d{1,2}$ More information: - https://www.terraform.io/cloud-docs/workspaces/settings#terraform-version"
+                  description: "The version of Terraform to use for this workspace. If not specified, the latest available version will be used. Must match pattern: `^\\\\d{1}\\\\.\\\\d{1,2}\\\\.\\\\d{1,2}$` More information: - https://www.terraform.io/cloud-docs/workspaces/settings#terraform-version"
                   pattern: "^\\d{1}\\.\\d{1,2}\\.\\d{1,2}$"
                   type: "string"
                 token:
@@ -457,11 +457,11 @@ spec:
                       minLength: 1
                       type: "string"
                     oAuthTokenID:
-                      description: "The VCS Connection (OAuth Connection + Token) to use. Must match pattern: ^ot-[a-zA-Z0-9]+$"
+                      description: "The VCS Connection (OAuth Connection + Token) to use. Must match pattern: `^ot-[a-zA-Z0-9]+$`"
                       pattern: "^ot-[a-zA-Z0-9]+$"
                       type: "string"
                     repository:
-                      description: "A reference to your VCS repository in the format <organization>/<repository> where <organization> and <repository> refer to the organization and repository in your VCS provider."
+                      description: "A reference to your VCS repository in the format `<organization>/<repository>` where `<organization>` and `<repository>` refer to the organization and repository in your VCS provider."
                       minLength: 1
                       type: "string"
                   type: "object"

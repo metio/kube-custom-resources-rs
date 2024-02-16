@@ -42,7 +42,7 @@ pub struct ArgoCDSpec {
     /// GATrackingID is the google analytics tracking ID to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gaTrackingID")]
     pub ga_tracking_id: Option<String>,
-    /// Grafana defines the Grafana server options for ArgoCD.
+    /// Deprecated: Grafana defines the Grafana server options for ArgoCD.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grafana: Option<ArgoCDGrafana>,
     /// HA options for High Availability support for the Redis component.
@@ -161,9 +161,15 @@ pub struct ArgoCDApplicationSet {
     /// Resources defines the Compute Resources required by the container for ApplicationSet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCDApplicationSetResources>,
+    /// SCMProviders defines the list of allowed custom SCM provider API URLs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scmProviders")]
+    pub scm_providers: Option<Vec<String>>,
     /// SCMRootCAConfigMap is the name of the config map that stores the Gitlab SCM Provider's TLS certificate which will be mounted on the ApplicationSet Controller (optional).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scmRootCAConfigMap")]
     pub scm_root_ca_config_map: Option<String>,
+    /// SourceNamespaces defines the namespaces applicationset resources are allowed to be created in
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceNamespaces")]
+    pub source_namespaces: Option<Vec<String>>,
     /// Version is the Argo CD ApplicationSet image tag. (optional)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -544,7 +550,7 @@ pub struct ArgoCDControllerSharding {
     pub replicas: Option<i32>,
 }
 
-/// Grafana defines the Grafana server options for ArgoCD.
+/// Deprecated: Grafana defines the Grafana server options for ArgoCD.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDGrafana {
     /// Enabled will toggle Grafana support globally for ArgoCD.

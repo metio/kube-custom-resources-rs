@@ -12,39 +12,81 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "EndpointConfigStatus")]
 #[kube(schema = "disabled")]
 pub struct EndpointConfigSpec {
-    /// Specifies configuration for how an endpoint performs asynchronous inference. This is a required field in order for your Endpoint to be invoked using InvokeEndpointAsync (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html).
+    /// Specifies configuration for how an endpoint performs asynchronous inference.
+    /// This is a required field in order for your Endpoint to be invoked using InvokeEndpointAsync
+    /// (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asyncInferenceConfig")]
     pub async_inference_config: Option<EndpointConfigAsyncInferenceConfig>,
     /// Configuration to control how SageMaker captures inference data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataCaptureConfig")]
     pub data_capture_config: Option<EndpointConfigDataCaptureConfig>,
-    /// The name of the endpoint configuration. You specify this name in a CreateEndpoint request.
+    /// The name of the endpoint configuration. You specify this name in a CreateEndpoint
+    /// request.
     #[serde(rename = "endpointConfigName")]
     pub endpoint_config_name: String,
-    /// The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the endpoint. 
-    ///  The KmsKeyId can be any of the following formats: 
-    ///  * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab 
-    ///  * Key ARN: arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab 
-    ///  * Alias name: alias/ExampleAlias 
-    ///  * Alias name ARN: arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias 
-    ///  The KMS key policy must grant permission to the IAM role that you specify in your CreateEndpoint, UpdateEndpoint requests. For more information, refer to the Amazon Web Services Key Management Service section Using Key Policies in Amazon Web Services KMS (https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html) 
-    ///  Certain Nitro-based instances include local storage, dependent on the instance type. Local storage volumes are encrypted using a hardware module on the instance. You can't request a KmsKeyId when using an instance type with local storage. If any of the models that you specify in the ProductionVariants parameter use nitro-based instances with local storage, do not specify a value for the KmsKeyId parameter. If you specify a value for KmsKeyId when using any nitro-based instances with local storage, the call to CreateEndpointConfig fails. 
-    ///  For a list of instance types that support local instance storage, see Instance Store Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes). 
-    ///  For more information about local instance storage encryption, see SSD Instance Store Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html).
+    /// The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service
+    /// key that SageMaker uses to encrypt data on the storage volume attached to
+    /// the ML compute instance that hosts the endpoint.
+    /// 
+    /// 
+    /// The KmsKeyId can be any of the following formats:
+    /// 
+    /// 
+    ///    * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
+    /// 
+    /// 
+    ///    * Key ARN: arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
+    /// 
+    /// 
+    ///    * Alias name: alias/ExampleAlias
+    /// 
+    /// 
+    ///    * Alias name ARN: arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias
+    /// 
+    /// 
+    /// The KMS key policy must grant permission to the IAM role that you specify
+    /// in your CreateEndpoint, UpdateEndpoint requests. For more information, refer
+    /// to the Amazon Web Services Key Management Service section Using Key Policies
+    /// in Amazon Web Services KMS (https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html)
+    /// 
+    /// 
+    /// Certain Nitro-based instances include local storage, dependent on the instance
+    /// type. Local storage volumes are encrypted using a hardware module on the
+    /// instance. You can't request a KmsKeyId when using an instance type with local
+    /// storage. If any of the models that you specify in the ProductionVariants
+    /// parameter use nitro-based instances with local storage, do not specify a
+    /// value for the KmsKeyId parameter. If you specify a value for KmsKeyId when
+    /// using any nitro-based instances with local storage, the call to CreateEndpointConfig
+    /// fails.
+    /// 
+    /// 
+    /// For a list of instance types that support local instance storage, see Instance
+    /// Store Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes).
+    /// 
+    /// 
+    /// For more information about local instance storage encryption, see SSD Instance
+    /// Store Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    /// An array of ProductionVariant objects, one for each model that you want to host at this endpoint.
+    /// An array of ProductionVariant objects, one for each model that you want to
+    /// host at this endpoint.
     #[serde(rename = "productionVariants")]
     pub production_variants: Vec<EndpointConfigProductionVariants>,
-    /// An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see Tagging Amazon Web Services Resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+    /// An array of key-value pairs. You can use tags to categorize your Amazon Web
+    /// Services resources in different ways, for example, by purpose, owner, or
+    /// environment. For more information, see Tagging Amazon Web Services Resources
+    /// (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<EndpointConfigTags>>,
 }
 
-/// Specifies configuration for how an endpoint performs asynchronous inference. This is a required field in order for your Endpoint to be invoked using InvokeEndpointAsync (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html).
+/// Specifies configuration for how an endpoint performs asynchronous inference.
+/// This is a required field in order for your Endpoint to be invoked using InvokeEndpointAsync
+/// (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigAsyncInferenceConfig {
-    /// Configures the behavior of the client used by SageMaker to interact with the model container during asynchronous inference.
+    /// Configures the behavior of the client used by SageMaker to interact with
+    /// the model container during asynchronous inference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientConfig")]
     pub client_config: Option<EndpointConfigAsyncInferenceConfigClientConfig>,
     /// Specifies the configuration for asynchronous inference invocation outputs.
@@ -52,7 +94,8 @@ pub struct EndpointConfigAsyncInferenceConfig {
     pub output_config: Option<EndpointConfigAsyncInferenceConfigOutputConfig>,
 }
 
-/// Configures the behavior of the client used by SageMaker to interact with the model container during asynchronous inference.
+/// Configures the behavior of the client used by SageMaker to interact with
+/// the model container during asynchronous inference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigAsyncInferenceConfigClientConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentInvocationsPerInstance")]
@@ -64,14 +107,16 @@ pub struct EndpointConfigAsyncInferenceConfigClientConfig {
 pub struct EndpointConfigAsyncInferenceConfigOutputConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    /// Specifies the configuration for notifications of inference results for asynchronous inference.
+    /// Specifies the configuration for notifications of inference results for asynchronous
+    /// inference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationConfig")]
     pub notification_config: Option<EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
-/// Specifies the configuration for notifications of inference results for asynchronous inference.
+/// Specifies the configuration for notifications of inference results for asynchronous
+/// inference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorTopic")]
@@ -83,7 +128,8 @@ pub struct EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig {
 /// Configuration to control how SageMaker captures inference data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigDataCaptureConfig {
-    /// Configuration specifying how to treat different headers. If no headers are specified SageMaker will by default base64 encode when capturing the data.
+    /// Configuration specifying how to treat different headers. If no headers are
+    /// specified SageMaker will by default base64 encode when capturing the data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureContentTypeHeader")]
     pub capture_content_type_header: Option<EndpointConfigDataCaptureConfigCaptureContentTypeHeader>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureOptions")]
@@ -98,7 +144,8 @@ pub struct EndpointConfigDataCaptureConfig {
     pub kms_key_id: Option<String>,
 }
 
-/// Configuration specifying how to treat different headers. If no headers are specified SageMaker will by default base64 encode when capturing the data.
+/// Configuration specifying how to treat different headers. If no headers are
+/// specified SageMaker will by default base64 encode when capturing the data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigDataCaptureConfigCaptureContentTypeHeader {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csvContentTypes")]
@@ -114,14 +161,18 @@ pub struct EndpointConfigDataCaptureConfigCaptureOptions {
     pub capture_mode: Option<String>,
 }
 
-/// Identifies a model that you want to host and the resources chosen to deploy for hosting it. If you are deploying multiple models, tell SageMaker how to distribute traffic among the models by specifying variant weights. For more information on production variants, check Production variants (https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html).
+/// Identifies a model that you want to host and the resources chosen to deploy
+/// for hosting it. If you are deploying multiple models, tell SageMaker how
+/// to distribute traffic among the models by specifying variant weights. For
+/// more information on production variants, check Production variants (https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigProductionVariants {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceleratorType")]
     pub accelerator_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerStartupHealthCheckTimeoutInSeconds")]
     pub container_startup_health_check_timeout_in_seconds: Option<i64>,
-    /// Specifies configuration for a core dump from the model container when the process crashes.
+    /// Specifies configuration for a core dump from the model container when the
+    /// process crashes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreDumpConfig")]
     pub core_dump_config: Option<EndpointConfigProductionVariantsCoreDumpConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSSMAccess")]
@@ -145,7 +196,8 @@ pub struct EndpointConfigProductionVariants {
     pub volume_size_in_gb: Option<i64>,
 }
 
-/// Specifies configuration for a core dump from the model container when the process crashes.
+/// Specifies configuration for a core dump from the model container when the
+/// process crashes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigProductionVariantsCoreDumpConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationS3URI")]
@@ -163,9 +215,21 @@ pub struct EndpointConfigProductionVariantsServerlessConfig {
     pub memory_size_in_mb: Option<i64>,
 }
 
-/// A tag object that consists of a key and an optional value, used to manage metadata for SageMaker Amazon Web Services resources. 
-///  You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints. For more information on adding tags to SageMaker resources, see AddTags. 
-///  For more information on adding metadata to your Amazon Web Services resources with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). For advice on best practices for managing Amazon Web Services resources with tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
+/// A tag object that consists of a key and an optional value, used to manage
+/// metadata for SageMaker Amazon Web Services resources.
+/// 
+/// 
+/// You can add tags to notebook instances, training jobs, hyperparameter tuning
+/// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
+/// and endpoints. For more information on adding tags to SageMaker resources,
+/// see AddTags.
+/// 
+/// 
+/// For more information on adding metadata to your Amazon Web Services resources
+/// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+/// For advice on best practices for managing Amazon Web Services resources with
+/// tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services
+/// Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -177,28 +241,45 @@ pub struct EndpointConfigTags {
 /// EndpointConfigStatus defines the observed state of EndpointConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<EndpointConfigStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<EndpointConfigStatusConditions>>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigStatusConditions {
     /// Last time the condition transitioned from one status to another.

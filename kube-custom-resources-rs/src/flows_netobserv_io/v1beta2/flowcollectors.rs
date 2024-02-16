@@ -56,7 +56,7 @@ pub struct FlowCollectorAgent {
 /// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `eBPF`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpf {
-    /// `advanced` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+    /// `advanced` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advanced: Option<FlowCollectorAgentEbpfAdvanced>,
     /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending. Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load, however you can expect higher memory consumption and an increased latency in the flow collection.
@@ -77,13 +77,13 @@ pub struct FlowCollectorAgentEbpf {
     /// `interfaces` contains the interface names from where flows are collected. If empty, the agent fetches all the interfaces in the system, excepting the ones listed in ExcludeInterfaces. An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression. Otherwise it is matched as a case-sensitive string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<String>>,
-    /// `kafkaBatchSize` limits the maximum size of a request in bytes before being sent to a partition. Ignored when not using Kafka. Default: 10MB.
+    /// `kafkaBatchSize` limits the maximum size of a request in bytes before being sent to a partition. Ignored when not using Kafka. Default: 1MB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaBatchSize")]
     pub kafka_batch_size: Option<i64>,
     /// `logLevel` defines the log level for the NetObserv eBPF Agent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorAgentEbpfLogLevel>,
-    /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges. Some agent features require the privileged mode, such as packet drops tracking (see `features`).
+    /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges. Some agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -94,7 +94,7 @@ pub struct FlowCollectorAgentEbpf {
     pub sampling: Option<i32>,
 }
 
-/// `advanced` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+/// `advanced` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpfAdvanced {
     /// `env` allows passing custom environment variables to underlying components. Useful for passing some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
@@ -209,13 +209,13 @@ pub enum FlowCollectorAgentType {
 /// `consolePlugin` defines the settings related to the OpenShift Console plugin, when available.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorConsolePlugin {
-    /// `advanced` allows setting some aspects of the internal configuration of the console plugin. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+    /// `advanced` allows setting some aspects of the internal configuration of the console plugin. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advanced: Option<FlowCollectorConsolePluginAdvanced>,
     /// `autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaler: Option<FlowCollectorConsolePluginAutoscaler>,
-    /// Enables the console plugin deployment. `spec.Loki.enable` must also be `true`
+    /// Enables the console plugin deployment. `spec.loki.enable` must also be `true`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
@@ -238,7 +238,7 @@ pub struct FlowCollectorConsolePlugin {
     pub resources: Option<FlowCollectorConsolePluginResources>,
 }
 
-/// `advanced` allows setting some aspects of the internal configuration of the console plugin. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+/// `advanced` allows setting some aspects of the internal configuration of the console plugin. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorConsolePluginAdvanced {
     /// `args` allows passing custom arguments to underlying components. Useful for overriding some parameters, such as an url or a configuration path, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
@@ -1012,19 +1012,19 @@ pub struct FlowCollectorLoki {
     /// Set `enable` to `true` to store flows in Loki. It is required for the OpenShift Console plugin installation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// Loki configuration for "LokiStack" mode. This is useful for an easy loki-operator configuration. It is ignored for other modes.
+    /// Loki configuration for `LokiStack` mode. This is useful for an easy loki-operator configuration. It is ignored for other modes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lokiStack")]
     pub loki_stack: Option<FlowCollectorLokiLokiStack>,
-    /// Loki configuration for "Manual" mode. This is the most flexible configuration. It is ignored for other modes.
+    /// Loki configuration for `Manual` mode. This is the most flexible configuration. It is ignored for other modes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manual: Option<FlowCollectorLokiManual>,
-    /// Loki configuration for "Microservices" mode. Use this option when Loki is installed using the microservices deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#microservices-mode). It is ignored for other modes.
+    /// Loki configuration for `Microservices` mode. Use this option when Loki is installed using the microservices deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#microservices-mode). It is ignored for other modes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub microservices: Option<FlowCollectorLokiMicroservices>,
-    /// `mode` must be set according to the installation mode of Loki:<br> - Use "LokiStack" when Loki is managed using the Loki Operator<br> - Use "Monolithic" when Loki is installed as a monolithic workload<br> - Use "Microservices" when Loki is installed as microservices, but without Loki Operator<br> - Use "Manual" if none of the options above match your setup<br>
+    /// `mode` must be set according to the installation mode of Loki:<br> - Use `LokiStack` when Loki is managed using the Loki Operator<br> - Use `Monolithic` when Loki is installed as a monolithic workload<br> - Use `Microservices` when Loki is installed as microservices, but without Loki Operator<br> - Use `Manual` if none of the options above match your setup<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<FlowCollectorLokiMode>,
-    /// Loki configuration for "Monolithic" mode. Use this option when Loki is installed using the monolithic deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#monolithic-mode). It is ignored for other modes.
+    /// Loki configuration for `Monolithic` mode. Use this option when Loki is installed using the monolithic deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#monolithic-mode). It is ignored for other modes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monolithic: Option<FlowCollectorLokiMonolithic>,
     /// `readTimeout` is the maximum console plugin loki query total time limit. A timeout of zero means no timeout.
@@ -1058,7 +1058,7 @@ pub struct FlowCollectorLokiAdvanced {
     pub write_min_backoff: Option<String>,
 }
 
-/// Loki configuration for "LokiStack" mode. This is useful for an easy loki-operator configuration. It is ignored for other modes.
+/// Loki configuration for `LokiStack` mode. This is useful for an easy loki-operator configuration. It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorLokiLokiStack {
     /// Name of an existing LokiStack resource to use.
@@ -1069,7 +1069,7 @@ pub struct FlowCollectorLokiLokiStack {
     pub namespace: Option<String>,
 }
 
-/// Loki configuration for "Manual" mode. This is the most flexible configuration. It is ignored for other modes.
+/// Loki configuration for `Manual` mode. This is the most flexible configuration. It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorLokiManual {
     /// `authToken` describes the way to get a token to authenticate to Loki.<br> - `Disabled` does not send any token with the request.<br> - `Forward` forwards the user token for authorization.<br> - `Host` [deprecated (*)] - uses the local pod service account to authenticate to Loki.<br> When using the Loki Operator, this must be set to `Forward`.
@@ -1095,7 +1095,7 @@ pub struct FlowCollectorLokiManual {
     pub tls: Option<FlowCollectorLokiManualTls>,
 }
 
-/// Loki configuration for "Manual" mode. This is the most flexible configuration. It is ignored for other modes.
+/// Loki configuration for `Manual` mode. This is the most flexible configuration. It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiManualAuthToken {
     Disabled,
@@ -1253,7 +1253,7 @@ pub enum FlowCollectorLokiManualTlsUserCertType {
     Secret,
 }
 
-/// Loki configuration for "Microservices" mode. Use this option when Loki is installed using the microservices deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#microservices-mode). It is ignored for other modes.
+/// Loki configuration for `Microservices` mode. Use this option when Loki is installed using the microservices deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#microservices-mode). It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorLokiMicroservices {
     /// `ingesterUrl` is the address of an existing Loki ingester service to push the flows to.
@@ -1354,7 +1354,7 @@ pub enum FlowCollectorLokiMode {
     Microservices,
 }
 
-/// Loki configuration for "Monolithic" mode. Use this option when Loki is installed using the monolithic deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#monolithic-mode). It is ignored for other modes.
+/// Loki configuration for `Monolithic` mode. Use this option when Loki is installed using the monolithic deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#monolithic-mode). It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorLokiMonolithic {
     /// `tenantID` is the Loki `X-Scope-OrgID` header that identifies the tenant for each request.
@@ -1449,7 +1449,7 @@ pub struct FlowCollectorProcessor {
     /// `addZone` allows availability zone awareness by labelling flows with their source and destination zones. This feature requires the "topology.kubernetes.io/zone" label to be set on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addZone")]
     pub add_zone: Option<bool>,
-    /// `advanced` allows setting some aspects of the internal configuration of the flow processor. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+    /// `advanced` allows setting some aspects of the internal configuration of the flow processor. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advanced: Option<FlowCollectorProcessorAdvanced>,
     /// `clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.
@@ -1487,7 +1487,7 @@ pub struct FlowCollectorProcessor {
     pub resources: Option<FlowCollectorProcessorResources>,
 }
 
-/// `advanced` allows setting some aspects of the internal configuration of the flow processor. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Users setting its values do it at their own risk.
+/// `advanced` allows setting some aspects of the internal configuration of the flow processor. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorAdvanced {
     /// `conversationEndTimeout` is the time to wait after a network flow is received, to consider the conversation ended. This delay is ignored when a FIN packet is collected for TCP flows (see `conversationTerminatingTimeout` instead).

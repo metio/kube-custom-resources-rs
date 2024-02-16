@@ -12,21 +12,37 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "ElasticIPAddressStatus")]
 #[kube(schema = "disabled")]
 pub struct ElasticIPAddressSpec {
-    /// [EC2-VPC] The Elastic IP address to recover or an IPv4 address from an address pool.
+    /// [EC2-VPC] The Elastic IP address to recover or an IPv4 address from an address
+    /// pool.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    /// The ID of a customer-owned address pool. Use this parameter to let Amazon EC2 select an address from the address pool. Alternatively, specify a specific address from the address pool.
+    /// The ID of a customer-owned address pool. Use this parameter to let Amazon
+    /// EC2 select an address from the address pool. Alternatively, specify a specific
+    /// address from the address pool.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customerOwnedIPv4Pool")]
     pub customer_owned_i_pv4_pool: Option<String>,
-    /// A unique set of Availability Zones, Local Zones, or Wavelength Zones from which Amazon Web Services advertises IP addresses. Use this parameter to limit the IP address to this location. IP addresses cannot move between network border groups. 
-    ///  Use DescribeAvailabilityZones (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAvailabilityZones.html) to view the network border groups. 
-    ///  You cannot use a network border group with EC2 Classic. If you attempt this operation on EC2 Classic, you receive an InvalidParameterCombination error.
+    /// A unique set of Availability Zones, Local Zones, or Wavelength Zones from
+    /// which Amazon Web Services advertises IP addresses. Use this parameter to
+    /// limit the IP address to this location. IP addresses cannot move between network
+    /// border groups.
+    /// 
+    /// 
+    /// Use DescribeAvailabilityZones (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAvailabilityZones.html)
+    /// to view the network border groups.
+    /// 
+    /// 
+    /// You cannot use a network border group with EC2 Classic. If you attempt this
+    /// operation on EC2 Classic, you receive an InvalidParameterCombination error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkBorderGroup")]
     pub network_border_group: Option<String>,
-    /// The ID of an address pool that you own. Use this parameter to let Amazon EC2 select an address from the address pool. To specify a specific address from the address pool, use the Address parameter instead.
+    /// The ID of an address pool that you own. Use this parameter to let Amazon
+    /// EC2 select an address from the address pool. To specify a specific address
+    /// from the address pool, use the Address parameter instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicIPv4Pool")]
     pub public_i_pv4_pool: Option<String>,
-    /// The tags. The value parameter is required, but if you don't want the tag to have a value, specify the parameter with no value, and we set the value to an empty string.
+    /// The tags. The value parameter is required, but if you don't want the tag
+    /// to have a value, specify the parameter with no value, and we set the value
+    /// to an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ElasticIPAddressTags>>,
 }
@@ -43,16 +59,23 @@ pub struct ElasticIPAddressTags {
 /// ElasticIPAddressStatus defines the observed state of ElasticIPAddress
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticIPAddressStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ElasticIPAddressStatusAckResourceMetadata>,
-    /// [EC2-VPC] The ID that Amazon Web Services assigns to represent the allocation of the Elastic IP address for use with instances in a VPC.
+    /// [EC2-VPC] The ID that Amazon Web Services assigns to represent the allocation
+    /// of the Elastic IP address for use with instances in a VPC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocationID")]
     pub allocation_id: Option<String>,
-    /// The carrier IP address. This option is only available for network interfaces which reside in a subnet in a Wavelength Zone (for example an EC2 instance).
+    /// The carrier IP address. This option is only available for network interfaces
+    /// which reside in a subnet in a Wavelength Zone (for example an EC2 instance).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "carrierIP")]
     pub carrier_ip: Option<String>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ElasticIPAddressStatusConditions>>,
     /// The customer-owned IP address.
@@ -63,20 +86,32 @@ pub struct ElasticIPAddressStatus {
     pub public_ip: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticIPAddressStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticIPAddressStatusConditions {
     /// Last time the condition transitioned from one status to another.

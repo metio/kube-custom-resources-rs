@@ -17,16 +17,20 @@ pub struct BrokerSpec {
     pub authentication_strategy: Option<String>,
     #[serde(rename = "autoMinorVersionUpgrade")]
     pub auto_minor_version_upgrade: bool,
-    /// A list of information about the configuration. 
-    ///  Does not apply to RabbitMQ brokers.
+    /// A list of information about the configuration.
+    /// 
+    /// 
+    /// Does not apply to RabbitMQ brokers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BrokerConfiguration>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creatorRequestID")]
     pub creator_request_id: Option<String>,
     #[serde(rename = "deploymentMode")]
     pub deployment_mode: String,
-    /// Does not apply to RabbitMQ brokers. 
-    ///  Encryption options for the broker.
+    /// Does not apply to RabbitMQ brokers.
+    /// 
+    /// 
+    /// Encryption options for the broker.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionOptions")]
     pub encryption_options: Option<BrokerEncryptionOptions>,
     #[serde(rename = "engineType")]
@@ -35,14 +39,18 @@ pub struct BrokerSpec {
     pub engine_version: String,
     #[serde(rename = "hostInstanceType")]
     pub host_instance_type: String,
-    /// Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. 
-    ///  Does not apply to RabbitMQ brokers.
+    /// Optional. The metadata of the LDAP server used to authenticate and authorize
+    /// connections to the broker.
+    /// 
+    /// 
+    /// Does not apply to RabbitMQ brokers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapServerMetadata")]
     pub ldap_server_metadata: Option<BrokerLdapServerMetadata>,
     /// The list of information about logs to be enabled for the specified broker.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logs: Option<BrokerLogs>,
-    /// The scheduled time period relative to UTC during which Amazon MQ begins to apply pending updates or patches to the broker.
+    /// The scheduled time period relative to UTC during which Amazon MQ begins to
+    /// apply pending updates or patches to the broker.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maintenanceWindowStartTime")]
     pub maintenance_window_start_time: Option<BrokerMaintenanceWindowStartTime>,
     pub name: String,
@@ -63,8 +71,10 @@ pub struct BrokerSpec {
     pub users: Vec<BrokerUsers>,
 }
 
-/// A list of information about the configuration. 
-///  Does not apply to RabbitMQ brokers.
+/// A list of information about the configuration.
+/// 
+/// 
+/// Does not apply to RabbitMQ brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,8 +83,10 @@ pub struct BrokerConfiguration {
     pub revision: Option<i64>,
 }
 
-/// Does not apply to RabbitMQ brokers. 
-///  Encryption options for the broker.
+/// Does not apply to RabbitMQ brokers.
+/// 
+/// 
+/// Encryption options for the broker.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerEncryptionOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
@@ -83,8 +95,11 @@ pub struct BrokerEncryptionOptions {
     pub use_aws_owned_key: Option<bool>,
 }
 
-/// Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. 
-///  Does not apply to RabbitMQ brokers.
+/// Optional. The metadata of the LDAP server used to authenticate and authorize
+/// connections to the broker.
+/// 
+/// 
+/// Does not apply to RabbitMQ brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerLdapServerMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,7 +135,8 @@ pub struct BrokerLogs {
     pub general: Option<bool>,
 }
 
-/// The scheduled time period relative to UTC during which Amazon MQ begins to apply pending updates or patches to the broker.
+/// The scheduled time period relative to UTC during which Amazon MQ begins to
+/// apply pending updates or patches to the broker.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerMaintenanceWindowStartTime {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dayOfWeek")]
@@ -131,53 +147,74 @@ pub struct BrokerMaintenanceWindowStartTime {
     pub time_zone: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerSecurityGroupRefs {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<BrokerSecurityGroupRefsFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerSecurityGroupRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerSubnetRefs {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<BrokerSubnetRefsFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerSubnetRefsFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// A user associated with the broker. For RabbitMQ brokers, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.
+/// A user associated with the broker. For RabbitMQ brokers, one and only one
+/// administrative user is accepted and created when a broker is first provisioned.
+/// All subsequent broker users are created by making RabbitMQ API calls directly
+/// to brokers or via the RabbitMQ web console.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerUsers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consoleAccess")]
     pub console_access: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub groups: Option<Vec<String>>,
-    /// SecretKeyReference combines a k8s corev1.SecretReference with a specific key within the referred-to Secret
+    /// SecretKeyReference combines a k8s corev1.SecretReference with a
+    /// specific key within the referred-to Secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<BrokerUsersPassword>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
-/// SecretKeyReference combines a k8s corev1.SecretReference with a specific key within the referred-to Secret
+/// SecretKeyReference combines a k8s corev1.SecretReference with a
+/// specific key within the referred-to Secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerUsersPassword {
     /// Key is the key within the secret
@@ -193,7 +230,9 @@ pub struct BrokerUsersPassword {
 /// BrokerStatus defines the observed state of Broker
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<BrokerStatusAckResourceMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerID")]
@@ -202,18 +241,31 @@ pub struct BrokerStatus {
     pub broker_instances: Option<Vec<BrokerStatusBrokerInstances>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerState")]
     pub broker_state: Option<String>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<BrokerStatusConditions>>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
@@ -231,7 +283,9 @@ pub struct BrokerStatusBrokerInstances {
     pub ip_address: Option<String>,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerStatusConditions {
     /// Last time the condition transitioned from one status to another.

@@ -13,13 +13,15 @@ use std::collections::BTreeMap;
 #[kube(status = "ModelExplainabilityJobDefinitionStatus")]
 #[kube(schema = "disabled")]
 pub struct ModelExplainabilityJobDefinitionSpec {
-    /// The name of the model explainability job definition. The name must be unique within an Amazon Web Services Region in the Amazon Web Services account.
+    /// The name of the model explainability job definition. The name must be unique
+    /// within an Amazon Web Services Region in the Amazon Web Services account.
     #[serde(rename = "jobDefinitionName")]
     pub job_definition_name: String,
     /// Identifies the resources to deploy for a monitoring job.
     #[serde(rename = "jobResources")]
     pub job_resources: ModelExplainabilityJobDefinitionJobResources,
-    /// Configures the model explainability job to run a specified Docker container image.
+    /// Configures the model explainability job to run a specified Docker container
+    /// image.
     #[serde(rename = "modelExplainabilityAppSpecification")]
     pub model_explainability_app_specification: ModelExplainabilityJobDefinitionModelExplainabilityAppSpecification,
     /// The baseline configuration for a model explainability job.
@@ -34,13 +36,16 @@ pub struct ModelExplainabilityJobDefinitionSpec {
     /// Networking options for a model explainability job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkConfig")]
     pub network_config: Option<ModelExplainabilityJobDefinitionNetworkConfig>,
-    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume to perform tasks on your behalf.
+    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
+    /// to perform tasks on your behalf.
     #[serde(rename = "roleARN")]
     pub role_arn: String,
     /// A time limit for how long the monitoring job is allowed to run before stopping.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppingCondition")]
     pub stopping_condition: Option<ModelExplainabilityJobDefinitionStoppingCondition>,
-    /// (Optional) An array of key-value pairs. For more information, see Using Cost Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-whatURL) in the Amazon Web Services Billing and Cost Management User Guide.
+    /// (Optional) An array of key-value pairs. For more information, see Using Cost
+    /// Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-whatURL)
+    /// in the Amazon Web Services Billing and Cost Management User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ModelExplainabilityJobDefinitionTags>>,
 }
@@ -66,7 +71,8 @@ pub struct ModelExplainabilityJobDefinitionJobResourcesClusterConfig {
     pub volume_size_in_gb: Option<i64>,
 }
 
-/// Configures the model explainability job to run a specified Docker container image.
+/// Configures the model explainability job to run a specified Docker container
+/// image.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionModelExplainabilityAppSpecification {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configURI")]
@@ -139,12 +145,14 @@ pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfig {
 /// The output object for a monitoring job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputs {
-    /// Information about where and how you want to store the results of a monitoring job.
+    /// Information about where and how you want to store the results of a monitoring
+    /// job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Output")]
     pub s3_output: Option<ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputsS3Output>,
 }
 
-/// Information about where and how you want to store the results of a monitoring job.
+/// Information about where and how you want to store the results of a monitoring
+/// job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputsS3Output {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
@@ -162,12 +170,20 @@ pub struct ModelExplainabilityJobDefinitionNetworkConfig {
     pub enable_inter_container_traffic_encryption: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
-    /// Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+    /// Specifies a VPC that your training jobs and hosted models have access to.
+    /// Control access to and from your training and model containers by configuring
+    /// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
+    /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
+    /// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
     pub vpc_config: Option<ModelExplainabilityJobDefinitionNetworkConfigVpcConfig>,
 }
 
-/// Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+/// Specifies a VPC that your training jobs and hosted models have access to.
+/// Control access to and from your training and model containers by configuring
+/// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
+/// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
+/// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionNetworkConfigVpcConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -183,9 +199,21 @@ pub struct ModelExplainabilityJobDefinitionStoppingCondition {
     pub max_runtime_in_seconds: Option<i64>,
 }
 
-/// A tag object that consists of a key and an optional value, used to manage metadata for SageMaker Amazon Web Services resources. 
-///  You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints. For more information on adding tags to SageMaker resources, see AddTags. 
-///  For more information on adding metadata to your Amazon Web Services resources with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). For advice on best practices for managing Amazon Web Services resources with tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
+/// A tag object that consists of a key and an optional value, used to manage
+/// metadata for SageMaker Amazon Web Services resources.
+/// 
+/// 
+/// You can add tags to notebook instances, training jobs, hyperparameter tuning
+/// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
+/// and endpoints. For more information on adding tags to SageMaker resources,
+/// see AddTags.
+/// 
+/// 
+/// For more information on adding metadata to your Amazon Web Services resources
+/// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+/// For advice on best practices for managing Amazon Web Services resources with
+/// tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services
+/// Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -197,28 +225,45 @@ pub struct ModelExplainabilityJobDefinitionTags {
 /// ModelExplainabilityJobDefinitionStatus defines the observed state of ModelExplainabilityJobDefinition
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ModelExplainabilityJobDefinitionStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ModelExplainabilityJobDefinitionStatusConditions>>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionStatusConditions {
     /// Last time the condition transitioned from one status to another.

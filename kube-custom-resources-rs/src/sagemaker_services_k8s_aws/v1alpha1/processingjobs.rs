@@ -6,8 +6,11 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
-/// ProcessingJobSpec defines the desired state of ProcessingJob. 
-///  An Amazon SageMaker processing job that is used to analyze data and evaluate models. For more information, see Process Data and Evaluate Models (https://docs.aws.amazon.com/sagemaker/latest/dg/processing-job.html).
+/// ProcessingJobSpec defines the desired state of ProcessingJob.
+/// 
+/// 
+/// An Amazon SageMaker processing job that is used to analyze data and evaluate
+/// models. For more information, see Process Data and Evaluate Models (https://docs.aws.amazon.com/sagemaker/latest/dg/processing-job.html).
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ProcessingJob", plural = "processingjobs")]
 #[kube(namespaced)]
@@ -17,37 +20,53 @@ pub struct ProcessingJobSpec {
     /// Configures the processing job to run a specified Docker container image.
     #[serde(rename = "appSpecification")]
     pub app_specification: ProcessingJobAppSpecification,
-    /// The environment variables to set in the Docker container. Up to 100 key and values entries in the map are supported.
+    /// The environment variables to set in the Docker container. Up to 100 key and
+    /// values entries in the map are supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<BTreeMap<String, String>>,
-    /// Associates a SageMaker job as a trial component with an experiment and trial. Specified when you call the following APIs: 
-    ///  * CreateProcessingJob 
-    ///  * CreateTrainingJob 
-    ///  * CreateTransformJob
+    /// Associates a SageMaker job as a trial component with an experiment and trial.
+    /// Specified when you call the following APIs:
+    /// 
+    /// 
+    ///    * CreateProcessingJob
+    /// 
+    /// 
+    ///    * CreateTrainingJob
+    /// 
+    /// 
+    ///    * CreateTransformJob
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentConfig")]
     pub experiment_config: Option<ProcessingJobExperimentConfig>,
-    /// Networking options for a processing job, such as whether to allow inbound and outbound network calls to and from processing containers, and the VPC subnets and security groups to use for VPC-enabled processing jobs.
+    /// Networking options for a processing job, such as whether to allow inbound
+    /// and outbound network calls to and from processing containers, and the VPC
+    /// subnets and security groups to use for VPC-enabled processing jobs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkConfig")]
     pub network_config: Option<ProcessingJobNetworkConfig>,
     /// An array of inputs configuring the data to download into the processing container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "processingInputs")]
     pub processing_inputs: Option<Vec<ProcessingJobProcessingInputs>>,
-    /// The name of the processing job. The name must be unique within an Amazon Web Services Region in the Amazon Web Services account.
+    /// The name of the processing job. The name must be unique within an Amazon
+    /// Web Services Region in the Amazon Web Services account.
     #[serde(rename = "processingJobName")]
     pub processing_job_name: String,
     /// Output configuration for the processing job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "processingOutputConfig")]
     pub processing_output_config: Option<ProcessingJobProcessingOutputConfig>,
-    /// Identifies the resources, ML compute instances, and ML storage volumes to deploy for a processing job. In distributed training, you specify more than one instance.
+    /// Identifies the resources, ML compute instances, and ML storage volumes to
+    /// deploy for a processing job. In distributed training, you specify more than
+    /// one instance.
     #[serde(rename = "processingResources")]
     pub processing_resources: ProcessingJobProcessingResources,
-    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume to perform tasks on your behalf.
+    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
+    /// to perform tasks on your behalf.
     #[serde(rename = "roleARN")]
     pub role_arn: String,
     /// The time limit for how long the processing job is allowed to run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppingCondition")]
     pub stopping_condition: Option<ProcessingJobStoppingCondition>,
-    /// (Optional) An array of key-value pairs. For more information, see Using Cost Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-whatURL) in the Amazon Web Services Billing and Cost Management User Guide.
+    /// (Optional) An array of key-value pairs. For more information, see Using Cost
+    /// Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-whatURL)
+    /// in the Amazon Web Services Billing and Cost Management User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ProcessingJobTags>>,
 }
@@ -63,10 +82,17 @@ pub struct ProcessingJobAppSpecification {
     pub image_uri: Option<String>,
 }
 
-/// Associates a SageMaker job as a trial component with an experiment and trial. Specified when you call the following APIs: 
-///  * CreateProcessingJob 
-///  * CreateTrainingJob 
-///  * CreateTransformJob
+/// Associates a SageMaker job as a trial component with an experiment and trial.
+/// Specified when you call the following APIs:
+/// 
+/// 
+///    * CreateProcessingJob
+/// 
+/// 
+///    * CreateTrainingJob
+/// 
+/// 
+///    * CreateTransformJob
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobExperimentConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentName")]
@@ -77,19 +103,29 @@ pub struct ProcessingJobExperimentConfig {
     pub trial_name: Option<String>,
 }
 
-/// Networking options for a processing job, such as whether to allow inbound and outbound network calls to and from processing containers, and the VPC subnets and security groups to use for VPC-enabled processing jobs.
+/// Networking options for a processing job, such as whether to allow inbound
+/// and outbound network calls to and from processing containers, and the VPC
+/// subnets and security groups to use for VPC-enabled processing jobs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobNetworkConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInterContainerTrafficEncryption")]
     pub enable_inter_container_traffic_encryption: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
-    /// Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+    /// Specifies a VPC that your training jobs and hosted models have access to.
+    /// Control access to and from your training and model containers by configuring
+    /// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
+    /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
+    /// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
     pub vpc_config: Option<ProcessingJobNetworkConfigVpcConfig>,
 }
 
-/// Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html) and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+/// Specifies a VPC that your training jobs and hosted models have access to.
+/// Control access to and from your training and model containers by configuring
+/// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
+/// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
+/// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobNetworkConfigVpcConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -98,22 +134,28 @@ pub struct ProcessingJobNetworkConfigVpcConfig {
     pub subnets: Option<Vec<String>>,
 }
 
-/// The inputs for a processing job. The processing input must specify exactly one of either S3Input or DatasetDefinition types.
+/// The inputs for a processing job. The processing input must specify exactly
+/// one of either S3Input or DatasetDefinition types.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobProcessingInputs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appManaged")]
     pub app_managed: Option<bool>,
-    /// Configuration for Dataset Definition inputs. The Dataset Definition input must specify exactly one of either AthenaDatasetDefinition or RedshiftDatasetDefinition types.
+    /// Configuration for Dataset Definition inputs. The Dataset Definition input
+    /// must specify exactly one of either AthenaDatasetDefinition or RedshiftDatasetDefinition
+    /// types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetDefinition")]
     pub dataset_definition: Option<ProcessingJobProcessingInputsDatasetDefinition>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputName")]
     pub input_name: Option<String>,
-    /// Configuration for downloading input data from Amazon S3 into the processing container.
+    /// Configuration for downloading input data from Amazon S3 into the processing
+    /// container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Input")]
     pub s3_input: Option<ProcessingJobProcessingInputsS3Input>,
 }
 
-/// Configuration for Dataset Definition inputs. The Dataset Definition input must specify exactly one of either AthenaDatasetDefinition or RedshiftDatasetDefinition types.
+/// Configuration for Dataset Definition inputs. The Dataset Definition input
+/// must specify exactly one of either AthenaDatasetDefinition or RedshiftDatasetDefinition
+/// types.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobProcessingInputsDatasetDefinition {
     /// Configuration for Athena Dataset Definition input.
@@ -186,7 +228,8 @@ pub struct ProcessingJobProcessingInputsDatasetDefinitionRedshiftDatasetDefiniti
     pub query_string: Option<String>,
 }
 
-/// Configuration for downloading input data from Amazon S3 into the processing container.
+/// Configuration for downloading input data from Amazon S3 into the processing
+/// container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobProcessingInputsS3Input {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
@@ -212,7 +255,8 @@ pub struct ProcessingJobProcessingOutputConfig {
     pub outputs: Option<Vec<ProcessingJobProcessingOutputConfigOutputs>>,
 }
 
-/// Describes the results of a processing job. The processing output must specify exactly one of either S3Output or FeatureStoreOutput types.
+/// Describes the results of a processing job. The processing output must specify
+/// exactly one of either S3Output or FeatureStoreOutput types.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobProcessingOutputConfigOutputs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appManaged")]
@@ -222,7 +266,8 @@ pub struct ProcessingJobProcessingOutputConfigOutputs {
     pub feature_store_output: Option<ProcessingJobProcessingOutputConfigOutputsFeatureStoreOutput>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputName")]
     pub output_name: Option<String>,
-    /// Configuration for uploading output data to Amazon S3 from the processing container.
+    /// Configuration for uploading output data to Amazon S3 from the processing
+    /// container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Output")]
     pub s3_output: Option<ProcessingJobProcessingOutputConfigOutputsS3Output>,
 }
@@ -234,7 +279,8 @@ pub struct ProcessingJobProcessingOutputConfigOutputsFeatureStoreOutput {
     pub feature_group_name: Option<String>,
 }
 
-/// Configuration for uploading output data to Amazon S3 from the processing container.
+/// Configuration for uploading output data to Amazon S3 from the processing
+/// container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobProcessingOutputConfigOutputsS3Output {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
@@ -245,7 +291,9 @@ pub struct ProcessingJobProcessingOutputConfigOutputsS3Output {
     pub s3_upload_mode: Option<String>,
 }
 
-/// Identifies the resources, ML compute instances, and ML storage volumes to deploy for a processing job. In distributed training, you specify more than one instance.
+/// Identifies the resources, ML compute instances, and ML storage volumes to
+/// deploy for a processing job. In distributed training, you specify more than
+/// one instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobProcessingResources {
     /// Configuration for the cluster used to run a processing job.
@@ -273,9 +321,21 @@ pub struct ProcessingJobStoppingCondition {
     pub max_runtime_in_seconds: Option<i64>,
 }
 
-/// A tag object that consists of a key and an optional value, used to manage metadata for SageMaker Amazon Web Services resources. 
-///  You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints. For more information on adding tags to SageMaker resources, see AddTags. 
-///  For more information on adding metadata to your Amazon Web Services resources with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html). For advice on best practices for managing Amazon Web Services resources with tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
+/// A tag object that consists of a key and an optional value, used to manage
+/// metadata for SageMaker Amazon Web Services resources.
+/// 
+/// 
+/// You can add tags to notebook instances, training jobs, hyperparameter tuning
+/// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
+/// and endpoints. For more information on adding tags to SageMaker resources,
+/// see AddTags.
+/// 
+/// 
+/// For more information on adding metadata to your Amazon Web Services resources
+/// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
+/// For advice on best practices for managing Amazon Web Services resources with
+/// tagging, see Tagging Best Practices: Implement an Effective Amazon Web Services
+/// Resource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -287,13 +347,19 @@ pub struct ProcessingJobTags {
 /// ProcessingJobStatus defines the observed state of ProcessingJob
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ProcessingJobStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ProcessingJobStatusConditions>>,
-    /// A string, up to one KB in size, that contains the reason a processing job failed, if it failed.
+    /// A string, up to one KB in size, that contains the reason a processing job
+    /// failed, if it failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Provides the status of a processing job.
@@ -301,20 +367,32 @@ pub struct ProcessingJobStatus {
     pub processing_job_status: Option<String>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProcessingJobStatusConditions {
     /// Last time the condition transitioned from one status to another.

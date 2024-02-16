@@ -16,7 +16,10 @@ pub struct DomainSpec {
     /// IAM access policy as a JSON-formatted string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessPolicies")]
     pub access_policies: Option<String>,
-    /// Option to allow references to indices in an HTTP request body. Must be false when configuring access to individual sub-resources. By default, the value is true. See Advanced cluster parameters (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomain-configure-advanced-options) for more information.
+    /// Option to allow references to indices in an HTTP request body. Must be false
+    /// when configuring access to individual sub-resources. By default, the value
+    /// is true. See Advanced cluster parameters (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomain-configure-advanced-options)
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "advancedOptions")]
     pub advanced_options: Option<BTreeMap<String, String>>,
     /// Specifies advanced security options.
@@ -25,28 +28,39 @@ pub struct DomainSpec {
     /// Specifies Auto-Tune options.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoTuneOptions")]
     pub auto_tune_options: Option<DomainAutoTuneOptions>,
-    /// Configuration options for a domain. Specifies the instance type and number of instances in the domain.
+    /// Configuration options for a domain. Specifies the instance type and number
+    /// of instances in the domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfig")]
     pub cluster_config: Option<DomainClusterConfig>,
-    /// Options to specify the Cognito user and identity pools for OpenSearch Dashboards authentication. For more information, see Configuring Amazon Cognito authentication for OpenSearch Dashboards (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html).
+    /// Options to specify the Cognito user and identity pools for OpenSearch Dashboards
+    /// authentication. For more information, see Configuring Amazon Cognito authentication
+    /// for OpenSearch Dashboards (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cognitoOptions")]
     pub cognito_options: Option<DomainCognitoOptions>,
     /// Options to specify configurations that will be applied to the domain endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainEndpointOptions")]
     pub domain_endpoint_options: Option<DomainDomainEndpointOptions>,
-    /// Options to enable, disable, and specify the type and size of EBS storage volumes.
+    /// Options to enable, disable, and specify the type and size of EBS storage
+    /// volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ebsOptions")]
     pub ebs_options: Option<DomainEbsOptions>,
     /// Options for encryption of data at rest.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionAtRestOptions")]
     pub encryption_at_rest_options: Option<DomainEncryptionAtRestOptions>,
-    /// String of format Elasticsearch_X.Y or OpenSearch_X.Y to specify the engine version for the Amazon OpenSearch Service domain. For example, "OpenSearch_1.0" or "Elasticsearch_7.9". For more information, see Creating and managing Amazon OpenSearch Service domains (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomains).
+    /// String of format Elasticsearch_X.Y or OpenSearch_X.Y to specify the engine
+    /// version for the Amazon OpenSearch Service domain. For example, "OpenSearch_1.0"
+    /// or "Elasticsearch_7.9". For more information, see Creating and managing Amazon
+    /// OpenSearch Service domains (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomains).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<String>,
-    /// Map of LogType and LogPublishingOption, each containing options to publish a given type of OpenSearch log.
+    /// Map of LogType and LogPublishingOption, each containing options to publish
+    /// a given type of OpenSearch log.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logPublishingOptions")]
     pub log_publishing_options: Option<BTreeMap<String, DomainLogPublishingOptions>>,
-    /// The name of the Amazon OpenSearch Service domain you're creating. Domain names are unique across the domains owned by an account within an AWS region. Domain names must start with a lowercase letter and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).
+    /// The name of the Amazon OpenSearch Service domain you're creating. Domain
+    /// names are unique across the domains owned by an account within an AWS region.
+    /// Domain names must start with a lowercase letter and can contain the following
+    /// characters: a-z (lowercase), 0-9, and - (hyphen).
     pub name: String,
     /// Node-to-node encryption options.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeToNodeEncryptionOptions")]
@@ -54,7 +68,9 @@ pub struct DomainSpec {
     /// A list of Tag added during domain creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<DomainTags>>,
-    /// Options to specify the subnets and security groups for a VPC endpoint. For more information, see Launching your Amazon OpenSearch Service domains using a VPC (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html).
+    /// Options to specify the subnets and security groups for a VPC endpoint. For
+    /// more information, see Launching your Amazon OpenSearch Service domains using
+    /// a VPC (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcOptions")]
     pub vpc_options: Option<DomainVpcOptions>,
 }
@@ -79,17 +95,21 @@ pub struct DomainAdvancedSecurityOptions {
 /// Credentials for the master user: username and password, ARN, or both.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainAdvancedSecurityOptionsMasterUserOptions {
-    /// The Amazon Resource Name (ARN) of the domain. See Identifiers for IAM Entities (http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html) in Using AWS Identity and Access Management for more information.
+    /// The Amazon Resource Name (ARN) of the domain. See Identifiers for IAM Entities
+    /// (http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html) in Using AWS
+    /// Identity and Access Management for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterUserARN")]
     pub master_user_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterUserName")]
     pub master_user_name: Option<String>,
-    /// SecretKeyReference combines a k8s corev1.SecretReference with a specific key within the referred-to Secret
+    /// SecretKeyReference combines a k8s corev1.SecretReference with a
+    /// specific key within the referred-to Secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterUserPassword")]
     pub master_user_password: Option<DomainAdvancedSecurityOptionsMasterUserOptionsMasterUserPassword>,
 }
 
-/// SecretKeyReference combines a k8s corev1.SecretReference with a specific key within the referred-to Secret
+/// SecretKeyReference combines a k8s corev1.SecretReference with a
+/// specific key within the referred-to Secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainAdvancedSecurityOptionsMasterUserOptionsMasterUserPassword {
     /// Key is the key within the secret
@@ -141,30 +161,41 @@ pub struct DomainAutoTuneOptions {
     pub maintenance_schedules: Option<Vec<DomainAutoTuneOptionsMaintenanceSchedules>>,
 }
 
-/// Specifies the Auto-Tune maintenance schedule. See Auto-Tune for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html) for more information.
+/// Specifies the Auto-Tune maintenance schedule. See Auto-Tune for Amazon OpenSearch
+/// Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)
+/// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainAutoTuneOptionsMaintenanceSchedules {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronExpressionForRecurrence")]
     pub cron_expression_for_recurrence: Option<String>,
-    /// The maintenance schedule duration: duration value and duration unit. See Auto-Tune for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html) for more information.
+    /// The maintenance schedule duration: duration value and duration unit. See
+    /// Auto-Tune for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<DomainAutoTuneOptionsMaintenanceSchedulesDuration>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startAt")]
     pub start_at: Option<String>,
 }
 
-/// The maintenance schedule duration: duration value and duration unit. See Auto-Tune for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html) for more information.
+/// The maintenance schedule duration: duration value and duration unit. See
+/// Auto-Tune for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)
+/// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainAutoTuneOptionsMaintenanceSchedulesDuration {
-    /// The unit of a maintenance schedule duration. Valid value is HOUR. See Auto-Tune for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html) for more information.
+    /// The unit of a maintenance schedule duration. Valid value is HOUR. See Auto-Tune
+    /// for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unit: Option<String>,
-    /// Integer to specify the value of a maintenance schedule duration. See Auto-Tune for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html) for more information.
+    /// Integer to specify the value of a maintenance schedule duration. See Auto-Tune
+    /// for Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html)
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<i64>,
 }
 
-/// Configuration options for a domain. Specifies the instance type and number of instances in the domain.
+/// Configuration options for a domain. Specifies the instance type and number
+/// of instances in the domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainClusterConfig {
     /// Specifies the configuration for cold storage options such as enabled
@@ -186,7 +217,8 @@ pub struct DomainClusterConfig {
     pub warm_enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmType")]
     pub warm_type: Option<String>,
-    /// The zone awareness configuration for the domain cluster, such as the number of availability zones.
+    /// The zone awareness configuration for the domain cluster, such as the number
+    /// of availability zones.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneAwarenessConfig")]
     pub zone_awareness_config: Option<DomainClusterConfigZoneAwarenessConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneAwarenessEnabled")]
@@ -200,14 +232,17 @@ pub struct DomainClusterConfigColdStorageOptions {
     pub enabled: Option<bool>,
 }
 
-/// The zone awareness configuration for the domain cluster, such as the number of availability zones.
+/// The zone awareness configuration for the domain cluster, such as the number
+/// of availability zones.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainClusterConfigZoneAwarenessConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZoneCount")]
     pub availability_zone_count: Option<i64>,
 }
 
-/// Options to specify the Cognito user and identity pools for OpenSearch Dashboards authentication. For more information, see Configuring Amazon Cognito authentication for OpenSearch Dashboards (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html).
+/// Options to specify the Cognito user and identity pools for OpenSearch Dashboards
+/// authentication. For more information, see Configuring Amazon Cognito authentication
+/// for OpenSearch Dashboards (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainCognitoOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -225,7 +260,9 @@ pub struct DomainCognitoOptions {
 pub struct DomainDomainEndpointOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customEndpoint")]
     pub custom_endpoint: Option<String>,
-    /// The Amazon Resource Name (ARN) of the domain. See Identifiers for IAM Entities (http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html) in Using AWS Identity and Access Management for more information.
+    /// The Amazon Resource Name (ARN) of the domain. See Identifiers for IAM Entities
+    /// (http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html) in Using AWS
+    /// Identity and Access Management for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customEndpointCertificateARN")]
     pub custom_endpoint_certificate_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customEndpointEnabled")]
@@ -236,7 +273,8 @@ pub struct DomainDomainEndpointOptions {
     pub tls_security_policy: Option<String>,
 }
 
-/// Options to enable, disable, and specify the type and size of EBS storage volumes.
+/// Options to enable, disable, and specify the type and size of EBS storage
+/// volumes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainEbsOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ebsEnabled")]
@@ -247,7 +285,9 @@ pub struct DomainEbsOptions {
     pub throughput: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSize")]
     pub volume_size: Option<i64>,
-    /// The type of EBS volume, standard, gp2, gp3 or io1. See Configuring EBS-based Storage (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-createupdatedomains.html#opensearch-createdomain-configure-ebs) for more information.
+    /// The type of EBS volume, standard, gp2, gp3 or io1. See Configuring EBS-based
+    /// Storage (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-createupdatedomains.html#opensearch-createdomain-configure-ebs)
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeType")]
     pub volume_type: Option<String>,
 }
@@ -261,7 +301,8 @@ pub struct DomainEncryptionAtRestOptions {
     pub kms_key_id: Option<String>,
 }
 
-/// Map of LogType and LogPublishingOption, each containing options to publish a given type of OpenSearch log.
+/// Map of LogType and LogPublishingOption, each containing options to publish
+/// a given type of OpenSearch log.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainLogPublishingOptions {
     /// ARN of the Cloudwatch log group to publish logs to.
@@ -281,15 +322,19 @@ pub struct DomainNodeToNodeEncryptionOptions {
 /// A key value pair for a resource tag.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainTags {
-    /// A string of length from 1 to 128 characters that specifies the key for a tag. Tag keys must be unique for the domain to which they're attached.
+    /// A string of length from 1 to 128 characters that specifies the key for a
+    /// tag. Tag keys must be unique for the domain to which they're attached.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// A string of length from 0 to 256 characters that specifies the value for a tag. Tag values can be null and don't have to be unique in a tag set.
+    /// A string of length from 0 to 256 characters that specifies the value for
+    /// a tag. Tag values can be null and don't have to be unique in a tag set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Options to specify the subnets and security groups for a VPC endpoint. For more information, see Launching your Amazon OpenSearch Service domains using a VPC (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html).
+/// Options to specify the subnets and security groups for a VPC endpoint. For
+/// more information, see Launching your Amazon OpenSearch Service domains using
+/// a VPC (http://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainVpcOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -301,19 +346,28 @@ pub struct DomainVpcOptions {
 /// DomainStatus defines the observed state of Domain
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DomainStatusAckResourceMetadata>,
     /// Specifies change details of the domain configuration change.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "changeProgressDetails")]
     pub change_progress_details: Option<DomainStatusChangeProgressDetails>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<DomainStatusConditions>>,
-    /// The domain creation status. True if the creation of a domain is complete. False if domain creation is still in progress.
+    /// The domain creation status. True if the creation of a domain is complete.
+    /// False if domain creation is still in progress.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created: Option<bool>,
-    /// The domain deletion status. True if a delete request has been received for the domain but resource cleanup is still in progress. False if the domain has not been deleted. Once domain deletion is complete, the status of the domain is no longer returned.
+    /// The domain deletion status. True if a delete request has been received for
+    /// the domain but resource cleanup is still in progress. False if the domain
+    /// has not been deleted. Once domain deletion is complete, the status of the
+    /// domain is no longer returned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deleted: Option<bool>,
     /// The unique identifier for the specified domain.
@@ -322,10 +376,12 @@ pub struct DomainStatus {
     /// The domain endpoint that you use to submit index and search requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    /// Map containing the domain endpoints used to submit index and search requests. Example key, value: 'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'.
+    /// Map containing the domain endpoints used to submit index and search requests.
+    /// Example key, value: 'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<BTreeMap<String, String>>,
-    /// The status of the domain configuration. True if Amazon OpenSearch Service is processing configuration changes. False if the configuration is active.
+    /// The status of the domain configuration. True if Amazon OpenSearch Service
+    /// is processing configuration changes. False if the configuration is active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub processing: Option<bool>,
     /// The current status of the domain's service software.
@@ -334,18 +390,29 @@ pub struct DomainStatus {
     /// The status of the SnapshotOptions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotOptions")]
     pub snapshot_options: Option<DomainStatusSnapshotOptions>,
-    /// The status of a domain version upgrade. True if Amazon OpenSearch Service is undergoing a version upgrade. False if the configuration is active.
+    /// The status of a domain version upgrade. True if Amazon OpenSearch Service
+    /// is undergoing a version upgrade. False if the configuration is active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeProcessing")]
     pub upgrade_processing: Option<bool>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
@@ -361,7 +428,9 @@ pub struct DomainStatusChangeProgressDetails {
     pub message: Option<String>,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainStatusConditions {
     /// Last time the condition transitioned from one status to another.

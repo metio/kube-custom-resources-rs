@@ -6,8 +6,10 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
-/// ApiSpec defines the desired state of Api. 
-///  Represents an API.
+/// ApiSpec defines the desired state of Api.
+/// 
+/// 
+/// Represents an API.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "apigatewayv2.services.k8s.aws", version = "v1alpha1", kind = "API", plural = "apis")]
 #[kube(namespaced)]
@@ -20,7 +22,9 @@ pub struct APISpec {
     pub basepath: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    /// Represents a CORS configuration. Supported only for HTTP APIs. See Configuring CORS (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html) for more information.
+    /// Represents a CORS configuration. Supported only for HTTP APIs. See Configuring
+    /// CORS (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html)
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "corsConfiguration")]
     pub cors_configuration: Option<APICorsConfiguration>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsARN")]
@@ -49,7 +53,9 @@ pub struct APISpec {
     pub version: Option<String>,
 }
 
-/// Represents a CORS configuration. Supported only for HTTP APIs. See Configuring CORS (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html) for more information.
+/// Represents a CORS configuration. Supported only for HTTP APIs. See Configuring
+/// CORS (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html)
+/// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APICorsConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCredentials")]
@@ -74,7 +80,9 @@ pub struct APICorsConfiguration {
 /// APIStatus defines the observed state of API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<APIStatusAckResourceMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiEndpoint")]
@@ -83,7 +91,10 @@ pub struct APIStatus {
     pub api_gateway_managed: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiID")]
     pub api_id: Option<String>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<APIStatusConditions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
@@ -94,20 +105,32 @@ pub struct APIStatus {
     pub warnings: Option<Vec<String>>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIStatusConditions {
     /// Last time the condition transitioned from one status to another.

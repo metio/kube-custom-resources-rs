@@ -137,9 +137,12 @@ pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributes
     /// Large holds a list of the BGP Large Communities Attribute (RFC 8092) values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub large: Option<Vec<String>>,
-    /// Standard holds a list of "standard" 32-bit BGP Communities Attribute (RFC 1997) values.
+    /// Standard holds a list of "standard" 32-bit BGP Communities Attribute (RFC 1997) values defined as numeric values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub standard: Option<Vec<String>>,
+    /// WellKnown holds a list "standard" 32-bit BGP Communities Attribute (RFC 1997) values defined as well-known string aliases to their numeric values.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wellKnown")]
+    pub well_known: Option<Vec<String>>,
 }
 
 /// Selector selects a group of objects of the SelectorType resulting into routes that will be announced with the configured Attributes. If nil / not set, all objects of the SelectorType are selected.

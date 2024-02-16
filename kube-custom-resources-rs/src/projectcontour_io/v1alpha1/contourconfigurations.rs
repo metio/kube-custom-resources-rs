@@ -586,28 +586,14 @@ pub struct ContourConfigurationEnvoyTimeouts {
 /// is configured to serve traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ContourConfigurationGateway {
-    /// ControllerName is used to determine whether Contour should reconcile a
-    /// GatewayClass. The string takes the form of "projectcontour.io/<namespace>/contour".
-    /// If unset, the gatewayclass controller will not be started.
-    /// Exactly one of ControllerName or GatewayRef must be set.
-    /// Deprecated: users should use GatewayRef, or the Gateway provisioner,
-    /// in place of this field. This field will be removed in a future release.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerName")]
-    pub controller_name: Option<String>,
-    /// GatewayRef defines a specific Gateway that this Contour
-    /// instance corresponds to. If set, Contour will reconcile
-    /// only this gateway, and will not reconcile any gateway
-    /// classes.
-    /// Exactly one of ControllerName or GatewayRef must be set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayRef")]
-    pub gateway_ref: Option<ContourConfigurationGatewayGatewayRef>,
+    /// GatewayRef defines the specific Gateway that this Contour
+    /// instance corresponds to.
+    #[serde(rename = "gatewayRef")]
+    pub gateway_ref: ContourConfigurationGatewayGatewayRef,
 }
 
-/// GatewayRef defines a specific Gateway that this Contour
-/// instance corresponds to. If set, Contour will reconcile
-/// only this gateway, and will not reconcile any gateway
-/// classes.
-/// Exactly one of ControllerName or GatewayRef must be set.
+/// GatewayRef defines the specific Gateway that this Contour
+/// instance corresponds to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ContourConfigurationGatewayGatewayRef {
     pub name: String,

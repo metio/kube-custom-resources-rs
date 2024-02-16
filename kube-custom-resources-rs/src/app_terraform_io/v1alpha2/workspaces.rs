@@ -61,7 +61,7 @@ pub struct WorkspaceSpec {
     /// Terraform variables for all plans and applies in this workspace. Variables defined within a workspace always overwrite variables from variable sets that have the same type and the same key. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/variables - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/variables#terraform-variables
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terraformVariables")]
     pub terraform_variables: Option<Vec<WorkspaceTerraformVariables>>,
-    /// The version of Terraform to use for this workspace. If not specified, the latest available version will be used. Must match pattern: ^\\d{1}\\.\\d{1,2}\\.\\d{1,2}$ More information: - https://www.terraform.io/cloud-docs/workspaces/settings#terraform-version
+    /// The version of Terraform to use for this workspace. If not specified, the latest available version will be used. Must match pattern: `^\\d{1}\\.\\d{1,2}\\.\\d{1,2}$` More information: - https://www.terraform.io/cloud-docs/workspaces/settings#terraform-version
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terraformVersion")]
     pub terraform_version: Option<String>,
     /// API Token to be used for API calls.
@@ -77,7 +77,7 @@ pub struct WorkspaceSpec {
 /// Terraform Cloud Agents allow Terraform Cloud to communicate with isolated, private, or on-premises infrastructure. More information: - https://developer.hashicorp.com/terraform/cloud-docs/agents
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceAgentPool {
-    /// Agent Pool ID. Must match pattern: ^apool-[a-zA-Z0-9]+$
+    /// Agent Pool ID. Must match pattern: `^apool-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Agent Pool name.
@@ -167,7 +167,7 @@ pub struct WorkspaceNotifications {
     /// The type of the notification. Must be one of the following values: `email`, `generic`, `microsoft-teams`, `slack`.
     #[serde(rename = "type")]
     pub r#type: WorkspaceNotificationsType,
-    /// The URL of the notification. Must match pattern: ^https?://.*
+    /// The URL of the notification. Must match pattern: `^https?://.*`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -188,7 +188,7 @@ pub enum WorkspaceNotificationsType {
 /// Projects let you organize your workspaces into groups. Default: default organization project. More information: - https://developer.hashicorp.com/terraform/tutorials/cloud/projects
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceProject {
-    /// Project ID. Must match pattern: ^prj-[a-zA-Z0-9]+$
+    /// Project ID. Must match pattern: `^prj-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Project name.
@@ -210,7 +210,7 @@ pub struct WorkspaceRemoteStateSharing {
 /// ConsumerWorkspace allows access to the state for specific workspaces within the same organization. Only one of the fields `ID` or `Name` is allowed. At least one of the fields `ID` or `Name` is mandatory. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#remote-state-access-controls
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceRemoteStateSharingWorkspaces {
-    /// Consumer Workspace ID. Must match pattern: ^ws-[a-zA-Z0-9]+$
+    /// Consumer Workspace ID. Must match pattern: `^ws-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Consumer Workspace name.
@@ -224,7 +224,7 @@ pub struct WorkspaceRunTasks {
     /// Run Task Enforcement Level. Can be one of `advisory` or `mandatory`. Default: `advisory`. Must be one of the following values: `advisory`, `mandatory` Default: `advisory`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcementLevel")]
     pub enforcement_level: Option<String>,
-    /// Run Task ID. Must match pattern: ^task-[a-zA-Z0-9]+$
+    /// Run Task ID. Must match pattern: `^task-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Run Task Name.
@@ -238,7 +238,7 @@ pub struct WorkspaceRunTasks {
 /// RunTrigger allows you to connect this workspace to one or more source workspaces. These connections allow runs to queue automatically in this workspace on successful apply of runs in any of the source workspaces. Only one of the fields `ID` or `Name` is allowed. At least one of the fields `ID` or `Name` is mandatory. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceRunTriggers {
-    /// Source Workspace ID. Must match pattern: ^ws-[a-zA-Z0-9]+$
+    /// Source Workspace ID. Must match pattern: `^ws-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Source Workspace Name.
@@ -249,7 +249,7 @@ pub struct WorkspaceRunTriggers {
 /// SSH key used to clone Terraform modules. More information: - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/ssh-keys
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceSshKey {
-    /// SSH key ID. Must match pattern: ^sshkey-[a-zA-Z0-9]+$
+    /// SSH key ID. Must match pattern: `^sshkey-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// SSH key name.
@@ -295,7 +295,7 @@ pub struct WorkspaceTeamAccessCustom {
 /// Team to grant access. More information: - https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/teams
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceTeamAccessTeam {
-    /// Team ID. Must match pattern: ^team-[a-zA-Z0-9]+$
+    /// Team ID. Must match pattern: `^team-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Team name.
@@ -389,10 +389,10 @@ pub struct WorkspaceVersionControl {
     /// The repository branch that Run will execute from. This defaults to the repository's default branch (e.g. main).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
-    /// The VCS Connection (OAuth Connection + Token) to use. Must match pattern: ^ot-[a-zA-Z0-9]+$
+    /// The VCS Connection (OAuth Connection + Token) to use. Must match pattern: `^ot-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthTokenID")]
     pub o_auth_token_id: Option<String>,
-    /// A reference to your VCS repository in the format <organization>/<repository> where <organization> and <repository> refer to the organization and repository in your VCS provider.
+    /// A reference to your VCS repository in the format `<organization>/<repository>` where `<organization>` and `<repository>` refer to the organization and repository in your VCS provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
 }

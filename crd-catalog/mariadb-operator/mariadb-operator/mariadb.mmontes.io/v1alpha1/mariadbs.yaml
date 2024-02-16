@@ -1767,7 +1767,7 @@ spec:
                   description: "Replication configures high availability via Galera."
                   properties:
                     agent:
-                      description: "GaleraAgent is a sidecar agent that co-operates with mariadb-operator. More info: https://github.com/mariadb-operator/agent."
+                      description: "GaleraAgent is a sidecar agent that co-operates with mariadb-operator."
                       properties:
                         args:
                           description: "Args to be used in the Container."
@@ -2021,7 +2021,6 @@ spec:
                               type: "integer"
                           type: "object"
                         port:
-                          default: 5555
                           description: "Port where the agent will be listening for connections."
                           format: "int32"
                           type: "integer"
@@ -3592,7 +3591,7 @@ spec:
                       type: "integer"
                   type: "object"
                 maxScale:
-                  description: "MaxScale is the MaxScale specification that defines the MaxScale instance that will be used with MariaDB. When enabling this field, MaxScaleRef is automatically set."
+                  description: "MaxScale is the MaxScale specification that defines the MaxScale resource to be used with the current MariaDB. When enabling this field, MaxScaleRef is automatically set."
                   properties:
                     admin:
                       description: "Admin configures the admin REST API and GUI."
@@ -4214,7 +4213,7 @@ spec:
                         params:
                           additionalProperties:
                             type: "string"
-                          description: "Params is a key value pair of parameters to be used in the MaxScale static configuration file."
+                          description: "Params is a key value pair of parameters to be used in the MaxScale static configuration file. Any parameter supported by MaxScale may be specified here. See reference: https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#global-settings."
                           type: "object"
                         sync:
                           description: "Sync defines how to replicate configuration across MaxScale replicas. It is defaulted when HA is enabled."
@@ -4427,7 +4426,7 @@ spec:
                           type: "string"
                       type: "object"
                     enabled:
-                      description: "Enabled is a flag to enable Metrics"
+                      description: "Enabled is a flag to enable a MaxScale instance to be used with the current MariaDB."
                       type: "boolean"
                     env:
                       description: "Env represents the environment variables to be injected in a container."
@@ -5209,7 +5208,7 @@ spec:
                           type: "integer"
                       type: "object"
                     monitor:
-                      description: "Monitor monitors MariaDB server instances. It is required if 'spec.mariaDbRef' is not provided."
+                      description: "Monitor monitors MariaDB server instances."
                       properties:
                         cooperativeMonitoring:
                           description: "CooperativeMonitoring enables coordination between multiple MaxScale instances running monitors. It is defaulted when HA is enabled."
@@ -5229,7 +5228,7 @@ spec:
                         params:
                           additionalProperties:
                             type: "string"
-                          description: "Params defines extra parameters to pass to the monitor."
+                          description: "Params defines extra parameters to pass to the monitor. Any parameter supported by MaxScale may be specified here. See reference: https://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/. Monitor specific parameter are also suported: https://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters. https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration."
                           type: "object"
                         suspend:
                           description: "Suspend indicates whether the current resource should be suspended or not. Feature flag --feature-maxscale-suspend is required in the controller to enable this."
@@ -5450,12 +5449,11 @@ spec:
                           type: "integer"
                       type: "object"
                     replicas:
-                      default: 1
                       description: "Replicas indicates the number of desired instances."
                       format: "int32"
                       type: "integer"
                     requeueInterval:
-                      description: "RequeueInterval is used to perform requeue reconcilizations. If not defined, it defaults to 10s."
+                      description: "RequeueInterval is used to perform requeue reconcilizations."
                       type: "string"
                     resources:
                       description: "Resouces describes the compute resource requirements."
@@ -5585,7 +5583,7 @@ spec:
                       description: "ServiceAccountName is the name of the ServiceAccount to be used by the Pods."
                       type: "string"
                     services:
-                      description: "Services define how the traffic is forwarded to the MariaDB servers. It is defaulted if not provided."
+                      description: "Services define how the traffic is forwarded to the MariaDB servers."
                       items:
                         description: "Services define how the traffic is forwarded to the MariaDB servers."
                         properties:
@@ -5598,7 +5596,7 @@ spec:
                               params:
                                 additionalProperties:
                                   type: "string"
-                                description: "Params defines extra parameters to pass to the listener."
+                                description: "Params defines extra parameters to pass to the listener. Any parameter supported by MaxScale may be specified here. See reference: https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#listener_1."
                                 type: "object"
                               port:
                                 description: "Port is the network port where the MaxScale server will listen."
@@ -5617,7 +5615,7 @@ spec:
                           params:
                             additionalProperties:
                               type: "string"
-                            description: "Params defines extra parameters to pass to the monitor."
+                            description: "Params defines extra parameters to pass to the monitor. Any parameter supported by MaxScale may be specified here. See reference: https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1. Router specific parameter are also suported: https://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration. https://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration."
                             type: "object"
                           router:
                             description: "Router is the type of router to use."
@@ -7228,7 +7226,7 @@ spec:
                       type: "array"
                   type: "object"
                 maxScaleRef:
-                  description: "MaxScaleRef is a reference to a MaxScale instance that is forwarding the traffic to the current MariaDB instance. Providing this field implies delegating high availability tasks such as primary failover to MaxScale."
+                  description: "MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB. Providing this field implies delegating high availability tasks such as primary failover to MaxScale."
                   properties:
                     apiVersion:
                       description: "API version of the referent."
