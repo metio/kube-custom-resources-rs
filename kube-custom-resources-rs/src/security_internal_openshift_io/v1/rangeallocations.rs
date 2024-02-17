@@ -2,6 +2,6 @@
 // kopium command: kopium --docs --filename=./crd-catalog/openshift/api/security.internal.openshift.io/v1/rangeallocations.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.5
 
-use kube::CustomResource;
-use serde::{Serialize, Deserialize};
+
+
 

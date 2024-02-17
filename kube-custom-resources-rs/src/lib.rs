@@ -35,7 +35,6 @@ apiVersion `actions.summerwind.dev/v1alpha1`:
 ## addons_cluster_x_k8s_io
 
 apiVersion `addons.cluster.x-k8s.io/v1alpha3`:
-- `ClusterResourceSetBinding`
 - `ClusterResourceSet`
 
 apiVersion `addons.cluster.x-k8s.io/v1alpha4`:

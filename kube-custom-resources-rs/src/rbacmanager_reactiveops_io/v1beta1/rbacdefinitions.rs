@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/FairwindsOps/rbac-manager/rbacmanager.reactiveops.io/v1beta1/rbacdefinitions.yaml --derive=PartialEq
 // kopium version: 0.16.5
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 

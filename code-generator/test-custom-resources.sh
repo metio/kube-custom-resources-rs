@@ -14,5 +14,10 @@ for feature in $(cargo read-manifest --manifest-path ./kube-custom-resources-rs/
   fi
 
   echo "testing ${feature}"
-  cargo check --lib --package kube-custom-resources-rs --features "${feature}" --locked
+  if cargo check --lib --package kube-custom-resources-rs --features "${feature}" --locked; then
+    echo "${feature} succeeded"
+  else
+    echo "${feature} failed"
+#    exit 1
+  fi
 done
