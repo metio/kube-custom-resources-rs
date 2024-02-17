@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/aws/aws-application-networking-k8s/application-networking.k8s.aws/v1alpha1/serviceexports.yaml --derive=PartialEq
 // kopium version: 0.16.5
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 
 /// status describes the current state of an exported service. Service configuration comes from the Service that had the same name and namespace as this ServiceExport. Populated by the multi-cluster service implementation's controller.

@@ -21,10 +21,18 @@ jobs:
         run: cargo check --package code-generator --locked
       - name: Check changed CRDs
         run: |
+          all_good=yes
           for feature in $(git diff --name-only origin/main -- ./kube-custom-resources-rs/src | grep --invert-match lib.rs | xargs --no-run-if-empty -I{} dirname {} | sort --unique | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} basename {}); do
+            echo "trying to test ${feature}"
             if [ -f "./kube-custom-resources-rs/src/${feature}/mod.rs" ]; then
-              ./code-generator/test-custom-resources.sh "${feature}"
+              if ! ./code-generator/test-custom-resources.sh "${feature}"; then
+                all_good=no
+              fi
             fi
           done
+          if [ "${all_good}" == no ]; then
+            echo 'we encountered test failures'
+            exit 1
+          fi
         env:
           RUSTFLAGS: "--deny warnings"

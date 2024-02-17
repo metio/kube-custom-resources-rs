@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/openshift/api/network.openshift.io/v1/clusternetworks.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.16.5
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 
 /// ClusterNetworkEntry defines an individual cluster network. The CIDRs cannot overlap with other cluster network CIDRs, CIDRs reserved for external ips, CIDRs reserved for service networks, and CIDRs reserved for ingress ips.
