@@ -2068,6 +2068,11 @@ apiVersion `pgv2.percona.com/v2`:
 - `PerconaPGCluster`
 - `PerconaPGRestore`
 
+## pipes_services_k8s_aws
+
+apiVersion `pipes.services.k8s.aws/v1alpha1`:
+- `Pipe`
+
 ## pkg_crossplane_io
 
 apiVersion `pkg.crossplane.io/v1`:
@@ -3178,6 +3183,8 @@ pub mod operator_victoriametrics_com;
 pub mod org_eclipse_che;
 #[cfg(feature = "pgv2_percona_com")]
 pub mod pgv2_percona_com;
+#[cfg(feature = "pipes_services_k8s_aws")]
+pub mod pipes_services_k8s_aws;
 #[cfg(feature = "pkg_crossplane_io")]
 pub mod pkg_crossplane_io;
 #[cfg(feature = "platform_openshift_io")]

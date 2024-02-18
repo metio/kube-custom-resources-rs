@@ -482,6 +482,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/pipes-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/pipes-controller/blob/main/config/crd/bases/pipes.services.k8s.aws_pipes.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/prometheusservice-controller",
         license: APACHE_V2,
         urls: &[
