@@ -1273,6 +1273,22 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "GoogleCloudPlatform/elcarro-oracle-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_backups.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_backupschedules.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_configs.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_cronanythings.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_databases.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_exports.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_imports.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_instances.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_pitrs.yaml",
+            "https://github.com/GoogleCloudPlatform/elcarro-oracle-operator/blob/main/oracle/config/crd/bases/oracle.db.anthosapis.com_releases.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "GoogleCloudPlatform/gke-managed-certs",
         license: APACHE_V2,
         urls: &[

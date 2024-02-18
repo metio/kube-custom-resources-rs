@@ -2130,6 +2130,19 @@ apiVersion `operator.victoriametrics.com/v1beta1`:
 - `VMRule`
 - `VMUser`
 
+## oracle_db_anthosapis_com
+
+apiVersion `oracle.db.anthosapis.com/v1alpha1`:
+- `Backup`
+- `BackupSchedule`
+- `Config`
+- `CronAnything`
+- `Database`
+- `Export`
+- `Import`
+- `PITR`
+- `Release`
+
 ## org_eclipse_che
 
 apiVersion `org.eclipse.che/v1`:
@@ -3339,6 +3352,8 @@ pub mod operator_shipwright_io;
 pub mod operator_tigera_io;
 #[cfg(feature = "operator_victoriametrics_com")]
 pub mod operator_victoriametrics_com;
+#[cfg(feature = "oracle_db_anthosapis_com")]
+pub mod oracle_db_anthosapis_com;
 #[cfg(feature = "org_eclipse_che")]
 pub mod org_eclipse_che;
 #[cfg(feature = "organizations_services_k8s_aws")]
