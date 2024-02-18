@@ -87,6 +87,10 @@ Files: crd-catalog/authzed/spicedb-operator/*
 Copyright: The authzed/spicedb-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws/amazon-cloudwatch-agent-operator/*
+Copyright: The aws/amazon-cloudwatch-agent-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws/amazon-network-policy-controller-k8s/*
 Copyright: The aws/amazon-network-policy-controller-k8s Authors
 License: Apache-2.0

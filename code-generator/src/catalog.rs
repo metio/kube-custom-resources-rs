@@ -228,6 +228,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws/amazon-cloudwatch-agent-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws/amazon-cloudwatch-agent-operator/blob/main/config/crd/bases/cloudwatch.aws.amazon.com_amazoncloudwatchagents.yaml",
+            "https://github.com/aws/amazon-cloudwatch-agent-operator/blob/main/config/crd/bases/cloudwatch.aws.amazon.com_instrumentations.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws/amazon-network-policy-controller-k8s",
         license: APACHE_V2,
         urls: &[
