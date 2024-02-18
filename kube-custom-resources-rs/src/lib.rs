@@ -637,6 +637,11 @@ apiVersion `cloudtrail.services.k8s.aws/v1alpha1`:
 - `EventDataStore`
 - `Trail`
 
+## cloudwatch_services_k8s_aws
+
+apiVersion `cloudwatch.services.k8s.aws/v1alpha1`:
+- `MetricAlarm`
+
 ## cluster_clusterpedia_io
 
 apiVersion `cluster.clusterpedia.io/v1alpha2`:
@@ -2896,6 +2901,8 @@ pub mod cloudformation_linki_space;
 pub mod cloudfront_services_k8s_aws;
 #[cfg(feature = "cloudtrail_services_k8s_aws")]
 pub mod cloudtrail_services_k8s_aws;
+#[cfg(feature = "cloudwatch_services_k8s_aws")]
+pub mod cloudwatch_services_k8s_aws;
 #[cfg(feature = "cluster_clusterpedia_io")]
 pub mod cluster_clusterpedia_io;
 #[cfg(feature = "cluster_ipfs_io")]
