@@ -1523,6 +1523,12 @@ apiVersion `keycloak.org/v1alpha1`:
 - `Keycloak`
 - `KeycloakUser`
 
+## keyspaces_services_k8s_aws
+
+apiVersion `keyspaces.services.k8s.aws/v1alpha1`:
+- `Keyspace`
+- `Table`
+
 ## kibana_k8s_elastic_co
 
 apiVersion `kibana.k8s.elastic.co/v1`:
@@ -3142,6 +3148,8 @@ pub mod keda_sh;
 pub mod keycloak_k8s_reddec_net;
 #[cfg(feature = "keycloak_org")]
 pub mod keycloak_org;
+#[cfg(feature = "keyspaces_services_k8s_aws")]
+pub mod keyspaces_services_k8s_aws;
 #[cfg(feature = "kibana_k8s_elastic_co")]
 pub mod kibana_k8s_elastic_co;
 #[cfg(feature = "kinesis_services_k8s_aws")]

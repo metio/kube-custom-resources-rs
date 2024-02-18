@@ -481,6 +481,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/keyspaces-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/keyspaces-controller/blob/main/config/crd/bases/keyspaces.services.k8s.aws_keyspaces.yaml",
+            "https://github.com/aws-controllers-k8s/keyspaces-controller/blob/main/config/crd/bases/keyspaces.services.k8s.aws_tables.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/kinesis-controller",
         license: APACHE_V2,
         urls: &[
