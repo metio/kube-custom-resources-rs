@@ -1088,6 +1088,13 @@ apiVersion `grafana.integreatly.org/v1beta1`:
 - `GrafanaDatasource`
 - `GrafanaFolder`
 
+## groupsnapshot_storage_k8s_io
+
+apiVersion `groupsnapshot.storage.k8s.io/v1alpha1`:
+- `VolumeGroupSnapshotClass`
+- `VolumeGroupSnapshotContent`
+- `VolumeGroupSnapshot`
+
 ## hazelcast_com
 
 apiVersion `hazelcast.com/v1alpha1`:
@@ -2393,6 +2400,18 @@ apiVersion `sloth.slok.dev/v1`:
 apiVersion `snapscheduler.backube/v1`:
 - `SnapshotSchedule`
 
+## snapshot_storage_k8s_io
+
+apiVersion `snapshot.storage.k8s.io/v1`:
+- `VolumeSnapshotClass`
+- `VolumeSnapshotContent`
+- `VolumeSnapshot`
+
+apiVersion `snapshot.storage.k8s.io/v1beta1`:
+- `VolumeSnapshotClass`
+- `VolumeSnapshotContent`
+- `VolumeSnapshot`
+
 ## sonataflow_org
 
 apiVersion `sonataflow.org/v1alpha08`:
@@ -2887,6 +2906,8 @@ pub mod getambassador_io;
 pub mod gitops_hybrid_cloud_patterns_io;
 #[cfg(feature = "grafana_integreatly_org")]
 pub mod grafana_integreatly_org;
+#[cfg(feature = "groupsnapshot_storage_k8s_io")]
+pub mod groupsnapshot_storage_k8s_io;
 #[cfg(feature = "hazelcast_com")]
 pub mod hazelcast_com;
 #[cfg(feature = "helm_openshift_io")]
@@ -3191,6 +3212,8 @@ pub mod slo_koordinator_sh;
 pub mod sloth_slok_dev;
 #[cfg(feature = "snapscheduler_backube")]
 pub mod snapscheduler_backube;
+#[cfg(feature = "snapshot_storage_k8s_io")]
+pub mod snapshot_storage_k8s_io;
 #[cfg(feature = "sonataflow_org")]
 pub mod sonataflow_org;
 #[cfg(feature = "source_toolkit_fluxcd_io")]

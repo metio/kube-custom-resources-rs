@@ -1449,6 +1449,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kubernetes-csi/external-snapshotter",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubernetes-csi/external-snapshotter/blob/master/client/config/crd/groupsnapshot.storage.k8s.io_volumegroupsnapshotclasses.yaml",
+            "https://github.com/kubernetes-csi/external-snapshotter/blob/master/client/config/crd/groupsnapshot.storage.k8s.io_volumegroupsnapshotcontents.yaml",
+            "https://github.com/kubernetes-csi/external-snapshotter/blob/master/client/config/crd/groupsnapshot.storage.k8s.io_volumegroupsnapshots.yaml",
+            "https://github.com/kubernetes-csi/external-snapshotter/blob/master/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml",
+            "https://github.com/kubernetes-csi/external-snapshotter/blob/master/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml",
+            "https://github.com/kubernetes-csi/external-snapshotter/blob/master/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kubernetes-sigs/about-api",
         license: APACHE_V2,
         urls: &[
