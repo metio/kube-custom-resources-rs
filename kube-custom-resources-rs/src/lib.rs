@@ -2274,6 +2274,12 @@ apiVersion `rocketmq.apache.org/v1alpha1`:
 apiVersion `route.openshift.io/v1`:
 - `Route`
 
+## route53_services_k8s_aws
+
+apiVersion `route53.services.k8s.aws/v1alpha1`:
+- `HostedZone`
+- `RecordSet`
+
 ## rules_kubeedge_io
 
 apiVersion `rules.kubeedge.io/v1`:
@@ -3273,6 +3279,8 @@ pub mod resources_teleport_dev;
 pub mod rocketmq_apache_org;
 #[cfg(feature = "route_openshift_io")]
 pub mod route_openshift_io;
+#[cfg(feature = "route53_services_k8s_aws")]
+pub mod route53_services_k8s_aws;
 #[cfg(feature = "rules_kubeedge_io")]
 pub mod rules_kubeedge_io;
 #[cfg(feature = "runtime_cluster_x_k8s_io")]
