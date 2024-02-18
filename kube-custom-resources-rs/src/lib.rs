@@ -2516,6 +2516,11 @@ apiVersion `spv.no/v2alpha1`:
 apiVersion `spv.no/v2beta1`:
 - `AzureKeyVaultSecret`
 
+## sqs_services_k8s_aws
+
+apiVersion `sqs.services.k8s.aws/v1alpha1`:
+- `Queue`
+
 ## status_gatekeeper_sh
 
 apiVersion `status.gatekeeper.sh/v1beta1`:
@@ -3301,6 +3306,8 @@ pub mod source_toolkit_fluxcd_io;
 pub mod sparkoperator_k8s_io;
 #[cfg(feature = "spv_no")]
 pub mod spv_no;
+#[cfg(feature = "sqs_services_k8s_aws")]
+pub mod sqs_services_k8s_aws;
 #[cfg(feature = "status_gatekeeper_sh")]
 pub mod status_gatekeeper_sh;
 #[cfg(feature = "storage_kubeblocks_io")]
