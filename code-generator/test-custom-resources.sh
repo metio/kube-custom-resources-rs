@@ -8,7 +8,7 @@ FILTER="${1:-}"
 ### Test custom resources
 for feature in $(cargo read-manifest --manifest-path ./kube-custom-resources-rs/Cargo.toml | yq -p json '.features | keys | .[]'); do
   if [ -n "${FILTER}" ]; then
-    if ! echo -n "${feature}" | grep --quiet "${FILTER}"; then
+    if ! echo -n "${feature}" | grep --quiet --word-regexp "${FILTER}"; then
       continue
     fi
   fi

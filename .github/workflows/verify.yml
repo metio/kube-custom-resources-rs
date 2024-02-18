@@ -22,7 +22,7 @@ jobs:
       - name: Check changed CRDs
         run: |
           all_good=yes
-          for feature in $(git diff --name-only origin/main -- ./kube-custom-resources-rs/src | grep --invert-match lib.rs | xargs --no-run-if-empty -I{} dirname {} | sort --unique | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} basename {}); do
+          for feature in $(git diff --name-only origin/main -- ./kube-custom-resources-rs/src | grep --invert-match lib.rs | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} basename {} | sort --unique); do
             echo "trying to test ${feature}"
             if [ -f "./kube-custom-resources-rs/src/${feature}/mod.rs" ]; then
               if ! ./code-generator/test-custom-resources.sh "${feature}"; then
