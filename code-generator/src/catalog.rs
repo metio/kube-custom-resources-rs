@@ -356,6 +356,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/cloudtrail-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/cloudtrail-controller/blob/main/config/crd/bases/cloudtrail.services.k8s.aws_eventdatastores.yaml",
+            "https://github.com/aws-controllers-k8s/cloudtrail-controller/blob/main/config/crd/bases/cloudtrail.services.k8s.aws_trails.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/documentdb-controller",
         license: APACHE_V2,
         urls: &[

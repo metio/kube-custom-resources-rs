@@ -631,6 +631,12 @@ apiVersion `cloudfront.services.k8s.aws/v1alpha1`:
 - `OriginRequestPolicy`
 - `ResponseHeadersPolicy`
 
+## cloudtrail_services_k8s_aws
+
+apiVersion `cloudtrail.services.k8s.aws/v1alpha1`:
+- `EventDataStore`
+- `Trail`
+
 ## cluster_clusterpedia_io
 
 apiVersion `cluster.clusterpedia.io/v1alpha2`:
@@ -2854,6 +2860,8 @@ pub mod cloud_network_openshift_io;
 pub mod cloudformation_linki_space;
 #[cfg(feature = "cloudfront_services_k8s_aws")]
 pub mod cloudfront_services_k8s_aws;
+#[cfg(feature = "cloudtrail_services_k8s_aws")]
+pub mod cloudtrail_services_k8s_aws;
 #[cfg(feature = "cluster_clusterpedia_io")]
 pub mod cluster_clusterpedia_io;
 #[cfg(feature = "cluster_ipfs_io")]
