@@ -575,6 +575,10 @@ Files: crd-catalog/kubemod/kubemod/*
 Copyright: The kubemod/kubemod Authors
 License: LicenseRef-Kubemod
 
+Files: crd-catalog/kubernetes-csi/external-snapshotter/*
+Copyright: The kubernetes-csi/external-snapshotter Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubernetes-sigs/about-api/*
 Copyright: The kubernetes-sigs/about-api Authors
 License: Apache-2.0
