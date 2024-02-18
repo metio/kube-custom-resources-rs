@@ -2066,6 +2066,11 @@ apiVersion `org.eclipse.che/v1`:
 apiVersion `org.eclipse.che/v2`:
 - `CheCluster`
 
+## organizations_services_k8s_aws
+
+apiVersion `organizations.services.k8s.aws/v1alpha1`:
+- `OrganizationalUnit`
+
 ## pgv2_percona_com
 
 apiVersion `pgv2.percona.com/v2`:
@@ -3205,6 +3210,8 @@ pub mod operator_tigera_io;
 pub mod operator_victoriametrics_com;
 #[cfg(feature = "org_eclipse_che")]
 pub mod org_eclipse_che;
+#[cfg(feature = "organizations_services_k8s_aws")]
+pub mod organizations_services_k8s_aws;
 #[cfg(feature = "pgv2_percona_com")]
 pub mod pgv2_percona_com;
 #[cfg(feature = "pipes_services_k8s_aws")]
