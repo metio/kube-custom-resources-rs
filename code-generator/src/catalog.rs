@@ -552,6 +552,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/sqs-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/sqs-controller/blob/main/config/crd/bases/sqs.services.k8s.aws_queues.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "Azure/azure-service-operator",
         license: APACHE_V2,
         urls: &[
