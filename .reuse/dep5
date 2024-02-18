@@ -31,6 +31,10 @@ Files: crd-catalog/alauda/nativestor/*
 Copyright: The alauda/nativestor Authors
 License: Apache-2.0
 
+Files: crd-catalog/alexandrevilain/temporal-operator/*
+Copyright: The alexandrevilain/temporal-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/Alvearie/imaging-ingestion/*
 Copyright: The Alvearie/imaging-ingestion Authors
 License: Apache-2.0
