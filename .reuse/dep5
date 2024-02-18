@@ -139,6 +139,10 @@ Files: crd-catalog/aws-controllers-k8s/cloudwatch-controller/*
 Copyright: The aws-controllers-k8s/cloudwatch-controller Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws-controllers-k8s/cloudwatchlogs-controller/*
+Copyright: The aws-controllers-k8s/cloudwatchlogs-controller Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/documentdb-controller/*
 Copyright: The aws-controllers-k8s/documentdb-controller Authors
 License: Apache-2.0
