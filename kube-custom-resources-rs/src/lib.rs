@@ -864,6 +864,17 @@ apiVersion `databases.schemahero.io/v1alpha4`:
 apiVersion `databases.spotahome.com/v1`:
 - `RedisFailover`
 
+## datadoghq_com
+
+apiVersion `datadoghq.com/v1alpha1`:
+- `DatadogAgent`
+- `DatadogMetric`
+- `DatadogMonitor`
+- `DatadogSLO`
+
+apiVersion `datadoghq.com/v2alpha1`:
+- `DatadogAgent`
+
 ## dataprotection_kubeblocks_io
 
 apiVersion `dataprotection.kubeblocks.io/v1alpha1`:
@@ -3012,6 +3023,8 @@ pub mod data_fluid_io;
 pub mod databases_schemahero_io;
 #[cfg(feature = "databases_spotahome_com")]
 pub mod databases_spotahome_com;
+#[cfg(feature = "datadoghq_com")]
+pub mod datadoghq_com;
 #[cfg(feature = "dataprotection_kubeblocks_io")]
 pub mod dataprotection_kubeblocks_io;
 #[cfg(feature = "designer_kaoto_io")]

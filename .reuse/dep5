@@ -387,6 +387,10 @@ Files: crd-catalog/ctron/hawkbit-operator/*
 Copyright: The ctron/hawkbit-operator Authors
 License: EPL-2.0
 
+Files: crd-catalog/DataDog/datadog-operator/*
+Copyright: The DataDog/datadog-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/datainfrahq/druid-operator/*
 Copyright: The datainfrahq/druid-operator Authors
 License: Apache-2.0
