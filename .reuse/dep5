@@ -183,6 +183,10 @@ Files: crd-catalog/aws-controllers-k8s/mq-controller/*
 Copyright: The aws-controllers-k8s/mq-controller Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws-controllers-k8s/networkfirewall-controller/*
+Copyright: The aws-controllers-k8s/networkfirewall-controller Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/opensearchservice-controller/*
 Copyright: The aws-controllers-k8s/opensearchservice-controller Authors
 License: Apache-2.0

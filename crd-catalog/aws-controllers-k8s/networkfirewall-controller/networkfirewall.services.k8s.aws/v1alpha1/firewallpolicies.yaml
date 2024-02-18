@@ -1,0 +1,250 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.14.0"
+  name: "firewallpolicies.networkfirewall.services.k8s.aws"
+spec:
+  group: "networkfirewall.services.k8s.aws"
+  names:
+    kind: "FirewallPolicy"
+    listKind: "FirewallPolicyList"
+    plural: "firewallpolicies"
+    singular: "firewallpolicy"
+  scope: "Namespaced"
+  versions:
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "FirewallPolicy is the Schema for the FirewallPolicies API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "FirewallPolicySpec defines the desired state of FirewallPolicy.\n\n\nThe firewall policy defines the behavior of a firewall using a collection\nof stateless and stateful rule groups and other settings. You can use one\nfirewall policy for multiple firewalls.\n\n\nThis, along with FirewallPolicyResponse, define the policy. You can retrieve\nall objects for a firewall policy by calling DescribeFirewallPolicy."
+              properties:
+                description:
+                  description: "A description of the firewall policy."
+                  type: "string"
+                encryptionConfiguration:
+                  description: "A complex type that contains settings for encryption of your firewall policy\nresources."
+                  properties:
+                    keyID:
+                      type: "string"
+                    type_:
+                      type: "string"
+                  type: "object"
+                firewallPolicy:
+                  description: "The rule groups and policy actions to use in the firewall policy."
+                  properties:
+                    policyVariables:
+                      description: "Contains variables that you can use to override default Suricata settings\nin your firewall policy."
+                      properties:
+                        ruleVariables:
+                          additionalProperties:
+                            description: "A list of IP addresses and address ranges, in CIDR notation. This is part\nof a RuleVariables."
+                            properties:
+                              definition:
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
+                          type: "object"
+                      type: "object"
+                    statefulDefaultActions:
+                      items:
+                        type: "string"
+                      type: "array"
+                    statefulEngineOptions:
+                      description: "Configuration settings for the handling of the stateful rule groups in a\nfirewall policy."
+                      properties:
+                        ruleOrder:
+                          type: "string"
+                        streamExceptionPolicy:
+                          type: "string"
+                      type: "object"
+                    statefulRuleGroupReferences:
+                      items:
+                        description: "Identifier for a single stateful rule group, used in a firewall policy to\nrefer to a rule group."
+                        properties:
+                          override:
+                            description: "The setting that allows the policy owner to change the behavior of the rule\ngroup within a policy."
+                            properties:
+                              action:
+                                type: "string"
+                            type: "object"
+                          priority:
+                            format: "int64"
+                            type: "integer"
+                          resourceARN:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    statelessCustomActions:
+                      items:
+                        description: "An optional, non-standard action to use for stateless packet handling. You\ncan define this in addition to the standard action that you must specify.\n\n\nYou define and name the custom actions that you want to be able to use, and\nthen you reference them by name in your actions settings.\n\n\nYou can use custom actions in the following places:\n\n\n   * In a rule group's StatelessRulesAndCustomActions specification. The\n   custom actions are available for use by name inside the StatelessRulesAndCustomActions\n   where you define them. You can use them for your stateless rule actions\n   to specify what to do with a packet that matches the rule's match attributes.\n\n\n   * In a FirewallPolicy specification, in StatelessCustomActions. The custom\n   actions are available for use inside the policy where you define them.\n   You can use them for the policy's default stateless actions settings to\n   specify what to do with packets that don't match any of the policy's stateless\n   rules."
+                        properties:
+                          actionDefinition:
+                            description: "A custom action to use in stateless rule actions settings. This is used in\nCustomAction."
+                            properties:
+                              publishMetricAction:
+                                description: "Stateless inspection criteria that publishes the specified metrics to Amazon\nCloudWatch for the matching packet. This setting defines a CloudWatch dimension\nvalue to be published."
+                                properties:
+                                  dimensions:
+                                    items:
+                                      description: "The value to use in an Amazon CloudWatch custom metric dimension. This is\nused in the PublishMetrics CustomAction. A CloudWatch custom metric dimension\nis a name/value pair that's part of the identity of a metric.\n\n\nNetwork Firewall sets the dimension name to CustomAction and you provide\nthe dimension value.\n\n\nFor more information about CloudWatch custom metric dimensions, see Publishing\nCustom Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#usingDimensions)\nin the Amazon CloudWatch User Guide (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)."
+                                      properties:
+                                        value:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
+                                type: "object"
+                            type: "object"
+                          actionName:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    statelessDefaultActions:
+                      items:
+                        type: "string"
+                      type: "array"
+                    statelessFragmentDefaultActions:
+                      items:
+                        type: "string"
+                      type: "array"
+                    statelessRuleGroupReferences:
+                      items:
+                        description: "Identifier for a single stateless rule group, used in a firewall policy to\nrefer to the rule group."
+                        properties:
+                          priority:
+                            format: "int64"
+                            type: "integer"
+                          resourceARN:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    tlsInspectionConfigurationARN:
+                      type: "string"
+                  type: "object"
+                firewallPolicyName:
+                  description: "The descriptive name of the firewall policy. You can't change the name of\na firewall policy after you create it."
+                  type: "string"
+                tags:
+                  description: "The key:value pairs to associate with the resource."
+                  items:
+                    description: "A key:value pair associated with an Amazon Web Services resource. The key:value\npair can be anything you define. Typically, the tag key represents a category\n(such as \"environment\") and the tag value represents a specific value within\nthat category (such as \"test,\" \"development,\" or \"production\"). You can add\nup to 50 tags to each Amazon Web Services resource."
+                    properties:
+                      key:
+                        type: "string"
+                      value:
+                        type: "string"
+                    type: "object"
+                  type: "array"
+              required:
+                - "firewallPolicy"
+                - "firewallPolicyName"
+              type: "object"
+            status:
+              description: "FirewallPolicyStatus defines the observed state of FirewallPolicy"
+              properties:
+                ackResourceMetadata:
+                  description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
+                  properties:
+                    arn:
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      type: "string"
+                    ownerAccountID:
+                      description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    region:
+                      description: "Region is the AWS region in which the resource exists or will exist."
+                      type: "string"
+                  required:
+                    - "ownerAccountID"
+                    - "region"
+                  type: "object"
+                conditions:
+                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  items:
+                    description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
+                    properties:
+                      lastTransitionTime:
+                        description: "Last time the condition transitioned from one status to another."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "A human readable message indicating details about the transition."
+                        type: "string"
+                      reason:
+                        description: "The reason for the condition's last transition."
+                        type: "string"
+                      status:
+                        description: "Status of the condition, one of True, False, Unknown."
+                        type: "string"
+                      type:
+                        description: "Type is the type of the Condition"
+                        type: "string"
+                    required:
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                firewallPolicyResponse:
+                  description: "The high-level properties of a firewall policy. This, along with the FirewallPolicy,\ndefine the policy. You can retrieve all objects for a firewall policy by\ncalling DescribeFirewallPolicy."
+                  properties:
+                    consumedStatefulRuleCapacity:
+                      format: "int64"
+                      type: "integer"
+                    consumedStatelessRuleCapacity:
+                      format: "int64"
+                      type: "integer"
+                    description:
+                      type: "string"
+                    encryptionConfiguration:
+                      description: "A complex type that contains optional Amazon Web Services Key Management\nService (KMS) encryption settings for your Network Firewall resources. Your\ndata is encrypted by default with an Amazon Web Services owned key that Amazon\nWeb Services owns and manages for you. You can use either the Amazon Web\nServices owned key, or provide your own customer managed key. To learn more\nabout KMS encryption of your Network Firewall resources, see Encryption at\nrest with Amazon Web Services Key Managment Service (https://docs.aws.amazon.com/kms/latest/developerguide/kms-encryption-at-rest.html)\nin the Network Firewall Developer Guide."
+                      properties:
+                        keyID:
+                          type: "string"
+                        type_:
+                          type: "string"
+                      type: "object"
+                    firewallPolicyARN:
+                      type: "string"
+                    firewallPolicyID:
+                      type: "string"
+                    firewallPolicyName:
+                      type: "string"
+                    firewallPolicyStatus:
+                      type: "string"
+                    lastModifiedTime:
+                      format: "date-time"
+                      type: "string"
+                    numberOfAssociations:
+                      format: "int64"
+                      type: "integer"
+                    tags:
+                      items:
+                        description: "A key:value pair associated with an Amazon Web Services resource. The key:value\npair can be anything you define. Typically, the tag key represents a category\n(such as \"environment\") and the tag value represents a specific value within\nthat category (such as \"test,\" \"development,\" or \"production\"). You can add\nup to 50 tags to each Amazon Web Services resource."
+                        properties:
+                          key:
+                            type: "string"
+                          value:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                  type: "object"
+                updateToken:
+                  description: "A token used for optimistic locking. Network Firewall returns a token to\nyour requests that access the firewall policy. The token marks the state\nof the policy resource at the time of the request.\n\n\nTo make changes to the policy, you provide the token in your request. Network\nFirewall uses the token to ensure that the policy hasn't changed since you\nlast retrieved it. If it has changed, the operation fails with an InvalidTokenException.\nIf this happens, retrieve the firewall policy again to get a current copy\nof it with current token. Reapply your changes as needed, then try the operation\nagain using the new token."
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
