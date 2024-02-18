@@ -421,6 +421,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/efs-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/efs-controller/blob/main/config/crd/bases/efs.services.k8s.aws_accesspoints.yaml",
+            "https://github.com/aws-controllers-k8s/efs-controller/blob/main/config/crd/bases/efs.services.k8s.aws_filesystems.yaml",
+            "https://github.com/aws-controllers-k8s/efs-controller/blob/main/config/crd/bases/efs.services.k8s.aws_mounttargets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/eks-controller",
         license: APACHE_V2,
         urls: &[
