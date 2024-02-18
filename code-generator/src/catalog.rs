@@ -364,6 +364,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/cloudwatch-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/cloudwatch-controller/blob/main/config/crd/bases/cloudwatch.services.k8s.aws_metricalarms.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/documentdb-controller",
         license: APACHE_V2,
         urls: &[
