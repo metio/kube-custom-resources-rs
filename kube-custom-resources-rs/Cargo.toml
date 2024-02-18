@@ -24,6 +24,7 @@ serde_json = { version = "1.0.113" }
 [features]
 about_k8s_io = []
 acme_cert_manager_io = []
+acmpca_services_k8s_aws = []
 actions_github_com = []
 actions_summerwind_dev = []
 addons_cluster_x_k8s_io = []

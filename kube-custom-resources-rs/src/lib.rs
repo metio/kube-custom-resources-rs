@@ -16,6 +16,13 @@ apiVersion `acme.cert-manager.io/v1`:
 - `Challenge`
 - `Order`
 
+## acmpca_services_k8s_aws
+
+apiVersion `acmpca.services.k8s.aws/v1alpha1`:
+- `CertificateAuthority`
+- `CertificateAuthorityActivation`
+- `Certificate`
+
 ## actions_github_com
 
 apiVersion `actions.github.com/v1alpha1`:
@@ -2711,6 +2718,8 @@ apiVersion `zonecontrol.k8s.aws/v1`:
 pub mod about_k8s_io;
 #[cfg(feature = "acme_cert_manager_io")]
 pub mod acme_cert_manager_io;
+#[cfg(feature = "acmpca_services_k8s_aws")]
+pub mod acmpca_services_k8s_aws;
 #[cfg(feature = "actions_github_com")]
 pub mod actions_github_com;
 #[cfg(feature = "actions_summerwind_dev")]
