@@ -127,6 +127,10 @@ Files: crd-catalog/aws-controllers-k8s/cloudfront-controller/*
 Copyright: The aws-controllers-k8s/cloudfront-controller Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws-controllers-k8s/documentdb-controller/*
+Copyright: The aws-controllers-k8s/documentdb-controller Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/dynamodb-controller/*
 Copyright: The aws-controllers-k8s/dynamodb-controller Authors
 License: Apache-2.0
