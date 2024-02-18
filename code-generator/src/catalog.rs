@@ -315,6 +315,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/acmpca-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/acmpca-controller/blob/main/config/crd/bases/acmpca.services.k8s.aws_certificateauthorities.yaml",
+            "https://github.com/aws-controllers-k8s/acmpca-controller/blob/main/config/crd/bases/acmpca.services.k8s.aws_certificateauthorityactivations.yaml",
+            "https://github.com/aws-controllers-k8s/acmpca-controller/blob/main/config/crd/bases/acmpca.services.k8s.aws_certificates.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/apigatewayv2-controller",
         license: APACHE_V2,
         urls: &[
