@@ -487,6 +487,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/organizations-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/organizations-controller/blob/main/config/crd/bases/organizations.services.k8s.aws_organizationalunits.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/pipes-controller",
         license: APACHE_V2,
         urls: &[
