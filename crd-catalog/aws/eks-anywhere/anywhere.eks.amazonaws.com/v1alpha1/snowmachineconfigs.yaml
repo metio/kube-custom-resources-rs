@@ -1,0 +1,226 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.6.1"
+  name: "snowmachineconfigs.anywhere.eks.amazonaws.com"
+spec:
+  group: "anywhere.eks.amazonaws.com"
+  names:
+    kind: "SnowMachineConfig"
+    listKind: "SnowMachineConfigList"
+    plural: "snowmachineconfigs"
+    singular: "snowmachineconfig"
+  scope: "Namespaced"
+  versions:
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "SnowMachineConfig is the Schema for the SnowMachineConfigs API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "SnowMachineConfigSpec defines the desired state of SnowMachineConfigSpec."
+              properties:
+                amiID:
+                  description: "The AMI ID from which to create the machine instance."
+                  type: "string"
+                containersVolume:
+                  description: "ContainersVolume provides the configuration options for the containers data storage volume."
+                  properties:
+                    deviceName:
+                      description: "Device name"
+                      type: "string"
+                    size:
+                      description: "Size specifies size (in Gi) of the storage device. Must be greater than the image snapshot size or 8 (whichever is greater)."
+                      format: "int64"
+                      minimum: 8.0
+                      type: "integer"
+                    type:
+                      description: "Type is the type of the volume (sbp1 for capacity-optimized HDD, sbg1 performance-optimized SSD, default is sbp1)"
+                      enum:
+                        - "sbp1"
+                        - "sbg1"
+                      type: "string"
+                  required:
+                    - "size"
+                  type: "object"
+                devices:
+                  description: "Devices contains a device ip list assigned by the user to provision machines."
+                  items:
+                    type: "string"
+                  type: "array"
+                hostOSConfiguration:
+                  description: "HostOSConfiguration provides OS specific configurations for the machine"
+                  properties:
+                    bottlerocketConfiguration:
+                      description: "BottlerocketConfiguration defines the Bottlerocket configuration on the host OS. These settings only take effect when the `osFamily` is bottlerocket."
+                      properties:
+                        boot:
+                          description: "Boot defines the boot settings for bottlerocket."
+                          properties:
+                            bootKernelParameters:
+                              additionalProperties:
+                                items:
+                                  type: "string"
+                                type: "array"
+                              type: "object"
+                          type: "object"
+                        kernel:
+                          description: "Kernel defines the kernel settings for bottlerocket."
+                          properties:
+                            sysctlSettings:
+                              additionalProperties:
+                                type: "string"
+                              description: "SysctlSettings defines the kernel sysctl settings to set for bottlerocket nodes."
+                              type: "object"
+                          type: "object"
+                        kubernetes:
+                          description: "Kubernetes defines the Kubernetes settings on the host OS."
+                          properties:
+                            allowedUnsafeSysctls:
+                              description: "AllowedUnsafeSysctls defines the list of unsafe sysctls that can be set on a node."
+                              items:
+                                type: "string"
+                              type: "array"
+                            clusterDNSIPs:
+                              description: "ClusterDNSIPs defines IP addresses of the DNS servers."
+                              items:
+                                type: "string"
+                              type: "array"
+                            maxPods:
+                              description: "MaxPods defines the maximum number of pods that can run on a node."
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                    certBundles:
+                      items:
+                        description: "Cert defines additional trusted cert bundles on the host OS."
+                        properties:
+                          data:
+                            description: "Data defines the cert bundle data."
+                            type: "string"
+                          name:
+                            description: "Name defines the cert bundle name."
+                            type: "string"
+                        required:
+                          - "data"
+                          - "name"
+                        type: "object"
+                      type: "array"
+                    ntpConfiguration:
+                      description: "NTPConfiguration defines the NTP configuration on the host OS."
+                      properties:
+                        servers:
+                          description: "Servers defines a list of NTP servers to be configured on the host OS."
+                          items:
+                            type: "string"
+                          type: "array"
+                      required:
+                        - "servers"
+                      type: "object"
+                  type: "object"
+                instanceType:
+                  description: "InstanceType is the type of instance to create."
+                  type: "string"
+                network:
+                  description: "Network provides the custom network setting for the machine."
+                  properties:
+                    directNetworkInterfaces:
+                      description: "DirectNetworkInterfaces contains a list of direct network interface (DNI) configuration."
+                      items:
+                        description: "SnowDirectNetworkInterface defines a direct network interface (DNI) configuration."
+                        properties:
+                          dhcp:
+                            description: "DHCP defines whether DHCP is used to assign ip for the DNI."
+                            type: "boolean"
+                          index:
+                            description: "Index is the index number of DNI used to clarify the position in the list. Usually starts with 1."
+                            maximum: 8.0
+                            minimum: 1.0
+                            type: "integer"
+                          ipPoolRef:
+                            description: "IPPool contains a reference to a snow ip pool which provides a range of ip addresses. When specified, an ip address selected from the pool is allocated to this DNI."
+                            properties:
+                              kind:
+                                type: "string"
+                              name:
+                                type: "string"
+                            type: "object"
+                          primary:
+                            description: "Primary indicates whether the DNI is primary or not."
+                            type: "boolean"
+                          vlanID:
+                            description: "VlanID is the vlan id assigned by the user for the DNI."
+                            format: "int32"
+                            maximum: 4095.0
+                            minimum: 0.0
+                            type: "integer"
+                        type: "object"
+                      maxItems: 8
+                      minItems: 1
+                      type: "array"
+                  type: "object"
+                nonRootVolumes:
+                  description: "NonRootVolumes provides the configuration options for the non root storage volumes."
+                  items:
+                    description: "Volume encapsulates the configuration options for the storage device TODO: Trim the fields that do not apply for Snow."
+                    properties:
+                      deviceName:
+                        description: "Device name"
+                        type: "string"
+                      size:
+                        description: "Size specifies size (in Gi) of the storage device. Must be greater than the image snapshot size or 8 (whichever is greater)."
+                        format: "int64"
+                        minimum: 8.0
+                        type: "integer"
+                      type:
+                        description: "Type is the type of the volume (sbp1 for capacity-optimized HDD, sbg1 performance-optimized SSD, default is sbp1)"
+                        enum:
+                          - "sbp1"
+                          - "sbg1"
+                        type: "string"
+                    required:
+                      - "size"
+                    type: "object"
+                  type: "array"
+                osFamily:
+                  description: "OSFamily is the node instance OS. Valid values: \"bottlerocket\" and \"ubuntu\"."
+                  type: "string"
+                physicalNetworkConnector:
+                  description: "PhysicalNetworkConnector is the physical network connector type to use for creating direct network interfaces (DNI). Valid values: \"SFP_PLUS\" (default), \"QSFP\" and \"RJ45\"."
+                  type: "string"
+                sshKeyName:
+                  description: "SSHKeyName is the name of the ssh key defined in the aws snow key pairs, to attach to the instance."
+                  type: "string"
+              required:
+                - "network"
+              type: "object"
+            status:
+              description: "SnowMachineConfigStatus defines the observed state of SnowMachineConfig."
+              properties:
+                failureMessage:
+                  description: "FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message."
+                  type: "string"
+                specValid:
+                  description: "SpecValid is set to true if vspheredatacenterconfig is validated."
+                  type: "boolean"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

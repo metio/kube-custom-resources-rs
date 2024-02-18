@@ -48,6 +48,33 @@ apiVersion `addons.cluster.x-k8s.io/v1beta1`:
 apiVersion `agent.k8s.elastic.co/v1alpha1`:
 - `Agent`
 
+## anywhere_eks_amazonaws_com
+
+apiVersion `anywhere.eks.amazonaws.com/v1alpha1`:
+- `AWSDatacenterConfig`
+- `AWSIamConfig`
+- `Bundles`
+- `CloudStackDatacenterConfig`
+- `CloudStackMachineConfig`
+- `Cluster`
+- `ControlPlaneUpgrade`
+- `DockerDatacenterConfig`
+- `FluxConfig`
+- `GitOpsConfig`
+- `MachineDeploymentUpgrade`
+- `NodeUpgrade`
+- `NutanixDatacenterConfig`
+- `NutanixMachineConfig`
+- `OIDCConfig`
+- `SnowDatacenterConfig`
+- `SnowIPPool`
+- `SnowMachineConfig`
+- `TinkerbellDatacenterConfig`
+- `TinkerbellMachineConfig`
+- `TinkerbellTemplateConfig`
+- `VSphereDatacenterConfig`
+- `VSphereMachineConfig`
+
 ## api_clever_cloud_com
 
 apiVersion `api.clever-cloud.com/v1`:
@@ -2676,6 +2703,8 @@ pub mod actions_summerwind_dev;
 pub mod addons_cluster_x_k8s_io;
 #[cfg(feature = "agent_k8s_elastic_co")]
 pub mod agent_k8s_elastic_co;
+#[cfg(feature = "anywhere_eks_amazonaws_com")]
+pub mod anywhere_eks_amazonaws_com;
 #[cfg(feature = "api_clever_cloud_com")]
 pub mod api_clever_cloud_com;
 #[cfg(feature = "api_kubemod_io")]

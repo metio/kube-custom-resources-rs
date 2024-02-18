@@ -1,0 +1,151 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.6.1"
+  name: "tinkerbellmachineconfigs.anywhere.eks.amazonaws.com"
+spec:
+  group: "anywhere.eks.amazonaws.com"
+  names:
+    kind: "TinkerbellMachineConfig"
+    listKind: "TinkerbellMachineConfigList"
+    plural: "tinkerbellmachineconfigs"
+    singular: "tinkerbellmachineconfig"
+  scope: "Namespaced"
+  versions:
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "TinkerbellMachineConfig is the Schema for the tinkerbellmachineconfigs API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "TinkerbellMachineConfigSpec defines the desired state of TinkerbellMachineConfig."
+              properties:
+                hardwareSelector:
+                  additionalProperties:
+                    type: "string"
+                  description: "HardwareSelector models a simple key-value selector used in Tinkerbell provisioning."
+                  type: "object"
+                hostOSConfiguration:
+                  description: "HostOSConfiguration defines the configuration settings on the host OS."
+                  properties:
+                    bottlerocketConfiguration:
+                      description: "BottlerocketConfiguration defines the Bottlerocket configuration on the host OS. These settings only take effect when the `osFamily` is bottlerocket."
+                      properties:
+                        boot:
+                          description: "Boot defines the boot settings for bottlerocket."
+                          properties:
+                            bootKernelParameters:
+                              additionalProperties:
+                                items:
+                                  type: "string"
+                                type: "array"
+                              type: "object"
+                          type: "object"
+                        kernel:
+                          description: "Kernel defines the kernel settings for bottlerocket."
+                          properties:
+                            sysctlSettings:
+                              additionalProperties:
+                                type: "string"
+                              description: "SysctlSettings defines the kernel sysctl settings to set for bottlerocket nodes."
+                              type: "object"
+                          type: "object"
+                        kubernetes:
+                          description: "Kubernetes defines the Kubernetes settings on the host OS."
+                          properties:
+                            allowedUnsafeSysctls:
+                              description: "AllowedUnsafeSysctls defines the list of unsafe sysctls that can be set on a node."
+                              items:
+                                type: "string"
+                              type: "array"
+                            clusterDNSIPs:
+                              description: "ClusterDNSIPs defines IP addresses of the DNS servers."
+                              items:
+                                type: "string"
+                              type: "array"
+                            maxPods:
+                              description: "MaxPods defines the maximum number of pods that can run on a node."
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                    certBundles:
+                      items:
+                        description: "Cert defines additional trusted cert bundles on the host OS."
+                        properties:
+                          data:
+                            description: "Data defines the cert bundle data."
+                            type: "string"
+                          name:
+                            description: "Name defines the cert bundle name."
+                            type: "string"
+                        required:
+                          - "data"
+                          - "name"
+                        type: "object"
+                      type: "array"
+                    ntpConfiguration:
+                      description: "NTPConfiguration defines the NTP configuration on the host OS."
+                      properties:
+                        servers:
+                          description: "Servers defines a list of NTP servers to be configured on the host OS."
+                          items:
+                            type: "string"
+                          type: "array"
+                      required:
+                        - "servers"
+                      type: "object"
+                  type: "object"
+                osFamily:
+                  type: "string"
+                osImageURL:
+                  description: "OSImageURL can be used to override the default OS image path to pull from a local server. OSImageURL is a URL to the OS image used during provisioning. It must include the Kubernetes version(s). For example, a URL used for Kubernetes 1.27 could be http://localhost:8080/ubuntu-2204-1.27.tgz"
+                  type: "string"
+                templateRef:
+                  properties:
+                    kind:
+                      type: "string"
+                    name:
+                      type: "string"
+                  type: "object"
+                users:
+                  items:
+                    description: "UserConfiguration defines the configuration of the user to be added to the VM."
+                    properties:
+                      name:
+                        type: "string"
+                      sshAuthorizedKeys:
+                        items:
+                          type: "string"
+                        type: "array"
+                    required:
+                      - "name"
+                      - "sshAuthorizedKeys"
+                    type: "object"
+                  type: "array"
+              required:
+                - "hardwareSelector"
+                - "osFamily"
+              type: "object"
+            status:
+              description: "TinkerbellMachineConfigStatus defines the observed state of TinkerbellMachineConfig."
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
