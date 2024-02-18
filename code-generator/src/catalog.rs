@@ -1010,6 +1010,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "DataDog/datadog-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/DataDog/datadog-operator/blob/main/bundle/manifests/datadoghq.com_datadogagents.yaml",
+            "https://github.com/DataDog/datadog-operator/blob/main/bundle/manifests/datadoghq.com_datadogmetrics.yaml",
+            "https://github.com/DataDog/datadog-operator/blob/main/bundle/manifests/datadoghq.com_datadogmonitors.yaml",
+            "https://github.com/DataDog/datadog-operator/blob/main/bundle/manifests/datadoghq.com_datadogslos.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "datainfrahq/druid-operator",
         license: APACHE_V2,
         urls: &[
