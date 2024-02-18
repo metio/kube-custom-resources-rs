@@ -1,0 +1,312 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.14.0"
+  name: "dbclusters.documentdb.services.k8s.aws"
+spec:
+  group: "documentdb.services.k8s.aws"
+  names:
+    kind: "DBCluster"
+    listKind: "DBClusterList"
+    plural: "dbclusters"
+    singular: "dbcluster"
+  scope: "Namespaced"
+  versions:
+    - name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "DBCluster is the Schema for the DBClusters API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "DBClusterSpec defines the desired state of DBCluster.\n\n\nDetailed information about a cluster."
+              properties:
+                availabilityZones:
+                  description: "A list of Amazon EC2 Availability Zones that instances in the cluster can\nbe created in."
+                  items:
+                    type: "string"
+                  type: "array"
+                backupRetentionPeriod:
+                  description: "The number of days for which automated backups are retained. You must specify\na minimum value of 1.\n\n\nDefault: 1\n\n\nConstraints:\n\n\n   * Must be a value from 1 to 35."
+                  format: "int64"
+                  type: "integer"
+                dbClusterIdentifier:
+                  description: "The cluster identifier. This parameter is stored as a lowercase string.\n\n\nConstraints:\n\n\n   * Must contain from 1 to 63 letters, numbers, or hyphens.\n\n\n   * The first character must be a letter.\n\n\n   * Cannot end with a hyphen or contain two consecutive hyphens.\n\n\nExample: my-cluster"
+                  type: "string"
+                dbClusterParameterGroupName:
+                  description: "The name of the cluster parameter group to associate with this cluster."
+                  type: "string"
+                dbSubnetGroupName:
+                  description: "A subnet group to associate with this cluster.\n\n\nConstraints: Must match the name of an existing DBSubnetGroup. Must not be\ndefault.\n\n\nExample: mySubnetgroup"
+                  type: "string"
+                dbSubnetGroupRef:
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  properties:
+                    from:
+                      description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                      properties:
+                        name:
+                          type: "string"
+                      type: "object"
+                  type: "object"
+                deletionProtection:
+                  description: "Specifies whether this cluster can be deleted. If DeletionProtection is enabled,\nthe cluster cannot be deleted unless it is modified and DeletionProtection\nis disabled. DeletionProtection protects clusters from being accidentally\ndeleted."
+                  type: "boolean"
+                destinationRegion:
+                  description: "DestinationRegion is used for presigning the request to a given region."
+                  type: "string"
+                enableCloudwatchLogsExports:
+                  description: "A list of log types that need to be enabled for exporting to Amazon CloudWatch\nLogs. You can enable audit logs or profiler logs. For more information, see\nAuditing Amazon DocumentDB Events (https://docs.aws.amazon.com/documentdb/latest/developerguide/event-auditing.html)\nand Profiling Amazon DocumentDB Operations (https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html)."
+                  items:
+                    type: "string"
+                  type: "array"
+                engine:
+                  description: "The name of the database engine to be used for this cluster.\n\n\nValid values: docdb"
+                  type: "string"
+                engineVersion:
+                  description: "The version number of the database engine to use. The --engine-version will\ndefault to the latest major engine version. For production workloads, we\nrecommend explicitly declaring this parameter with the intended major engine\nversion."
+                  type: "string"
+                globalClusterIdentifier:
+                  description: "The cluster identifier of the new global cluster."
+                  type: "string"
+                kmsKeyID:
+                  description: "The KMS key identifier for an encrypted cluster.\n\n\nThe KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption\nkey. If you are creating a cluster using the same Amazon Web Services account\nthat owns the KMS encryption key that is used to encrypt the new cluster,\nyou can use the KMS key alias instead of the ARN for the KMS encryption key.\n\n\nIf an encryption key is not specified in KmsKeyId:\n\n\n   * If the StorageEncrypted parameter is true, Amazon DocumentDB uses your\n   default encryption key.\n\n\nKMS creates the default encryption key for your Amazon Web Services account.\nYour Amazon Web Services account has a different default encryption key for\neach Amazon Web Services Regions."
+                  type: "string"
+                kmsKeyRef:
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  properties:
+                    from:
+                      description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                      properties:
+                        name:
+                          type: "string"
+                      type: "object"
+                  type: "object"
+                masterUserPassword:
+                  description: "The password for the master database user. This password can contain any\nprintable ASCII character except forward slash (/), double quote (\"), or\nthe \"at\" symbol (@).\n\n\nConstraints: Must contain from 8 to 100 characters."
+                  properties:
+                    key:
+                      description: "Key is the key within the secret"
+                      type: "string"
+                    name:
+                      description: "name is unique within a namespace to reference a secret resource."
+                      type: "string"
+                    namespace:
+                      description: "namespace defines the space within which the secret name must be unique."
+                      type: "string"
+                  required:
+                    - "key"
+                  type: "object"
+                  x-kubernetes-map-type: "atomic"
+                masterUsername:
+                  description: "The name of the master user for the cluster.\n\n\nConstraints:\n\n\n   * Must be from 1 to 63 letters or numbers.\n\n\n   * The first character must be a letter.\n\n\n   * Cannot be a reserved word for the chosen database engine."
+                  type: "string"
+                port:
+                  description: "The port number on which the instances in the cluster accept connections."
+                  format: "int64"
+                  type: "integer"
+                preSignedURL:
+                  description: "Not currently supported."
+                  type: "string"
+                preferredBackupWindow:
+                  description: "The daily time range during which automated backups are created if automated\nbackups are enabled using the BackupRetentionPeriod parameter.\n\n\nThe default is a 30-minute window selected at random from an 8-hour block\nof time for each Amazon Web Services Region.\n\n\nConstraints:\n\n\n   * Must be in the format hh24:mi-hh24:mi.\n\n\n   * Must be in Universal Coordinated Time (UTC).\n\n\n   * Must not conflict with the preferred maintenance window.\n\n\n   * Must be at least 30 minutes."
+                  type: "string"
+                preferredMaintenanceWindow:
+                  description: "The weekly time range during which system maintenance can occur, in Universal\nCoordinated Time (UTC).\n\n\nFormat: ddd:hh24:mi-ddd:hh24:mi\n\n\nThe default is a 30-minute window selected at random from an 8-hour block\nof time for each Amazon Web Services Region, occurring on a random day of\nthe week.\n\n\nValid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun\n\n\nConstraints: Minimum 30-minute window."
+                  type: "string"
+                snapshotIdentifier:
+                  description: "The identifier for the snapshot or cluster snapshot to restore from.\n\n\nYou can use either the name or the Amazon Resource Name (ARN) to specify\na cluster snapshot. However, you can use only the ARN to specify a snapshot.\n\n\nConstraints:\n\n\n   * Must match the identifier of an existing snapshot."
+                  type: "string"
+                sourceRegion:
+                  description: "SourceRegion is the source region where the resource exists. This is not\nsent over the wire and is only used for presigning. This value should always\nhave the same region as the source ARN."
+                  type: "string"
+                storageEncrypted:
+                  description: "Specifies whether the cluster is encrypted."
+                  type: "boolean"
+                storageType:
+                  description: "The storage type to associate with the DB cluster.\n\n\nFor information on storage types for Amazon DocumentDB clusters, see Cluster\nstorage configurations in the Amazon DocumentDB Developer Guide.\n\n\nValid values for storage type - standard | iopt1\n\n\nDefault value is standard\n\n\nWhen you create a DocumentDB DB cluster with the storage type set to iopt1,\nthe storage type is returned in the response. The storage type isn't returned\nwhen you set it to standard."
+                  type: "string"
+                tags:
+                  description: "The tags to be assigned to the cluster."
+                  items:
+                    description: "Metadata assigned to an Amazon DocumentDB resource consisting of a key-value\npair."
+                    properties:
+                      key:
+                        type: "string"
+                      value:
+                        type: "string"
+                    type: "object"
+                  type: "array"
+                vpcSecurityGroupIDs:
+                  description: "A list of EC2 VPC security groups to associate with this cluster."
+                  items:
+                    type: "string"
+                  type: "array"
+                vpcSecurityGroupRefs:
+                  items:
+                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                    properties:
+                      from:
+                        description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                        properties:
+                          name:
+                            type: "string"
+                        type: "object"
+                    type: "object"
+                  type: "array"
+              required:
+                - "dbClusterIdentifier"
+                - "engine"
+              type: "object"
+            status:
+              description: "DBClusterStatus defines the observed state of DBCluster"
+              properties:
+                ackResourceMetadata:
+                  description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
+                  properties:
+                    arn:
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      type: "string"
+                    ownerAccountID:
+                      description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    region:
+                      description: "Region is the AWS region in which the resource exists or will exist."
+                      type: "string"
+                  required:
+                    - "ownerAccountID"
+                    - "region"
+                  type: "object"
+                associatedRoles:
+                  description: "Provides a list of the Identity and Access Management (IAM) roles that are\nassociated with the cluster. (IAM) roles that are associated with a cluster\ngrant permission for the cluster to access other Amazon Web Services services\non your behalf."
+                  items:
+                    description: "Describes an Identity and Access Management (IAM) role that is associated\nwith a cluster."
+                    properties:
+                      roleARN:
+                        type: "string"
+                      status:
+                        type: "string"
+                    type: "object"
+                  type: "array"
+                cloneGroupID:
+                  description: "Identifies the clone group to which the DB cluster is associated."
+                  type: "string"
+                clusterCreateTime:
+                  description: "Specifies the time when the cluster was created, in Universal Coordinated\nTime (UTC)."
+                  format: "date-time"
+                  type: "string"
+                conditions:
+                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  items:
+                    description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
+                    properties:
+                      lastTransitionTime:
+                        description: "Last time the condition transitioned from one status to another."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "A human readable message indicating details about the transition."
+                        type: "string"
+                      reason:
+                        description: "The reason for the condition's last transition."
+                        type: "string"
+                      status:
+                        description: "Status of the condition, one of True, False, Unknown."
+                        type: "string"
+                      type:
+                        description: "Type is the type of the Condition"
+                        type: "string"
+                    required:
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                dbClusterMembers:
+                  description: "Provides the list of instances that make up the cluster."
+                  items:
+                    description: "Contains information about an instance that is part of a cluster."
+                    properties:
+                      dbClusterParameterGroupStatus:
+                        type: "string"
+                      dbInstanceIdentifier:
+                        type: "string"
+                      isClusterWriter:
+                        type: "boolean"
+                      promotionTier:
+                        format: "int64"
+                        type: "integer"
+                    type: "object"
+                  type: "array"
+                dbClusterParameterGroup:
+                  description: "Specifies the name of the cluster parameter group for the cluster."
+                  type: "string"
+                dbClusterResourceID:
+                  description: "The Amazon Web Services Region-unique, immutable identifier for the cluster.\nThis identifier is found in CloudTrail log entries whenever the KMS key for\nthe cluster is accessed."
+                  type: "string"
+                dbSubnetGroup:
+                  description: "Specifies information on the subnet group that is associated with the cluster,\nincluding the name, description, and subnets in the subnet group."
+                  type: "string"
+                earliestRestorableTime:
+                  description: "The earliest time to which a database can be restored with point-in-time\nrestore."
+                  format: "date-time"
+                  type: "string"
+                enabledCloudwatchLogsExports:
+                  description: "A list of log types that this cluster is configured to export to Amazon CloudWatch\nLogs."
+                  items:
+                    type: "string"
+                  type: "array"
+                endpoint:
+                  description: "Specifies the connection endpoint for the primary instance of the cluster."
+                  type: "string"
+                hostedZoneID:
+                  description: "Specifies the ID that Amazon Route 53 assigns when you create a hosted zone."
+                  type: "string"
+                latestRestorableTime:
+                  description: "Specifies the latest time to which a database can be restored with point-in-time\nrestore."
+                  format: "date-time"
+                  type: "string"
+                multiAZ:
+                  description: "Specifies whether the cluster has instances in multiple Availability Zones."
+                  type: "boolean"
+                percentProgress:
+                  description: "Specifies the progress of the operation as a percentage."
+                  type: "string"
+                readReplicaIdentifiers:
+                  description: "Contains one or more identifiers of the secondary clusters that are associated\nwith this cluster."
+                  items:
+                    type: "string"
+                  type: "array"
+                readerEndpoint:
+                  description: "The reader endpoint for the cluster. The reader endpoint for a cluster load\nbalances connections across the Amazon DocumentDB replicas that are available\nin a cluster. As clients request new connections to the reader endpoint,\nAmazon DocumentDB distributes the connection requests among the Amazon DocumentDB\nreplicas in the cluster. This functionality can help balance your read workload\nacross multiple Amazon DocumentDB replicas in your cluster.\n\n\nIf a failover occurs, and the Amazon DocumentDB replica that you are connected\nto is promoted to be the primary instance, your connection is dropped. To\ncontinue sending your read workload to other Amazon DocumentDB replicas in\nthe cluster, you can then reconnect to the reader endpoint."
+                  type: "string"
+                replicationSourceIdentifier:
+                  description: "Contains the identifier of the source cluster if this cluster is a secondary\ncluster."
+                  type: "string"
+                status:
+                  description: "Specifies the current state of this cluster."
+                  type: "string"
+                vpcSecurityGroups:
+                  description: "Provides a list of virtual private cloud (VPC) security groups that the cluster\nbelongs to."
+                  items:
+                    description: "Used as a response element for queries on virtual private cloud (VPC) security\ngroup membership."
+                    properties:
+                      status:
+                        type: "string"
+                      vpcSecurityGroupID:
+                        type: "string"
+                    type: "object"
+                  type: "array"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

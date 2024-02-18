@@ -871,6 +871,13 @@ apiVersion `digitalis.io/v1`:
 apiVersion `digitalis.io/v1beta1`:
 - `DbSecret`
 
+## documentdb_services_k8s_aws
+
+apiVersion `documentdb.services.k8s.aws/v1alpha1`:
+- `DBCluster`
+- `DBInstance`
+- `DBSubnetGroup`
+
 ## druid_apache_org
 
 apiVersion `druid.apache.org/v1alpha1`:
@@ -2890,6 +2897,8 @@ pub mod devices_kubeedge_io;
 pub mod dex_gpu_ninja_com;
 #[cfg(feature = "digitalis_io")]
 pub mod digitalis_io;
+#[cfg(feature = "documentdb_services_k8s_aws")]
+pub mod documentdb_services_k8s_aws;
 #[cfg(feature = "druid_apache_org")]
 pub mod druid_apache_org;
 #[cfg(feature = "dynamodb_services_k8s_aws")]
