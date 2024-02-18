@@ -2673,6 +2673,13 @@ apiVersion `templates.gatekeeper.sh/v1alpha1`:
 apiVersion `templates.gatekeeper.sh/v1beta1`:
 - `ConstraintTemplate`
 
+## temporal_io
+
+apiVersion `temporal.io/v1beta1`:
+- `TemporalClusterClient`
+- `TemporalNamespace`
+- `TemporalWorkerProcess`
+
 ## tests_testkube_io
 
 apiVersion `tests.testkube.io/v1`:
@@ -3471,6 +3478,8 @@ pub mod stunner_l7mp_io;
 pub mod submariner_io;
 #[cfg(feature = "templates_gatekeeper_sh")]
 pub mod templates_gatekeeper_sh;
+#[cfg(feature = "temporal_io")]
+pub mod temporal_io;
 #[cfg(feature = "tests_testkube_io")]
 pub mod tests_testkube_io;
 #[cfg(feature = "theketch_io")]

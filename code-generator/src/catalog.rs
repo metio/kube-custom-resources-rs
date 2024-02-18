@@ -67,6 +67,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "alexandrevilain/temporal-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalclusterclients.yaml",
+            "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalclusters.yaml",
+            "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalnamespaces.yaml",
+            "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalworkerprocesses.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "Alvearie/imaging-ingestion",
         license: APACHE_V2,
         urls: &[
