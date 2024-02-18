@@ -507,6 +507,10 @@ Files: crd-catalog/gitlab-org/gl-openshift/gitlab-runner-operator/*
 Copyright: The gitlab-org/gl-openshift/gitlab-runner-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/GoogleCloudPlatform/gke-managed-certs/*
+Copyright: The GoogleCloudPlatform/gke-managed-certs Authors
+License: Apache-2.0
+
 Files: crd-catalog/GoogleCloudPlatform/spark-on-k8s-operator/*
 Copyright: The GoogleCloudPlatform/spark-on-k8s-operator Authors
 License: Apache-2.0

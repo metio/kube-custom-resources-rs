@@ -1273,6 +1273,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "GoogleCloudPlatform/gke-managed-certs",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/GoogleCloudPlatform/gke-managed-certs/blob/master/deploy/managedcertificates-crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "GoogleCloudPlatform/spark-on-k8s-operator",
         license: APACHE_V2,
         urls: &[

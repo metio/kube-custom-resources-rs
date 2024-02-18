@@ -1966,6 +1966,11 @@ apiVersion `networkfirewall.services.k8s.aws/v1alpha1`:
 - `Firewall`
 - `RuleGroup`
 
+## networking_gke_io
+
+apiVersion `networking.gke.io/v1`:
+- `ManagedCertificate`
+
 ## networking_k8s_aws
 
 apiVersion `networking.k8s.aws/v1alpha1`:
@@ -3292,6 +3297,8 @@ pub mod network_openshift_io;
 pub mod network_operator_openshift_io;
 #[cfg(feature = "networkfirewall_services_k8s_aws")]
 pub mod networkfirewall_services_k8s_aws;
+#[cfg(feature = "networking_gke_io")]
+pub mod networking_gke_io;
 #[cfg(feature = "networking_k8s_aws")]
 pub mod networking_k8s_aws;
 #[cfg(feature = "networking_karmada_io")]
