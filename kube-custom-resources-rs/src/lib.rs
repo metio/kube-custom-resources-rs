@@ -1628,6 +1628,8 @@ apiVersion `lambda.services.k8s.aws/v1alpha1`:
 - `EventSourceMapping`
 - `Function`
 - `FunctionURLConfig`
+- `LayerVersion`
+- `Version`
 
 ## lerentis_uploadfilter24_eu
 
