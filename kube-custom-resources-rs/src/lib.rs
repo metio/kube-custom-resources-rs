@@ -2382,6 +2382,11 @@ apiVersion `secrets.hashicorp.com/v1beta1`:
 - `VaultPKISecret`
 - `VaultStaticSecret`
 
+## secretsmanager_services_k8s_aws
+
+apiVersion `secretsmanager.services.k8s.aws/v1alpha1`:
+- `Secret`
+
 ## secscan_quay_redhat_com
 
 apiVersion `secscan.quay.redhat.com/v1alpha1`:
@@ -3284,6 +3289,8 @@ pub mod secrets_crossplane_io;
 pub mod secrets_doppler_com;
 #[cfg(feature = "secrets_hashicorp_com")]
 pub mod secrets_hashicorp_com;
+#[cfg(feature = "secretsmanager_services_k8s_aws")]
+pub mod secretsmanager_services_k8s_aws;
 #[cfg(feature = "secscan_quay_redhat_com")]
 pub mod secscan_quay_redhat_com;
 #[cfg(feature = "security_profiles_operator_x_k8s_io")]

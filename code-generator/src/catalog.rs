@@ -550,6 +550,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/secretsmanager-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/secretsmanager-controller/blob/main/config/crd/bases/secretsmanager.services.k8s.aws_secrets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/sfn-controller",
         license: APACHE_V2,
         urls: &[
