@@ -1222,8 +1222,11 @@ apiVersion `hyperfoil.io/v1alpha2`:
 
 apiVersion `iam.services.k8s.aws/v1alpha1`:
 - `Group`
+- `InstanceProfile`
+- `OpenIDConnectProvider`
 - `Policy`
 - `Role`
+- `User`
 
 ## ibmcloud_ibm_com
 
