@@ -2138,6 +2138,7 @@ apiVersion `projectcontour.io/v1alpha1`:
 
 apiVersion `prometheusservice.services.k8s.aws/v1alpha1`:
 - `AlertManagerDefinition`
+- `LoggingConfiguration`
 - `RuleGroupsNamespace`
 - `Workspace`
 

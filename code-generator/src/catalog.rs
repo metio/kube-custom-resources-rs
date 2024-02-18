@@ -495,6 +495,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/config/crd/bases/prometheusservice.services.k8s.aws_alertmanagerdefinitions.yaml",
+            "https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/config/crd/bases/prometheusservice.services.k8s.aws_loggingconfigurations.yaml",
             "https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/config/crd/bases/prometheusservice.services.k8s.aws_rulegroupsnamespaces.yaml",
             "https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/config/crd/bases/prometheusservice.services.k8s.aws_workspaces.yaml",
         ],
