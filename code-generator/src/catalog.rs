@@ -458,6 +458,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/kafka-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/kafka-controller/blob/main/config/crd/bases/kafka.services.k8s.aws_clusters.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/kms-controller",
         license: APACHE_V2,
         urls: &[
