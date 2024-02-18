@@ -637,6 +637,12 @@ apiVersion `cloudtrail.services.k8s.aws/v1alpha1`:
 - `EventDataStore`
 - `Trail`
 
+## cloudwatch_aws_amazon_com
+
+apiVersion `cloudwatch.aws.amazon.com/v1alpha1`:
+- `AmazonCloudWatchAgent`
+- `Instrumentation`
+
 ## cloudwatch_services_k8s_aws
 
 apiVersion `cloudwatch.services.k8s.aws/v1alpha1`:
@@ -2958,6 +2964,8 @@ pub mod cloudformation_linki_space;
 pub mod cloudfront_services_k8s_aws;
 #[cfg(feature = "cloudtrail_services_k8s_aws")]
 pub mod cloudtrail_services_k8s_aws;
+#[cfg(feature = "cloudwatch_aws_amazon_com")]
+pub mod cloudwatch_aws_amazon_com;
 #[cfg(feature = "cloudwatch_services_k8s_aws")]
 pub mod cloudwatch_services_k8s_aws;
 #[cfg(feature = "cloudwatchlogs_services_k8s_aws")]
