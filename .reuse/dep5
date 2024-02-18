@@ -103,6 +103,10 @@ Files: crd-catalog/aws/aws-app-mesh-controller-for-k8/*
 Copyright: The aws/aws-app-mesh-controller-for-k8 Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws/eks-anywhere/*
+Copyright: The aws/eks-anywhere Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws/karpenter-provider-aws/*
 Copyright: The aws/karpenter-provider-aws Authors
 License: Apache-2.0
