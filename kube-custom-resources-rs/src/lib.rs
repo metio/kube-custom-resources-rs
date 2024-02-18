@@ -1904,6 +1904,13 @@ apiVersion `network.openshift.io/v1`:
 apiVersion `network.operator.openshift.io/v1`:
 - `EgressRouter`
 
+## networkfirewall_services_k8s_aws
+
+apiVersion `networkfirewall.services.k8s.aws/v1alpha1`:
+- `FirewallPolicy`
+- `Firewall`
+- `RuleGroup`
+
 ## networking_k8s_aws
 
 apiVersion `networking.k8s.aws/v1alpha1`:
@@ -3181,6 +3188,8 @@ pub mod netchecks_io;
 pub mod network_openshift_io;
 #[cfg(feature = "network_operator_openshift_io")]
 pub mod network_operator_openshift_io;
+#[cfg(feature = "networkfirewall_services_k8s_aws")]
+pub mod networkfirewall_services_k8s_aws;
 #[cfg(feature = "networking_k8s_aws")]
 pub mod networking_k8s_aws;
 #[cfg(feature = "networking_karmada_io")]

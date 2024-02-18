@@ -487,6 +487,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/networkfirewall-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/networkfirewall-controller/blob/main/config/crd/bases/networkfirewall.services.k8s.aws_firewallpolicies.yaml",
+            "https://github.com/aws-controllers-k8s/networkfirewall-controller/blob/main/config/crd/bases/networkfirewall.services.k8s.aws_firewalls.yaml",
+            "https://github.com/aws-controllers-k8s/networkfirewall-controller/blob/main/config/crd/bases/networkfirewall.services.k8s.aws_rulegroups.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/opensearchservice-controller",
         license: APACHE_V2,
         urls: &[
