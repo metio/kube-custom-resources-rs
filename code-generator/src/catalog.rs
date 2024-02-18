@@ -531,6 +531,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/route53-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/route53-controller/blob/main/config/crd/bases/route53.services.k8s.aws_hostedzones.yaml",
+            "https://github.com/aws-controllers-k8s/route53-controller/blob/main/config/crd/bases/route53.services.k8s.aws_recordsets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/s3-controller",
         license: APACHE_V2,
         urls: &[
