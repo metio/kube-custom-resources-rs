@@ -562,6 +562,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/route53resolver-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/route53resolver-controller/blob/main/config/crd/bases/route53resolver.services.k8s.aws_resolverendpoints.yaml",
+            "https://github.com/aws-controllers-k8s/route53resolver-controller/blob/main/config/crd/bases/route53resolver.services.k8s.aws_resolverrules.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/s3-controller",
         license: APACHE_V2,
         urls: &[
