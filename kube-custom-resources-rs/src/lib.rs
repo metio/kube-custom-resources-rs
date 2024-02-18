@@ -2766,6 +2766,24 @@ apiVersion `upgrade.cattle.io/v1`:
 apiVersion `upgrade.managed.openshift.io/v1alpha1`:
 - `UpgradeConfig`
 
+## velero_io
+
+apiVersion `velero.io/v1`:
+- `BackupRepository`
+- `Backup`
+- `BackupStorageLocation`
+- `DeleteBackupRequest`
+- `DownloadRequest`
+- `PodVolumeBackup`
+- `PodVolumeRestore`
+- `Schedule`
+- `ServerStatusRequest`
+- `VolumeSnapshotLocation`
+
+apiVersion `velero.io/v2alpha1`:
+- `DataDownload`
+- `DataUpload`
+
 ## virt_virtink_smartx_com
 
 apiVersion `virt.virtink.smartx.com/v1alpha1`:
@@ -3473,6 +3491,8 @@ pub mod trust_cert_manager_io;
 pub mod upgrade_cattle_io;
 #[cfg(feature = "upgrade_managed_openshift_io")]
 pub mod upgrade_managed_openshift_io;
+#[cfg(feature = "velero_io")]
+pub mod velero_io;
 #[cfg(feature = "virt_virtink_smartx_com")]
 pub mod virt_virtink_smartx_com;
 #[cfg(feature = "volsync_backube")]

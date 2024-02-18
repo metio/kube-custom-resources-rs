@@ -2834,6 +2834,25 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "vmware-tanzu/velero",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_backuprepositories.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_backups.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_backupstoragelocations.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_deletebackuprequests.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_downloadrequests.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_podvolumebackups.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_podvolumerestores.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_restores.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_schedules.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_serverstatusrequests.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v1/bases/velero.io_volumesnapshotlocations.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v2alpha1/bases/velero.io_datadownloads.yaml",
+            "https://github.com/vmware-tanzu/velero/blob/main/config/crd/v2alpha1/bases/velero.io_datauploads.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "volcano-sh/volcano",
         license: APACHE_V2,
         urls: &[

@@ -1099,6 +1099,10 @@ Files: crd-catalog/VictoriaMetrics/operator/*
 Copyright: The VictoriaMetrics/operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/vmware-tanzu/velero/*
+Copyright: The vmware-tanzu/velero Authors
+License: Apache-2.0
+
 Files: crd-catalog/volcano-sh/volcano/*
 Copyright: The volcano-sh/volcano Authors
 License: Apache-2.0
