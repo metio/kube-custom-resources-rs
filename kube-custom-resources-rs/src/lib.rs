@@ -1447,6 +1447,11 @@ apiVersion `k8up.io/v1`:
 - `Schedule`
 - `Snapshot`
 
+## kafka_services_k8s_aws
+
+apiVersion `kafka.services.k8s.aws/v1alpha1`:
+- `Cluster`
+
 ## kafka_strimzi_io
 
 apiVersion `kafka.strimzi.io/v1alpha1`:
@@ -3094,6 +3099,8 @@ pub mod k8s_nginx_org;
 pub mod k8s_otterize_com;
 #[cfg(feature = "k8up_io")]
 pub mod k8up_io;
+#[cfg(feature = "kafka_services_k8s_aws")]
+pub mod kafka_services_k8s_aws;
 #[cfg(feature = "kafka_strimzi_io")]
 pub mod kafka_strimzi_io;
 #[cfg(feature = "kamaji_clastix_io")]
