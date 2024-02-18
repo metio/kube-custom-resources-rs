@@ -336,6 +336,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/cloudfront-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/cloudfront-controller/blob/main/config/crd/bases/cloudfront.services.k8s.aws_cachepolicies.yaml",
+            "https://github.com/aws-controllers-k8s/cloudfront-controller/blob/main/config/crd/bases/cloudfront.services.k8s.aws_distributions.yaml",
+            "https://github.com/aws-controllers-k8s/cloudfront-controller/blob/main/config/crd/bases/cloudfront.services.k8s.aws_functions.yaml",
+            "https://github.com/aws-controllers-k8s/cloudfront-controller/blob/main/config/crd/bases/cloudfront.services.k8s.aws_originrequestpolicies.yaml",
+            "https://github.com/aws-controllers-k8s/cloudfront-controller/blob/main/config/crd/bases/cloudfront.services.k8s.aws_responseheaderspolicies.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/dynamodb-controller",
         license: APACHE_V2,
         urls: &[

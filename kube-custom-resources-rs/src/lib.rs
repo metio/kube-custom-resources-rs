@@ -615,6 +615,15 @@ apiVersion `cloud.network.openshift.io/v1`:
 apiVersion `cloudformation.linki.space/v1alpha1`:
 - `Stack`
 
+## cloudfront_services_k8s_aws
+
+apiVersion `cloudfront.services.k8s.aws/v1alpha1`:
+- `CachePolicy`
+- `Distribution`
+- `Function`
+- `OriginRequestPolicy`
+- `ResponseHeadersPolicy`
+
 ## cluster_clusterpedia_io
 
 apiVersion `cluster.clusterpedia.io/v1alpha2`:
@@ -2827,6 +2836,8 @@ pub mod claudie_io;
 pub mod cloud_network_openshift_io;
 #[cfg(feature = "cloudformation_linki_space")]
 pub mod cloudformation_linki_space;
+#[cfg(feature = "cloudfront_services_k8s_aws")]
+pub mod cloudfront_services_k8s_aws;
 #[cfg(feature = "cluster_clusterpedia_io")]
 pub mod cluster_clusterpedia_io;
 #[cfg(feature = "cluster_ipfs_io")]
