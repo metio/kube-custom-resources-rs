@@ -371,6 +371,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/cloudwatchlogs-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/cloudwatchlogs-controller/blob/main/config/crd/bases/cloudwatchlogs.services.k8s.aws_loggroups.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/documentdb-controller",
         license: APACHE_V2,
         urls: &[
