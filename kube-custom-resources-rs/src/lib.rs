@@ -2475,6 +2475,14 @@ apiVersion `snapshot.storage.k8s.io/v1beta1`:
 - `VolumeSnapshotContent`
 - `VolumeSnapshot`
 
+## sns_services_k8s_aws
+
+apiVersion `sns.services.k8s.aws/v1alpha1`:
+- `PlatformApplication`
+- `PlatformEndpoint`
+- `Subscription`
+- `Topic`
+
 ## sonataflow_org
 
 apiVersion `sonataflow.org/v1alpha08`:
@@ -3300,6 +3308,8 @@ pub mod sloth_slok_dev;
 pub mod snapscheduler_backube;
 #[cfg(feature = "snapshot_storage_k8s_io")]
 pub mod snapshot_storage_k8s_io;
+#[cfg(feature = "sns_services_k8s_aws")]
+pub mod sns_services_k8s_aws;
 #[cfg(feature = "sonataflow_org")]
 pub mod sonataflow_org;
 #[cfg(feature = "source_toolkit_fluxcd_io")]

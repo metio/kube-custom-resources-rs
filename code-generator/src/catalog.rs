@@ -554,6 +554,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/sns-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/sns-controller/blob/main/config/crd/bases/sns.services.k8s.aws_platformapplications.yaml",
+            "https://github.com/aws-controllers-k8s/sns-controller/blob/main/config/crd/bases/sns.services.k8s.aws_platformendpoints.yaml",
+            "https://github.com/aws-controllers-k8s/sns-controller/blob/main/config/crd/bases/sns.services.k8s.aws_subscriptions.yaml",
+            "https://github.com/aws-controllers-k8s/sns-controller/blob/main/config/crd/bases/sns.services.k8s.aws_topics.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/sqs-controller",
         license: APACHE_V2,
         urls: &[
