@@ -219,6 +219,10 @@ Files: crd-catalog/aws-controllers-k8s/route53-controller/*
 Copyright: The aws-controllers-k8s/route53-controller Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws-controllers-k8s/route53resolver-controller/*
+Copyright: The aws-controllers-k8s/route53resolver-controller Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/s3-controller/*
 Copyright: The aws-controllers-k8s/s3-controller Authors
 License: Apache-2.0

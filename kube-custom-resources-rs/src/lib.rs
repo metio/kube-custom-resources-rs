@@ -2297,6 +2297,12 @@ apiVersion `route53.services.k8s.aws/v1alpha1`:
 - `HostedZone`
 - `RecordSet`
 
+## route53resolver_services_k8s_aws
+
+apiVersion `route53resolver.services.k8s.aws/v1alpha1`:
+- `ResolverEndpoint`
+- `ResolverRule`
+
 ## rules_kubeedge_io
 
 apiVersion `rules.kubeedge.io/v1`:
@@ -3304,6 +3310,8 @@ pub mod rocketmq_apache_org;
 pub mod route_openshift_io;
 #[cfg(feature = "route53_services_k8s_aws")]
 pub mod route53_services_k8s_aws;
+#[cfg(feature = "route53resolver_services_k8s_aws")]
+pub mod route53resolver_services_k8s_aws;
 #[cfg(feature = "rules_kubeedge_io")]
 pub mod rules_kubeedge_io;
 #[cfg(feature = "runtime_cluster_x_k8s_io")]
