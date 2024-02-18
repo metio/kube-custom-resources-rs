@@ -199,6 +199,10 @@ Files: crd-catalog/aws-controllers-k8s/lambda-controller/*
 Copyright: The aws-controllers-k8s/lambda-controller Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws-controllers-k8s/memorydb-controller/*
+Copyright: The aws-controllers-k8s/memorydb-controller Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/mq-controller/*
 Copyright: The aws-controllers-k8s/mq-controller Authors
 License: Apache-2.0
