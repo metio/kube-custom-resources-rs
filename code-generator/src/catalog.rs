@@ -465,6 +465,8 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/aws-controllers-k8s/lambda-controller/blob/main/config/crd/bases/lambda.services.k8s.aws_eventsourcemappings.yaml",
             "https://github.com/aws-controllers-k8s/lambda-controller/blob/main/config/crd/bases/lambda.services.k8s.aws_functions.yaml",
             "https://github.com/aws-controllers-k8s/lambda-controller/blob/main/config/crd/bases/lambda.services.k8s.aws_functionurlconfigs.yaml",
+            "https://github.com/aws-controllers-k8s/lambda-controller/blob/main/config/crd/bases/lambda.services.k8s.aws_layerversions.yaml",
+            "https://github.com/aws-controllers-k8s/lambda-controller/blob/main/config/crd/bases/lambda.services.k8s.aws_versions.yaml",
         ],
     },
     UpstreamSource {
