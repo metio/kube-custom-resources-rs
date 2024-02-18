@@ -540,6 +540,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "backube/volsync",
+        license: AGPL_V3_OR_LATER,
+        urls: &[
+            "https://github.com/backube/volsync/blob/main/config/crd/bases/volsync.backube_replicationdestinations.yaml",
+            "https://github.com/backube/volsync/blob/main/config/crd/bases/volsync.backube_replicationsources.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "berops/claudie",
         license: APACHE_V2,
         urls: &[

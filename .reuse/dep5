@@ -195,6 +195,10 @@ Files: crd-catalog/backube/snapscheduler/*
 Copyright: The backube/snapscheduler Authors
 License: AGPL-3.0-or-later
 
+Files: crd-catalog/backube/volsync/*
+Copyright: The backube/volsync Authors
+License: AGPL-3.0-or-later
+
 Files: crd-catalog/berops/claudie/*
 Copyright: The berops/claudie Authors
 License: Apache-2.0
