@@ -934,6 +934,13 @@ apiVersion `ecr.services.k8s.aws/v1alpha1`:
 - `PullThroughCacheRule`
 - `Repository`
 
+## efs_services_k8s_aws
+
+apiVersion `efs.services.k8s.aws/v1alpha1`:
+- `AccessPoint`
+- `FileSystem`
+- `MountTarget`
+
 ## eks_services_k8s_aws
 
 apiVersion `eks.services.k8s.aws/v1alpha1`:
@@ -3001,6 +3008,8 @@ pub mod dynamodb_services_k8s_aws;
 pub mod ec2_services_k8s_aws;
 #[cfg(feature = "ecr_services_k8s_aws")]
 pub mod ecr_services_k8s_aws;
+#[cfg(feature = "efs_services_k8s_aws")]
+pub mod efs_services_k8s_aws;
 #[cfg(feature = "eks_services_k8s_aws")]
 pub mod eks_services_k8s_aws;
 #[cfg(feature = "elasticache_services_k8s_aws")]
