@@ -443,8 +443,11 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/aws-controllers-k8s/iam-controller/blob/main/config/crd/bases/iam.services.k8s.aws_groups.yaml",
+            "https://github.com/aws-controllers-k8s/iam-controller/blob/main/config/crd/bases/iam.services.k8s.aws_instanceprofiles.yaml",
+            "https://github.com/aws-controllers-k8s/iam-controller/blob/main/config/crd/bases/iam.services.k8s.aws_openidconnectproviders.yaml",
             "https://github.com/aws-controllers-k8s/iam-controller/blob/main/config/crd/bases/iam.services.k8s.aws_policies.yaml",
             "https://github.com/aws-controllers-k8s/iam-controller/blob/main/config/crd/bases/iam.services.k8s.aws_roles.yaml",
+            "https://github.com/aws-controllers-k8s/iam-controller/blob/main/config/crd/bases/iam.services.k8s.aws_users.yaml",
         ],
     },
     UpstreamSource {
