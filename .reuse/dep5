@@ -207,6 +207,10 @@ Files: crd-catalog/aws-controllers-k8s/sfn-controller/*
 Copyright: The aws-controllers-k8s/sfn-controller Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws-controllers-k8s/sns-controller/*
+Copyright: The aws-controllers-k8s/sns-controller Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/sqs-controller/*
 Copyright: The aws-controllers-k8s/sqs-controller Authors
 License: Apache-2.0
