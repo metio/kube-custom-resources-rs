@@ -175,6 +175,10 @@ Files: crd-catalog/aws-controllers-k8s/kafka-controller/*
 Copyright: The aws-controllers-k8s/kafka-controller Authors
 License: Apache-2.0
 
+Files: crd-catalog/aws-controllers-k8s/kinesis-controller/*
+Copyright: The aws-controllers-k8s/kinesis-controller Authors
+License: Apache-2.0
+
 Files: crd-catalog/aws-controllers-k8s/kms-controller/*
 Copyright: The aws-controllers-k8s/kms-controller Authors
 License: Apache-2.0

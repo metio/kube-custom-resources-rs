@@ -1519,6 +1519,11 @@ apiVersion `kibana.k8s.elastic.co/v1`:
 apiVersion `kibana.k8s.elastic.co/v1beta1`:
 - `Kibana`
 
+## kinesis_services_k8s_aws
+
+apiVersion `kinesis.services.k8s.aws/v1alpha1`:
+- `Stream`
+
 ## kms_services_k8s_aws
 
 apiVersion `kms.services.k8s.aws/v1alpha1`:
@@ -3117,6 +3122,8 @@ pub mod keycloak_k8s_reddec_net;
 pub mod keycloak_org;
 #[cfg(feature = "kibana_k8s_elastic_co")]
 pub mod kibana_k8s_elastic_co;
+#[cfg(feature = "kinesis_services_k8s_aws")]
+pub mod kinesis_services_k8s_aws;
 #[cfg(feature = "kms_services_k8s_aws")]
 pub mod kms_services_k8s_aws;
 #[cfg(feature = "kuadrant_io")]

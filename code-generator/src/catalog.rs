@@ -465,6 +465,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/kinesis-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/kinesis-controller/blob/main/config/crd/bases/kinesis.services.k8s.aws_streams.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/kms-controller",
         license: APACHE_V2,
         urls: &[
