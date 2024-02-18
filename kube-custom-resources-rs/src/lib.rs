@@ -1798,6 +1798,16 @@ apiVersion `mattermost.com/v1alpha1`:
 - `ClusterInstallation`
 - `MattermostRestoreDB`
 
+## memorydb_services_k8s_aws
+
+apiVersion `memorydb.services.k8s.aws/v1alpha1`:
+- `ACL`
+- `Cluster`
+- `ParameterGroup`
+- `Snapshot`
+- `SubnetGroup`
+- `User`
+
 ## metacontroller_k8s_io
 
 apiVersion `metacontroller.k8s.io/v1alpha1`:
@@ -3200,6 +3210,8 @@ pub mod maps_k8s_elastic_co;
 pub mod mariadb_mmontes_io;
 #[cfg(feature = "mattermost_com")]
 pub mod mattermost_com;
+#[cfg(feature = "memorydb_services_k8s_aws")]
+pub mod memorydb_services_k8s_aws;
 #[cfg(feature = "metacontroller_k8s_io")]
 pub mod metacontroller_k8s_io;
 #[cfg(feature = "metal3_io")]

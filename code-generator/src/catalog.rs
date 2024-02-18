@@ -518,6 +518,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "aws-controllers-k8s/memorydb-controller",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aws-controllers-k8s/memorydb-controller/blob/main/config/crd/bases/memorydb.services.k8s.aws_acls.yaml",
+            "https://github.com/aws-controllers-k8s/memorydb-controller/blob/main/config/crd/bases/memorydb.services.k8s.aws_clusters.yaml",
+            "https://github.com/aws-controllers-k8s/memorydb-controller/blob/main/config/crd/bases/memorydb.services.k8s.aws_parametergroups.yaml",
+            "https://github.com/aws-controllers-k8s/memorydb-controller/blob/main/config/crd/bases/memorydb.services.k8s.aws_snapshots.yaml",
+            "https://github.com/aws-controllers-k8s/memorydb-controller/blob/main/config/crd/bases/memorydb.services.k8s.aws_subnetgroups.yaml",
+            "https://github.com/aws-controllers-k8s/memorydb-controller/blob/main/config/crd/bases/memorydb.services.k8s.aws_users.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aws-controllers-k8s/mq-controller",
         license: APACHE_V2,
         urls: &[
