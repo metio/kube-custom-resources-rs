@@ -56,6 +56,9 @@ pub struct ScyllaClusterSpec {
     /// imagePullSecrets is an optional list of references to secrets in the same namespace used for pulling Scylla and Agent images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ScyllaClusterImagePullSecrets>>,
+    /// minReadySeconds is the minimum number of seconds for which a newly created ScyllaDB node should be ready for it to be considered available. When used to control load balanced traffic, this can give the load balancer in front of a node enough time to notice that the node is ready and start forwarding traffic in time. Because it all depends on timing, the order is not guaranteed and, if possible, you should use readinessGates instead. If not provided, Operator will determine this value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i32>,
     /// minTerminationGracePeriodSeconds specifies minimum duration in seconds to wait before every drained node is terminated. This gives time to potential load balancer in front of a node to notice that node is not ready anymore and stop forwarding new requests. This applies only when node is terminated gracefully. If not provided, Operator will determine this value. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTerminationGracePeriodSeconds")]
     pub min_termination_grace_period_seconds: Option<i32>,
@@ -65,6 +68,9 @@ pub struct ScyllaClusterSpec {
     /// podMetadata controls shared metadata for all pods created based on this spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<ScyllaClusterPodMetadata>,
+    /// readinessGates specifies custom readiness gates that will be evaluated for every ScyllaDB Pod readiness. It's projected into every ScyllaDB Pod as its readinessGate. Refer to upstream documentation to learn more about readiness gates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<ScyllaClusterReadinessGates>>,
     /// repairs specify repair tasks in Scylla Manager. When Scylla Manager is not installed, these will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repairs: Option<Vec<ScyllaClusterRepairs>>,
@@ -1918,6 +1924,14 @@ pub struct ScyllaClusterPodMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
+/// PodReadinessGate contains the reference to a pod condition
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScyllaClusterReadinessGates {
+    /// ConditionType refers to a condition in the pod's condition list with matching type.
+    #[serde(rename = "conditionType")]
+    pub condition_type: String,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterRepairs {
     /// dc is a list of datacenter glob patterns, e.g. 'dc1', '!otherdc*' used to specify the DCs to include or exclude from backup.
@@ -1958,6 +1972,9 @@ pub struct ScyllaClusterRepairs {
 /// status is the current status of this scylla cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterStatus {
+    /// availableMembers is the number of ScyllaDB members in all racks that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableMembers")]
+    pub available_members: Option<i32>,
     /// backups reflects status of backup tasks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backups: Option<Vec<ScyllaClusterStatusBackups>>,
@@ -1967,12 +1984,21 @@ pub struct ScyllaClusterStatus {
     /// managerId contains ID under which cluster was registered in Scylla Manager.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managerId")]
     pub manager_id: Option<String>,
+    /// members is the number of ScyllaDB members in all racks.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub members: Option<i32>,
     /// observedGeneration is the most recent generation observed for this ScyllaCluster. It corresponds to the ScyllaCluster's generation, which is updated on mutation by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// rackCount is the number of ScyllaDB racks in this cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackCount")]
+    pub rack_count: Option<i32>,
     /// racks reflect status of cluster racks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub racks: Option<BTreeMap<String, ScyllaClusterStatusRacks>>,
+    /// readyMembers is the number of ScyllaDB members in all racks that are ready.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyMembers")]
+    pub ready_members: Option<i32>,
     /// repairs reflects status of repair tasks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repairs: Option<Vec<ScyllaClusterStatusRepairs>>,
@@ -2059,6 +2085,9 @@ pub enum ScyllaClusterStatusConditionsStatus {
 /// racks reflect status of cluster racks.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterStatusRacks {
+    /// availableMembers is the number of available members in the Rack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableMembers")]
+    pub available_members: Option<i32>,
     /// conditions are the latest available observations of a rack's state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ScyllaClusterStatusRacksConditions>>,

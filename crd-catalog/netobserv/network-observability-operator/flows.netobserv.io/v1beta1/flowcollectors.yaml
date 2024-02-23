@@ -26,6 +26,7 @@ spec:
         - jsonPath: ".status.conditions[?(@.type==\"Ready\")].reason"
           name: "Status"
           type: "string"
+      deprecated: true
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -1872,7 +1873,7 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}
 status:

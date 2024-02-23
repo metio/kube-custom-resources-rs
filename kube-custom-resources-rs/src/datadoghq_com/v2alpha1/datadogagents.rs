@@ -789,12 +789,18 @@ pub struct DatadogAgentGlobal {
     /// ClusterName sets a unique cluster name for the deployment to easily scope monitoring data in the Datadog app.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
+    /// ContainerStrategy determines whether agents run in a single or multiple containers. Default: 'optimized'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerStrategy")]
+    pub container_strategy: Option<String>,
     /// Credentials defines the Datadog credentials used to submit data to/query data from Datadog.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<DatadogAgentGlobalCredentials>,
     /// Path to the container runtime socket (if different from Docker).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "criSocketPath")]
     pub cri_socket_path: Option<String>,
+    /// Set DisableNonResourceRules to exclude NonResourceURLs from default ClusterRoles. Required 'true' for Google Cloud Marketplace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNonResourceRules")]
+    pub disable_non_resource_rules: Option<bool>,
     /// Path to the docker runtime socket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerSocketPath")]
     pub docker_socket_path: Option<String>,
@@ -3307,9 +3313,12 @@ pub struct DatadogAgentOverrideVolumesVsphereVolume {
 /// DatadogAgentStatus defines the observed state of DatadogAgent.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatadogAgentStatus {
-    /// The actual state of the Agent as an extended daemonset.
+    /// The combined actual state of all Agents as daemonsets or extended daemonsets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agent: Option<DatadogAgentStatusAgent>,
+    /// The actual state of the Agent as a daemonset or an extended daemonset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentList")]
+    pub agent_list: Option<Vec<DatadogAgentStatusAgentList>>,
     /// The actual state of the Cluster Agent as a deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAgent")]
     pub cluster_agent: Option<DatadogAgentStatusClusterAgent>,
@@ -3321,9 +3330,40 @@ pub struct DatadogAgentStatus {
     pub conditions: Option<Vec<DatadogAgentStatusConditions>>,
 }
 
-/// The actual state of the Agent as an extended daemonset.
+/// The combined actual state of all Agents as daemonsets or extended daemonsets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatadogAgentStatusAgent {
+    /// Number of available pods in the DaemonSet.
+    pub available: i32,
+    /// Number of current pods in the DaemonSet.
+    pub current: i32,
+    /// CurrentHash is the stored hash of the DaemonSet.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentHash")]
+    pub current_hash: Option<String>,
+    /// DaemonsetName corresponds to the name of the created DaemonSet.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daemonsetName")]
+    pub daemonset_name: Option<String>,
+    /// Number of desired pods in the DaemonSet.
+    pub desired: i32,
+    /// LastUpdate is the last time the status was updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
+    pub last_update: Option<String>,
+    /// Number of ready pods in the DaemonSet.
+    pub ready: i32,
+    /// State corresponds to the DaemonSet state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    /// Status corresponds to the DaemonSet computed status.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+    /// Number of up to date pods in the DaemonSet.
+    #[serde(rename = "upToDate")]
+    pub up_to_date: i32,
+}
+
+/// DaemonSetStatus defines the observed state of Agent running as DaemonSet.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct DatadogAgentStatusAgentList {
     /// Number of available pods in the DaemonSet.
     pub available: i32,
     /// Number of current pods in the DaemonSet.

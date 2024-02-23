@@ -18,6 +18,7 @@ spec:
     shortNames:
       - "lhe"
     singular: "engine"
+  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:

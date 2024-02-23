@@ -37,31 +37,38 @@ pub struct TargetGroupBindingNetworking {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupBindingNetworkingIngress {
-    /// List of peers which should be able to access the targets in TargetGroup. At least one NetworkingPeer should be specified.
+    /// List of peers which should be able to access the targets in TargetGroup.
+    /// At least one NetworkingPeer should be specified.
     pub from: Vec<TargetGroupBindingNetworkingIngressFrom>,
-    /// List of ports which should be made accessible on the targets in TargetGroup. If ports is empty or unspecified, it defaults to all ports with TCP.
+    /// List of ports which should be made accessible on the targets in TargetGroup.
+    /// If ports is empty or unspecified, it defaults to all ports with TCP.
     pub ports: Vec<TargetGroupBindingNetworkingIngressPorts>,
 }
 
 /// NetworkingPeer defines the source/destination peer for networking rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupBindingNetworkingIngressFrom {
-    /// IPBlock defines an IPBlock peer. If specified, none of the other fields can be set.
+    /// IPBlock defines an IPBlock peer.
+    /// If specified, none of the other fields can be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<TargetGroupBindingNetworkingIngressFromIpBlock>,
-    /// SecurityGroup defines a SecurityGroup peer. If specified, none of the other fields can be set.
+    /// SecurityGroup defines a SecurityGroup peer.
+    /// If specified, none of the other fields can be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroup")]
     pub security_group: Option<TargetGroupBindingNetworkingIngressFromSecurityGroup>,
 }
 
-/// IPBlock defines an IPBlock peer. If specified, none of the other fields can be set.
+/// IPBlock defines an IPBlock peer.
+/// If specified, none of the other fields can be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupBindingNetworkingIngressFromIpBlock {
-    /// CIDR is the network CIDR. Both IPV4 or IPV6 CIDR are accepted.
+    /// CIDR is the network CIDR.
+    /// Both IPV4 or IPV6 CIDR are accepted.
     pub cidr: String,
 }
 
-/// SecurityGroup defines a SecurityGroup peer. If specified, none of the other fields can be set.
+/// SecurityGroup defines a SecurityGroup peer.
+/// If specified, none of the other fields can be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupBindingNetworkingIngressFromSecurityGroup {
     /// GroupID is the EC2 SecurityGroupID.
@@ -71,10 +78,14 @@ pub struct TargetGroupBindingNetworkingIngressFromSecurityGroup {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupBindingNetworkingIngressPorts {
-    /// The port which traffic must match. When NodePort endpoints(instance TargetType) is used, this must be a numerical port. When Port endpoints(ip TargetType) is used, this can be either numerical or named port on pods. if port is unspecified, it defaults to all ports.
+    /// The port which traffic must match.
+    /// When NodePort endpoints(instance TargetType) is used, this must be a numerical port.
+    /// When Port endpoints(ip TargetType) is used, this can be either numerical or named port on pods.
+    /// if port is unspecified, it defaults to all ports.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
-    /// The protocol which traffic must match. If protocol is unspecified, it defaults to TCP.
+    /// The protocol which traffic must match.
+    /// If protocol is unspecified, it defaults to TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<TargetGroupBindingNetworkingIngressPortsProtocol>,
 }

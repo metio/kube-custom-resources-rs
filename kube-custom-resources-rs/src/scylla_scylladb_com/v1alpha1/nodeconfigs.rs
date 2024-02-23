@@ -5,6 +5,7 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "scylla.scylladb.com", version = "v1alpha1", kind = "NodeConfig", plural = "nodeconfigs")]
@@ -27,6 +28,9 @@ pub struct NodeConfigLocalDiskSetup {
     /// filesystems is a list of filesystem configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filesystems: Option<Vec<NodeConfigLocalDiskSetupFilesystems>>,
+    /// loops is a list of loop device configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loopDevices")]
+    pub loop_devices: Option<Vec<NodeConfigLocalDiskSetupLoopDevices>>,
     /// mounts is a list of mount configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mounts: Option<Vec<NodeConfigLocalDiskSetupMounts>>,
@@ -44,6 +48,20 @@ pub struct NodeConfigLocalDiskSetupFilesystems {
     /// type is a desired filesystem type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+/// LoopDeviceConfiguration specifies loop device configuration options.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeConfigLocalDiskSetupLoopDevices {
+    /// imagePath specifies path on host where backing image file for loop device should be located.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePath")]
+    pub image_path: Option<String>,
+    /// name specifies the name of the symlink that will point to actual loop device, created under `/dev/loops/`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// size specifies the size of the loop device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<IntOrString>,
 }
 
 /// MountConfiguration specifies mount configuration options.

@@ -205,8 +205,8 @@ pub struct VaultDynamicSecretStatusStaticCredsMetaData {
     #[serde(rename = "rotationPeriod")]
     pub rotation_period: i64,
     /// RotationSchedule is a "cron style" string representing the allowed schedule for each rotation. e.g. "1 0 * * *" would rotate at one minute past midnight (00:01) every day.
-    #[serde(rename = "rotationSchedule")]
-    pub rotation_schedule: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotationSchedule")]
+    pub rotation_schedule: Option<String>,
     /// TTL is the seconds remaining before the next rotation.
     pub ttl: i64,
 }

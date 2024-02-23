@@ -79,7 +79,7 @@ spec:
                           type: "object"
                         type: "array"
                       template:
-                        description: "template is a class definition template that uses the Go template syntax and allows for variable declaration. When defining a class in Series, specifying the variable's value is sufficient, as the complete class definition will be generated through rendering the template. \n For example: template: | cpu: \"{{ or .cpu 1 }}\" memory: \"{{ or .memory 4 }}Gi\""
+                        description: "template is a class definition template that uses the Go template syntax and allows for variable declaration. When defining a class in Series, specifying the variable's value is sufficient, as the complete class definition will be generated through rendering the template. \n For example: \n ```yaml template: | cpu: \"{{ or .cpu 1 }}\" memory: \"{{ or .memory 4 }}Gi\" ```"
                         type: "string"
                       vars:
                         description: "vars defines the variables declared in the template and will be used to generating the complete class definition by render the template."

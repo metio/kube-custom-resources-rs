@@ -13,6 +13,9 @@ use std::collections::BTreeMap;
 #[kube(status = "BackupStorageStatus")]
 #[kube(schema = "disabled")]
 pub struct BackupStorageSpec {
+    /// AllowedNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
+    pub allowed_namespaces: Option<Vec<String>>,
     /// Bucket is a name of bucket.
     pub bucket: String,
     /// CredentialsSecretName is the name of the secret with credentials.
@@ -27,9 +30,6 @@ pub struct BackupStorageSpec {
     /// Region is a region where the bucket is located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    /// TargetNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespaces")]
-    pub target_namespaces: Option<Vec<String>>,
     /// Type is a type of backup storage.
     #[serde(rename = "type")]
     pub r#type: BackupStorageType,

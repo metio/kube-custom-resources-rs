@@ -34,6 +34,11 @@ spec:
             spec:
               description: "MonitoringConfigSpec defines the desired state of MonitoringConfig."
               properties:
+                allowedNamespaces:
+                  description: "AllowedNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName."
+                  items:
+                    type: "string"
+                  type: "array"
                 credentialsSecretName:
                   description: "CredentialsSecretName is the name of the secret with credentials."
                   type: "string"
@@ -50,11 +55,6 @@ spec:
                     - "image"
                     - "url"
                   type: "object"
-                targetNamespaces:
-                  description: "TargetNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName."
-                  items:
-                    type: "string"
-                  type: "array"
                 type:
                   description: "Type is type of monitoring."
                   enum:

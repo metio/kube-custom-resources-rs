@@ -13,6 +13,8 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "RayJobStatus")]
 #[kube(schema = "disabled")]
 pub struct RayJobSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
+    pub active_deadline_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSelector")]
     pub cluster_selector: Option<BTreeMap<String, String>>,
     pub entrypoint: String,

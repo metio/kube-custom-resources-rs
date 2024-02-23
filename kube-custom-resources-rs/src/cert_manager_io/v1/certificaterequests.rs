@@ -6,49 +6,88 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
-/// Specification of the desired state of the CertificateRequest resource. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+/// Specification of the desired state of the CertificateRequest resource.
+/// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "cert-manager.io", version = "v1", kind = "CertificateRequest", plural = "certificaterequests")]
 #[kube(namespaced)]
 #[kube(status = "CertificateRequestStatus")]
 #[kube(schema = "disabled")]
 pub struct CertificateRequestSpec {
-    /// Requested 'duration' (i.e. lifetime) of the Certificate. Note that the issuer may choose to ignore the requested duration, just like any other requested attribute.
+    /// Requested 'duration' (i.e. lifetime) of the Certificate. Note that the
+    /// issuer may choose to ignore the requested duration, just like any other
+    /// requested attribute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    /// Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+    /// Extra contains extra attributes of the user that created the CertificateRequest.
+    /// Populated by the cert-manager webhook on creation and immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra: Option<BTreeMap<String, String>>,
-    /// Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+    /// Groups contains group membership of the user that created the CertificateRequest.
+    /// Populated by the cert-manager webhook on creation and immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub groups: Option<Vec<String>>,
-    /// Requested basic constraints isCA value. Note that the issuer may choose to ignore the requested isCA value, just like any other requested attribute. 
-    ///  NOTE: If the CSR in the `Request` field has a BasicConstraints extension, it must have the same isCA value as specified here. 
-    ///  If true, this will automatically add the `cert sign` usage to the list of requested `usages`.
+    /// Requested basic constraints isCA value. Note that the issuer may choose
+    /// to ignore the requested isCA value, just like any other requested attribute.
+    /// 
+    /// 
+    /// NOTE: If the CSR in the `Request` field has a BasicConstraints extension,
+    /// it must have the same isCA value as specified here.
+    /// 
+    /// 
+    /// If true, this will automatically add the `cert sign` usage to the list
+    /// of requested `usages`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isCA")]
     pub is_ca: Option<bool>,
-    /// Reference to the issuer responsible for issuing the certificate. If the issuer is namespace-scoped, it must be in the same namespace as the Certificate. If the issuer is cluster-scoped, it can be used from any namespace. 
-    ///  The `name` field of the reference must always be specified.
+    /// Reference to the issuer responsible for issuing the certificate.
+    /// If the issuer is namespace-scoped, it must be in the same namespace
+    /// as the Certificate. If the issuer is cluster-scoped, it can be used
+    /// from any namespace.
+    /// 
+    /// 
+    /// The `name` field of the reference must always be specified.
     #[serde(rename = "issuerRef")]
     pub issuer_ref: CertificateRequestIssuerRef,
-    /// The PEM-encoded X.509 certificate signing request to be submitted to the issuer for signing. 
-    ///  If the CSR has a BasicConstraints extension, its isCA attribute must match the `isCA` value of this CertificateRequest. If the CSR has a KeyUsage extension, its key usages must match the key usages in the `usages` field of this CertificateRequest. If the CSR has a ExtKeyUsage extension, its extended key usages must match the extended key usages in the `usages` field of this CertificateRequest.
+    /// The PEM-encoded X.509 certificate signing request to be submitted to the
+    /// issuer for signing.
+    /// 
+    /// 
+    /// If the CSR has a BasicConstraints extension, its isCA attribute must
+    /// match the `isCA` value of this CertificateRequest.
+    /// If the CSR has a KeyUsage extension, its key usages must match the
+    /// key usages in the `usages` field of this CertificateRequest.
+    /// If the CSR has a ExtKeyUsage extension, its extended key usages
+    /// must match the extended key usages in the `usages` field of this
+    /// CertificateRequest.
     pub request: String,
-    /// UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+    /// UID contains the uid of the user that created the CertificateRequest.
+    /// Populated by the cert-manager webhook on creation and immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
-    /// Requested key usages and extended key usages. 
-    ///  NOTE: If the CSR in the `Request` field has uses the KeyUsage or ExtKeyUsage extension, these extensions must have the same values as specified here without any additional values. 
-    ///  If unset, defaults to `digital signature` and `key encipherment`.
+    /// Requested key usages and extended key usages.
+    /// 
+    /// 
+    /// NOTE: If the CSR in the `Request` field has uses the KeyUsage or
+    /// ExtKeyUsage extension, these extensions must have the same values
+    /// as specified here without any additional values.
+    /// 
+    /// 
+    /// If unset, defaults to `digital signature` and `key encipherment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usages: Option<Vec<String>>,
-    /// Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+    /// Username contains the name of the user that created the CertificateRequest.
+    /// Populated by the cert-manager webhook on creation and immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
-/// Reference to the issuer responsible for issuing the certificate. If the issuer is namespace-scoped, it must be in the same namespace as the Certificate. If the issuer is cluster-scoped, it can be used from any namespace. 
-///  The `name` field of the reference must always be specified.
+/// Reference to the issuer responsible for issuing the certificate.
+/// If the issuer is namespace-scoped, it must be in the same namespace
+/// as the Certificate. If the issuer is cluster-scoped, it can be used
+/// from any namespace.
+/// 
+/// 
+/// The `name` field of the reference must always be specified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CertificateRequestIssuerRef {
     /// Group of the resource being referred to.
@@ -61,19 +100,31 @@ pub struct CertificateRequestIssuerRef {
     pub name: String,
 }
 
-/// Status of the CertificateRequest. This is set and managed automatically. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+/// Status of the CertificateRequest.
+/// This is set and managed automatically.
+/// Read-only.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CertificateRequestStatus {
-    /// The PEM encoded X.509 certificate of the signer, also known as the CA (Certificate Authority). This is set on a best-effort basis by different issuers. If not set, the CA is assumed to be unknown/not available.
+    /// The PEM encoded X.509 certificate of the signer, also known as the CA
+    /// (Certificate Authority).
+    /// This is set on a best-effort basis by different issuers.
+    /// If not set, the CA is assumed to be unknown/not available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<String>,
-    /// The PEM encoded X.509 certificate resulting from the certificate signing request. If not set, the CertificateRequest has either not been completed or has failed. More information on failure can be found by checking the `conditions` field.
+    /// The PEM encoded X.509 certificate resulting from the certificate
+    /// signing request.
+    /// If not set, the CertificateRequest has either not been completed or has
+    /// failed. More information on failure can be found by checking the
+    /// `conditions` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
-    /// List of status conditions to indicate the status of a CertificateRequest. Known condition types are `Ready`, `InvalidRequest`, `Approved` and `Denied`.
+    /// List of status conditions to indicate the status of a CertificateRequest.
+    /// Known condition types are `Ready`, `InvalidRequest`, `Approved` and `Denied`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<CertificateRequestStatusConditions>>,
-    /// FailureTime stores the time that this CertificateRequest failed. This is used to influence garbage collection and back-off.
+    /// FailureTime stores the time that this CertificateRequest failed. This is
+    /// used to influence garbage collection and back-off.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureTime")]
     pub failure_time: Option<String>,
 }
@@ -81,18 +132,22 @@ pub struct CertificateRequestStatus {
 /// CertificateRequestCondition contains condition information for a CertificateRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CertificateRequestStatusConditions {
-    /// LastTransitionTime is the timestamp corresponding to the last status change of this condition.
+    /// LastTransitionTime is the timestamp corresponding to the last status
+    /// change of this condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
-    /// Message is a human readable description of the details of the last transition, complementing reason.
+    /// Message is a human readable description of the details of the last
+    /// transition, complementing reason.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Reason is a brief machine readable explanation for the condition's last transition.
+    /// Reason is a brief machine readable explanation for the condition's last
+    /// transition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     /// Status of the condition, one of (`True`, `False`, `Unknown`).
     pub status: CertificateRequestStatusConditionsStatus,
-    /// Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).
+    /// Type of the condition, known values are (`Ready`, `InvalidRequest`,
+    /// `Approved`, `Denied`).
     #[serde(rename = "type")]
     pub r#type: String,
 }

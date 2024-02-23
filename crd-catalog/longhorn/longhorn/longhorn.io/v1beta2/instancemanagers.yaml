@@ -18,6 +18,7 @@ spec:
     shortNames:
       - "lhim"
     singular: "instancemanager"
+  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:

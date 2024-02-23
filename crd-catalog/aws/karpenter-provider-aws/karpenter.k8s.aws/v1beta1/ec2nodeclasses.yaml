@@ -315,11 +315,16 @@ spec:
                       requirements:
                         description: "Requirements of the AMI to be utilized on an instance type"
                         items:
-                          description: "A node selector requirement is a selector that contains values, a key, and an operator\nthat relates the key and values."
+                          description: "A node selector requirement with min values is a selector that contains values, a key, an operator that relates the key and values\nand minValues that represent the requirement to have at least that many values."
                           properties:
                             key:
                               description: "The label key that the selector applies to."
                               type: "string"
+                            minValues:
+                              description: "This field is ALPHA and can be dropped or replaced at any time\nMinValues is the minimum number of unique values required to define the flexibility of the specific requirement."
+                              maximum: 50.0
+                              minimum: 1.0
+                              type: "integer"
                             operator:
                               description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
                               type: "string"

@@ -7,40 +7,40 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
-/// BackupRepoSpec defines the desired state of BackupRepo
+/// BackupRepoSpec defines the desired state of `BackupRepo`.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "dataprotection.kubeblocks.io", version = "v1alpha1", kind = "BackupRepo", plural = "backuprepos")]
 #[kube(status = "BackupRepoStatus")]
 #[kube(schema = "disabled")]
 pub struct BackupRepoSpec {
-    /// Specifies the access method of the backup repo.
+    /// Specifies the access method of the backup repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMethod")]
     pub access_method: Option<BackupRepoAccessMethod>,
-    /// Non-secret configurations for the storage provider.
+    /// Stores the non-secret configuration parameters for the `StorageProvider`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
-    /// A secret that contains the credentials needed by the storage provider.
+    /// References to the secret that holds the credentials for the `StorageProvider`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credential: Option<BackupRepoCredential>,
-    /// The reclaim policy for the PV created by this backup repo.
+    /// Specifies reclaim policy of the PV created by this backup repository.
     #[serde(rename = "pvReclaimPolicy")]
     pub pv_reclaim_policy: BackupRepoPvReclaimPolicy,
-    /// The storage provider used by this backup repo.
+    /// Specifies the name of the `StorageProvider` used by this backup repository.
     #[serde(rename = "storageProviderRef")]
     pub storage_provider_ref: String,
-    /// The requested capacity for the PVC created by this backup repo.
+    /// Specifies the capacity of the PVC created by this backup repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeCapacity")]
     pub volume_capacity: Option<IntOrString>,
 }
 
-/// BackupRepoSpec defines the desired state of BackupRepo
+/// BackupRepoSpec defines the desired state of `BackupRepo`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BackupRepoAccessMethod {
     Mount,
     Tool,
 }
 
-/// A secret that contains the credentials needed by the storage provider.
+/// References to the secret that holds the credentials for the `StorageProvider`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupRepoCredential {
     /// name is unique within a namespace to reference a secret resource.
@@ -51,38 +51,38 @@ pub struct BackupRepoCredential {
     pub namespace: Option<String>,
 }
 
-/// BackupRepoSpec defines the desired state of BackupRepo
+/// BackupRepoSpec defines the desired state of `BackupRepo`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BackupRepoPvReclaimPolicy {
     Delete,
     Retain,
 }
 
-/// BackupRepoStatus defines the observed state of BackupRepo
+/// BackupRepoStatus defines the observed state of `BackupRepo`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupRepoStatus {
-    /// backupPVCName is the name of the PVC used to store backup data.
+    /// Represents the name of the PVC that stores backup data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPVCName")]
     pub backup_pvc_name: Option<String>,
-    /// conditions describes the current state of the repo.
+    /// Provides a detailed description of the current state of the backup repository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<BackupRepoStatusConditions>>,
-    /// generatedCSIDriverSecret references the generated secret used by the CSI driver.
+    /// Refers to the generated secret for the `StorageProvider`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatedCSIDriverSecret")]
     pub generated_csi_driver_secret: Option<BackupRepoStatusGeneratedCsiDriverSecret>,
-    /// generatedStorageClassName indicates the generated storage class name.
+    /// Represents the name of the generated storage class.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatedStorageClassName")]
     pub generated_storage_class_name: Option<String>,
-    /// isDefault indicates whether this backup repo is the default one.
+    /// Indicates if this backup repository is the default one.\
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDefault")]
     pub is_default: Option<bool>,
-    /// observedGeneration is the latest generation observed by the controller.
+    /// Represents the latest generation of the resource that the controller has observed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Backup repo reconciliation phases. Valid values are PreChecking, Failed, Ready, Deleting.
+    /// Represents the current phase of reconciliation for the backup repository. Permissible values are PreChecking, Failed, Ready, Deleting.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
-    /// toolConfigSecretName is the name of the secret containing the configuration for the access tool.
+    /// Represents the name of the secret that contains the configuration for the tool.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toolConfigSecretName")]
     pub tool_config_secret_name: Option<String>,
 }
@@ -119,7 +119,7 @@ pub enum BackupRepoStatusConditionsStatus {
     Unknown,
 }
 
-/// generatedCSIDriverSecret references the generated secret used by the CSI driver.
+/// Refers to the generated secret for the `StorageProvider`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BackupRepoStatusGeneratedCsiDriverSecret {
     /// name is unique within a namespace to reference a secret resource.

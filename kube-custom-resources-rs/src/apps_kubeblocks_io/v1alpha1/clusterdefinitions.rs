@@ -13,95 +13,98 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ClusterDefinitionStatus")]
 #[kube(schema = "disabled")]
 pub struct ClusterDefinitionSpec {
-    /// componentDefs provides cluster components definitions.
+    /// Provides the definitions for the cluster components.
     #[serde(rename = "componentDefs")]
     pub component_defs: Vec<ClusterDefinitionComponentDefs>,
-    /// Connection credential template used for creating a connection credential secret for cluster.apps.kubeblocks.io object. 
-    ///  Built-in objects are: - `$(RANDOM_PASSWD)` - random 8 characters. - `$(STRONG_RANDOM_PASSWD)` - random 16 characters, with mixed cases, digits and symbols. - `$(UUID)` - generate a random UUID v4 string. - `$(UUID_B64)` - generate a random UUID v4 BASE64 encoded string. - `$(UUID_STR_B64)` - generate a random UUID v4 string then BASE64 encoded. - `$(UUID_HEX)` - generate a random UUID v4 HEX representation. - `$(HEADLESS_SVC_FQDN)` - headless service FQDN placeholder, value pattern - $(CLUSTER_NAME)-$(1ST_COMP_NAME)-headless.$(NAMESPACE).svc, where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute; - `$(SVC_FQDN)` - service FQDN  placeholder, value pattern - $(CLUSTER_NAME)-$(1ST_COMP_NAME).$(NAMESPACE).svc, where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute; - `$(SVC_PORT_{PORT-NAME})` - a ServicePort's port value with specified port name, i.e, a servicePort JSON struct: `{"name": "mysql", "targetPort": "mysqlContainerPort", "port": 3306}`, and "$(SVC_PORT_mysql)" in the connection credential value is 3306.
+    /// Connection credential template used for creating a connection credential secret for cluster objects. 
+    ///  Built-in objects are: 
+    ///  - `$(RANDOM_PASSWD)` random 8 characters. - `$(STRONG_RANDOM_PASSWD)` random 16 characters, with mixed cases, digits and symbols. - `$(UUID)` generate a random UUID v4 string. - `$(UUID_B64)` generate a random UUID v4 BASE64 encoded string. - `$(UUID_STR_B64)` generate a random UUID v4 string then BASE64 encoded. - `$(UUID_HEX)` generate a random UUID v4 HEX representation. - `$(HEADLESS_SVC_FQDN)` headless service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME)-headless.$(NAMESPACE).svc`, where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute; - `$(SVC_FQDN)` service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME).$(NAMESPACE).svc`, where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute; - `$(SVC_PORT_{PORT-NAME})` is ServicePort's port value with specified port name, i.e, a servicePort JSON struct: `{"name": "mysql", "targetPort": "mysqlContainerPort", "port": 3306}`, and `$(SVC_PORT_mysql)` in the connection credential value is 3306.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BTreeMap<String, String>>,
-    /// Cluster definition type defines well known application cluster type, e.g. mysql/redis/mongodb
+    /// Specifies the well-known application cluster type, such as mysql, redis, or mongodb.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// ClusterComponentDefinition provides a workload component specification template, with attributes that strongly work with stateful workloads and day-2 operations behaviors.
+/// ClusterComponentDefinition provides a workload component specification template. Attributes are designed to work effectively with stateful workloads and day-2 operations behaviors.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefs {
-    /// characterType defines well-known database component name, such as mongos(mongodb), proxy(redis), mariadb(mysql) KubeBlocks will generate proper monitor configs for well-known characterType when builtIn is true. 
-    ///  CharacterType will also be used in role probe to decide which probe engine to use. current available candidates are: mysql, postgres, mongodb, redis, etcd, kafka.
+    /// Defines well-known database component name, such as mongos(mongodb), proxy(redis), mariadb(mysql).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "characterType")]
     pub character_type: Option<String>,
-    /// componentDefRef is used to inject values from other components into the current component. values will be saved and updated in a configmap and mounted to the current component.
+    /// Used to inject values from other components into the current component. Values will be saved and updated in a configmap and mounted to the current component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
     pub component_def_ref: Option<Vec<ClusterDefinitionComponentDefsComponentDefRef>>,
-    /// The configSpec field provided by provider, and finally this configTemplateRefs will be rendered into the user's own configuration file according to the user's cluster.
+    /// Defines the template of configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSpecs")]
     pub config_specs: Option<Vec<ClusterDefinitionComponentDefsConfigSpecs>>,
-    /// consensusSpec defines consensus related spec if workloadType is Consensus, required if workloadType is Consensus.
+    /// Defines spec for `Consensus` workloads. It's required if the workload type is `Consensus`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consensusSpec")]
     pub consensus_spec: Option<ClusterDefinitionComponentDefsConsensusSpec>,
-    /// customLabelSpecs is used for custom label tags which you want to add to the component resources.
+    /// Used for custom label tags which you want to add to the component resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabelSpecs")]
     pub custom_label_specs: Option<Vec<ClusterDefinitionComponentDefsCustomLabelSpecs>>,
-    /// The description of component definition.
+    /// Description of the component definition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// horizontalScalePolicy controls the behavior of horizontal scale.
+    /// Defines the behavior of horizontal scale.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalScalePolicy")]
     pub horizontal_scale_policy: Option<ClusterDefinitionComponentDefsHorizontalScalePolicy>,
-    /// logConfigs is detail log file config which provided by provider.
+    /// Specify the logging files which can be observed and configured by cluster users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logConfigs")]
     pub log_configs: Option<Vec<ClusterDefinitionComponentDefsLogConfigs>>,
-    /// monitor is monitoring config which provided by provider.
+    /// Specify the config that how to monitor the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<ClusterDefinitionComponentDefsMonitor>,
-    /// A component definition name, this name could be used as default name of `Cluster.spec.componentSpecs.name`, and so this name is need to conform with same validation rules as `Cluster.spec.componentSpecs.name`, that is currently comply with IANA Service Naming rule. This name will apply to "apps.kubeblocks.io/component-name" object label value.
+    /// This name could be used as default name of `cluster.spec.componentSpecs.name`, and needs to conform with same validation rules as `cluster.spec.componentSpecs.name`, currently complying with IANA Service Naming rule. This name will apply to cluster objects as the value of label "apps.kubeblocks.io/component-name".
     pub name: String,
-    /// podSpec define pod spec template of the cluster component.
+    /// Defines the pod spec template of component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSpec")]
     pub pod_spec: Option<ClusterDefinitionComponentDefsPodSpec>,
-    /// postStartSpec defines the command to be executed when the component is ready, and the command will only be executed once after the component becomes ready.
+    /// Defines the command to be executed when the component is ready, and the command will only be executed once after the component becomes ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStartSpec")]
     pub post_start_spec: Option<ClusterDefinitionComponentDefsPostStartSpec>,
-    /// probes setting for healthy checks.
+    /// Settings for health checks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probes: Option<ClusterDefinitionComponentDefsProbes>,
-    /// replicationSpec defines replication related spec if workloadType is Replication.
+    /// Defines spec for `Replication` workloads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationSpec")]
     pub replication_spec: Option<ClusterDefinitionComponentDefsReplicationSpec>,
-    /// RSMSpec defines workload related spec of this component. start from KB 0.7.0, RSM(ReplicatedStateMachineSpec) will be the underlying CR which powers all kinds of workload in KB. RSM is an enhanced stateful workload extension dedicated for heavy-state workloads like databases.
+    /// Defines workload spec of this component. From KB 0.7.0, RSM(ReplicatedStateMachineSpec) will be the underlying CR which powers all kinds of workload in KB. RSM is an enhanced stateful workload extension dedicated for heavy-state workloads like databases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rsmSpec")]
     pub rsm_spec: Option<ClusterDefinitionComponentDefsRsmSpec>,
-    /// The scriptSpec field provided by provider, and finally this configTemplateRefs will be rendered into the user's own configuration file according to the user's cluster.
+    /// Defines the template of scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecs")]
     pub script_specs: Option<Vec<ClusterDefinitionComponentDefsScriptSpecs>>,
-    /// service defines the behavior of a service spec. provide read-write service when WorkloadType is Consensus.
+    /// Defines the service spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ClusterDefinitionComponentDefsService>,
-    /// serviceRefDeclarations is used to declare the service reference of the current component.
+    /// Used to declare the service reference of the current component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefDeclarations")]
     pub service_ref_declarations: Option<Vec<ClusterDefinitionComponentDefsServiceRefDeclarations>>,
-    /// statefulSpec defines stateful related spec if workloadType is Stateful.
+    /// Defines spec for `Stateful` workloads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statefulSpec")]
     pub stateful_spec: Option<ClusterDefinitionComponentDefsStatefulSpec>,
-    /// statelessSpec defines stateless related spec if workloadType is Stateless.
+    /// Defines spec for `Stateless` workloads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statelessSpec")]
     pub stateless_spec: Option<ClusterDefinitionComponentDefsStatelessSpec>,
-    /// switchoverSpec defines command to do switchover. in particular, when workloadType=Replication, the command defined in switchoverSpec will only be executed under the condition of cluster.componentSpecs[x].SwitchPolicy.type=Noop.
+    /// Defines command to do switchover. In particular, when workloadType=Replication, the command defined in switchoverSpec will only be executed under the condition of cluster.componentSpecs[x].SwitchPolicy.type=Noop.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchoverSpec")]
     pub switchover_spec: Option<ClusterDefinitionComponentDefsSwitchoverSpec>,
-    /// Statement to create system account.
+    /// Defines system accounts needed to manage the component, and the statement to create them.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccounts")]
     pub system_accounts: Option<ClusterDefinitionComponentDefsSystemAccounts>,
+    /// Defines settings to do volume protect.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeProtectionSpec")]
     pub volume_protection_spec: Option<ClusterDefinitionComponentDefsVolumeProtectionSpec>,
-    /// volumeTypes is used to describe the purpose of the volumes mapping the name of the VolumeMounts in the PodSpec.Container field, such as data volume, log volume, etc. When backing up the volume, the volume can be correctly backed up according to the volumeType. 
-    ///  For example: `name: data, type: data` means that the volume named `data` is used to store `data`. `name: binlog, type: log` means that the volume named `binlog` is used to store `log`. 
+    /// Used to describe the purpose of the volumes mapping the name of the VolumeMounts in the PodSpec.Container field, such as data volume, log volume, etc. When backing up the volume, the volume can be correctly backed up according to the volumeType. 
+    ///  For example: 
+    ///  - `name: data, type: data` means that the volume named `data` is used to store `data`. - `name: binlog, type: log` means that the volume named `binlog` is used to store `log`. 
     ///  NOTE: When volumeTypes is not defined, the backup function will not be supported, even if a persistent volume has been specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeTypes")]
     pub volume_types: Option<Vec<ClusterDefinitionComponentDefsVolumeTypes>>,
-    /// workloadType defines type of the workload. Stateless is a stateless workload type used to describe stateless applications. Stateful is a stateful workload type used to describe common stateful applications. Consensus is a stateful workload type used to describe applications based on consensus protocols, common consensus protocols such as raft and paxos. Replication is a stateful workload type used to describe applications based on the primary-secondary data replication protocol.
+    /// Defines the type of the workload. 
+    ///  - `Stateless` describes stateless applications. - `Stateful` describes common stateful applications. - `Consensus` describes applications based on consensus protocols, such as raft and paxos. - `Replication` describes applications based on the primary-secondary data replication protocol.
     #[serde(rename = "workloadType")]
     pub workload_type: ClusterDefinitionComponentDefsWorkloadType,
 }
@@ -109,13 +112,13 @@ pub struct ClusterDefinitionComponentDefs {
 /// ComponentDefRef is used to select the component and its fields to be referenced.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsComponentDefRef {
-    /// componentDefName is the name of the componentDef to select.
+    /// The name of the componentDef to be selected.
     #[serde(rename = "componentDefName")]
     pub component_def_name: String,
-    /// componentRefEnv specifies a list of values to be injected as env variables to each component.
+    /// The values that are to be injected as environment variables into each component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentRefEnv")]
     pub component_ref_env: Option<Vec<ClusterDefinitionComponentDefsComponentDefRefComponentRefEnv>>,
-    /// failurePolicy is the failure policy of the component. If failed to find the component, the failure policy will be used.
+    /// Defines the policy to be followed in case of a failure in finding the component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<String>,
 }
@@ -123,78 +126,82 @@ pub struct ClusterDefinitionComponentDefsComponentDefRef {
 /// ComponentRefEnv specifies name and value of an env.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsComponentDefRefComponentRefEnv {
-    /// name is the name of the env to be injected, and it must be a C identifier.
+    /// The name of the env, it must be a C identifier.
     pub name: String,
-    /// value is the value of the env to be injected.
+    /// The value of the env.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// valueFrom specifies the source of the env to be injected.
+    /// The source from which the value of the env.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<ClusterDefinitionComponentDefsComponentDefRefComponentRefEnvValueFrom>,
 }
 
-/// valueFrom specifies the source of the env to be injected.
+/// The source from which the value of the env.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsComponentDefRefComponentRefEnvValueFrom {
-    /// fieldRef is the jsonpath of the source to select when type is `FieldRef`. there are two objects registered in the jsonpath: `componentDef` and `components`. componentDef is the component definition object specified in `componentRef.componentDefName`. components is the component list objects referring to the component definition object.
+    /// The jsonpath of the source to select when the Type is `FieldRef`. Two objects are registered in the jsonpath: `componentDef` and `components`: 
+    ///  - `componentDef` is the component definition object specified in `componentRef.componentDefName`. - `components` are the component list objects referring to the component definition object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// format is the format of each headless service address. there are three builtin variables can be used as placeholder: $POD_ORDINAL, $POD_FQDN, $POD_NAME $POD_ORDINAL is the ordinal of the pod. $POD_FQDN is the fully qualified domain name of the pod. $POD_NAME is the name of the pod
+    /// Defines the format of each headless service address. Three builtin variables can be used as placeholders: `$POD_ORDINAL`, `$POD_FQDN`, `$POD_NAME` 
+    ///  - `$POD_ORDINAL` represents the ordinal of the pod. - `$POD_FQDN` represents the fully qualified domain name of the pod. - `$POD_NAME` represents the name of the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// joinWith is the string to join the values of headless service addresses.
+    /// The string used to join the values of headless service addresses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "joinWith")]
     pub join_with: Option<String>,
-    /// type is the type of the source to select. There are three types: `FieldRef`, `ServiceRef`, `HeadlessServiceRef`.
+    /// Specifies the source to select. It can be one of three types: `FieldRef`, `ServiceRef`, `HeadlessServiceRef`.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConfigSpecs {
-    /// asEnvFrom is optional: the list of containers will be injected into EnvFrom.
+    /// An optional field where the list of containers will be injected into EnvFrom.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asEnvFrom")]
     pub as_env_from: Option<Vec<String>>,
-    /// Specify the name of the referenced the configuration constraints object.
+    /// An optional field that defines the name of the referenced configuration constraints object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintRef")]
     pub constraint_ref: Option<String>,
-    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Refers to the mode bits used to set permissions on created files by default. 
+    ///  Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. 
+    ///  Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Specify a list of keys. If empty, ConfigConstraint takes effect for all keys in configmap.
+    /// Defines a list of keys. If left empty, ConfigConstraint applies to all keys in the configmap.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
-    /// lazyRenderedConfigSpec is optional: specify the secondary rendered config spec.
+    /// An optional field that defines the secondary rendered config spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacyRenderedConfigSpec")]
     pub legacy_rendered_config_spec: Option<ClusterDefinitionComponentDefsConfigSpecsLegacyRenderedConfigSpec>,
-    /// Specify the name of configuration template.
+    /// Specifies the name of the configuration template.
     pub name: String,
-    /// Specify the namespace of the referenced the configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+    /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specify the name of the referenced the configuration template ConfigMap object.
+    /// Specifies the name of the referenced configuration template ConfigMap object.
     #[serde(rename = "templateRef")]
     pub template_ref: String,
-    /// volumeName is the volume name of PodTemplate, which the configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
+    /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(rename = "volumeName")]
     pub volume_name: String,
 }
 
-/// lazyRenderedConfigSpec is optional: specify the secondary rendered config spec.
+/// An optional field that defines the secondary rendered config spec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConfigSpecsLegacyRenderedConfigSpec {
-    /// Specify the namespace of the referenced the configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+    /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// policy defines how to merge external imported templates into component templates.
+    /// Defines the strategy for merging externally imported templates into component templates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<ClusterDefinitionComponentDefsConfigSpecsLegacyRenderedConfigSpecPolicy>,
-    /// Specify the name of the referenced the configuration template ConfigMap object.
+    /// Specifies the name of the referenced configuration template ConfigMap object.
     #[serde(rename = "templateRef")]
     pub template_ref: String,
 }
 
-/// lazyRenderedConfigSpec is optional: specify the secondary rendered config spec.
+/// An optional field that defines the secondary rendered config spec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsConfigSpecsLegacyRenderedConfigSpecPolicy {
     #[serde(rename = "patch")]
@@ -205,37 +212,38 @@ pub enum ClusterDefinitionComponentDefsConfigSpecsLegacyRenderedConfigSpecPolicy
     None,
 }
 
-/// consensusSpec defines consensus related spec if workloadType is Consensus, required if workloadType is Consensus.
+/// Defines spec for `Consensus` workloads. It's required if the workload type is `Consensus`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConsensusSpec {
-    /// followers, has voting right but not Leader.
+    /// Members of the consensus set that have voting rights but are not the leader.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub followers: Option<Vec<ClusterDefinitionComponentDefsConsensusSpecFollowers>>,
-    /// leader, one single leader.
+    /// Represents a single leader in the consensus set.
     pub leader: ClusterDefinitionComponentDefsConsensusSpecLeader,
-    /// learner, no voting right.
+    /// Represents a member of the consensus set that does not have voting rights.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub learner: Option<ClusterDefinitionComponentDefsConsensusSpecLearner>,
-    /// llPodManagementPolicy is the low-level controls how pods are created during initial scale up, when replacing pods on nodes, or when scaling down. `OrderedReady` policy specify where pods are created in increasing order (pod-0, then pod-1, etc) and the controller will wait until each pod is ready before continuing. When scaling down, the pods are removed in the opposite order. `Parallel` policy specify create pods in parallel to match the desired scale without waiting, and on scale down will delete all pods at once.
+    /// Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down. 
+    ///  - `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod is ready before continuing. Pods are removed in reverse order when scaling down. - `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once when scaling down.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "llPodManagementPolicy")]
     pub ll_pod_management_policy: Option<String>,
-    /// llUpdateStrategy indicates the low-level StatefulSetUpdateStrategy that will be employed to update Pods in the StatefulSet when a revision is made to Template. Will ignore `updateStrategy` attribute if provided.
+    /// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a revision to the Template. `UpdateStrategy` will be ignored if this is provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "llUpdateStrategy")]
     pub ll_update_strategy: Option<ClusterDefinitionComponentDefsConsensusSpecLlUpdateStrategy>,
-    /// updateStrategy, Pods update strategy. In case of workloadType=Consensus the update strategy will be following: 
-    ///  serial: update Pods one by one that guarantee minimum component unavailable time. Learner -> Follower(with AccessMode=none) -> Follower(with AccessMode=readonly) -> Follower(with AccessMode=readWrite) -> Leader bestEffortParallel: update Pods in parallel that guarantee minimum component un-writable time. Learner, Follower(minority) in parallel -> Follower(majority) -> Leader, keep majority online all the time. parallel: force parallel
+    /// Specifies the strategy for updating Pods. For workloadType=`Consensus`, the update strategy can be one of the following: 
+    ///  - `Serial`: Updates Members sequentially to minimize component downtime. - `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online at all times. - `Parallel`: Forces parallel updates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterDefinitionComponentDefsConsensusSpecUpdateStrategy>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConsensusSpecFollowers {
-    /// accessMode, what service this member capable.
+    /// Specifies the services that this member is capable of providing.
     #[serde(rename = "accessMode")]
     pub access_mode: ClusterDefinitionComponentDefsConsensusSpecFollowersAccessMode,
-    /// name, role name.
+    /// Specifies the name of the consensus member.
     pub name: String,
-    /// replicas, number of Pods of this role. default 1 for Leader default 0 for Learner default Cluster.spec.componentSpec[*].Replicas - Leader.Replicas - Learner.Replicas for Followers
+    /// Indicates the number of Pods that perform this role. The default is 1 for `Leader`, 0 for `Learner`, others for `Followers`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
 }
@@ -247,20 +255,20 @@ pub enum ClusterDefinitionComponentDefsConsensusSpecFollowersAccessMode {
     ReadWrite,
 }
 
-/// leader, one single leader.
+/// Represents a single leader in the consensus set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConsensusSpecLeader {
-    /// accessMode, what service this member capable.
+    /// Specifies the services that this member is capable of providing.
     #[serde(rename = "accessMode")]
     pub access_mode: ClusterDefinitionComponentDefsConsensusSpecLeaderAccessMode,
-    /// name, role name.
+    /// Specifies the name of the consensus member.
     pub name: String,
-    /// replicas, number of Pods of this role. default 1 for Leader default 0 for Learner default Cluster.spec.componentSpec[*].Replicas - Leader.Replicas - Learner.Replicas for Followers
+    /// Indicates the number of Pods that perform this role. The default is 1 for `Leader`, 0 for `Learner`, others for `Followers`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
 }
 
-/// leader, one single leader.
+/// Represents a single leader in the consensus set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsConsensusSpecLeaderAccessMode {
     None,
@@ -268,20 +276,20 @@ pub enum ClusterDefinitionComponentDefsConsensusSpecLeaderAccessMode {
     ReadWrite,
 }
 
-/// learner, no voting right.
+/// Represents a member of the consensus set that does not have voting rights.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConsensusSpecLearner {
-    /// accessMode, what service this member capable.
+    /// Specifies the services that this member is capable of providing.
     #[serde(rename = "accessMode")]
     pub access_mode: ClusterDefinitionComponentDefsConsensusSpecLearnerAccessMode,
-    /// name, role name.
+    /// Specifies the name of the consensus member.
     pub name: String,
-    /// replicas, number of Pods of this role. default 1 for Leader default 0 for Learner default Cluster.spec.componentSpec[*].Replicas - Leader.Replicas - Learner.Replicas for Followers
+    /// Indicates the number of Pods that perform this role. The default is 1 for `Leader`, 0 for `Learner`, others for `Followers`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
 }
 
-/// learner, no voting right.
+/// Represents a member of the consensus set that does not have voting rights.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsConsensusSpecLearnerAccessMode {
     None,
@@ -289,7 +297,7 @@ pub enum ClusterDefinitionComponentDefsConsensusSpecLearnerAccessMode {
     ReadWrite,
 }
 
-/// llUpdateStrategy indicates the low-level StatefulSetUpdateStrategy that will be employed to update Pods in the StatefulSet when a revision is made to Template. Will ignore `updateStrategy` attribute if provided.
+/// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a revision to the Template. `UpdateStrategy` will be ignored if this is provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConsensusSpecLlUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
@@ -311,7 +319,7 @@ pub struct ClusterDefinitionComponentDefsConsensusSpecLlUpdateStrategyRollingUpd
     pub partition: Option<i32>,
 }
 
-/// consensusSpec defines consensus related spec if workloadType is Consensus, required if workloadType is Consensus.
+/// Defines spec for `Consensus` workloads. It's required if the workload type is `Consensus`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsConsensusSpecUpdateStrategy {
     Serial,
@@ -321,39 +329,40 @@ pub enum ClusterDefinitionComponentDefsConsensusSpecUpdateStrategy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsCustomLabelSpecs {
-    /// key name of label
+    /// The key of the label.
     pub key: String,
-    /// resources defines the resources to be labeled.
+    /// The resources that will be patched with the label.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<ClusterDefinitionComponentDefsCustomLabelSpecsResources>>,
-    /// value of label
+    /// The value of the label.
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsCustomLabelSpecsResources {
-    /// gvk is Group/Version/Kind, for example "v1/Pod", "apps/v1/StatefulSet", etc. when the gvk resource filtered by the selector already exists, if there is no corresponding custom label, it will be added, and if label already exists, it will be updated.
+    /// Represents the GVK of a resource, such as "v1/Pod", "apps/v1/StatefulSet", etc. When a resource matching this is found by the selector, a custom label will be added if it doesn't already exist, or updated if it does.
     pub gvk: String,
-    /// selector is a label query over a set of resources.
+    /// A label query used to filter a set of resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
 }
 
-/// horizontalScalePolicy controls the behavior of horizontal scale.
+/// Defines the behavior of horizontal scale.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsHorizontalScalePolicy {
-    /// BackupPolicyTemplateName reference the backup policy template.
+    /// Refers to the backup policy template.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPolicyTemplateName")]
     pub backup_policy_template_name: Option<String>,
-    /// type controls what kind of data synchronization do when component scale out. Policy is in enum of {None, CloneVolume}. The default policy is `None`. None: Default policy, create empty volume and no data clone. CloneVolume: Do data clone to newly scaled pods. Prefer to use volume snapshot first, and will try backup tool if volume snapshot is not enabled, finally report error if both above cannot work. Snapshot: Deprecated, alias for CloneVolume.
+    /// Determines the data synchronization method when a component scales out. The policy can be one of the following: {None, CloneVolume}. The default policy is `None`. 
+    ///  - `None`: This is the default policy. It creates an empty volume without data cloning. - `CloneVolume`: This policy clones data to newly scaled pods. It first tries to use a volume snapshot. If volume snapshot is not enabled, it will attempt to use a backup tool. If neither method works, it will report an error. - `Snapshot`: This policy is deprecated and is an alias for CloneVolume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ClusterDefinitionComponentDefsHorizontalScalePolicyType>,
-    /// volumeMountsName defines which volumeMount of the container to do backup, only work if Type is not None if not specified, the 1st volumeMount will be chosen
+    /// Specifies the volumeMount of the container to backup. This only works if Type is not None. If not specified, the first volumeMount will be selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMountsName")]
     pub volume_mounts_name: Option<String>,
 }
 
-/// horizontalScalePolicy controls the behavior of horizontal scale.
+/// Defines the behavior of horizontal scale.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsHorizontalScalePolicyType {
     None,
@@ -363,36 +372,36 @@ pub enum ClusterDefinitionComponentDefsHorizontalScalePolicyType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsLogConfigs {
-    /// filePathPattern log file path pattern which indicate how to find this file corresponding to variable (log path) in database kernel. please don't set this casually.
+    /// Indicates the path to the log file using a pattern, it corresponds to the variable (log path) in the database kernel.
     #[serde(rename = "filePathPattern")]
     pub file_path_pattern: String,
-    /// name log type name, such as slow for MySQL slow log file.
+    /// Specifies the type of log, such as 'slow' for a MySQL slow log file.
     pub name: String,
 }
 
-/// monitor is monitoring config which provided by provider.
+/// Specify the config that how to monitor the component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsMonitor {
-    /// builtIn is a switch to enable KubeBlocks builtIn monitoring. If BuiltIn is set to true, monitor metrics will be scraped automatically. If BuiltIn is set to false, the provider should set ExporterConfig and Sidecar container own.
+    /// To enable the built-in monitoring. When set to true, monitoring metrics will be automatically scraped. When set to false, the provider is expected to configure the ExporterConfig and manage the Sidecar container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtIn")]
     pub built_in: Option<bool>,
-    /// exporterConfig provided by provider, which specify necessary information to Time Series Database. exporterConfig is valid when builtIn is false.
+    /// Provided by the provider and contains the necessary information for the Time Series Database. This field is only valid when BuiltIn is set to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exporterConfig")]
     pub exporter_config: Option<ClusterDefinitionComponentDefsMonitorExporterConfig>,
 }
 
-/// exporterConfig provided by provider, which specify necessary information to Time Series Database. exporterConfig is valid when builtIn is false.
+/// Provided by the provider and contains the necessary information for the Time Series Database. This field is only valid when BuiltIn is set to false.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsMonitorExporterConfig {
-    /// scrapePath is exporter url path for Time Series Database to scrape metrics.
+    /// Specifies the URL path that the exporter uses for the Time Series Database to scrape metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePath")]
     pub scrape_path: Option<String>,
-    /// scrapePort is exporter port for Time Series Database to scrape metrics.
+    /// Defines the port that the exporter uses for the Time Series Database to scrape metrics.
     #[serde(rename = "scrapePort")]
     pub scrape_port: IntOrString,
 }
 
-/// podSpec define pod spec template of the cluster component.
+/// Defines the pod spec template of component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpec {
     /// Optional duration in seconds the pod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.
@@ -4513,29 +4522,29 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// postStartSpec defines the command to be executed when the component is ready, and the command will only be executed once after the component becomes ready.
+/// Defines the command to be executed when the component is ready, and the command will only be executed once after the component becomes ready.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPostStartSpec {
-    /// cmdExecutorConfig is the executor configuration of the post-start command.
+    /// Specifies the  post-start command to be executed.
     #[serde(rename = "cmdExecutorConfig")]
     pub cmd_executor_config: ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfig,
-    /// scriptSpecSelectors defines the selector of the scriptSpecs that need to be referenced. Once ScriptSpecSelectors is defined, the scripts defined in scriptSpecs can be referenced in the PostStartAction.CmdExecutorConfig.
+    /// Used to select the script that need to be referenced. When defined, the scripts defined in scriptSpecs can be referenced within the CmdExecutorConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
     pub script_spec_selectors: Option<Vec<ClusterDefinitionComponentDefsPostStartSpecScriptSpecSelectors>>,
 }
 
-/// cmdExecutorConfig is the executor configuration of the post-start command.
+/// Specifies the  post-start command to be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfig {
-    /// args is used to perform statements.
+    /// Additional parameters used in the execution of the command.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// command to perform statements.
+    /// The command to be executed.
     pub command: Vec<String>,
-    /// envs is a list of environment variables.
+    /// A list of environment variables that will be injected into the command execution context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnv>>,
-    /// image for Connector when executing the command.
+    /// Specifies the image used to execute the command.
     pub image: String,
 }
 
@@ -4621,31 +4630,32 @@ pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueF
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPostStartSpecScriptSpecSelectors {
-    /// ScriptSpec name of the referent, refer to componentDefs[x].scriptSpecs[y].Name.
+    /// Represents the name of the ScriptSpec referent.
     pub name: String,
 }
 
-/// probes setting for healthy checks.
+/// Settings for health checks.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsProbes {
-    /// Probe for DB role changed check.
+    /// Specifies the probe used for checking the role of the component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbe")]
     pub role_probe: Option<ClusterDefinitionComponentDefsProbesRoleProbe>,
-    /// roleProbeTimeoutAfterPodsReady(in seconds), when all pods of the component are ready, it will detect whether the application is available in the pod. if pods exceed the InitializationTimeoutSeconds time without a role label, this component will enter the Failed/Abnormal phase. Note that this configuration will only take effect if the component supports RoleProbe and will not affect the life cycle of the pod. default values are 60 seconds.
+    /// Defines the timeout (in seconds) for the role probe after all pods of the component are ready. The system will check if the application is available in the pod. If pods exceed the InitializationTimeoutSeconds time without a role label, this component will enter the Failed/Abnormal phase. 
+    ///  Note that this configuration will only take effect if the component supports RoleProbe and will not affect the life cycle of the pod. default values are 60 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbeTimeoutAfterPodsReady")]
     pub role_probe_timeout_after_pods_ready: Option<i32>,
-    /// Probe for DB running check.
+    /// Specifies the probe used for checking the running status of the component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningProbe")]
     pub running_probe: Option<ClusterDefinitionComponentDefsProbesRunningProbe>,
-    /// Probe for DB status check.
+    /// Specifies the probe used for checking the status of the component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusProbe")]
     pub status_probe: Option<ClusterDefinitionComponentDefsProbesStatusProbe>,
 }
 
-/// Probe for DB role changed check.
+/// Specifies the probe used for checking the role of the component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsProbesRoleProbe {
-    /// commands used to execute for probe.
+    /// Commands used to execute for probe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commands: Option<ClusterDefinitionComponentDefsProbesRoleProbeCommands>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
@@ -4659,21 +4669,21 @@ pub struct ClusterDefinitionComponentDefsProbesRoleProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// commands used to execute for probe.
+/// Commands used to execute for probe.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsProbesRoleProbeCommands {
-    /// Read check executed on probe sidecar, used to check workload's readonly access.
+    /// Defines read checks that are executed on the probe sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queries: Option<Vec<String>>,
-    /// Write check executed on probe sidecar, used to check workload's allow write access.
+    /// Defines write checks that are executed on the probe sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub writes: Option<Vec<String>>,
 }
 
-/// Probe for DB running check.
+/// Specifies the probe used for checking the running status of the component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsProbesRunningProbe {
-    /// commands used to execute for probe.
+    /// Commands used to execute for probe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commands: Option<ClusterDefinitionComponentDefsProbesRunningProbeCommands>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
@@ -4687,21 +4697,21 @@ pub struct ClusterDefinitionComponentDefsProbesRunningProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// commands used to execute for probe.
+/// Commands used to execute for probe.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsProbesRunningProbeCommands {
-    /// Read check executed on probe sidecar, used to check workload's readonly access.
+    /// Defines read checks that are executed on the probe sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queries: Option<Vec<String>>,
-    /// Write check executed on probe sidecar, used to check workload's allow write access.
+    /// Defines write checks that are executed on the probe sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub writes: Option<Vec<String>>,
 }
 
-/// Probe for DB status check.
+/// Specifies the probe used for checking the status of the component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsProbesStatusProbe {
-    /// commands used to execute for probe.
+    /// Commands used to execute for probe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commands: Option<ClusterDefinitionComponentDefsProbesStatusProbeCommands>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
@@ -4715,33 +4725,34 @@ pub struct ClusterDefinitionComponentDefsProbesStatusProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// commands used to execute for probe.
+/// Commands used to execute for probe.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsProbesStatusProbeCommands {
-    /// Read check executed on probe sidecar, used to check workload's readonly access.
+    /// Defines read checks that are executed on the probe sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queries: Option<Vec<String>>,
-    /// Write check executed on probe sidecar, used to check workload's allow write access.
+    /// Defines write checks that are executed on the probe sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub writes: Option<Vec<String>>,
 }
 
-/// replicationSpec defines replication related spec if workloadType is Replication.
+/// Defines spec for `Replication` workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsReplicationSpec {
-    /// llPodManagementPolicy is the low-level controls how pods are created during initial scale up, when replacing pods on nodes, or when scaling down. `OrderedReady` policy specify where pods are created in increasing order (pod-0, then pod-1, etc) and the controller will wait until each pod is ready before continuing. When scaling down, the pods are removed in the opposite order. `Parallel` policy specify create pods in parallel to match the desired scale without waiting, and on scale down will delete all pods at once.
+    /// Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down. 
+    ///  - `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod is ready before continuing. Pods are removed in reverse order when scaling down. - `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once when scaling down.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "llPodManagementPolicy")]
     pub ll_pod_management_policy: Option<String>,
-    /// llUpdateStrategy indicates the low-level StatefulSetUpdateStrategy that will be employed to update Pods in the StatefulSet when a revision is made to Template. Will ignore `updateStrategy` attribute if provided.
+    /// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a revision to the Template. `UpdateStrategy` will be ignored if this is provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "llUpdateStrategy")]
     pub ll_update_strategy: Option<ClusterDefinitionComponentDefsReplicationSpecLlUpdateStrategy>,
-    /// updateStrategy, Pods update strategy. In case of workloadType=Consensus the update strategy will be following: 
-    ///  serial: update Pods one by one that guarantee minimum component unavailable time. Learner -> Follower(with AccessMode=none) -> Follower(with AccessMode=readonly) -> Follower(with AccessMode=readWrite) -> Leader bestEffortParallel: update Pods in parallel that guarantee minimum component un-writable time. Learner, Follower(minority) in parallel -> Follower(majority) -> Leader, keep majority online all the time. parallel: force parallel
+    /// Specifies the strategy for updating Pods. For workloadType=`Consensus`, the update strategy can be one of the following: 
+    ///  - `Serial`: Updates Members sequentially to minimize component downtime. - `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online at all times. - `Parallel`: Forces parallel updates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterDefinitionComponentDefsReplicationSpecUpdateStrategy>,
 }
 
-/// llUpdateStrategy indicates the low-level StatefulSetUpdateStrategy that will be employed to update Pods in the StatefulSet when a revision is made to Template. Will ignore `updateStrategy` attribute if provided.
+/// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a revision to the Template. `UpdateStrategy` will be ignored if this is provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsReplicationSpecLlUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
@@ -4763,7 +4774,7 @@ pub struct ClusterDefinitionComponentDefsReplicationSpecLlUpdateStrategyRollingU
     pub partition: Option<i32>,
 }
 
-/// replicationSpec defines replication related spec if workloadType is Replication.
+/// Defines spec for `Replication` workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsReplicationSpecUpdateStrategy {
     Serial,
@@ -4771,24 +4782,25 @@ pub enum ClusterDefinitionComponentDefsReplicationSpecUpdateStrategy {
     Parallel,
 }
 
-/// RSMSpec defines workload related spec of this component. start from KB 0.7.0, RSM(ReplicatedStateMachineSpec) will be the underlying CR which powers all kinds of workload in KB. RSM is an enhanced stateful workload extension dedicated for heavy-state workloads like databases.
+/// Defines workload spec of this component. From KB 0.7.0, RSM(ReplicatedStateMachineSpec) will be the underlying CR which powers all kinds of workload in KB. RSM is an enhanced stateful workload extension dedicated for heavy-state workloads like databases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpec {
-    /// MemberUpdateStrategy, Members(Pods) update strategy. serial: update Members one by one that guarantee minimum component unavailable time. Learner -> Follower(with AccessMode=none) -> Follower(with AccessMode=readonly) -> Follower(with AccessMode=readWrite) -> Leader bestEffortParallel: update Members in parallel that guarantee minimum component un-writable time. Learner, Follower(minority) in parallel -> Follower(majority) -> Leader, keep majority online all the time. parallel: force parallel
+    /// Describes the strategy for updating Members (Pods). 
+    ///  - `Serial`: Updates Members sequentially to ensure minimum component downtime. - `BestEffortParallel`: Updates Members in parallel to ensure minimum component write downtime. - `Parallel`: Forces parallel updates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberUpdateStrategy")]
     pub member_update_strategy: Option<ClusterDefinitionComponentDefsRsmSpecMemberUpdateStrategy>,
-    /// MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
+    /// Indicates the actions required for dynamic membership reconfiguration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "membershipReconfiguration")]
     pub membership_reconfiguration: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfiguration>,
-    /// RoleProbe provides method to probe role.
+    /// Defines the method used to probe a role.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbe")]
     pub role_probe: Option<ClusterDefinitionComponentDefsRsmSpecRoleProbe>,
-    /// Roles, a list of roles defined in the system.
+    /// Specifies a list of roles defined within the system.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<ClusterDefinitionComponentDefsRsmSpecRoles>>,
 }
 
-/// RSMSpec defines workload related spec of this component. start from KB 0.7.0, RSM(ReplicatedStateMachineSpec) will be the underlying CR which powers all kinds of workload in KB. RSM is an enhanced stateful workload extension dedicated for heavy-state workloads like databases.
+/// Defines workload spec of this component. From KB 0.7.0, RSM(ReplicatedStateMachineSpec) will be the underlying CR which powers all kinds of workload in KB. RSM is an enhanced stateful workload extension dedicated for heavy-state workloads like databases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsRsmSpecMemberUpdateStrategy {
     Serial,
@@ -4796,135 +4808,135 @@ pub enum ClusterDefinitionComponentDefsRsmSpecMemberUpdateStrategy {
     Parallel,
 }
 
-/// MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
+/// Indicates the actions required for dynamic membership reconfiguration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfiguration {
-    /// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
+    /// Defines the action to trigger the new member to start log syncing. If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSyncAction")]
     pub log_sync_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationLogSyncAction>,
-    /// MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
+    /// Defines the action to add a member. If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberJoinAction")]
     pub member_join_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberJoinAction>,
-    /// MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
+    /// Defines the action to remove a member. If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberLeaveAction")]
     pub member_leave_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberLeaveAction>,
-    /// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
+    /// Defines the action to inform the cluster that the new member can join voting now. If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteAction")]
     pub promote_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationPromoteAction>,
-    /// SwitchoverAction specifies how to do switchover latest [BusyBox](https://busybox.net/) image will be used if Image not configured
+    /// Specifies the environment variables that can be used in all following Actions: - KB_RSM_USERNAME: Represents the username part of the credential - KB_RSM_PASSWORD: Represents the password part of the credential - KB_RSM_LEADER_HOST: Represents the leader host - KB_RSM_TARGET_HOST: Represents the target host - KB_RSM_SERVICE_PORT: Represents the service port 
+    ///  Defines the action to perform a switchover. If the Image is not configured, the latest [BusyBox](https://busybox.net/) image will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchoverAction")]
     pub switchover_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationSwitchoverAction>,
 }
 
-/// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
+/// Defines the action to trigger the new member to start log syncing. If the Image is not configured, the Image from the previous non-nil action will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationLogSyncAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
+/// Defines the action to add a member. If the Image is not configured, the Image from the previous non-nil action will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberJoinAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
+/// Defines the action to remove a member. If the Image is not configured, the Image from the previous non-nil action will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberLeaveAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
+/// Defines the action to inform the cluster that the new member can join voting now. If the Image is not configured, the Image from the previous non-nil action will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationPromoteAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// SwitchoverAction specifies how to do switchover latest [BusyBox](https://busybox.net/) image will be used if Image not configured
+/// Specifies the environment variables that can be used in all following Actions: - KB_RSM_USERNAME: Represents the username part of the credential - KB_RSM_PASSWORD: Represents the password part of the credential - KB_RSM_LEADER_HOST: Represents the leader host - KB_RSM_TARGET_HOST: Represents the target host - KB_RSM_SERVICE_PORT: Represents the service port 
+///  Defines the action to perform a switchover. If the Image is not configured, the latest [BusyBox](https://busybox.net/) image will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationSwitchoverAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// RoleProbe provides method to probe role.
+/// Defines the method used to probe a role.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecRoleProbe {
-    /// BuiltinHandler specifies the builtin handler name to use to probe the role of the main container. current available handlers: mysql, postgres, mongodb, redis, etcd, kafka. use CustomHandler to define your own role probe function if none of them satisfies the requirement.
+    /// Specifies the builtin handler name to use to probe the role of the main container. Available handlers include: mysql, postgres, mongodb, redis, etcd, kafka. Use CustomHandler to define a custom role probe function if none of the built-in handlers meet the requirement.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandlerName")]
     pub builtin_handler_name: Option<String>,
-    /// CustomHandler defines the custom way to do role probe. if the BuiltinHandler satisfies the requirement, use it instead. 
-    ///  how the actions defined here works: 
-    ///  Actions will be taken in serial. after all actions done, the final output should be a single string of the role name defined in spec.Roles latest [BusyBox](https://busybox.net/) image will be used if Image not configured Environment variables can be used in Command: - v_KB_RSM_LAST_STDOUT stdout from last action, watch 'v_' prefixed - KB_RSM_USERNAME username part of credential - KB_RSM_PASSWORD password part of credential
+    /// Defines a custom method for role probing. If the BuiltinHandler meets the requirement, use it instead. Actions defined here are executed in series. Upon completion of all actions, the final output should be a single string representing the role name defined in spec.Roles. The latest [BusyBox](https://busybox.net/) image will be used if Image is not configured. Environment variables can be used in Command: - v_KB_RSM_LAST_STDOUT: stdout from the last action, watch for 'v_' prefix - KB_RSM_USERNAME: username part of the credential - KB_RSM_PASSWORD: password part of the credential
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<Vec<ClusterDefinitionComponentDefsRsmSpecRoleProbeCustomHandler>>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Specifies the minimum number of consecutive failures for the probe to be considered failed after having succeeded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Number of seconds after the container has started before role probe has started.
+    /// Specifies the number of seconds to wait after the container has started before initiating role probing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 2 seconds. Minimum value is 1.
+    /// Specifies the frequency (in seconds) of probe execution.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// RoleUpdateMechanism specifies the way how pod role label being updated.
+    /// Specifies the method for updating the pod role label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleUpdateMechanism")]
     pub role_update_mechanism: Option<ClusterDefinitionComponentDefsRsmSpecRoleProbeRoleUpdateMechanism>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Minimum value is 1.
+    /// Specifies the minimum number of consecutive successes for the probe to be considered successful after having failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1.
+    /// Specifies the number of seconds after which the probe times out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecRoleProbeCustomHandler {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// RoleProbe provides method to probe role.
+/// Defines the method used to probe a role.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsRsmSpecRoleProbeRoleUpdateMechanism {
     ReadinessProbeEventUpdate,
@@ -4934,16 +4946,16 @@ pub enum ClusterDefinitionComponentDefsRsmSpecRoleProbeRoleUpdateMechanism {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpecRoles {
-    /// AccessMode, what service this member capable.
+    /// Specifies the service capabilities of this member.
     #[serde(rename = "accessMode")]
     pub access_mode: ClusterDefinitionComponentDefsRsmSpecRolesAccessMode,
-    /// CanVote, whether this member has voting rights
+    /// Indicates if this member has voting rights.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "canVote")]
     pub can_vote: Option<bool>,
-    /// IsLeader, whether this member is the leader
+    /// Determines if this member is the leader.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isLeader")]
     pub is_leader: Option<bool>,
-    /// Name, role name.
+    /// Defines the role name of the replica.
     pub name: String,
 }
 
@@ -4956,23 +4968,25 @@ pub enum ClusterDefinitionComponentDefsRsmSpecRolesAccessMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsScriptSpecs {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Refers to the mode bits used to set permissions on created files by default. 
+    ///  Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. 
+    ///  Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Specify the name of configuration template.
+    /// Specifies the name of the configuration template.
     pub name: String,
-    /// Specify the namespace of the referenced the configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+    /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specify the name of the referenced the configuration template ConfigMap object.
+    /// Specifies the name of the referenced configuration template ConfigMap object.
     #[serde(rename = "templateRef")]
     pub template_ref: String,
-    /// volumeName is the volume name of PodTemplate, which the configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
+    /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(rename = "volumeName")]
     pub volume_name: String,
 }
 
-/// service defines the behavior of a service spec. provide read-write service when WorkloadType is Consensus.
+/// Defines the service spec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsService {
     /// The list of ports that are exposed by this service. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
@@ -4993,7 +5007,11 @@ pub struct ClusterDefinitionComponentDefsServicePorts {
     /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<ClusterDefinitionComponentDefsServicePortsProtocol>,
-    /// Number or name of the port to access on the pods targeted by the service. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME. If this is a string, it will be looked up as a named port in the target Pod's container ports. If this is not specified, the value of the 'port' field is used (an identity map). This field is ignored for services with clusterIP=None, and should be omitted or set equal to the 'port' field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+    /// Number or name of the port to access on the pods targeted by the service. 
+    ///  Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME. 
+    ///  - If this is a string, it will be looked up as a named port in the target Pod's container ports. - If this is not specified, the value of the `port` field is used (an identity map). 
+    ///  This field is ignored for services with clusterIP=None, and should be omitted or set equal to the `port` field. 
+    ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
@@ -5010,39 +5028,43 @@ pub enum ClusterDefinitionComponentDefsServicePortsProtocol {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsServiceRefDeclarations {
-    /// The name of the service reference declaration. The service reference can come from an external service that is not part of KubeBlocks, or services provided by other KubeBlocks Cluster objects. The specific type of service reference depends on the binding declaration when creates a Cluster.
+    /// Specifies the name of the service reference declaration. 
+    ///  The service reference may originate from an external service that is not part of KubeBlocks, or from services provided by other KubeBlocks Cluster objects. The specific type of service reference is determined by the binding declaration when a Cluster is created.
     pub name: String,
-    /// serviceRefDeclarationSpecs is a collection of service descriptions for a service reference declaration. Each ServiceRefDeclarationSpec defines a service Kind and Version. When multiple ServiceRefDeclarationSpecs are defined, it indicates that the ServiceRefDeclaration can be any one of the specified ServiceRefDeclarationSpecs. For example, when the ServiceRefDeclaration is declared to require an OLTP database, which can be either MySQL or PostgreSQL, you can define a ServiceRefDeclarationSpec for MySQL and another ServiceRefDeclarationSpec for PostgreSQL, when referencing the service within the cluster, as long as the serviceKind and serviceVersion match either MySQL or PostgreSQL, it can be used.
+    /// Represents a collection of service descriptions for a service reference declaration. 
+    ///  Each ServiceRefDeclarationSpec defines a service Kind and Version. When multiple ServiceRefDeclarationSpecs are defined, it implies that the ServiceRefDeclaration can be any one of the specified ServiceRefDeclarationSpecs. 
+    ///  For instance, when the ServiceRefDeclaration is declared to require an OLTP database, which can be either MySQL or PostgreSQL, a ServiceRefDeclarationSpec for MySQL and another for PostgreSQL can be defined. When referencing the service within the cluster, as long as the serviceKind and serviceVersion match either MySQL or PostgreSQL, it can be used.
     #[serde(rename = "serviceRefDeclarationSpecs")]
     pub service_ref_declaration_specs: Vec<ClusterDefinitionComponentDefsServiceRefDeclarationsServiceRefDeclarationSpecs>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsServiceRefDeclarationsServiceRefDeclarationSpecs {
-    /// service kind, indicating the type or nature of the service. It should be well-known application cluster type, e.g. {mysql, redis, mongodb}. The serviceKind is case-insensitive and supports abbreviations for some well-known databases. For example, both 'zk' and 'zookeeper' will be considered as a ZooKeeper cluster, and 'pg', 'postgres', 'postgresql' will all be considered as a PostgreSQL cluster.
+    /// Specifies the type or nature of the service. This should be a well-known application cluster type, such as {mysql, redis, mongodb}. The field is case-insensitive and supports abbreviations for some well-known databases. For instance, both `zk` and `zookeeper` are considered as a ZooKeeper cluster, while `pg`, `postgres`, `postgresql` are all recognized as a PostgreSQL cluster.
     #[serde(rename = "serviceKind")]
     pub service_kind: String,
-    /// The service version of the service reference. It is a regular expression that matches a version number pattern. For example, `^8.0.8$`, `8.0.\d{1,2}$`, `^[v\-]*?(\d{1,2}\.){0,3}\d{1,2}$`
+    /// Defines the service version of the service reference. This is a regular expression that matches a version number pattern. For instance, `^8.0.8$`, `8.0.\d{1,2}$`, `^[v\-]*?(\d{1,2}\.){0,3}\d{1,2}$` are all valid patterns.
     #[serde(rename = "serviceVersion")]
     pub service_version: String,
 }
 
-/// statefulSpec defines stateful related spec if workloadType is Stateful.
+/// Defines spec for `Stateful` workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsStatefulSpec {
-    /// llPodManagementPolicy is the low-level controls how pods are created during initial scale up, when replacing pods on nodes, or when scaling down. `OrderedReady` policy specify where pods are created in increasing order (pod-0, then pod-1, etc) and the controller will wait until each pod is ready before continuing. When scaling down, the pods are removed in the opposite order. `Parallel` policy specify create pods in parallel to match the desired scale without waiting, and on scale down will delete all pods at once.
+    /// Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down. 
+    ///  - `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod is ready before continuing. Pods are removed in reverse order when scaling down. - `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once when scaling down.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "llPodManagementPolicy")]
     pub ll_pod_management_policy: Option<String>,
-    /// llUpdateStrategy indicates the low-level StatefulSetUpdateStrategy that will be employed to update Pods in the StatefulSet when a revision is made to Template. Will ignore `updateStrategy` attribute if provided.
+    /// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a revision to the Template. `UpdateStrategy` will be ignored if this is provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "llUpdateStrategy")]
     pub ll_update_strategy: Option<ClusterDefinitionComponentDefsStatefulSpecLlUpdateStrategy>,
-    /// updateStrategy, Pods update strategy. In case of workloadType=Consensus the update strategy will be following: 
-    ///  serial: update Pods one by one that guarantee minimum component unavailable time. Learner -> Follower(with AccessMode=none) -> Follower(with AccessMode=readonly) -> Follower(with AccessMode=readWrite) -> Leader bestEffortParallel: update Pods in parallel that guarantee minimum component un-writable time. Learner, Follower(minority) in parallel -> Follower(majority) -> Leader, keep majority online all the time. parallel: force parallel
+    /// Specifies the strategy for updating Pods. For workloadType=`Consensus`, the update strategy can be one of the following: 
+    ///  - `Serial`: Updates Members sequentially to minimize component downtime. - `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online at all times. - `Parallel`: Forces parallel updates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterDefinitionComponentDefsStatefulSpecUpdateStrategy>,
 }
 
-/// llUpdateStrategy indicates the low-level StatefulSetUpdateStrategy that will be employed to update Pods in the StatefulSet when a revision is made to Template. Will ignore `updateStrategy` attribute if provided.
+/// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a revision to the Template. `UpdateStrategy` will be ignored if this is provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsStatefulSpecLlUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
@@ -5064,7 +5086,7 @@ pub struct ClusterDefinitionComponentDefsStatefulSpecLlUpdateStrategyRollingUpda
     pub partition: Option<i32>,
 }
 
-/// statefulSpec defines stateful related spec if workloadType is Stateful.
+/// Defines spec for `Stateful` workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsStatefulSpecUpdateStrategy {
     Serial,
@@ -5072,15 +5094,15 @@ pub enum ClusterDefinitionComponentDefsStatefulSpecUpdateStrategy {
     Parallel,
 }
 
-/// statelessSpec defines stateless related spec if workloadType is Stateless.
+/// Defines spec for `Stateless` workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsStatelessSpec {
-    /// updateStrategy defines the underlying deployment strategy to use to replace existing pods with new ones.
+    /// Specifies the deployment strategy that will be used to replace existing pods with new ones.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterDefinitionComponentDefsStatelessSpecUpdateStrategy>,
 }
 
-/// updateStrategy defines the underlying deployment strategy to use to replace existing pods with new ones.
+/// Specifies the deployment strategy that will be used to replace existing pods with new ones.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsStatelessSpecUpdateStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate. --- TODO: Update this to follow our convention for oneOf, whatever we decide it to be.
@@ -5102,40 +5124,40 @@ pub struct ClusterDefinitionComponentDefsStatelessSpecUpdateStrategyRollingUpdat
     pub max_unavailable: Option<IntOrString>,
 }
 
-/// switchoverSpec defines command to do switchover. in particular, when workloadType=Replication, the command defined in switchoverSpec will only be executed under the condition of cluster.componentSpecs[x].SwitchPolicy.type=Noop.
+/// Defines command to do switchover. In particular, when workloadType=Replication, the command defined in switchoverSpec will only be executed under the condition of cluster.componentSpecs[x].SwitchPolicy.type=Noop.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSwitchoverSpec {
-    /// withCandidate corresponds to the switchover of the specified candidate primary or leader instance.
+    /// Represents the action of switching over to a specified candidate primary or leader instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "withCandidate")]
     pub with_candidate: Option<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidate>,
-    /// withoutCandidate corresponds to a switchover that does not specify a candidate primary or leader instance.
+    /// Represents the action of switching over without specifying a candidate primary or leader instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "withoutCandidate")]
     pub without_candidate: Option<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidate>,
 }
 
-/// withCandidate corresponds to the switchover of the specified candidate primary or leader instance.
+/// Represents the action of switching over to a specified candidate primary or leader instance.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidate {
-    /// cmdExecutorConfig is the executor configuration of the switchover command.
+    /// Specifies the switchover command.
     #[serde(rename = "cmdExecutorConfig")]
     pub cmd_executor_config: ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfig,
-    /// scriptSpecSelectors defines the selector of the scriptSpecs that need to be referenced. Once ScriptSpecSelectors is defined, the scripts defined in scriptSpecs can be referenced in the SwitchoverAction.CmdExecutorConfig.
+    /// Used to select the script that need to be referenced. When defined, the scripts defined in scriptSpecs can be referenced within the SwitchoverAction.CmdExecutorConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
     pub script_spec_selectors: Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateScriptSpecSelectors>>,
 }
 
-/// cmdExecutorConfig is the executor configuration of the switchover command.
+/// Specifies the switchover command.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfig {
-    /// args is used to perform statements.
+    /// Additional parameters used in the execution of the command.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// command to perform statements.
+    /// The command to be executed.
     pub command: Vec<String>,
-    /// envs is a list of environment variables.
+    /// A list of environment variables that will be injected into the command execution context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnv>>,
-    /// image for Connector when executing the command.
+    /// Specifies the image used to execute the command.
     pub image: String,
 }
 
@@ -5221,33 +5243,33 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorC
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateScriptSpecSelectors {
-    /// ScriptSpec name of the referent, refer to componentDefs[x].scriptSpecs[y].Name.
+    /// Represents the name of the ScriptSpec referent.
     pub name: String,
 }
 
-/// withoutCandidate corresponds to a switchover that does not specify a candidate primary or leader instance.
+/// Represents the action of switching over without specifying a candidate primary or leader instance.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidate {
-    /// cmdExecutorConfig is the executor configuration of the switchover command.
+    /// Specifies the switchover command.
     #[serde(rename = "cmdExecutorConfig")]
     pub cmd_executor_config: ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfig,
-    /// scriptSpecSelectors defines the selector of the scriptSpecs that need to be referenced. Once ScriptSpecSelectors is defined, the scripts defined in scriptSpecs can be referenced in the SwitchoverAction.CmdExecutorConfig.
+    /// Used to select the script that need to be referenced. When defined, the scripts defined in scriptSpecs can be referenced within the SwitchoverAction.CmdExecutorConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
     pub script_spec_selectors: Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateScriptSpecSelectors>>,
 }
 
-/// cmdExecutorConfig is the executor configuration of the switchover command.
+/// Specifies the switchover command.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfig {
-    /// args is used to perform statements.
+    /// Additional parameters used in the execution of the command.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// command to perform statements.
+    /// The command to be executed.
     pub command: Vec<String>,
-    /// envs is a list of environment variables.
+    /// A list of environment variables that will be injected into the command execution context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnv>>,
-    /// image for Connector when executing the command.
+    /// Specifies the image used to execute the command.
     pub image: String,
 }
 
@@ -5333,19 +5355,19 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecut
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateScriptSpecSelectors {
-    /// ScriptSpec name of the referent, refer to componentDefs[x].scriptSpecs[y].Name.
+    /// Represents the name of the ScriptSpec referent.
     pub name: String,
 }
 
-/// Statement to create system account.
+/// Defines system accounts needed to manage the component, and the statement to create them.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccounts {
-    /// accounts defines system account config settings.
+    /// Defines the configuration settings for system accounts.
     pub accounts: Vec<ClusterDefinitionComponentDefsSystemAccountsAccounts>,
-    /// cmdExecutorConfig configs how to get client SDK and perform statements.
+    /// Configures how to obtain the client SDK and execute statements.
     #[serde(rename = "cmdExecutorConfig")]
     pub cmd_executor_config: ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfig,
-    /// passwordConfig defines the pattern to generate password.
+    /// Defines the pattern used to generate passwords for system accounts.
     #[serde(rename = "passwordConfig")]
     pub password_config: ClusterDefinitionComponentDefsSystemAccountsPasswordConfig,
 }
@@ -5353,9 +5375,9 @@ pub struct ClusterDefinitionComponentDefsSystemAccounts {
 /// SystemAccountConfig specifies how to create and delete system accounts.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsAccounts {
-    /// name is the name of a system account.
+    /// The unique identifier of a system account.
     pub name: ClusterDefinitionComponentDefsSystemAccountsAccountsName,
-    /// provisionPolicy defines how to create account.
+    /// Outlines the strategy for creating the account.
     #[serde(rename = "provisionPolicy")]
     pub provision_policy: ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicy,
 }
@@ -5375,56 +5397,63 @@ pub enum ClusterDefinitionComponentDefsSystemAccountsAccountsName {
     Kbreplicator,
 }
 
-/// provisionPolicy defines how to create account.
+/// Outlines the strategy for creating the account.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicy {
-    /// scope is the scope to provision account, and the scope could be `AnyPods` or `AllPods`.
+    /// Defines the scope within which the account is provisioned.
     pub scope: String,
-    /// secretRef will be used when Type is ReferToExisting.
+    /// The external secret to refer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicySecretRef>,
-    /// statements will be used when Type is CreateByStmt.
+    /// The statement to provision an account.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub statements: Option<ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicyStatements>,
-    /// type defines the way to provision an account, either `CreateByStmt` or `ReferToExisting`.
+    /// Specifies the method to provision an account.
     #[serde(rename = "type")]
-    pub r#type: String,
+    pub r#type: ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicyType,
 }
 
-/// secretRef will be used when Type is ReferToExisting.
+/// The external secret to refer.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicySecretRef {
-    /// name refers to the name of the secret.
+    /// The unique identifier of the secret.
     pub name: String,
-    /// namespace refers to the namespace of the secret.
+    /// The namespace where the secret is located.
     pub namespace: String,
 }
 
-/// statements will be used when Type is CreateByStmt.
+/// The statement to provision an account.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicyStatements {
-    /// creation specifies statement how to create this account with required privileges.
+    /// Specifies the statement required to create a new account with the necessary privileges.
     pub creation: String,
-    /// deletion specifies statement how to delete this account. Used in combination with `CreateionStatement` to delete the account before create it. For instance, one usually uses `drop user if exists` statement followed by `create user` statement to create an account. Deprecated: this field is deprecated, use `update` instead.
+    /// Defines the statement required to delete an existing account. Typically used in conjunction with the creation statement to delete an account before recreating it. For example, one might use a `drop user if exists` statement followed by a `create user` statement to ensure a fresh account. Deprecated: This field is deprecated and the update statement should be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<String>,
-    /// update specifies statement how to update account's password.
+    /// Defines the statement required to update the password of an existing account.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub update: Option<String>,
 }
 
-/// cmdExecutorConfig configs how to get client SDK and perform statements.
+/// Outlines the strategy for creating the account.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicyType {
+    CreateByStmt,
+    ReferToExisting,
+}
+
+/// Configures how to obtain the client SDK and execute statements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfig {
-    /// args is used to perform statements.
+    /// Additional parameters used in the execution of the command.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// command to perform statements.
+    /// The command to be executed.
     pub command: Vec<String>,
-    /// envs is a list of environment variables.
+    /// A list of environment variables that will be injected into the command execution context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnv>>,
-    /// image for Connector when executing the command.
+    /// Specifies the image used to execute the command.
     pub image: String,
 }
 
@@ -5508,51 +5537,60 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValue
     pub optional: Option<bool>,
 }
 
-/// passwordConfig defines the pattern to generate password.
+/// Defines the pattern used to generate passwords for system accounts.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsPasswordConfig {
-    /// length defines the length of password.
+    /// The length of the password.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub length: Option<i32>,
-    /// letterCase defines to use lower-cases, upper-cases or mixed-cases of letters.
+    /// The case of the letters in the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "letterCase")]
-    pub letter_case: Option<String>,
-    /// numDigits defines number of digits.
+    pub letter_case: Option<ClusterDefinitionComponentDefsSystemAccountsPasswordConfigLetterCase>,
+    /// The number of digits in the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numDigits")]
     pub num_digits: Option<i32>,
-    /// numSymbols defines number of symbols.
+    /// The number of symbols in the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numSymbols")]
     pub num_symbols: Option<i32>,
-    /// seed specifies the seed used to generate the account's password. Cannot be updated.
+    /// Seed to generate the account's password. Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seed: Option<String>,
 }
 
+/// Defines the pattern used to generate passwords for system accounts.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterDefinitionComponentDefsSystemAccountsPasswordConfigLetterCase {
+    LowerCases,
+    UpperCases,
+    MixedCases,
+}
+
+/// Defines settings to do volume protect.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsVolumeProtectionSpec {
     /// The high watermark threshold for volume space usage. If there is any specified volumes who's space usage is over the threshold, the pre-defined "LOCK" action will be triggered to degrade the service to protect volume from space exhaustion, such as to set the instance as read-only. And after that, if all volumes' space usage drops under the threshold later, the pre-defined "UNLOCK" action will be performed to recover the service normally.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "highWatermark")]
     pub high_watermark: Option<i64>,
-    /// Volumes to protect.
+    /// The Volumes to be protected.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ClusterDefinitionComponentDefsVolumeProtectionSpecVolumes>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsVolumeProtectionSpecVolumes {
-    /// Volume specified high watermark threshold, it will override the component level threshold. If the value is invalid, it will be ignored and the component level threshold will be used.
+    /// Defines the high watermark threshold for the volume, it will override the component level threshold. If the value is invalid, it will be ignored and the component level threshold will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "highWatermark")]
     pub high_watermark: Option<i64>,
-    /// Name of volume to protect.
+    /// The Name of the volume to protect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsVolumeTypes {
-    /// name definition is the same as the name of the VolumeMounts field in PodSpec.Container, similar to the relations of Volumes[*].name and VolumesMounts[*].name in Pod.Spec.
+    /// Corresponds to the name of the VolumeMounts field in PodSpec.Container.
     pub name: String,
-    /// type is in enum of {data, log}. VolumeTypeData: the volume is for the persistent data storage. VolumeTypeLog: the volume is for the persistent log storage.
+    /// Type of data the volume will persistent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ClusterDefinitionComponentDefsVolumeTypesType>,
 }
@@ -5565,7 +5603,7 @@ pub enum ClusterDefinitionComponentDefsVolumeTypesType {
     Log,
 }
 
-/// ClusterComponentDefinition provides a workload component specification template, with attributes that strongly work with stateful workloads and day-2 operations behaviors.
+/// ClusterComponentDefinition provides a workload component specification template. Attributes are designed to work effectively with stateful workloads and day-2 operations behaviors.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsWorkloadType {
     Stateless,
@@ -5577,13 +5615,13 @@ pub enum ClusterDefinitionComponentDefsWorkloadType {
 /// ClusterDefinitionStatus defines the observed state of ClusterDefinition
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionStatus {
-    /// Extra message in current phase
+    /// Provides additional information about the current phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// observedGeneration is the most recent generation observed for this ClusterDefinition. It corresponds to the ClusterDefinition's generation, which is updated on mutation by the API Server.
+    /// Represents the most recent generation observed for this ClusterDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// ClusterDefinition phase, valid values are `empty`, `Available`, 'Unavailable`. Available is ClusterDefinition become available, and can be referenced for co-related objects.
+    /// Specifies the current phase of the ClusterDefinition. Valid values are `empty`, `Available`, `Unavailable`. When `Available`, the ClusterDefinition is ready and can be referenced by related objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterDefinitionStatusPhase>,
 }

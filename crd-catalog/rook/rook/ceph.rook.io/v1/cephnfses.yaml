@@ -21,10 +21,10 @@ spec:
           description: "CephNFS represents a Ceph NFS"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object."
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents."
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -36,10 +36,10 @@ spec:
                   nullable: true
                   properties:
                     namespace:
-                      description: "The namespace inside the Ceph pool (set by 'pool') where shared NFS-Ganesha config is stored."
+                      description: "The namespace inside the Ceph pool (set by 'pool') where shared NFS-Ganesha config is stored. This setting is deprecated as it is internally set to the name of the CephNFS."
                       type: "string"
                     pool:
-                      description: "The Ceph pool used store the shared configuration for NFS-Ganesha daemons."
+                      description: "The Ceph pool used store the shared configuration for NFS-Ganesha daemons. This setting is deprecated, as it is internally required to be \".nfs\"."
                       type: "string"
                   type: "object"
                 security:
@@ -51,32 +51,24 @@ spec:
                       nullable: true
                       properties:
                         configFiles:
-                          description: "ConfigFiles defines where the Kerberos configuration should be sourced from."
+                          description: "ConfigFiles defines where the Kerberos configuration should be sourced from. Config files will be placed into the `/etc/krb5.conf.rook/` directory. \n If this is left empty, Rook will not add any files. This allows you to manage the files yourself however you wish. For example, you may build them into your custom Ceph container image or use the Vault agent injector to securely add the files via annotations on the CephNFS spec (passed to the NFS server pods). \n Rook configures Kerberos to log to stderr. We suggest removing logging sections from config files to avoid consuming unnecessary disk space from logging to files."
                           properties:
                             volumeSource:
-                              description: "VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for Kerberos confi"
                               properties:
                                 configMap:
-                                  description: "configMap represents a configMap that should populate this volume"
                                   properties:
                                     defaultMode:
-                                      description: "defaultMode is optional: mode bits used to set permissions on created files by default."
                                       format: "int32"
                                       type: "integer"
                                     items:
-                                      description: "items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj"
                                       items:
-                                        description: "Maps a string key to a path within a volume."
                                         properties:
                                           key:
-                                            description: "key is the key to project."
                                             type: "string"
                                           mode:
-                                            description: "mode is Optional: mode bits used to set permissions on this file."
                                             format: "int32"
                                             type: "integer"
                                           path:
-                                            description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                             type: "string"
                                         required:
                                           - "key"
@@ -84,82 +76,60 @@ spec:
                                         type: "object"
                                       type: "array"
                                     name:
-                                      description: "Name of the referent. More info: https://kubernetes."
                                       type: "string"
                                     optional:
-                                      description: "optional specify whether the ConfigMap or its keys must be defined"
                                       type: "boolean"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 emptyDir:
-                                  description: "emptyDir represents a temporary directory that shares a pod's lifetime."
                                   properties:
                                     medium:
-                                      description: "medium represents what type of storage medium should back this directory."
                                       type: "string"
                                     sizeLimit:
                                       anyOf:
                                         - type: "integer"
                                         - type: "string"
-                                      description: "sizeLimit is the total amount of local storage required for this EmptyDir volume."
                                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                       x-kubernetes-int-or-string: true
                                   type: "object"
                                 hostPath:
-                                  description: "hostPath represents a pre-existing file or directory on the host machine that is directly exposed to"
                                   properties:
                                     path:
-                                      description: "path of the directory on the host."
                                       type: "string"
                                     type:
-                                      description: "type for HostPath Volume Defaults to \"\" More info: https://kubernetes."
                                       type: "string"
                                   required:
                                     - "path"
                                   type: "object"
                                 persistentVolumeClaim:
-                                  description: "persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name"
                                   properties:
                                     claimName:
-                                      description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume."
                                       type: "string"
                                     readOnly:
-                                      description: "readOnly Will force the ReadOnly setting in VolumeMounts. Default false."
                                       type: "boolean"
                                   required:
                                     - "claimName"
                                   type: "object"
                                 projected:
-                                  description: "projected items for all in one resources secrets, configmaps, and downward API"
                                   properties:
                                     defaultMode:
-                                      description: "defaultMode are the mode bits used to set permissions on created files by default."
                                       format: "int32"
                                       type: "integer"
                                     sources:
-                                      description: "sources is the list of volume projections"
                                       items:
-                                        description: "Projection that may be projected along with other supported volume types"
                                         properties:
                                           clusterTrustBundle:
-                                            description: "ClusterTrustBundle allows a pod to access the `.spec."
                                             properties:
                                               labelSelector:
-                                                description: "Select all ClusterTrustBundles that match this label selector."
                                                 properties:
                                                   matchExpressions:
-                                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                                     items:
-                                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                                       properties:
                                                         key:
-                                                          description: "key is the label key that the selector applies to."
                                                           type: "string"
                                                         operator:
-                                                          description: "operator represents a key's relationship to a set of values."
                                                           type: "string"
                                                         values:
-                                                          description: "values is an array of string values."
                                                           items:
                                                             type: "string"
                                                           type: "array"
@@ -171,42 +141,31 @@ spec:
                                                   matchLabels:
                                                     additionalProperties:
                                                       type: "string"
-                                                    description: "matchLabels is a map of {key,value} pairs."
                                                     type: "object"
                                                 type: "object"
                                                 x-kubernetes-map-type: "atomic"
                                               name:
-                                                description: "Select a single ClusterTrustBundle by object name."
                                                 type: "string"
                                               optional:
-                                                description: "If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available."
                                                 type: "boolean"
                                               path:
-                                                description: "Relative path from the volume root to write the bundle."
                                                 type: "string"
                                               signerName:
-                                                description: "Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name."
                                                 type: "string"
                                             required:
                                               - "path"
                                             type: "object"
                                           configMap:
-                                            description: "configMap information about the configMap data to project"
                                             properties:
                                               items:
-                                                description: "items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj"
                                                 items:
-                                                  description: "Maps a string key to a path within a volume."
                                                   properties:
                                                     key:
-                                                      description: "key is the key to project."
                                                       type: "string"
                                                     mode:
-                                                      description: "mode is Optional: mode bits used to set permissions on this file."
                                                       format: "int32"
                                                       type: "integer"
                                                     path:
-                                                      description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                       type: "string"
                                                   required:
                                                     - "key"
@@ -214,56 +173,42 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               name:
-                                                description: "Name of the referent. More info: https://kubernetes."
                                                 type: "string"
                                               optional:
-                                                description: "optional specify whether the ConfigMap or its keys must be defined"
                                                 type: "boolean"
                                             type: "object"
                                             x-kubernetes-map-type: "atomic"
                                           downwardAPI:
-                                            description: "downwardAPI information about the downwardAPI data to project"
                                             properties:
                                               items:
-                                                description: "Items is a list of DownwardAPIVolume file"
                                                 items:
-                                                  description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
                                                   properties:
                                                     fieldRef:
-                                                      description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
                                                       properties:
                                                         apiVersion:
-                                                          description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
                                                           type: "string"
                                                         fieldPath:
-                                                          description: "Path of the field to select in the specified API version."
                                                           type: "string"
                                                       required:
                                                         - "fieldPath"
                                                       type: "object"
                                                       x-kubernetes-map-type: "atomic"
                                                     mode:
-                                                      description: "Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 07"
                                                       format: "int32"
                                                       type: "integer"
                                                     path:
-                                                      description: "Required: Path is  the relative path name of the file to be created."
                                                       type: "string"
                                                     resourceFieldRef:
-                                                      description: "Selects a resource of the container: only resources limits and requests (limits.cpu, limits."
                                                       properties:
                                                         containerName:
-                                                          description: "Container name: required for volumes, optional for env vars"
                                                           type: "string"
                                                         divisor:
                                                           anyOf:
                                                             - type: "integer"
                                                             - type: "string"
-                                                          description: "Specifies the output format of the exposed resources, defaults to \"1\""
                                                           pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                                           x-kubernetes-int-or-string: true
                                                         resource:
-                                                          description: "Required: resource to select"
                                                           type: "string"
                                                       required:
                                                         - "resource"
@@ -275,22 +220,16 @@ spec:
                                                 type: "array"
                                             type: "object"
                                           secret:
-                                            description: "secret information about the secret data to project"
                                             properties:
                                               items:
-                                                description: "items if unspecified, each key-value pair in the Data field of the referenced Secret will be project"
                                                 items:
-                                                  description: "Maps a string key to a path within a volume."
                                                   properties:
                                                     key:
-                                                      description: "key is the key to project."
                                                       type: "string"
                                                     mode:
-                                                      description: "mode is Optional: mode bits used to set permissions on this file."
                                                       format: "int32"
                                                       type: "integer"
                                                     path:
-                                                      description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                       type: "string"
                                                   required:
                                                     - "key"
@@ -298,25 +237,19 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               name:
-                                                description: "Name of the referent. More info: https://kubernetes."
                                                 type: "string"
                                               optional:
-                                                description: "optional field specify whether the Secret or its key must be defined"
                                                 type: "boolean"
                                             type: "object"
                                             x-kubernetes-map-type: "atomic"
                                           serviceAccountToken:
-                                            description: "serviceAccountToken is information about the serviceAccountToken data to project"
                                             properties:
                                               audience:
-                                                description: "audience is the intended audience of the token."
                                                 type: "string"
                                               expirationSeconds:
-                                                description: "expirationSeconds is the requested duration of validity of the service account token."
                                                 format: "int64"
                                                 type: "integer"
                                               path:
-                                                description: "path is the path relative to the mount point of the file to project the token into."
                                                 type: "string"
                                             required:
                                               - "path"
@@ -325,26 +258,19 @@ spec:
                                       type: "array"
                                   type: "object"
                                 secret:
-                                  description: "secret represents a secret that should populate this volume. More info: https://kubernetes."
                                   properties:
                                     defaultMode:
-                                      description: "defaultMode is Optional: mode bits used to set permissions on created files by default."
                                       format: "int32"
                                       type: "integer"
                                     items:
-                                      description: "items If unspecified, each key-value pair in the Data field of the referenced Secret will be project"
                                       items:
-                                        description: "Maps a string key to a path within a volume."
                                         properties:
                                           key:
-                                            description: "key is the key to project."
                                             type: "string"
                                           mode:
-                                            description: "mode is Optional: mode bits used to set permissions on this file."
                                             format: "int32"
                                             type: "integer"
                                           path:
-                                            description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                             type: "string"
                                         required:
                                           - "key"
@@ -352,10 +278,8 @@ spec:
                                         type: "object"
                                       type: "array"
                                     optional:
-                                      description: "optional field specify whether the Secret or its keys must be defined"
                                       type: "boolean"
                                     secretName:
-                                      description: "secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes."
                                       type: "string"
                                   type: "object"
                               type: "object"
@@ -364,32 +288,24 @@ spec:
                           description: "DomainName should be set to the Kerberos Realm."
                           type: "string"
                         keytabFile:
-                          description: "KeytabFile defines where the Kerberos keytab should be sourced from."
+                          description: "KeytabFile defines where the Kerberos keytab should be sourced from. The keytab file will be placed into `/etc/krb5.keytab`. If this is left empty, Rook will not add the file. This allows you to manage the `krb5.keytab` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods)."
                           properties:
                             volumeSource:
-                              description: "VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the Kerberos k"
                               properties:
                                 configMap:
-                                  description: "configMap represents a configMap that should populate this volume"
                                   properties:
                                     defaultMode:
-                                      description: "defaultMode is optional: mode bits used to set permissions on created files by default."
                                       format: "int32"
                                       type: "integer"
                                     items:
-                                      description: "items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj"
                                       items:
-                                        description: "Maps a string key to a path within a volume."
                                         properties:
                                           key:
-                                            description: "key is the key to project."
                                             type: "string"
                                           mode:
-                                            description: "mode is Optional: mode bits used to set permissions on this file."
                                             format: "int32"
                                             type: "integer"
                                           path:
-                                            description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                             type: "string"
                                         required:
                                           - "key"
@@ -397,82 +313,60 @@ spec:
                                         type: "object"
                                       type: "array"
                                     name:
-                                      description: "Name of the referent. More info: https://kubernetes."
                                       type: "string"
                                     optional:
-                                      description: "optional specify whether the ConfigMap or its keys must be defined"
                                       type: "boolean"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 emptyDir:
-                                  description: "emptyDir represents a temporary directory that shares a pod's lifetime."
                                   properties:
                                     medium:
-                                      description: "medium represents what type of storage medium should back this directory."
                                       type: "string"
                                     sizeLimit:
                                       anyOf:
                                         - type: "integer"
                                         - type: "string"
-                                      description: "sizeLimit is the total amount of local storage required for this EmptyDir volume."
                                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                       x-kubernetes-int-or-string: true
                                   type: "object"
                                 hostPath:
-                                  description: "hostPath represents a pre-existing file or directory on the host machine that is directly exposed to"
                                   properties:
                                     path:
-                                      description: "path of the directory on the host."
                                       type: "string"
                                     type:
-                                      description: "type for HostPath Volume Defaults to \"\" More info: https://kubernetes."
                                       type: "string"
                                   required:
                                     - "path"
                                   type: "object"
                                 persistentVolumeClaim:
-                                  description: "persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name"
                                   properties:
                                     claimName:
-                                      description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume."
                                       type: "string"
                                     readOnly:
-                                      description: "readOnly Will force the ReadOnly setting in VolumeMounts. Default false."
                                       type: "boolean"
                                   required:
                                     - "claimName"
                                   type: "object"
                                 projected:
-                                  description: "projected items for all in one resources secrets, configmaps, and downward API"
                                   properties:
                                     defaultMode:
-                                      description: "defaultMode are the mode bits used to set permissions on created files by default."
                                       format: "int32"
                                       type: "integer"
                                     sources:
-                                      description: "sources is the list of volume projections"
                                       items:
-                                        description: "Projection that may be projected along with other supported volume types"
                                         properties:
                                           clusterTrustBundle:
-                                            description: "ClusterTrustBundle allows a pod to access the `.spec."
                                             properties:
                                               labelSelector:
-                                                description: "Select all ClusterTrustBundles that match this label selector."
                                                 properties:
                                                   matchExpressions:
-                                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                                     items:
-                                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                                       properties:
                                                         key:
-                                                          description: "key is the label key that the selector applies to."
                                                           type: "string"
                                                         operator:
-                                                          description: "operator represents a key's relationship to a set of values."
                                                           type: "string"
                                                         values:
-                                                          description: "values is an array of string values."
                                                           items:
                                                             type: "string"
                                                           type: "array"
@@ -484,42 +378,31 @@ spec:
                                                   matchLabels:
                                                     additionalProperties:
                                                       type: "string"
-                                                    description: "matchLabels is a map of {key,value} pairs."
                                                     type: "object"
                                                 type: "object"
                                                 x-kubernetes-map-type: "atomic"
                                               name:
-                                                description: "Select a single ClusterTrustBundle by object name."
                                                 type: "string"
                                               optional:
-                                                description: "If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available."
                                                 type: "boolean"
                                               path:
-                                                description: "Relative path from the volume root to write the bundle."
                                                 type: "string"
                                               signerName:
-                                                description: "Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name."
                                                 type: "string"
                                             required:
                                               - "path"
                                             type: "object"
                                           configMap:
-                                            description: "configMap information about the configMap data to project"
                                             properties:
                                               items:
-                                                description: "items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj"
                                                 items:
-                                                  description: "Maps a string key to a path within a volume."
                                                   properties:
                                                     key:
-                                                      description: "key is the key to project."
                                                       type: "string"
                                                     mode:
-                                                      description: "mode is Optional: mode bits used to set permissions on this file."
                                                       format: "int32"
                                                       type: "integer"
                                                     path:
-                                                      description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                       type: "string"
                                                   required:
                                                     - "key"
@@ -527,56 +410,42 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               name:
-                                                description: "Name of the referent. More info: https://kubernetes."
                                                 type: "string"
                                               optional:
-                                                description: "optional specify whether the ConfigMap or its keys must be defined"
                                                 type: "boolean"
                                             type: "object"
                                             x-kubernetes-map-type: "atomic"
                                           downwardAPI:
-                                            description: "downwardAPI information about the downwardAPI data to project"
                                             properties:
                                               items:
-                                                description: "Items is a list of DownwardAPIVolume file"
                                                 items:
-                                                  description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
                                                   properties:
                                                     fieldRef:
-                                                      description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
                                                       properties:
                                                         apiVersion:
-                                                          description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
                                                           type: "string"
                                                         fieldPath:
-                                                          description: "Path of the field to select in the specified API version."
                                                           type: "string"
                                                       required:
                                                         - "fieldPath"
                                                       type: "object"
                                                       x-kubernetes-map-type: "atomic"
                                                     mode:
-                                                      description: "Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 07"
                                                       format: "int32"
                                                       type: "integer"
                                                     path:
-                                                      description: "Required: Path is  the relative path name of the file to be created."
                                                       type: "string"
                                                     resourceFieldRef:
-                                                      description: "Selects a resource of the container: only resources limits and requests (limits.cpu, limits."
                                                       properties:
                                                         containerName:
-                                                          description: "Container name: required for volumes, optional for env vars"
                                                           type: "string"
                                                         divisor:
                                                           anyOf:
                                                             - type: "integer"
                                                             - type: "string"
-                                                          description: "Specifies the output format of the exposed resources, defaults to \"1\""
                                                           pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                                           x-kubernetes-int-or-string: true
                                                         resource:
-                                                          description: "Required: resource to select"
                                                           type: "string"
                                                       required:
                                                         - "resource"
@@ -588,22 +457,16 @@ spec:
                                                 type: "array"
                                             type: "object"
                                           secret:
-                                            description: "secret information about the secret data to project"
                                             properties:
                                               items:
-                                                description: "items if unspecified, each key-value pair in the Data field of the referenced Secret will be project"
                                                 items:
-                                                  description: "Maps a string key to a path within a volume."
                                                   properties:
                                                     key:
-                                                      description: "key is the key to project."
                                                       type: "string"
                                                     mode:
-                                                      description: "mode is Optional: mode bits used to set permissions on this file."
                                                       format: "int32"
                                                       type: "integer"
                                                     path:
-                                                      description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                       type: "string"
                                                   required:
                                                     - "key"
@@ -611,25 +474,19 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               name:
-                                                description: "Name of the referent. More info: https://kubernetes."
                                                 type: "string"
                                               optional:
-                                                description: "optional field specify whether the Secret or its key must be defined"
                                                 type: "boolean"
                                             type: "object"
                                             x-kubernetes-map-type: "atomic"
                                           serviceAccountToken:
-                                            description: "serviceAccountToken is information about the serviceAccountToken data to project"
                                             properties:
                                               audience:
-                                                description: "audience is the intended audience of the token."
                                                 type: "string"
                                               expirationSeconds:
-                                                description: "expirationSeconds is the requested duration of validity of the service account token."
                                                 format: "int64"
                                                 type: "integer"
                                               path:
-                                                description: "path is the path relative to the mount point of the file to project the token into."
                                                 type: "string"
                                             required:
                                               - "path"
@@ -638,26 +495,19 @@ spec:
                                       type: "array"
                                   type: "object"
                                 secret:
-                                  description: "secret represents a secret that should populate this volume. More info: https://kubernetes."
                                   properties:
                                     defaultMode:
-                                      description: "defaultMode is Optional: mode bits used to set permissions on created files by default."
                                       format: "int32"
                                       type: "integer"
                                     items:
-                                      description: "items If unspecified, each key-value pair in the Data field of the referenced Secret will be project"
                                       items:
-                                        description: "Maps a string key to a path within a volume."
                                         properties:
                                           key:
-                                            description: "key is the key to project."
                                             type: "string"
                                           mode:
-                                            description: "mode is Optional: mode bits used to set permissions on this file."
                                             format: "int32"
                                             type: "integer"
                                           path:
-                                            description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                             type: "string"
                                         required:
                                           - "key"
@@ -665,60 +515,50 @@ spec:
                                         type: "object"
                                       type: "array"
                                     optional:
-                                      description: "optional field specify whether the Secret or its keys must be defined"
                                       type: "boolean"
                                     secretName:
-                                      description: "secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes."
                                       type: "string"
                                   type: "object"
                               type: "object"
                           type: "object"
                         principalName:
                           default: "nfs"
-                          description: "PrincipalName corresponds directly to NFS-Ganesha's NFS_KRB5:PrincipalName config."
+                          description: "PrincipalName corresponds directly to NFS-Ganesha's NFS_KRB5:PrincipalName config. In practice, this is the service prefix of the principal name. The default is \"nfs\". This value is combined with (a) the namespace and name of the CephNFS (with a hyphen between) and (b) the Realm configured in the user-provided krb5.conf to determine the full principal name: <principalName>/<namespace>-<name>@<realm>. e.g., nfs/rook-ceph-my-nfs@example.net. See https://github.com/nfs-ganesha/nfs-ganesha/wiki/RPCSEC_GSS for more detail."
                           type: "string"
                       type: "object"
                     sssd:
-                      description: "SSSD enables integration with System Security Services Daemon (SSSD)."
+                      description: "SSSD enables integration with System Security Services Daemon (SSSD). SSSD can be used to provide user ID mapping from a number of sources. See https://sssd.io for more information about the SSSD project."
                       nullable: true
                       properties:
                         sidecar:
                           description: "Sidecar tells Rook to run SSSD in a sidecar alongside the NFS-Ganesha server in each NFS pod."
                           properties:
                             additionalFiles:
-                              description: "AdditionalFiles defines any number of additional files that should be mounted into the SSSD sidecar."
+                              description: "AdditionalFiles defines any number of additional files that should be mounted into the SSSD sidecar. These files may be referenced by the sssd.conf config file."
                               items:
-                                description: "SSSDSidecarAdditionalFile represents the source from where additional files for the the SSSD configu"
+                                description: "SSSDSidecarAdditionalFile represents the source from where additional files for the the SSSD configuration should come from and are made available."
                                 properties:
                                   subPath:
-                                    description: "SubPath defines the sub-path in `/etc/sssd/rook-additional/` where the additional file(s) will be pl"
+                                    description: "SubPath defines the sub-path in `/etc/sssd/rook-additional/` where the additional file(s) will be placed. Each subPath definition must be unique and must not contain ':'."
                                     minLength: 1
                                     pattern: "^[^:]+$"
                                     type: "string"
                                   volumeSource:
-                                    description: "VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the additional"
                                     properties:
                                       configMap:
-                                        description: "configMap represents a configMap that should populate this volume"
                                         properties:
                                           defaultMode:
-                                            description: "defaultMode is optional: mode bits used to set permissions on created files by default."
                                             format: "int32"
                                             type: "integer"
                                           items:
-                                            description: "items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj"
                                             items:
-                                              description: "Maps a string key to a path within a volume."
                                               properties:
                                                 key:
-                                                  description: "key is the key to project."
                                                   type: "string"
                                                 mode:
-                                                  description: "mode is Optional: mode bits used to set permissions on this file."
                                                   format: "int32"
                                                   type: "integer"
                                                 path:
-                                                  description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                   type: "string"
                                               required:
                                                 - "key"
@@ -726,82 +566,60 @@ spec:
                                               type: "object"
                                             type: "array"
                                           name:
-                                            description: "Name of the referent. More info: https://kubernetes."
                                             type: "string"
                                           optional:
-                                            description: "optional specify whether the ConfigMap or its keys must be defined"
                                             type: "boolean"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
                                       emptyDir:
-                                        description: "emptyDir represents a temporary directory that shares a pod's lifetime."
                                         properties:
                                           medium:
-                                            description: "medium represents what type of storage medium should back this directory."
                                             type: "string"
                                           sizeLimit:
                                             anyOf:
                                               - type: "integer"
                                               - type: "string"
-                                            description: "sizeLimit is the total amount of local storage required for this EmptyDir volume."
                                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                             x-kubernetes-int-or-string: true
                                         type: "object"
                                       hostPath:
-                                        description: "hostPath represents a pre-existing file or directory on the host machine that is directly exposed to"
                                         properties:
                                           path:
-                                            description: "path of the directory on the host."
                                             type: "string"
                                           type:
-                                            description: "type for HostPath Volume Defaults to \"\" More info: https://kubernetes."
                                             type: "string"
                                         required:
                                           - "path"
                                         type: "object"
                                       persistentVolumeClaim:
-                                        description: "persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name"
                                         properties:
                                           claimName:
-                                            description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume."
                                             type: "string"
                                           readOnly:
-                                            description: "readOnly Will force the ReadOnly setting in VolumeMounts. Default false."
                                             type: "boolean"
                                         required:
                                           - "claimName"
                                         type: "object"
                                       projected:
-                                        description: "projected items for all in one resources secrets, configmaps, and downward API"
                                         properties:
                                           defaultMode:
-                                            description: "defaultMode are the mode bits used to set permissions on created files by default."
                                             format: "int32"
                                             type: "integer"
                                           sources:
-                                            description: "sources is the list of volume projections"
                                             items:
-                                              description: "Projection that may be projected along with other supported volume types"
                                               properties:
                                                 clusterTrustBundle:
-                                                  description: "ClusterTrustBundle allows a pod to access the `.spec."
                                                   properties:
                                                     labelSelector:
-                                                      description: "Select all ClusterTrustBundles that match this label selector."
                                                       properties:
                                                         matchExpressions:
-                                                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                                           items:
-                                                            description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                                             properties:
                                                               key:
-                                                                description: "key is the label key that the selector applies to."
                                                                 type: "string"
                                                               operator:
-                                                                description: "operator represents a key's relationship to a set of values."
                                                                 type: "string"
                                                               values:
-                                                                description: "values is an array of string values."
                                                                 items:
                                                                   type: "string"
                                                                 type: "array"
@@ -813,42 +631,31 @@ spec:
                                                         matchLabels:
                                                           additionalProperties:
                                                             type: "string"
-                                                          description: "matchLabels is a map of {key,value} pairs."
                                                           type: "object"
                                                       type: "object"
                                                       x-kubernetes-map-type: "atomic"
                                                     name:
-                                                      description: "Select a single ClusterTrustBundle by object name."
                                                       type: "string"
                                                     optional:
-                                                      description: "If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available."
                                                       type: "boolean"
                                                     path:
-                                                      description: "Relative path from the volume root to write the bundle."
                                                       type: "string"
                                                     signerName:
-                                                      description: "Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name."
                                                       type: "string"
                                                   required:
                                                     - "path"
                                                   type: "object"
                                                 configMap:
-                                                  description: "configMap information about the configMap data to project"
                                                   properties:
                                                     items:
-                                                      description: "items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj"
                                                       items:
-                                                        description: "Maps a string key to a path within a volume."
                                                         properties:
                                                           key:
-                                                            description: "key is the key to project."
                                                             type: "string"
                                                           mode:
-                                                            description: "mode is Optional: mode bits used to set permissions on this file."
                                                             format: "int32"
                                                             type: "integer"
                                                           path:
-                                                            description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                             type: "string"
                                                         required:
                                                           - "key"
@@ -856,56 +663,42 @@ spec:
                                                         type: "object"
                                                       type: "array"
                                                     name:
-                                                      description: "Name of the referent. More info: https://kubernetes."
                                                       type: "string"
                                                     optional:
-                                                      description: "optional specify whether the ConfigMap or its keys must be defined"
                                                       type: "boolean"
                                                   type: "object"
                                                   x-kubernetes-map-type: "atomic"
                                                 downwardAPI:
-                                                  description: "downwardAPI information about the downwardAPI data to project"
                                                   properties:
                                                     items:
-                                                      description: "Items is a list of DownwardAPIVolume file"
                                                       items:
-                                                        description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
                                                         properties:
                                                           fieldRef:
-                                                            description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
                                                             properties:
                                                               apiVersion:
-                                                                description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
                                                                 type: "string"
                                                               fieldPath:
-                                                                description: "Path of the field to select in the specified API version."
                                                                 type: "string"
                                                             required:
                                                               - "fieldPath"
                                                             type: "object"
                                                             x-kubernetes-map-type: "atomic"
                                                           mode:
-                                                            description: "Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 07"
                                                             format: "int32"
                                                             type: "integer"
                                                           path:
-                                                            description: "Required: Path is  the relative path name of the file to be created."
                                                             type: "string"
                                                           resourceFieldRef:
-                                                            description: "Selects a resource of the container: only resources limits and requests (limits.cpu, limits."
                                                             properties:
                                                               containerName:
-                                                                description: "Container name: required for volumes, optional for env vars"
                                                                 type: "string"
                                                               divisor:
                                                                 anyOf:
                                                                   - type: "integer"
                                                                   - type: "string"
-                                                                description: "Specifies the output format of the exposed resources, defaults to \"1\""
                                                                 pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                                                 x-kubernetes-int-or-string: true
                                                               resource:
-                                                                description: "Required: resource to select"
                                                                 type: "string"
                                                             required:
                                                               - "resource"
@@ -917,22 +710,16 @@ spec:
                                                       type: "array"
                                                   type: "object"
                                                 secret:
-                                                  description: "secret information about the secret data to project"
                                                   properties:
                                                     items:
-                                                      description: "items if unspecified, each key-value pair in the Data field of the referenced Secret will be project"
                                                       items:
-                                                        description: "Maps a string key to a path within a volume."
                                                         properties:
                                                           key:
-                                                            description: "key is the key to project."
                                                             type: "string"
                                                           mode:
-                                                            description: "mode is Optional: mode bits used to set permissions on this file."
                                                             format: "int32"
                                                             type: "integer"
                                                           path:
-                                                            description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                             type: "string"
                                                         required:
                                                           - "key"
@@ -940,25 +727,19 @@ spec:
                                                         type: "object"
                                                       type: "array"
                                                     name:
-                                                      description: "Name of the referent. More info: https://kubernetes."
                                                       type: "string"
                                                     optional:
-                                                      description: "optional field specify whether the Secret or its key must be defined"
                                                       type: "boolean"
                                                   type: "object"
                                                   x-kubernetes-map-type: "atomic"
                                                 serviceAccountToken:
-                                                  description: "serviceAccountToken is information about the serviceAccountToken data to project"
                                                   properties:
                                                     audience:
-                                                      description: "audience is the intended audience of the token."
                                                       type: "string"
                                                     expirationSeconds:
-                                                      description: "expirationSeconds is the requested duration of validity of the service account token."
                                                       format: "int64"
                                                       type: "integer"
                                                     path:
-                                                      description: "path is the path relative to the mount point of the file to project the token into."
                                                       type: "string"
                                                   required:
                                                     - "path"
@@ -967,26 +748,19 @@ spec:
                                             type: "array"
                                         type: "object"
                                       secret:
-                                        description: "secret represents a secret that should populate this volume. More info: https://kubernetes."
                                         properties:
                                           defaultMode:
-                                            description: "defaultMode is Optional: mode bits used to set permissions on created files by default."
                                             format: "int32"
                                             type: "integer"
                                           items:
-                                            description: "items If unspecified, each key-value pair in the Data field of the referenced Secret will be project"
                                             items:
-                                              description: "Maps a string key to a path within a volume."
                                               properties:
                                                 key:
-                                                  description: "key is the key to project."
                                                   type: "string"
                                                 mode:
-                                                  description: "mode is Optional: mode bits used to set permissions on this file."
                                                   format: "int32"
                                                   type: "integer"
                                                 path:
-                                                  description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                   type: "string"
                                               required:
                                                 - "key"
@@ -994,10 +768,8 @@ spec:
                                               type: "object"
                                             type: "array"
                                           optional:
-                                            description: "optional field specify whether the Secret or its keys must be defined"
                                             type: "boolean"
                                           secretName:
-                                            description: "secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes."
                                             type: "string"
                                         type: "object"
                                     type: "object"
@@ -1007,7 +779,7 @@ spec:
                                 type: "object"
                               type: "array"
                             debugLevel:
-                              description: "DebugLevel sets the debug level for SSSD. If unset or set to 0, Rook does nothing."
+                              description: "DebugLevel sets the debug level for SSSD. If unset or set to 0, Rook does nothing. Otherwise, this may be a value between 1 and 10. See SSSD docs for more info: https://sssd.io/troubleshooting/basics.html#sssd-debug-logs"
                               maximum: 10.0
                               minimum: 0.0
                               type: "integer"
@@ -1019,12 +791,12 @@ spec:
                               description: "Resources allow specifying resource requests/limits on the SSSD sidecar container."
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
                                       name:
-                                        description: "Name must match the name of one entry in pod.spec."
+                                        description: "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container."
                                         type: "string"
                                     required:
                                       - "name"
@@ -1040,7 +812,7 @@ spec:
                                       - type: "string"
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
-                                  description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes."
+                                  description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                   type: "object"
                                 requests:
                                   additionalProperties:
@@ -1049,36 +821,28 @@ spec:
                                       - type: "string"
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
-                                  description: "Requests describes the minimum amount of compute resources required."
+                                  description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                   type: "object"
                               type: "object"
                             sssdConfigFile:
-                              description: "SSSDConfigFile defines where the SSSD configuration should be sourced from."
+                              description: "SSSDConfigFile defines where the SSSD configuration should be sourced from. The config file will be placed into `/etc/sssd/sssd.conf`. If this is left empty, Rook will not add the file. This allows you to manage the `sssd.conf` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods)."
                               properties:
                                 volumeSource:
-                                  description: "VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the SSSD confi"
                                   properties:
                                     configMap:
-                                      description: "configMap represents a configMap that should populate this volume"
                                       properties:
                                         defaultMode:
-                                          description: "defaultMode is optional: mode bits used to set permissions on created files by default."
                                           format: "int32"
                                           type: "integer"
                                         items:
-                                          description: "items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj"
                                           items:
-                                            description: "Maps a string key to a path within a volume."
                                             properties:
                                               key:
-                                                description: "key is the key to project."
                                                 type: "string"
                                               mode:
-                                                description: "mode is Optional: mode bits used to set permissions on this file."
                                                 format: "int32"
                                                 type: "integer"
                                               path:
-                                                description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                 type: "string"
                                             required:
                                               - "key"
@@ -1086,82 +850,60 @@ spec:
                                             type: "object"
                                           type: "array"
                                         name:
-                                          description: "Name of the referent. More info: https://kubernetes."
                                           type: "string"
                                         optional:
-                                          description: "optional specify whether the ConfigMap or its keys must be defined"
                                           type: "boolean"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
                                     emptyDir:
-                                      description: "emptyDir represents a temporary directory that shares a pod's lifetime."
                                       properties:
                                         medium:
-                                          description: "medium represents what type of storage medium should back this directory."
                                           type: "string"
                                         sizeLimit:
                                           anyOf:
                                             - type: "integer"
                                             - type: "string"
-                                          description: "sizeLimit is the total amount of local storage required for this EmptyDir volume."
                                           pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                           x-kubernetes-int-or-string: true
                                       type: "object"
                                     hostPath:
-                                      description: "hostPath represents a pre-existing file or directory on the host machine that is directly exposed to"
                                       properties:
                                         path:
-                                          description: "path of the directory on the host."
                                           type: "string"
                                         type:
-                                          description: "type for HostPath Volume Defaults to \"\" More info: https://kubernetes."
                                           type: "string"
                                       required:
                                         - "path"
                                       type: "object"
                                     persistentVolumeClaim:
-                                      description: "persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name"
                                       properties:
                                         claimName:
-                                          description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume."
                                           type: "string"
                                         readOnly:
-                                          description: "readOnly Will force the ReadOnly setting in VolumeMounts. Default false."
                                           type: "boolean"
                                       required:
                                         - "claimName"
                                       type: "object"
                                     projected:
-                                      description: "projected items for all in one resources secrets, configmaps, and downward API"
                                       properties:
                                         defaultMode:
-                                          description: "defaultMode are the mode bits used to set permissions on created files by default."
                                           format: "int32"
                                           type: "integer"
                                         sources:
-                                          description: "sources is the list of volume projections"
                                           items:
-                                            description: "Projection that may be projected along with other supported volume types"
                                             properties:
                                               clusterTrustBundle:
-                                                description: "ClusterTrustBundle allows a pod to access the `.spec."
                                                 properties:
                                                   labelSelector:
-                                                    description: "Select all ClusterTrustBundles that match this label selector."
                                                     properties:
                                                       matchExpressions:
-                                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                                         items:
-                                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                                           properties:
                                                             key:
-                                                              description: "key is the label key that the selector applies to."
                                                               type: "string"
                                                             operator:
-                                                              description: "operator represents a key's relationship to a set of values."
                                                               type: "string"
                                                             values:
-                                                              description: "values is an array of string values."
                                                               items:
                                                                 type: "string"
                                                               type: "array"
@@ -1173,42 +915,31 @@ spec:
                                                       matchLabels:
                                                         additionalProperties:
                                                           type: "string"
-                                                        description: "matchLabels is a map of {key,value} pairs."
                                                         type: "object"
                                                     type: "object"
                                                     x-kubernetes-map-type: "atomic"
                                                   name:
-                                                    description: "Select a single ClusterTrustBundle by object name."
                                                     type: "string"
                                                   optional:
-                                                    description: "If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available."
                                                     type: "boolean"
                                                   path:
-                                                    description: "Relative path from the volume root to write the bundle."
                                                     type: "string"
                                                   signerName:
-                                                    description: "Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name."
                                                     type: "string"
                                                 required:
                                                   - "path"
                                                 type: "object"
                                               configMap:
-                                                description: "configMap information about the configMap data to project"
                                                 properties:
                                                   items:
-                                                    description: "items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj"
                                                     items:
-                                                      description: "Maps a string key to a path within a volume."
                                                       properties:
                                                         key:
-                                                          description: "key is the key to project."
                                                           type: "string"
                                                         mode:
-                                                          description: "mode is Optional: mode bits used to set permissions on this file."
                                                           format: "int32"
                                                           type: "integer"
                                                         path:
-                                                          description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                           type: "string"
                                                       required:
                                                         - "key"
@@ -1216,56 +947,42 @@ spec:
                                                       type: "object"
                                                     type: "array"
                                                   name:
-                                                    description: "Name of the referent. More info: https://kubernetes."
                                                     type: "string"
                                                   optional:
-                                                    description: "optional specify whether the ConfigMap or its keys must be defined"
                                                     type: "boolean"
                                                 type: "object"
                                                 x-kubernetes-map-type: "atomic"
                                               downwardAPI:
-                                                description: "downwardAPI information about the downwardAPI data to project"
                                                 properties:
                                                   items:
-                                                    description: "Items is a list of DownwardAPIVolume file"
                                                     items:
-                                                      description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
                                                       properties:
                                                         fieldRef:
-                                                          description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
                                                           properties:
                                                             apiVersion:
-                                                              description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
                                                               type: "string"
                                                             fieldPath:
-                                                              description: "Path of the field to select in the specified API version."
                                                               type: "string"
                                                           required:
                                                             - "fieldPath"
                                                           type: "object"
                                                           x-kubernetes-map-type: "atomic"
                                                         mode:
-                                                          description: "Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 07"
                                                           format: "int32"
                                                           type: "integer"
                                                         path:
-                                                          description: "Required: Path is  the relative path name of the file to be created."
                                                           type: "string"
                                                         resourceFieldRef:
-                                                          description: "Selects a resource of the container: only resources limits and requests (limits.cpu, limits."
                                                           properties:
                                                             containerName:
-                                                              description: "Container name: required for volumes, optional for env vars"
                                                               type: "string"
                                                             divisor:
                                                               anyOf:
                                                                 - type: "integer"
                                                                 - type: "string"
-                                                              description: "Specifies the output format of the exposed resources, defaults to \"1\""
                                                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                                               x-kubernetes-int-or-string: true
                                                             resource:
-                                                              description: "Required: resource to select"
                                                               type: "string"
                                                           required:
                                                             - "resource"
@@ -1277,22 +994,16 @@ spec:
                                                     type: "array"
                                                 type: "object"
                                               secret:
-                                                description: "secret information about the secret data to project"
                                                 properties:
                                                   items:
-                                                    description: "items if unspecified, each key-value pair in the Data field of the referenced Secret will be project"
                                                     items:
-                                                      description: "Maps a string key to a path within a volume."
                                                       properties:
                                                         key:
-                                                          description: "key is the key to project."
                                                           type: "string"
                                                         mode:
-                                                          description: "mode is Optional: mode bits used to set permissions on this file."
                                                           format: "int32"
                                                           type: "integer"
                                                         path:
-                                                          description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                           type: "string"
                                                       required:
                                                         - "key"
@@ -1300,25 +1011,19 @@ spec:
                                                       type: "object"
                                                     type: "array"
                                                   name:
-                                                    description: "Name of the referent. More info: https://kubernetes."
                                                     type: "string"
                                                   optional:
-                                                    description: "optional field specify whether the Secret or its key must be defined"
                                                     type: "boolean"
                                                 type: "object"
                                                 x-kubernetes-map-type: "atomic"
                                               serviceAccountToken:
-                                                description: "serviceAccountToken is information about the serviceAccountToken data to project"
                                                 properties:
                                                   audience:
-                                                    description: "audience is the intended audience of the token."
                                                     type: "string"
                                                   expirationSeconds:
-                                                    description: "expirationSeconds is the requested duration of validity of the service account token."
                                                     format: "int64"
                                                     type: "integer"
                                                   path:
-                                                    description: "path is the path relative to the mount point of the file to project the token into."
                                                     type: "string"
                                                 required:
                                                   - "path"
@@ -1327,26 +1032,19 @@ spec:
                                           type: "array"
                                       type: "object"
                                     secret:
-                                      description: "secret represents a secret that should populate this volume. More info: https://kubernetes."
                                       properties:
                                         defaultMode:
-                                          description: "defaultMode is Optional: mode bits used to set permissions on created files by default."
                                           format: "int32"
                                           type: "integer"
                                         items:
-                                          description: "items If unspecified, each key-value pair in the Data field of the referenced Secret will be project"
                                           items:
-                                            description: "Maps a string key to a path within a volume."
                                             properties:
                                               key:
-                                                description: "key is the key to project."
                                                 type: "string"
                                               mode:
-                                                description: "mode is Optional: mode bits used to set permissions on this file."
                                                 format: "int32"
                                                 type: "integer"
                                               path:
-                                                description: "path is the relative path of the file to map the key to. May not be an absolute path."
                                                 type: "string"
                                             required:
                                               - "key"
@@ -1354,10 +1052,8 @@ spec:
                                             type: "object"
                                           type: "array"
                                         optional:
-                                          description: "optional field specify whether the Secret or its keys must be defined"
                                           type: "boolean"
                                         secretName:
-                                          description: "secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes."
                                           type: "string"
                                       type: "object"
                                   type: "object"
@@ -1381,7 +1077,7 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     hostNetwork:
-                      description: "Whether host networking is enabled for the Ganesha server."
+                      description: "Whether host networking is enabled for the Ganesha server. If not set, the network settings from the cluster CR will be applied."
                       nullable: true
                       type: "boolean"
                     labels:
@@ -1392,25 +1088,25 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     livenessProbe:
-                      description: "A liveness-probe to verify that Ganesha server has valid run-time state. If LivenessProbe."
+                      description: "A liveness-probe to verify that Ganesha server has valid run-time state. If LivenessProbe.Disabled is false and LivenessProbe.Probe is nil uses default probe."
                       properties:
                         disabled:
                           description: "Disabled determines whether probe is disable or not"
                           type: "boolean"
                         probe:
-                          description: "Probe describes a health check to be performed against a container to determine whether it is alive "
+                          description: "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic."
                           properties:
                             exec:
                               description: "Exec specifies the action to take."
                               properties:
                                 command:
-                                  description: "Command is the command line to execute inside the container, the working directory for the command  "
+                                  description: "Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                   items:
                                     type: "string"
                                   type: "array"
                               type: "object"
                             failureThreshold:
-                              description: "Minimum consecutive failures for the probe to be considered failed after having succeeded."
+                              description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1."
                               format: "int32"
                               type: "integer"
                             grpc:
@@ -1421,7 +1117,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 service:
-                                  description: "Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github."
+                                  description: "Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). \n If this is not specified, the default behavior is defined by gRPC."
                                   type: "string"
                               required:
                                 - "port"
@@ -1430,7 +1126,7 @@ spec:
                               description: "HTTPGet specifies the http request to perform."
                               properties:
                                 host:
-                                  description: "Host name to connect to, defaults to the pod IP."
+                                  description: "Host name to connect to, defaults to the pod IP. You probably want to set \"Host\" in httpHeaders instead."
                                   type: "string"
                                 httpHeaders:
                                   description: "Custom headers to set in the request. HTTP allows repeated headers."
@@ -1438,7 +1134,7 @@ spec:
                                     description: "HTTPHeader describes a custom header to be used in HTTP probes"
                                     properties:
                                       name:
-                                        description: "The header field name."
+                                        description: "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header."
                                         type: "string"
                                       value:
                                         description: "The header field value"
@@ -1455,7 +1151,7 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "Name or number of the port to access on the container. Number must be in the range 1 to 65535."
+                                  description: "Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
                                   x-kubernetes-int-or-string: true
                                 scheme:
                                   description: "Scheme to use for connecting to the host. Defaults to HTTP."
@@ -1464,7 +1160,7 @@ spec:
                                 - "port"
                               type: "object"
                             initialDelaySeconds:
-                              description: "Number of seconds after the container has started before liveness probes are initiated."
+                              description: "Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               format: "int32"
                               type: "integer"
                             periodSeconds:
@@ -1472,7 +1168,7 @@ spec:
                               format: "int32"
                               type: "integer"
                             successThreshold:
-                              description: "Minimum consecutive successes for the probe to be considered successful after having failed."
+                              description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1."
                               format: "int32"
                               type: "integer"
                             tcpSocket:
@@ -1485,17 +1181,16 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "Number or name of the port to access on the container. Number must be in the range 1 to 65535."
+                                  description: "Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
                                   x-kubernetes-int-or-string: true
                               required:
                                 - "port"
                               type: "object"
                             terminationGracePeriodSeconds:
-                              description: "Optional duration in seconds the pod needs to terminate gracefully upon probe failure."
                               format: "int64"
                               type: "integer"
                             timeoutSeconds:
-                              description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1."
+                              description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               format: "int32"
                               type: "integer"
                           type: "object"
@@ -1504,33 +1199,23 @@ spec:
                       description: "LogLevel set logging level"
                       type: "string"
                     placement:
-                      description: "The affinity to place the ganesha pods"
                       nullable: true
                       properties:
                         nodeAffinity:
-                          description: "NodeAffinity is a group of node affinity scheduling rules"
                           properties:
                             preferredDuringSchedulingIgnoredDuringExecution:
-                              description: "The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified "
                               items:
-                                description: "An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op)."
                                 properties:
                                   preference:
-                                    description: "A node selector term, associated with the corresponding weight."
                                     properties:
                                       matchExpressions:
-                                        description: "A list of node selector requirements by node's labels."
                                         items:
-                                          description: "A node selector requirement is a selector that contains values, a key, and an operator that relates "
                                           properties:
                                             key:
-                                              description: "The label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "Represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -1540,18 +1225,13 @@ spec:
                                           type: "object"
                                         type: "array"
                                       matchFields:
-                                        description: "A list of node selector requirements by node's fields."
                                         items:
-                                          description: "A node selector requirement is a selector that contains values, a key, and an operator that relates "
                                           properties:
                                             key:
-                                              description: "The label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "Represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -1563,7 +1243,6 @@ spec:
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   weight:
-                                    description: "Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100."
                                     format: "int32"
                                     type: "integer"
                                 required:
@@ -1572,26 +1251,18 @@ spec:
                                 type: "object"
                               type: "array"
                             requiredDuringSchedulingIgnoredDuringExecution:
-                              description: "If the affinity requirements specified by this field are not met at scheduling time, the pod will no"
                               properties:
                                 nodeSelectorTerms:
-                                  description: "Required. A list of node selector terms. The terms are ORed."
                                   items:
-                                    description: "A null or empty node selector term matches no objects. The requirements of them are ANDed."
                                     properties:
                                       matchExpressions:
-                                        description: "A list of node selector requirements by node's labels."
                                         items:
-                                          description: "A node selector requirement is a selector that contains values, a key, and an operator that relates "
                                           properties:
                                             key:
-                                              description: "The label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "Represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -1601,18 +1272,13 @@ spec:
                                           type: "object"
                                         type: "array"
                                       matchFields:
-                                        description: "A list of node selector requirements by node's fields."
                                         items:
-                                          description: "A node selector requirement is a selector that contains values, a key, and an operator that relates "
                                           properties:
                                             key:
-                                              description: "The label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "Represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -1630,32 +1296,22 @@ spec:
                               x-kubernetes-map-type: "atomic"
                           type: "object"
                         podAffinity:
-                          description: "PodAffinity is a group of inter pod affinity scheduling rules"
                           properties:
                             preferredDuringSchedulingIgnoredDuringExecution:
-                              description: "The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified "
                               items:
-                                description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most"
                                 properties:
                                   podAffinityTerm:
-                                    description: "Required. A pod affinity term, associated with the corresponding weight."
                                     properties:
                                       labelSelector:
-                                        description: "A label query over a set of resources, in this case pods."
                                         properties:
                                           matchExpressions:
-                                            description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                             items:
-                                              description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                               properties:
                                                 key:
-                                                  description: "key is the label key that the selector applies to."
                                                   type: "string"
                                                 operator:
-                                                  description: "operator represents a key's relationship to a set of values."
                                                   type: "string"
                                                 values:
-                                                  description: "values is an array of string values."
                                                   items:
                                                     type: "string"
                                                   type: "array"
@@ -1667,38 +1323,29 @@ spec:
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
-                                            description: "matchLabels is a map of {key,value} pairs."
                                             type: "object"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
                                       matchLabelKeys:
-                                        description: "MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                         items:
                                           type: "string"
                                         type: "array"
                                         x-kubernetes-list-type: "atomic"
                                       mismatchLabelKeys:
-                                        description: "MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                         items:
                                           type: "string"
                                         type: "array"
                                         x-kubernetes-list-type: "atomic"
                                       namespaceSelector:
-                                        description: "A label query over the set of namespaces that the term applies to."
                                         properties:
                                           matchExpressions:
-                                            description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                             items:
-                                              description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                               properties:
                                                 key:
-                                                  description: "key is the label key that the selector applies to."
                                                   type: "string"
                                                 operator:
-                                                  description: "operator represents a key's relationship to a set of values."
                                                   type: "string"
                                                 values:
-                                                  description: "values is an array of string values."
                                                   items:
                                                     type: "string"
                                                   type: "array"
@@ -1710,23 +1357,19 @@ spec:
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
-                                            description: "matchLabels is a map of {key,value} pairs."
                                             type: "object"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
                                       namespaces:
-                                        description: "namespaces specifies a static list of namespace names that the term applies to."
                                         items:
                                           type: "string"
                                         type: "array"
                                       topologyKey:
-                                        description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th"
                                         type: "string"
                                     required:
                                       - "topologyKey"
                                     type: "object"
                                   weight:
-                                    description: "weight associated with matching the corresponding podAffinityTerm, in the range 1-100."
                                     format: "int32"
                                     type: "integer"
                                 required:
@@ -1735,26 +1378,18 @@ spec:
                                 type: "object"
                               type: "array"
                             requiredDuringSchedulingIgnoredDuringExecution:
-                              description: "If the affinity requirements specified by this field are not met at scheduling time, the pod will no"
                               items:
-                                description: "Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) t"
                                 properties:
                                   labelSelector:
-                                    description: "A label query over a set of resources, in this case pods."
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -1766,38 +1401,29 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs."
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   namespaceSelector:
-                                    description: "A label query over the set of namespaces that the term applies to."
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -1809,17 +1435,14 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs."
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   namespaces:
-                                    description: "namespaces specifies a static list of namespace names that the term applies to."
                                     items:
                                       type: "string"
                                     type: "array"
                                   topologyKey:
-                                    description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th"
                                     type: "string"
                                 required:
                                   - "topologyKey"
@@ -1827,32 +1450,22 @@ spec:
                               type: "array"
                           type: "object"
                         podAntiAffinity:
-                          description: "PodAntiAffinity is a group of inter pod anti affinity scheduling rules"
                           properties:
                             preferredDuringSchedulingIgnoredDuringExecution:
-                              description: "The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions speci"
                               items:
-                                description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most"
                                 properties:
                                   podAffinityTerm:
-                                    description: "Required. A pod affinity term, associated with the corresponding weight."
                                     properties:
                                       labelSelector:
-                                        description: "A label query over a set of resources, in this case pods."
                                         properties:
                                           matchExpressions:
-                                            description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                             items:
-                                              description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                               properties:
                                                 key:
-                                                  description: "key is the label key that the selector applies to."
                                                   type: "string"
                                                 operator:
-                                                  description: "operator represents a key's relationship to a set of values."
                                                   type: "string"
                                                 values:
-                                                  description: "values is an array of string values."
                                                   items:
                                                     type: "string"
                                                   type: "array"
@@ -1864,38 +1477,29 @@ spec:
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
-                                            description: "matchLabels is a map of {key,value} pairs."
                                             type: "object"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
                                       matchLabelKeys:
-                                        description: "MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                         items:
                                           type: "string"
                                         type: "array"
                                         x-kubernetes-list-type: "atomic"
                                       mismatchLabelKeys:
-                                        description: "MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                         items:
                                           type: "string"
                                         type: "array"
                                         x-kubernetes-list-type: "atomic"
                                       namespaceSelector:
-                                        description: "A label query over the set of namespaces that the term applies to."
                                         properties:
                                           matchExpressions:
-                                            description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                             items:
-                                              description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                               properties:
                                                 key:
-                                                  description: "key is the label key that the selector applies to."
                                                   type: "string"
                                                 operator:
-                                                  description: "operator represents a key's relationship to a set of values."
                                                   type: "string"
                                                 values:
-                                                  description: "values is an array of string values."
                                                   items:
                                                     type: "string"
                                                   type: "array"
@@ -1907,23 +1511,19 @@ spec:
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
-                                            description: "matchLabels is a map of {key,value} pairs."
                                             type: "object"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
                                       namespaces:
-                                        description: "namespaces specifies a static list of namespace names that the term applies to."
                                         items:
                                           type: "string"
                                         type: "array"
                                       topologyKey:
-                                        description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th"
                                         type: "string"
                                     required:
                                       - "topologyKey"
                                     type: "object"
                                   weight:
-                                    description: "weight associated with matching the corresponding podAffinityTerm, in the range 1-100."
                                     format: "int32"
                                     type: "integer"
                                 required:
@@ -1932,26 +1532,18 @@ spec:
                                 type: "object"
                               type: "array"
                             requiredDuringSchedulingIgnoredDuringExecution:
-                              description: "If the anti-affinity requirements specified by this field are not met at scheduling time, the pod wi"
                               items:
-                                description: "Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) t"
                                 properties:
                                   labelSelector:
-                                    description: "A label query over a set of resources, in this case pods."
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -1963,38 +1555,29 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs."
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   namespaceSelector:
-                                    description: "A label query over the set of namespaces that the term applies to."
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -2006,17 +1589,14 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs."
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   namespaces:
-                                    description: "namespaces specifies a static list of namespace names that the term applies to."
                                     items:
                                       type: "string"
                                     type: "array"
                                   topologyKey:
-                                    description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th"
                                     type: "string"
                                 required:
                                   - "topologyKey"
@@ -2024,49 +1604,34 @@ spec:
                               type: "array"
                           type: "object"
                         tolerations:
-                          description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect"
                           items:
-                            description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect"
                             properties:
                               effect:
-                                description: "Effect indicates the taint effect to match. Empty means match all taint effects."
                                 type: "string"
                               key:
-                                description: "Key is the taint key that the toleration applies to. Empty means match all taint keys."
                                 type: "string"
                               operator:
-                                description: "Operator represents a key's relationship to the value. Valid operators are Exists and Equal."
                                 type: "string"
                               tolerationSeconds:
-                                description: "TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, o"
                                 format: "int64"
                                 type: "integer"
                               value:
-                                description: "Value is the taint value the toleration matches to."
                                 type: "string"
                             type: "object"
                           type: "array"
                         topologySpreadConstraints:
-                          description: "TopologySpreadConstraint specifies how to spread matching pods among the given topology"
                           items:
-                            description: "TopologySpreadConstraint specifies how to spread matching pods among the given topology."
                             properties:
                               labelSelector:
-                                description: "LabelSelector is used to find matching pods."
                                 properties:
                                   matchExpressions:
-                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                     items:
-                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                       properties:
                                         key:
-                                          description: "key is the label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "operator represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "values is an array of string values."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -2078,35 +1643,27 @@ spec:
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "matchLabels is a map of {key,value} pairs."
                                     type: "object"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               matchLabelKeys:
-                                description: "MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated"
                                 items:
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               maxSkew:
-                                description: "MaxSkew describes the degree to which pods may be unevenly distributed."
                                 format: "int32"
                                 type: "integer"
                               minDomains:
-                                description: "MinDomains indicates a minimum number of eligible domains."
                                 format: "int32"
                                 type: "integer"
                               nodeAffinityPolicy:
-                                description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod "
                                 type: "string"
                               nodeTaintsPolicy:
-                                description: "NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew."
                                 type: "string"
                               topologyKey:
-                                description: "TopologyKey is the key of node labels."
                                 type: "string"
                               whenUnsatisfiable:
-                                description: "WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint."
                                 type: "string"
                             required:
                               - "maxSkew"
@@ -2124,12 +1681,12 @@ spec:
                       nullable: true
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
-                                description: "Name must match the name of one entry in pod.spec."
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container."
                                 type: "string"
                             required:
                               - "name"
@@ -2145,7 +1702,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes."
+                          description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                         requests:
                           additionalProperties:
@@ -2154,7 +1711,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Requests describes the minimum amount of compute resources required."
+                          description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true

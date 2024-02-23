@@ -14,81 +14,83 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ClusterStatus")]
 #[kube(schema = "disabled")]
 pub struct ClusterSpec {
-    /// affinity is a group of affinity scheduling rules.
+    /// A group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ClusterAffinity>,
-    /// availabilityPolicy describes the availability policy, including zone, node, and none.
+    /// Describes the availability policy, including zone, node, and none.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityPolicy")]
     pub availability_policy: Option<ClusterAvailabilityPolicy>,
-    /// cluster backup configuration.
+    /// Cluster backup configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<ClusterBackup>,
-    /// Cluster referencing ClusterDefinition name. This is an immutable attribute. If ClusterDefRef is not specified, ComponentDef must be specified for each Component in ComponentSpecs.
+    /// Refers to the ClusterDefinition name. If not specified, ComponentDef must be specified for each Component in ComponentSpecs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDefinitionRef")]
     pub cluster_definition_ref: Option<String>,
-    /// Cluster referencing ClusterVersion name.
+    /// Refers to the ClusterVersion name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionRef")]
     pub cluster_version_ref: Option<String>,
-    /// List of componentSpec which is used to define the components that make up a cluster. ComponentSpecs and ShardingSpecs cannot both be empty at the same time.
+    /// List of componentSpec used to define the components that make up a cluster. ComponentSpecs and ShardingSpecs cannot both be empty at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSpecs")]
     pub component_specs: Option<Vec<ClusterComponentSpecs>>,
-    /// monitor specifies the configuration of monitor
+    /// The configuration of monitor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<ClusterMonitor>,
-    /// network specifies the configuration of network
+    /// The configuration of network.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<ClusterNetwork>,
-    /// replicas specifies the replicas of the first componentSpec, if the replicas of the first componentSpec is specified, this value will be ignored.
+    /// Specifies the replicas of the first componentSpec, if the replicas of the first componentSpec is specified, this value will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// resources specifies the resources of the first componentSpec, if the resources of the first componentSpec is specified, this value will be ignored.
+    /// Specifies the resources of the first componentSpec, if the resources of the first componentSpec is specified, this value will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterResources>,
-    /// services defines the services to access a cluster.
+    /// Defines the services to access a cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterServices>>,
-    /// List of ShardingSpec which is used to define components with a sharding topology structure that make up a cluster. ShardingSpecs and ComponentSpecs cannot both be empty at the same time.
+    /// List of ShardingSpec used to define components with a sharding topology structure that make up a cluster. ShardingSpecs and ComponentSpecs cannot both be empty at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingSpecs")]
     pub sharding_specs: Option<Vec<ClusterShardingSpecs>>,
-    /// storage specifies the storage of the first componentSpec, if the storage of the first componentSpec is specified, this value will be ignored.
+    /// Specifies the storage of the first componentSpec, if the storage of the first componentSpec is specified, this value will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<ClusterStorage>,
-    /// tenancy describes how pods are distributed across node. SharedNode means multiple pods may share the same node. DedicatedNode means each pod runs on their own dedicated node.
+    /// Describes how pods are distributed across node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenancy: Option<ClusterTenancy>,
-    /// Cluster termination policy. Valid values are DoNotTerminate, Halt, Delete, WipeOut. DoNotTerminate will block delete operation. Halt will delete workload resources such as statefulset, deployment workloads but keep PVCs. Delete is based on Halt and deletes PVCs. WipeOut is based on Delete and wipe out all volume snapshots and snapshot data from backup storage location.
+    /// Specifies the cluster termination policy. 
+    ///  - DoNotTerminate will block delete operation. - Halt will delete workload resources such as statefulset, deployment workloads but keep PVCs. - Delete is based on Halt and deletes PVCs. - WipeOut is based on Delete and wipe out all volume snapshots and snapshot data from backup storage location.
     #[serde(rename = "terminationPolicy")]
     pub termination_policy: ClusterTerminationPolicy,
-    /// tolerations are attached to tolerate any taint that matches the triple `key,value,effect` using the matching operator `operator`.
+    /// Attached to tolerate any taint that matches the triple `key,value,effect` using the matching operator `operator`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ClusterTolerations>>,
 }
 
-/// affinity is a group of affinity scheduling rules.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterAffinity {
-    /// nodeLabels describes that pods must be scheduled to the nodes with the specified node labels.
+    /// Indicates that pods must be scheduled to the nodes with the specified node labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabels")]
     pub node_labels: Option<BTreeMap<String, String>>,
-    /// podAntiAffinity describes the anti-affinity level of pods within a component. Preferred means try spread pods by `TopologyKeys`. Required means must spread pods by `TopologyKeys`.
+    /// Specifies the anti-affinity level of pods within a component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ClusterAffinityPodAntiAffinity>,
-    /// tenancy describes how pods are distributed across node. SharedNode means multiple pods may share the same node. DedicatedNode means each pod runs on their own dedicated node.
+    /// Defines how pods are distributed across nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenancy: Option<ClusterAffinityTenancy>,
-    /// topologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. It's used as the topology domain for pod anti-affinity and pod spread constraint. Some well-known label keys, such as "kubernetes.io/hostname" and "topology.kubernetes.io/zone" are often used as TopologyKey, as well as any other custom label key.
+    /// Represents the key of node labels. 
+    ///  Nodes with a label containing this key and identical values are considered to be in the same topology. This is used as the topology domain for pod anti-affinity and pod spread constraint. Some well-known label keys, such as `kubernetes.io/hostname` and `topology.kubernetes.io/zone`, are often used as TopologyKey, along with any other custom label key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKeys")]
     pub topology_keys: Option<Vec<String>>,
 }
 
-/// affinity is a group of affinity scheduling rules.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterAffinityPodAntiAffinity {
     Preferred,
     Required,
 }
 
-/// affinity is a group of affinity scheduling rules.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterAffinityTenancy {
     SharedNode,
@@ -106,161 +108,163 @@ pub enum ClusterAvailabilityPolicy {
     None,
 }
 
-/// cluster backup configuration.
+/// Cluster backup configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterBackup {
-    /// the cron expression for schedule, the timezone is in UTC. see https://en.wikipedia.org/wiki/Cron.
+    /// The cron expression for the schedule. The timezone is in UTC. See https://en.wikipedia.org/wiki/Cron.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronExpression")]
     pub cron_expression: Option<String>,
-    /// enabled defines whether to enable automated backup.
+    /// Specifies whether automated backup is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// backup method name to use, that is defined in backupPolicy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub method: Option<String>,
-    /// pitrEnabled defines whether to enable point-in-time recovery.
+    /// Specifies the backup method to use, as defined in backupPolicy.
+    pub method: String,
+    /// Specifies whether to enable point-in-time recovery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pitrEnabled")]
     pub pitr_enabled: Option<bool>,
-    /// repoName is the name of the backupRepo, if not set, will use the default backupRepo.
+    /// Specifies the name of the backupRepo. If not set, the default backupRepo will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repoName")]
     pub repo_name: Option<String>,
-    /// retentionPeriod determines a duration up to which the backup should be kept. controller will remove all backups that are older than the RetentionPeriod. For example, RetentionPeriod of `30d` will keep only the backups of last 30 days. Sample duration format: - years: 	2y - months: 	6mo - days: 		30d - hours: 	12h - minutes: 	30m You can also combine the above durations. For example: 30d12h30m
+    /// Determines the duration for which the backup should be retained. All backups older than this period will be removed by the controller. 
+    ///  For example, RetentionPeriod of `30d` will keep only the backups of last 30 days. Sample duration format: 
+    ///  - years: 	2y - months: 	6mo - days: 		30d - hours: 	12h - minutes: 	30m 
+    ///  You can also combine the above durations. For example: 30d12h30m
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
-    /// startingDeadlineMinutes defines the deadline in minutes for starting the backup job if it misses scheduled time for any reason.
+    /// Defines the deadline in minutes for starting the backup job if it misses its scheduled time for any reason.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineMinutes")]
     pub starting_deadline_minutes: Option<i64>,
 }
 
-/// ClusterComponentSpec defines the cluster component spec. //(TODO) +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDefRef) || has(self.componentDefRef)", message="componentDefRef is required once set" //(TODO) +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDef) || has(self.componentDef)", message="componentDef is required once set"
+/// ClusterComponentSpec defines the specifications for a cluster component. TODO +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDefRef) || has(self.componentDefRef)", message="componentDefRef is required once set" TODO +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDef) || has(self.componentDef)", message="componentDef is required once set"
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecs {
-    /// affinity describes affinities specified by users.
+    /// A group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ClusterComponentSpecsAffinity>,
-    /// classDefRef references the class defined in ComponentClassDefinition.
+    /// References the class defined in ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
     pub class_def_ref: Option<ClusterComponentSpecsClassDefRef>,
-    /// componentDef references the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef. //(TODO) +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDef is immutable"
+    /// References the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef. 
+    ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDef is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDef")]
     pub component_def: Option<String>,
-    /// componentDefRef references componentDef defined in ClusterDefinition spec. Need to comply with IANA Service Naming rule. //(TODO) +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDefRef is immutable"
+    /// References the componentDef defined in the ClusterDefinition spec. Must comply with the IANA Service Naming rule. 
+    ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDefRef is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
     pub component_def_ref: Option<String>,
-    /// enabledLogs indicates which log file takes effect in the database cluster. element is the log type which is defined in cluster definition logConfig.name, and will set relative variables about this log type in database kernel.
+    /// Indicates which log file takes effect in the database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
     pub enabled_logs: Option<Vec<String>>,
-    /// Instances defines the list of instance to be deleted priorly If the RsmTransformPolicy is specified as ToPod,the list of instances will be used.
+    /// Defines the list of instances to be deleted priorly. If the RsmTransformPolicy is specified as ToPod, the list of instances will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<String>>,
-    /// issuer defines provider context for TLS certs. required when TLS enabled
+    /// Defines provider context for TLS certs. Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterComponentSpecsIssuer>,
-    /// monitor is a switch to enable monitoring and is set as false by default. KubeBlocks provides an extension mechanism to support component level monitoring, which will scrape metrics auto or manually from servers in component and export metrics to Time Series Database.
+    /// To enable monitoring.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<bool>,
-    /// name defines cluster's component name, this name is also part of Service DNS name, so this name will comply with IANA Service Naming rule. When ClusterComponentSpec is referenced as a template, name is optional. Otherwise, it is required. //(TODO) +kubebuilder:validation:XValidation:rule="self == oldSelf",message="name is immutable"
+    /// Specifies the name of the cluster's component. This name is also part of the Service DNS name and must comply with the IANA Service Naming rule. When ClusterComponentSpec is referenced as a template, the name is optional. Otherwise, it is required. 
+    ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="name is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Nodes defines the list of nodes that pods can schedule If the RsmTransformPolicy is specified as ToPod,the list of nodes will be used. If the list of nodes is empty, no specific node will be assigned. However, if the list of node is filled, all pods will be evenly scheduled across the nodes in the list.
+    /// Defines the list of nodes that pods can schedule. If the RsmTransformPolicy is specified as ToPod, the list of nodes will be used. If the list of nodes is empty, no specific node will be assigned. However, if the list of nodes is filled, all pods will be evenly scheduled across the nodes in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
-    /// Component replicas.
+    /// Specifies the number of component replicas.
     pub replicas: i32,
-    /// Resources requests and limits of workload.
+    /// Specifies the resources requests and limits of the workload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterComponentSpecsResources>,
-    /// RsmTransformPolicy defines the policy generate sts using rsm. ToSts: rsm transforms to statefulSet ToPod: rsm transforms to pods
+    /// Defines the policy to generate sts using rsm.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rsmTransformPolicy")]
     pub rsm_transform_policy: Option<ClusterComponentSpecsRsmTransformPolicy>,
-    /// serviceAccountName is the name of the ServiceAccount that running component depends on.
+    /// Specifies the name of the ServiceAccount that the running component depends on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    /// serviceRefs define service references for the current component. Based on the referenced services, they can be categorized into two types: Service provided by external sources: These services are provided by external sources and are not managed by KubeBlocks. They can be Kubernetes-based or non-Kubernetes services. For external services, you need to provide an additional ServiceDescriptor object to establish the service binding. Service provided by other KubeBlocks clusters: These services are provided by other KubeBlocks clusters. You can bind to these services by specifying the name of the hosting cluster. Each type of service reference requires specific configurations and bindings to establish the connection and interaction with the respective services. It should be noted that the ServiceRef has cluster-level semantic consistency, meaning that within the same Cluster, service references with the same ServiceRef.Name are considered to be the same service. It is only allowed to bind to the same Cluster or ServiceDescriptor.
+    /// Defines service references for the current component. 
+    ///  Based on the referenced services, they can be categorized into two types: 
+    ///  - Service provided by external sources: These services are provided by external sources and are not managed by KubeBlocks. They can be Kubernetes-based or non-Kubernetes services. For external services, an additional ServiceDescriptor object is needed to establish the service binding. - Service provided by other KubeBlocks clusters: These services are provided by other KubeBlocks clusters. Binding to these services is done by specifying the name of the hosting cluster. 
+    ///  Each type of service reference requires specific configurations and bindings to establish the connection and interaction with the respective services. Note that the ServiceRef has cluster-level semantic consistency, meaning that within the same Cluster, service references with the same ServiceRef.Name are considered to be the same service. It is only allowed to bind to the same Cluster or ServiceDescriptor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefs")]
     pub service_refs: Option<Vec<ClusterComponentSpecsServiceRefs>>,
     /// Services expose endpoints that can be accessed by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterComponentSpecsServices>>,
-    /// switchPolicy defines the strategy for switchover and failover when workloadType is Replication.
+    /// Defines the strategy for switchover and failover when workloadType is Replication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchPolicy")]
     pub switch_policy: Option<ClusterComponentSpecsSwitchPolicy>,
     /// Enables or disables TLS certs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<bool>,
-    /// Component tolerations will override ClusterSpec.Tolerations if specified.
+    /// Attached to tolerate any taint that matches the triple `key,value,effect` using the matching operator `operator`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ClusterComponentSpecsTolerations>>,
-    /// updateStrategy defines the update strategy for the component. Not supported.
+    /// Defines the update strategy for the component. Not supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterComponentSpecsUpdateStrategy>,
-    /// userResourceRefs defines the user-defined volumes.
+    /// Defines the user-defined volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userResourceRefs")]
     pub user_resource_refs: Option<ClusterComponentSpecsUserResourceRefs>,
-    /// volumeClaimTemplates information for statefulset.spec.volumeClaimTemplates.
+    /// Provides information for statefulset.spec.volumeClaimTemplates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<ClusterComponentSpecsVolumeClaimTemplates>>,
 }
 
-/// affinity describes affinities specified by users.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsAffinity {
-    /// nodeLabels describes that pods must be scheduled to the nodes with the specified node labels.
+    /// Indicates that pods must be scheduled to the nodes with the specified node labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabels")]
     pub node_labels: Option<BTreeMap<String, String>>,
-    /// podAntiAffinity describes the anti-affinity level of pods within a component. Preferred means try spread pods by `TopologyKeys`. Required means must spread pods by `TopologyKeys`.
+    /// Specifies the anti-affinity level of pods within a component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ClusterComponentSpecsAffinityPodAntiAffinity>,
-    /// tenancy describes how pods are distributed across node. SharedNode means multiple pods may share the same node. DedicatedNode means each pod runs on their own dedicated node.
+    /// Defines how pods are distributed across nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenancy: Option<ClusterComponentSpecsAffinityTenancy>,
-    /// topologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. It's used as the topology domain for pod anti-affinity and pod spread constraint. Some well-known label keys, such as "kubernetes.io/hostname" and "topology.kubernetes.io/zone" are often used as TopologyKey, as well as any other custom label key.
+    /// Represents the key of node labels. 
+    ///  Nodes with a label containing this key and identical values are considered to be in the same topology. This is used as the topology domain for pod anti-affinity and pod spread constraint. Some well-known label keys, such as `kubernetes.io/hostname` and `topology.kubernetes.io/zone`, are often used as TopologyKey, along with any other custom label key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKeys")]
     pub topology_keys: Option<Vec<String>>,
 }
 
-/// affinity describes affinities specified by users.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterComponentSpecsAffinityPodAntiAffinity {
     Preferred,
     Required,
 }
 
-/// affinity describes affinities specified by users.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterComponentSpecsAffinityTenancy {
     SharedNode,
     DedicatedNode,
 }
 
-/// classDefRef references the class defined in ComponentClassDefinition.
+/// References the class defined in ComponentClassDefinition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsClassDefRef {
-    /// Class refers to the name of the class that is defined in the ComponentClassDefinition.
+    /// Defines the name of the class that is defined in the ComponentClassDefinition.
     pub class: String,
-    /// Name refers to the name of the ComponentClassDefinition.
+    /// Specifies the name of the ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// issuer defines provider context for TLS certs. required when TLS enabled
+/// Defines provider context for TLS certs. Required when TLS is enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsIssuer {
-    /// Name of issuer. Options supported: - KubeBlocks - Certificates signed by KubeBlocks Operator. - UserProvided - User provided own CA-signed certificates.
-    pub name: ClusterComponentSpecsIssuerName,
-    /// secretRef. TLS certs Secret reference required when from is UserProvided
+    /// The issuer for TLS certificates.
+    pub name: String,
+    /// SecretRef is the reference to the TLS certificates secret. It is required when the issuer is set to UserProvided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ClusterComponentSpecsIssuerSecretRef>,
 }
 
-/// issuer defines provider context for TLS certs. required when TLS enabled
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterComponentSpecsIssuerName {
-    KubeBlocks,
-    UserProvided,
-}
-
-/// secretRef. TLS certs Secret reference required when from is UserProvided
+/// SecretRef is the reference to the TLS certificates secret. It is required when the issuer is set to UserProvided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsIssuerSecretRef {
     /// CA cert key in Secret
@@ -273,7 +277,7 @@ pub struct ClusterComponentSpecsIssuerSecretRef {
     pub name: String,
 }
 
-/// Resources requests and limits of workload.
+/// Specifies the resources requests and limits of the workload.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -296,7 +300,7 @@ pub struct ClusterComponentSpecsResourcesClaims {
     pub name: String,
 }
 
-/// ClusterComponentSpec defines the cluster component spec. //(TODO) +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDefRef) || has(self.componentDefRef)", message="componentDefRef is required once set" //(TODO) +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDef) || has(self.componentDef)", message="componentDef is required once set"
+/// ClusterComponentSpec defines the specifications for a cluster component. TODO +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDefRef) || has(self.componentDefRef)", message="componentDefRef is required once set" TODO +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDef) || has(self.componentDef)", message="componentDef is required once set"
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterComponentSpecsRsmTransformPolicy {
     ToPod,
@@ -305,27 +309,33 @@ pub enum ClusterComponentSpecsRsmTransformPolicy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsServiceRefs {
-    /// When referencing a service provided by other KubeBlocks cluster, you need to provide the name of the Cluster being referenced. By default, when other KubeBlocks Cluster are referenced, the ClusterDefinition.spec.connectionCredential secret corresponding to the referenced Cluster will be used to bind to the current component. Currently, if a KubeBlocks cluster is to be referenced, the connection credential secret should include and correspond to the following fields: endpoint, port, username, and password. Under this referencing approach, the ServiceKind and ServiceVersion of service reference declaration defined in the ClusterDefinition will not be validated. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
+    /// The name of the KubeBlocks cluster being referenced when a service provided by another KubeBlocks cluster is being referenced. 
+    ///  By default, the clusterDefinition.spec.connectionCredential secret corresponding to the referenced Cluster will be used to bind to the current component. The connection credential secret should include and correspond to the following fields: endpoint, port, username, and password when a KubeBlocks cluster is being referenced. 
+    ///  Under this referencing approach, the ServiceKind and ServiceVersion of service reference declaration defined in the ClusterDefinition will not be validated. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// name of the service reference declaration. references the serviceRefDeclaration name defined in clusterDefinition.componentDefs[*].serviceRefDeclarations[*].name
+    /// Specifies the identifier of the service reference declaration. It corresponds to the serviceRefDeclaration name defined in the clusterDefinition.componentDefs[*].serviceRefDeclarations[*].name.
     pub name: String,
-    /// namespace defines the namespace of the referenced Cluster or the namespace of the referenced ServiceDescriptor object. If not set, the referenced Cluster and ServiceDescriptor will be searched in the namespace of the current cluster by default.
+    /// Specifies the namespace of the referenced Cluster or the namespace of the referenced ServiceDescriptor object. If not provided, the referenced Cluster and ServiceDescriptor will be searched in the namespace of the current cluster by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// serviceDescriptor defines the service descriptor of the service provided by external sources. When referencing a service provided by external sources, you need to provide the ServiceDescriptor object name to establish the service binding. And serviceDescriptor is the name of the ServiceDescriptor object, furthermore, the ServiceDescriptor.spec.serviceKind and ServiceDescriptor.spec.serviceVersion should match clusterDefinition.componentDefs[*].serviceRefDeclarations[*].serviceRefDeclarationSpecs[*].serviceKind and the regular expression defines in clusterDefinition.componentDefs[*].serviceRefDeclarations[*].serviceRefDeclarationSpecs[*].serviceVersion. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
+    /// The service descriptor of the service provided by external sources. 
+    ///  When referencing a service provided by external sources, the ServiceDescriptor object name is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion defined in the service reference declaration in the ClusterDefinition. 
+    ///  If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDescriptor")]
     pub service_descriptor: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsServices {
-    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
+    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Service name
+    /// The name of the service.
     pub name: String,
-    /// serviceType determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
+    /// Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. 
+    ///  - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
+    ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<ClusterComponentSpecsServicesServiceType>,
 }
@@ -338,15 +348,15 @@ pub enum ClusterComponentSpecsServicesServiceType {
     LoadBalancer,
 }
 
-/// switchPolicy defines the strategy for switchover and failover when workloadType is Replication.
+/// Defines the strategy for switchover and failover when workloadType is Replication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsSwitchPolicy {
-    /// clusterSwitchPolicy defines type of the switchPolicy when workloadType is Replication. MaximumAvailability: [WIP] when the primary is active, do switch if the synchronization delay = 0 in the user-defined lagProbe data delay detection logic, otherwise do not switch. The primary is down, switch immediately. It will be available in future versions. MaximumDataProtection: [WIP] when the primary is active, do switch if synchronization delay = 0 in the user-defined lagProbe data lag detection logic, otherwise do not switch. If the primary is down, if it can be judged that the primary and secondary data are consistent, then do the switch, otherwise do not switch. It will be available in future versions. Noop: KubeBlocks will not perform high-availability switching on components. Users need to implement HA by themselves or integrate open source HA solution.
+    /// Type specifies the type of switch policy to be applied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ClusterComponentSpecsSwitchPolicyType>,
 }
 
-/// switchPolicy defines the strategy for switchover and failover when workloadType is Replication.
+/// Defines the strategy for switchover and failover when workloadType is Replication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterComponentSpecsSwitchPolicyType {
     Noop,
@@ -372,7 +382,7 @@ pub struct ClusterComponentSpecsTolerations {
     pub value: Option<String>,
 }
 
-/// ClusterComponentSpec defines the cluster component spec. //(TODO) +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDefRef) || has(self.componentDefRef)", message="componentDefRef is required once set" //(TODO) +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDef) || has(self.componentDef)", message="componentDef is required once set"
+/// ClusterComponentSpec defines the specifications for a cluster component. TODO +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDefRef) || has(self.componentDefRef)", message="componentDefRef is required once set" TODO +kubebuilder:validation:XValidation:rule="!has(oldSelf.componentDef) || has(self.componentDef)", message="componentDef is required once set"
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterComponentSpecsUpdateStrategy {
     Serial,
@@ -380,36 +390,37 @@ pub enum ClusterComponentSpecsUpdateStrategy {
     Parallel,
 }
 
-/// userResourceRefs defines the user-defined volumes.
+/// Defines the user-defined volumes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsUserResourceRefs {
-    /// configMapRefs defines the user-defined configmaps.
+    /// ConfigMapRefs defines the user-defined config maps.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRefs")]
     pub config_map_refs: Option<Vec<ClusterComponentSpecsUserResourceRefsConfigMapRefs>>,
-    /// secretRefs defines the user-defined secrets.
+    /// SecretRefs defines the user-defined secrets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRefs")]
     pub secret_refs: Option<Vec<ClusterComponentSpecsUserResourceRefsSecretRefs>>,
 }
 
+/// ConfigMapRef defines a reference to a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsUserResourceRefsConfigMapRefs {
-    /// asVolumeFrom defines the list of containers where volumeMounts will be injected into.
+    /// AsVolumeFrom lists the names of containers in which the volume should be mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asVolumeFrom")]
     pub as_volume_from: Option<Vec<String>>,
-    /// configMap defines the configmap volume source.
+    /// ConfigMap specifies the ConfigMap to be mounted as a volume.
     #[serde(rename = "configMap")]
     pub config_map: ClusterComponentSpecsUserResourceRefsConfigMapRefsConfigMap,
-    /// mountPath is the path at which to mount the volume.
+    /// MountPoint is the filesystem path where the volume will be mounted.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
-    /// name is the name of the referenced the Configmap/Secret object.
+    /// Name is the name of the referenced ConfigMap or Secret object. It must conform to DNS label standards.
     pub name: String,
-    /// subPath is a relative file path within the volume to mount.
+    /// SubPath specifies a path within the volume from which to mount.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
 }
 
-/// configMap defines the configmap volume source.
+/// ConfigMap specifies the ConfigMap to be mounted as a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsUserResourceRefsConfigMapRefsConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -438,24 +449,25 @@ pub struct ClusterComponentSpecsUserResourceRefsConfigMapRefsConfigMapItems {
     pub path: String,
 }
 
+/// SecretRef defines a reference to a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsUserResourceRefsSecretRefs {
-    /// asVolumeFrom defines the list of containers where volumeMounts will be injected into.
+    /// AsVolumeFrom lists the names of containers in which the volume should be mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asVolumeFrom")]
     pub as_volume_from: Option<Vec<String>>,
-    /// mountPath is the path at which to mount the volume.
+    /// MountPoint is the filesystem path where the volume will be mounted.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
-    /// name is the name of the referenced the Configmap/Secret object.
+    /// Name is the name of the referenced ConfigMap or Secret object. It must conform to DNS label standards.
     pub name: String,
-    /// secret defines the secret volume source.
+    /// Secret specifies the secret to be mounted as a volume.
     pub secret: ClusterComponentSpecsUserResourceRefsSecretRefsSecret,
-    /// subPath is a relative file path within the volume to mount.
+    /// SubPath specifies a path within the volume from which to mount.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
 }
 
-/// secret defines the secret volume source.
+/// Secret specifies the secret to be mounted as a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsUserResourceRefsSecretRefsSecret {
     /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -486,31 +498,31 @@ pub struct ClusterComponentSpecsUserResourceRefsSecretRefsSecretItems {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsVolumeClaimTemplates {
-    /// Reference `ClusterDefinition.spec.componentDefs.containers.volumeMounts.name`.
+    /// Refers to `clusterDefinition.spec.componentDefs.containers.volumeMounts.name`.
     pub name: String,
-    /// spec defines the desired characteristics of a volume requested by a pod author.
+    /// Defines the desired characteristics of a volume requested by a pod author.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ClusterComponentSpecsVolumeClaimTemplatesSpec>,
 }
 
-/// spec defines the desired characteristics of a volume requested by a pod author.
+/// Defines the desired characteristics of a volume requested by a pod author.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsVolumeClaimTemplatesSpec {
-    /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
+    /// Contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
+    /// Represents the minimum resources the volume should have. If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterComponentSpecsVolumeClaimTemplatesSpecResources>,
-    /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
+    /// The name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim.
+    /// Defines what type of volume is required by the claim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
 }
 
-/// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
+/// Represents the minimum resources the volume should have. If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -533,32 +545,32 @@ pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecResourcesClaims {
     pub name: String,
 }
 
-/// monitor specifies the configuration of monitor
+/// The configuration of monitor.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterMonitor {
-    /// monitoringInterval specifies interval of monitoring, no monitor if set to 0
+    /// Defines the frequency at which monitoring occurs. If set to 0, monitoring is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitoringInterval")]
     pub monitoring_interval: Option<IntOrString>,
 }
 
-/// network specifies the configuration of network
+/// The configuration of network.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterNetwork {
-    /// hostNetworkAccessible specifies whether host network is accessible. It defaults to false
+    /// Indicates whether the host network can be accessed. By default, this is set to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworkAccessible")]
     pub host_network_accessible: Option<bool>,
-    /// publiclyAccessible specifies whether it is publicly accessible. It defaults to false
+    /// Indicates whether the network is accessible to the public. By default, this is set to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publiclyAccessible")]
     pub publicly_accessible: Option<bool>,
 }
 
-/// resources specifies the resources of the first componentSpec, if the resources of the first componentSpec is specified, this value will be ignored.
+/// Specifies the resources of the first componentSpec, if the resources of the first componentSpec is specified, this value will be ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterResources {
-    /// cpu resource needed, more info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Specifies the amount of processing power the cluster needs. For more information, refer to: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<IntOrString>,
-    /// memory resource needed, more info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Specifies the amount of memory the cluster needs. For more information, refer to: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<IntOrString>,
 }
@@ -569,7 +581,7 @@ pub struct ClusterServices {
     /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// ComponentSelector extends the ServiceSpec.Selector by allowing you to specify a component as selectors for the service. ComponentSelector and ShardingSelector cannot be set at the same time.
+    /// Extends the ServiceSpec.Selector by allowing the specification of a component, to be used as a selector for the service. Note that this and the ShardingSelector are mutually exclusive and cannot be set simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSelector")]
     pub component_selector: Option<String>,
     /// Name defines the name of the service. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
@@ -577,10 +589,12 @@ pub struct ClusterServices {
     /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service. if GeneratePodOrdinalService sets to true, RoleSelector will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
-    /// ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: - <CLUSTER_NAME>: for cluster-level services - <CLUSTER_NAME>-<COMPONENT_NAME>: for component-level services Only one default service name is allowed. Cannot be updated.
+    /// ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: 
+    ///  - CLUSTER_NAME: for cluster-level services - CLUSTER_NAME-COMPONENT_NAME: for component-level services 
+    ///  Only one default service name is allowed. Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
-    /// ShardingSelector extends the ServiceSpec.Selector by allowing you to specify a sharding name defined in Cluster.Spec.ShardingSpecs[x].Name as selectors for the service. ShardingSelector and ComponentSelector cannot be set at the same time.
+    /// Extends the ServiceSpec.Selector by allowing the specification of a sharding name, which is defined in cluster.spec.shardingSpecs[x].name, to be used as a selector for the service. Note that this and the ComponentSelector are mutually exclusive and cannot be set simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingSelector")]
     pub sharding_selector: Option<String>,
     /// Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
@@ -696,144 +710,146 @@ pub struct ClusterServicesSpecSessionAffinityConfigClientIp {
 /// ShardingSpec defines the sharding spec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecs {
-    /// name defines sharding name, this name is also part of Service DNS name, so this name will comply with IANA Service Naming rule. The name is also used to generate the name of the underlying components with the naming pattern <ShardingSpec.Name>-<ShardID>. At the same time, the name of component template defined in ShardingSpec.Template.Name will be ignored.
+    /// Specifies the identifier for the sharding configuration. This identifier is included as part of the Service DNS name and must comply with IANA Service Naming rules. It is used to generate the names of underlying components following the pattern `$(ShardingSpec.Name)-$(ShardID)`. Note that the name of the component template defined in ShardingSpec.Template.Name will be disregarded.
     pub name: String,
-    /// shards indicates the number of component, and these components have the same specifications and definitions. It should be noted that the number of replicas for each component should be defined by template.replicas. Moreover, the logical relationship between these components should be maintained by the components themselves, KubeBlocks only provides the following capabilities for managing the lifecycle of sharding: 1. When the number of shards increases, the postProvision Action defined in the ComponentDefinition will be executed if the conditions are met. 2. When the number of shards decreases, the preTerminate Action defined in the ComponentDefinition will be executed if the conditions are met. Additionally, the resources and data associated with the corresponding Component will be deleted as well.
+    /// Specifies the number of components, all of which will have identical specifications and definitions. 
+    ///  The number of replicas for each component should be defined by template.replicas. The logical relationship between these components should be maintained by the components themselves. KubeBlocks only provides lifecycle management for sharding, including: 
+    ///  1. Executing the postProvision Action defined in the ComponentDefinition when the number of shards increases, provided the conditions are met. 2. Executing the preTerminate Action defined in the ComponentDefinition when the number of shards decreases, provided the conditions are met. Resources and data associated with the corresponding Component will also be deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<i32>,
-    /// template defines the component template. A ShardingSpec generates a set of components (also called shards) based on the component template, and this group of components or shards have the same specifications and definitions.
+    /// The blueprint for the components. Generates a set of components (also referred to as shards) based on this template. All components or shards generated will have identical specifications and definitions.
     pub template: ClusterShardingSpecsTemplate,
 }
 
-/// template defines the component template. A ShardingSpec generates a set of components (also called shards) based on the component template, and this group of components or shards have the same specifications and definitions.
+/// The blueprint for the components. Generates a set of components (also referred to as shards) based on this template. All components or shards generated will have identical specifications and definitions.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplate {
-    /// affinity describes affinities specified by users.
+    /// A group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ClusterShardingSpecsTemplateAffinity>,
-    /// classDefRef references the class defined in ComponentClassDefinition.
+    /// References the class defined in ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
     pub class_def_ref: Option<ClusterShardingSpecsTemplateClassDefRef>,
-    /// componentDef references the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef. //(TODO) +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDef is immutable"
+    /// References the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef. 
+    ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDef is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDef")]
     pub component_def: Option<String>,
-    /// componentDefRef references componentDef defined in ClusterDefinition spec. Need to comply with IANA Service Naming rule. //(TODO) +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDefRef is immutable"
+    /// References the componentDef defined in the ClusterDefinition spec. Must comply with the IANA Service Naming rule. 
+    ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentDefRef is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
     pub component_def_ref: Option<String>,
-    /// enabledLogs indicates which log file takes effect in the database cluster. element is the log type which is defined in cluster definition logConfig.name, and will set relative variables about this log type in database kernel.
+    /// Indicates which log file takes effect in the database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
     pub enabled_logs: Option<Vec<String>>,
-    /// Instances defines the list of instance to be deleted priorly If the RsmTransformPolicy is specified as ToPod,the list of instances will be used.
+    /// Defines the list of instances to be deleted priorly. If the RsmTransformPolicy is specified as ToPod, the list of instances will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<String>>,
-    /// issuer defines provider context for TLS certs. required when TLS enabled
+    /// Defines provider context for TLS certs. Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<ClusterShardingSpecsTemplateIssuer>,
-    /// monitor is a switch to enable monitoring and is set as false by default. KubeBlocks provides an extension mechanism to support component level monitoring, which will scrape metrics auto or manually from servers in component and export metrics to Time Series Database.
+    /// To enable monitoring.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<bool>,
-    /// name defines cluster's component name, this name is also part of Service DNS name, so this name will comply with IANA Service Naming rule. When ClusterComponentSpec is referenced as a template, name is optional. Otherwise, it is required. //(TODO) +kubebuilder:validation:XValidation:rule="self == oldSelf",message="name is immutable"
+    /// Specifies the name of the cluster's component. This name is also part of the Service DNS name and must comply with the IANA Service Naming rule. When ClusterComponentSpec is referenced as a template, the name is optional. Otherwise, it is required. 
+    ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="name is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Nodes defines the list of nodes that pods can schedule If the RsmTransformPolicy is specified as ToPod,the list of nodes will be used. If the list of nodes is empty, no specific node will be assigned. However, if the list of node is filled, all pods will be evenly scheduled across the nodes in the list.
+    /// Defines the list of nodes that pods can schedule. If the RsmTransformPolicy is specified as ToPod, the list of nodes will be used. If the list of nodes is empty, no specific node will be assigned. However, if the list of nodes is filled, all pods will be evenly scheduled across the nodes in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
-    /// Component replicas.
+    /// Specifies the number of component replicas.
     pub replicas: i32,
-    /// Resources requests and limits of workload.
+    /// Specifies the resources requests and limits of the workload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterShardingSpecsTemplateResources>,
-    /// RsmTransformPolicy defines the policy generate sts using rsm. ToSts: rsm transforms to statefulSet ToPod: rsm transforms to pods
+    /// Defines the policy to generate sts using rsm.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rsmTransformPolicy")]
     pub rsm_transform_policy: Option<ClusterShardingSpecsTemplateRsmTransformPolicy>,
-    /// serviceAccountName is the name of the ServiceAccount that running component depends on.
+    /// Specifies the name of the ServiceAccount that the running component depends on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    /// serviceRefs define service references for the current component. Based on the referenced services, they can be categorized into two types: Service provided by external sources: These services are provided by external sources and are not managed by KubeBlocks. They can be Kubernetes-based or non-Kubernetes services. For external services, you need to provide an additional ServiceDescriptor object to establish the service binding. Service provided by other KubeBlocks clusters: These services are provided by other KubeBlocks clusters. You can bind to these services by specifying the name of the hosting cluster. Each type of service reference requires specific configurations and bindings to establish the connection and interaction with the respective services. It should be noted that the ServiceRef has cluster-level semantic consistency, meaning that within the same Cluster, service references with the same ServiceRef.Name are considered to be the same service. It is only allowed to bind to the same Cluster or ServiceDescriptor.
+    /// Defines service references for the current component. 
+    ///  Based on the referenced services, they can be categorized into two types: 
+    ///  - Service provided by external sources: These services are provided by external sources and are not managed by KubeBlocks. They can be Kubernetes-based or non-Kubernetes services. For external services, an additional ServiceDescriptor object is needed to establish the service binding. - Service provided by other KubeBlocks clusters: These services are provided by other KubeBlocks clusters. Binding to these services is done by specifying the name of the hosting cluster. 
+    ///  Each type of service reference requires specific configurations and bindings to establish the connection and interaction with the respective services. Note that the ServiceRef has cluster-level semantic consistency, meaning that within the same Cluster, service references with the same ServiceRef.Name are considered to be the same service. It is only allowed to bind to the same Cluster or ServiceDescriptor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefs")]
     pub service_refs: Option<Vec<ClusterShardingSpecsTemplateServiceRefs>>,
     /// Services expose endpoints that can be accessed by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterShardingSpecsTemplateServices>>,
-    /// switchPolicy defines the strategy for switchover and failover when workloadType is Replication.
+    /// Defines the strategy for switchover and failover when workloadType is Replication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchPolicy")]
     pub switch_policy: Option<ClusterShardingSpecsTemplateSwitchPolicy>,
     /// Enables or disables TLS certs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<bool>,
-    /// Component tolerations will override ClusterSpec.Tolerations if specified.
+    /// Attached to tolerate any taint that matches the triple `key,value,effect` using the matching operator `operator`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ClusterShardingSpecsTemplateTolerations>>,
-    /// updateStrategy defines the update strategy for the component. Not supported.
+    /// Defines the update strategy for the component. Not supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterShardingSpecsTemplateUpdateStrategy>,
-    /// userResourceRefs defines the user-defined volumes.
+    /// Defines the user-defined volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userResourceRefs")]
     pub user_resource_refs: Option<ClusterShardingSpecsTemplateUserResourceRefs>,
-    /// volumeClaimTemplates information for statefulset.spec.volumeClaimTemplates.
+    /// Provides information for statefulset.spec.volumeClaimTemplates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<ClusterShardingSpecsTemplateVolumeClaimTemplates>>,
 }
 
-/// affinity describes affinities specified by users.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateAffinity {
-    /// nodeLabels describes that pods must be scheduled to the nodes with the specified node labels.
+    /// Indicates that pods must be scheduled to the nodes with the specified node labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabels")]
     pub node_labels: Option<BTreeMap<String, String>>,
-    /// podAntiAffinity describes the anti-affinity level of pods within a component. Preferred means try spread pods by `TopologyKeys`. Required means must spread pods by `TopologyKeys`.
+    /// Specifies the anti-affinity level of pods within a component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ClusterShardingSpecsTemplateAffinityPodAntiAffinity>,
-    /// tenancy describes how pods are distributed across node. SharedNode means multiple pods may share the same node. DedicatedNode means each pod runs on their own dedicated node.
+    /// Defines how pods are distributed across nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenancy: Option<ClusterShardingSpecsTemplateAffinityTenancy>,
-    /// topologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. It's used as the topology domain for pod anti-affinity and pod spread constraint. Some well-known label keys, such as "kubernetes.io/hostname" and "topology.kubernetes.io/zone" are often used as TopologyKey, as well as any other custom label key.
+    /// Represents the key of node labels. 
+    ///  Nodes with a label containing this key and identical values are considered to be in the same topology. This is used as the topology domain for pod anti-affinity and pod spread constraint. Some well-known label keys, such as `kubernetes.io/hostname` and `topology.kubernetes.io/zone`, are often used as TopologyKey, along with any other custom label key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKeys")]
     pub topology_keys: Option<Vec<String>>,
 }
 
-/// affinity describes affinities specified by users.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterShardingSpecsTemplateAffinityPodAntiAffinity {
     Preferred,
     Required,
 }
 
-/// affinity describes affinities specified by users.
+/// A group of affinity scheduling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterShardingSpecsTemplateAffinityTenancy {
     SharedNode,
     DedicatedNode,
 }
 
-/// classDefRef references the class defined in ComponentClassDefinition.
+/// References the class defined in ComponentClassDefinition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateClassDefRef {
-    /// Class refers to the name of the class that is defined in the ComponentClassDefinition.
+    /// Defines the name of the class that is defined in the ComponentClassDefinition.
     pub class: String,
-    /// Name refers to the name of the ComponentClassDefinition.
+    /// Specifies the name of the ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// issuer defines provider context for TLS certs. required when TLS enabled
+/// Defines provider context for TLS certs. Required when TLS is enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateIssuer {
-    /// Name of issuer. Options supported: - KubeBlocks - Certificates signed by KubeBlocks Operator. - UserProvided - User provided own CA-signed certificates.
-    pub name: ClusterShardingSpecsTemplateIssuerName,
-    /// secretRef. TLS certs Secret reference required when from is UserProvided
+    /// The issuer for TLS certificates.
+    pub name: String,
+    /// SecretRef is the reference to the TLS certificates secret. It is required when the issuer is set to UserProvided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ClusterShardingSpecsTemplateIssuerSecretRef>,
 }
 
-/// issuer defines provider context for TLS certs. required when TLS enabled
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterShardingSpecsTemplateIssuerName {
-    KubeBlocks,
-    UserProvided,
-}
-
-/// secretRef. TLS certs Secret reference required when from is UserProvided
+/// SecretRef is the reference to the TLS certificates secret. It is required when the issuer is set to UserProvided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateIssuerSecretRef {
     /// CA cert key in Secret
@@ -846,7 +862,7 @@ pub struct ClusterShardingSpecsTemplateIssuerSecretRef {
     pub name: String,
 }
 
-/// Resources requests and limits of workload.
+/// Specifies the resources requests and limits of the workload.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -869,7 +885,7 @@ pub struct ClusterShardingSpecsTemplateResourcesClaims {
     pub name: String,
 }
 
-/// template defines the component template. A ShardingSpec generates a set of components (also called shards) based on the component template, and this group of components or shards have the same specifications and definitions.
+/// The blueprint for the components. Generates a set of components (also referred to as shards) based on this template. All components or shards generated will have identical specifications and definitions.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterShardingSpecsTemplateRsmTransformPolicy {
     ToPod,
@@ -878,27 +894,33 @@ pub enum ClusterShardingSpecsTemplateRsmTransformPolicy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateServiceRefs {
-    /// When referencing a service provided by other KubeBlocks cluster, you need to provide the name of the Cluster being referenced. By default, when other KubeBlocks Cluster are referenced, the ClusterDefinition.spec.connectionCredential secret corresponding to the referenced Cluster will be used to bind to the current component. Currently, if a KubeBlocks cluster is to be referenced, the connection credential secret should include and correspond to the following fields: endpoint, port, username, and password. Under this referencing approach, the ServiceKind and ServiceVersion of service reference declaration defined in the ClusterDefinition will not be validated. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
+    /// The name of the KubeBlocks cluster being referenced when a service provided by another KubeBlocks cluster is being referenced. 
+    ///  By default, the clusterDefinition.spec.connectionCredential secret corresponding to the referenced Cluster will be used to bind to the current component. The connection credential secret should include and correspond to the following fields: endpoint, port, username, and password when a KubeBlocks cluster is being referenced. 
+    ///  Under this referencing approach, the ServiceKind and ServiceVersion of service reference declaration defined in the ClusterDefinition will not be validated. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// name of the service reference declaration. references the serviceRefDeclaration name defined in clusterDefinition.componentDefs[*].serviceRefDeclarations[*].name
+    /// Specifies the identifier of the service reference declaration. It corresponds to the serviceRefDeclaration name defined in the clusterDefinition.componentDefs[*].serviceRefDeclarations[*].name.
     pub name: String,
-    /// namespace defines the namespace of the referenced Cluster or the namespace of the referenced ServiceDescriptor object. If not set, the referenced Cluster and ServiceDescriptor will be searched in the namespace of the current cluster by default.
+    /// Specifies the namespace of the referenced Cluster or the namespace of the referenced ServiceDescriptor object. If not provided, the referenced Cluster and ServiceDescriptor will be searched in the namespace of the current cluster by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// serviceDescriptor defines the service descriptor of the service provided by external sources. When referencing a service provided by external sources, you need to provide the ServiceDescriptor object name to establish the service binding. And serviceDescriptor is the name of the ServiceDescriptor object, furthermore, the ServiceDescriptor.spec.serviceKind and ServiceDescriptor.spec.serviceVersion should match clusterDefinition.componentDefs[*].serviceRefDeclarations[*].serviceRefDeclarationSpecs[*].serviceKind and the regular expression defines in clusterDefinition.componentDefs[*].serviceRefDeclarations[*].serviceRefDeclarationSpecs[*].serviceVersion. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
+    /// The service descriptor of the service provided by external sources. 
+    ///  When referencing a service provided by external sources, the ServiceDescriptor object name is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion defined in the service reference declaration in the ClusterDefinition. 
+    ///  If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDescriptor")]
     pub service_descriptor: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateServices {
-    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
+    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Service name
+    /// The name of the service.
     pub name: String,
-    /// serviceType determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
+    /// Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. 
+    ///  - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
+    ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<ClusterShardingSpecsTemplateServicesServiceType>,
 }
@@ -911,15 +933,15 @@ pub enum ClusterShardingSpecsTemplateServicesServiceType {
     LoadBalancer,
 }
 
-/// switchPolicy defines the strategy for switchover and failover when workloadType is Replication.
+/// Defines the strategy for switchover and failover when workloadType is Replication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateSwitchPolicy {
-    /// clusterSwitchPolicy defines type of the switchPolicy when workloadType is Replication. MaximumAvailability: [WIP] when the primary is active, do switch if the synchronization delay = 0 in the user-defined lagProbe data delay detection logic, otherwise do not switch. The primary is down, switch immediately. It will be available in future versions. MaximumDataProtection: [WIP] when the primary is active, do switch if synchronization delay = 0 in the user-defined lagProbe data lag detection logic, otherwise do not switch. If the primary is down, if it can be judged that the primary and secondary data are consistent, then do the switch, otherwise do not switch. It will be available in future versions. Noop: KubeBlocks will not perform high-availability switching on components. Users need to implement HA by themselves or integrate open source HA solution.
+    /// Type specifies the type of switch policy to be applied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ClusterShardingSpecsTemplateSwitchPolicyType>,
 }
 
-/// switchPolicy defines the strategy for switchover and failover when workloadType is Replication.
+/// Defines the strategy for switchover and failover when workloadType is Replication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterShardingSpecsTemplateSwitchPolicyType {
     Noop,
@@ -945,7 +967,7 @@ pub struct ClusterShardingSpecsTemplateTolerations {
     pub value: Option<String>,
 }
 
-/// template defines the component template. A ShardingSpec generates a set of components (also called shards) based on the component template, and this group of components or shards have the same specifications and definitions.
+/// The blueprint for the components. Generates a set of components (also referred to as shards) based on this template. All components or shards generated will have identical specifications and definitions.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterShardingSpecsTemplateUpdateStrategy {
     Serial,
@@ -953,36 +975,37 @@ pub enum ClusterShardingSpecsTemplateUpdateStrategy {
     Parallel,
 }
 
-/// userResourceRefs defines the user-defined volumes.
+/// Defines the user-defined volumes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateUserResourceRefs {
-    /// configMapRefs defines the user-defined configmaps.
+    /// ConfigMapRefs defines the user-defined config maps.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRefs")]
     pub config_map_refs: Option<Vec<ClusterShardingSpecsTemplateUserResourceRefsConfigMapRefs>>,
-    /// secretRefs defines the user-defined secrets.
+    /// SecretRefs defines the user-defined secrets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRefs")]
     pub secret_refs: Option<Vec<ClusterShardingSpecsTemplateUserResourceRefsSecretRefs>>,
 }
 
+/// ConfigMapRef defines a reference to a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateUserResourceRefsConfigMapRefs {
-    /// asVolumeFrom defines the list of containers where volumeMounts will be injected into.
+    /// AsVolumeFrom lists the names of containers in which the volume should be mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asVolumeFrom")]
     pub as_volume_from: Option<Vec<String>>,
-    /// configMap defines the configmap volume source.
+    /// ConfigMap specifies the ConfigMap to be mounted as a volume.
     #[serde(rename = "configMap")]
     pub config_map: ClusterShardingSpecsTemplateUserResourceRefsConfigMapRefsConfigMap,
-    /// mountPath is the path at which to mount the volume.
+    /// MountPoint is the filesystem path where the volume will be mounted.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
-    /// name is the name of the referenced the Configmap/Secret object.
+    /// Name is the name of the referenced ConfigMap or Secret object. It must conform to DNS label standards.
     pub name: String,
-    /// subPath is a relative file path within the volume to mount.
+    /// SubPath specifies a path within the volume from which to mount.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
 }
 
-/// configMap defines the configmap volume source.
+/// ConfigMap specifies the ConfigMap to be mounted as a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateUserResourceRefsConfigMapRefsConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -1011,24 +1034,25 @@ pub struct ClusterShardingSpecsTemplateUserResourceRefsConfigMapRefsConfigMapIte
     pub path: String,
 }
 
+/// SecretRef defines a reference to a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateUserResourceRefsSecretRefs {
-    /// asVolumeFrom defines the list of containers where volumeMounts will be injected into.
+    /// AsVolumeFrom lists the names of containers in which the volume should be mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asVolumeFrom")]
     pub as_volume_from: Option<Vec<String>>,
-    /// mountPath is the path at which to mount the volume.
+    /// MountPoint is the filesystem path where the volume will be mounted.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
-    /// name is the name of the referenced the Configmap/Secret object.
+    /// Name is the name of the referenced ConfigMap or Secret object. It must conform to DNS label standards.
     pub name: String,
-    /// secret defines the secret volume source.
+    /// Secret specifies the secret to be mounted as a volume.
     pub secret: ClusterShardingSpecsTemplateUserResourceRefsSecretRefsSecret,
-    /// subPath is a relative file path within the volume to mount.
+    /// SubPath specifies a path within the volume from which to mount.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
 }
 
-/// secret defines the secret volume source.
+/// Secret specifies the secret to be mounted as a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateUserResourceRefsSecretRefsSecret {
     /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -1059,31 +1083,31 @@ pub struct ClusterShardingSpecsTemplateUserResourceRefsSecretRefsSecretItems {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateVolumeClaimTemplates {
-    /// Reference `ClusterDefinition.spec.componentDefs.containers.volumeMounts.name`.
+    /// Refers to `clusterDefinition.spec.componentDefs.containers.volumeMounts.name`.
     pub name: String,
-    /// spec defines the desired characteristics of a volume requested by a pod author.
+    /// Defines the desired characteristics of a volume requested by a pod author.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ClusterShardingSpecsTemplateVolumeClaimTemplatesSpec>,
 }
 
-/// spec defines the desired characteristics of a volume requested by a pod author.
+/// Defines the desired characteristics of a volume requested by a pod author.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateVolumeClaimTemplatesSpec {
-    /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
+    /// Contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
+    /// Represents the minimum resources the volume should have. If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterShardingSpecsTemplateVolumeClaimTemplatesSpecResources>,
-    /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
+    /// The name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim.
+    /// Defines what type of volume is required by the claim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
 }
 
-/// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
+/// Represents the minimum resources the volume should have. If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateVolumeClaimTemplatesSpecResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -1106,10 +1130,10 @@ pub struct ClusterShardingSpecsTemplateVolumeClaimTemplatesSpecResourcesClaims {
     pub name: String,
 }
 
-/// storage specifies the storage of the first componentSpec, if the storage of the first componentSpec is specified, this value will be ignored.
+/// Specifies the storage of the first componentSpec, if the storage of the first componentSpec is specified, this value will be ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterStorage {
-    /// storage size needed, more info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Specifies the amount of storage the cluster needs. For more information, refer to: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<IntOrString>,
 }
@@ -1153,72 +1177,75 @@ pub struct ClusterTolerations {
 /// ClusterStatus defines the observed state of Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterStatus {
-    /// clusterDefGeneration represents the generation number of ClusterDefinition referenced.
+    /// Represents the generation number of the referenced ClusterDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDefGeneration")]
     pub cluster_def_generation: Option<i64>,
-    /// components record the current status information of all components of the cluster.
+    /// Records the current status information of all components within the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<BTreeMap<String, ClusterStatusComponents>>,
-    /// Describe current state of cluster API Resource, like warning.
+    /// Describes the current state of the cluster API Resource, such as warnings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ClusterStatusConditions>>,
-    /// message describes cluster details message in current phase.
+    /// Provides additional information about the current phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// observedGeneration is the most recent generation observed for this Cluster. It corresponds to the Cluster's generation, which is updated on mutation by the API Server.
+    /// The most recent generation number that has been observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// phase describes the phase of the Cluster, the detail information of the phases are as following: Creating: all components are in `Creating` phase. Running: all components are in `Running` phase, means the cluster is working well. Updating: all components are in `Creating`, `Running` or `Updating` phase, and at least one component is in `Creating` or `Updating` phase, means the cluster is doing an update. Stopping: at least one component is in `Stopping` phase, means the cluster is in a stop progress. Stopped: all components are in 'Stopped` phase, means the cluster has stopped and didn't provide any function anymore. Failed: all components are in `Failed` phase, means the cluster is unavailable. Abnormal: some components are in `Failed` or `Abnormal` phase, means the cluster in a fragile state. troubleshoot need to be done. Deleting: the cluster is being deleted.
+    /// The current phase of the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterStatusPhase>,
 }
 
-/// components record the current status information of all components of the cluster.
+/// Records the current status information of all components within the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterStatusComponents {
-    /// members' status.
+    /// Represents the status of the members.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "membersStatus")]
     pub members_status: Option<Vec<ClusterStatusComponentsMembersStatus>>,
-    /// message records the component details message in current phase. Keys are podName or deployName or statefulSetName. The format is `ObjectKind/Name`.
+    /// Records detailed information about the component in its current phase. The keys are either podName, deployName, or statefulSetName, formatted as 'ObjectKind/Name'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<BTreeMap<String, String>>,
-    /// phase describes the phase of the component and the detail information of the phases are as following: Creating: `Creating` is a special `Updating` with previous phase `empty`(means "") or `Creating`. Running: component replicas > 0 and all pod specs are latest with a Running state. Updating: component replicas > 0 and has no failed pods. the component is being updated. Abnormal: component replicas > 0 but having some failed pods. the component basically works but in a fragile state. Failed: component replicas > 0 but having some failed pods. the component doesn't work anymore. Stopping: component replicas = 0 and has terminating pods. Stopped: component replicas = 0 and all pods have been deleted. Deleting: the component is being deleted.
+    /// Specifies the current state of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterStatusComponentsPhase>,
-    /// podsReady checks if all pods of the component are ready.
+    /// Checks if all pods of the component are ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsReady")]
     pub pods_ready: Option<bool>,
-    /// podsReadyTime what time point of all component pods are ready, this time is the ready time of the last component pod.
+    /// Indicates the time when all component pods became ready. This is the readiness time of the last component pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsReadyTime")]
     pub pods_ready_time: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterStatusComponentsMembersStatus {
-    /// PodName pod name.
+    /// Represents the name of the pod.
     #[serde(rename = "podName")]
     pub pod_name: String,
-    /// Is it required for rsm to have at least one primary pod to be ready.
+    /// Indicates whether it is required for the replica set manager (rsm) to have at least one primary pod ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyWithoutPrimary")]
     pub ready_without_primary: Option<bool>,
+    /// Defines the role of the replica in the cluster.
     pub role: ClusterStatusComponentsMembersStatusRole,
 }
 
+/// Defines the role of the replica in the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterStatusComponentsMembersStatusRole {
-    /// AccessMode, what service this member capable.
+    /// Specifies the service capabilities of this member.
     #[serde(rename = "accessMode")]
     pub access_mode: ClusterStatusComponentsMembersStatusRoleAccessMode,
-    /// CanVote, whether this member has voting rights
+    /// Indicates if this member has voting rights.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "canVote")]
     pub can_vote: Option<bool>,
-    /// IsLeader, whether this member is the leader
+    /// Determines if this member is the leader.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isLeader")]
     pub is_leader: Option<bool>,
-    /// Name, role name.
+    /// Defines the role name of the replica.
     pub name: String,
 }
 
+/// Defines the role of the replica in the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterStatusComponentsMembersStatusRoleAccessMode {
     None,
@@ -1226,7 +1253,7 @@ pub enum ClusterStatusComponentsMembersStatusRoleAccessMode {
     ReadWrite,
 }
 
-/// components record the current status information of all components of the cluster.
+/// Records the current status information of all components within the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterStatusComponentsPhase {
     Creating,

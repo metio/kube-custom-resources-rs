@@ -95,6 +95,9 @@ pub struct HazelcastSpec {
     /// Hazelcast serialization configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serialization: Option<HazelcastSerialization>,
+    /// ServiceAccountName is the name of the ServiceAccount to use to run Hazelcast cluster. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
     /// Hazelcast SQL configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sql: Option<HazelcastSql>,
@@ -437,9 +440,6 @@ pub enum HazelcastNativeMemoryAllocatorType {
 /// Persistence configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastPersistence {
-    /// Persistence base directory.
-    #[serde(rename = "baseDir")]
-    pub base_dir: String,
     /// Configuration of the cluster recovery strategy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDataRecoveryPolicy")]
     pub cluster_data_recovery_policy: Option<HazelcastPersistenceClusterDataRecoveryPolicy>,

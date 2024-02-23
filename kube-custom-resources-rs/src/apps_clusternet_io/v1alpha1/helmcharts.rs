@@ -26,16 +26,20 @@ pub struct HelmChartSpec {
     /// DisableHooks disables hook processing if set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHooks")]
     pub disable_hooks: Option<bool>,
-    /// Force will, if set to `true`, ignore certain warnings and perform the upgrade anyway. This should be used with caution.
+    /// Force will, if set to `true`, ignore certain warnings and perform the upgrade anyway.
+    /// This should be used with caution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
-    /// Replace will re-use the given name, only if that name is a deleted release that remains in the history. This is unsafe in production.
+    /// Replace will re-use the given name, only if that name is a deleted release that remains in the history.
+    /// This is unsafe in production.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replace: Option<bool>,
     /// ReplaceCRDs replace all crds in chart and sub charts before upgrade and install, not working when SkipCRDs true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceCRDs")]
     pub replace_cr_ds: Option<bool>,
-    /// a Helm Repository to be used. OCI-based registries are also supported. For example, https://charts.bitnami.com/bitnami or oci://localhost:5000/helm-charts
+    /// a Helm Repository to be used.
+    /// OCI-based registries are also supported.
+    /// For example, https://charts.bitnami.com/bitnami or oci://localhost:5000/helm-charts
     pub repo: String,
     /// SkipCRDs skips installing CRDs when install flag is enabled during upgrade
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCRDs")]
@@ -49,7 +53,8 @@ pub struct HelmChartSpec {
     /// UpgradeAtomic, for upgrade case, if true, will roll back failed release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeAtomic")]
     pub upgrade_atomic: Option<bool>,
-    /// ChartVersion is the version of the chart to be deployed. It will be defaulted with current latest version if empty.
+    /// ChartVersion is the version of the chart to be deployed.
+    /// It will be defaulted with current latest version if empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     /// Wait determines whether the wait operation should be performed after helm install, upgrade or uninstall is requested.

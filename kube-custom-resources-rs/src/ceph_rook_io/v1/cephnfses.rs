@@ -27,10 +27,10 @@ pub struct CephNFSSpec {
 /// RADOS is the Ganesha RADOS specification
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSRados {
-    /// The namespace inside the Ceph pool (set by 'pool') where shared NFS-Ganesha config is stored.
+    /// The namespace inside the Ceph pool (set by 'pool') where shared NFS-Ganesha config is stored. This setting is deprecated as it is internally set to the name of the CephNFS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// The Ceph pool used store the shared configuration for NFS-Ganesha daemons.
+    /// The Ceph pool used store the shared configuration for NFS-Ganesha daemons. This setting is deprecated, as it is internally required to be ".nfs".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pool: Option<String>,
 }
@@ -41,7 +41,7 @@ pub struct CephNFSSecurity {
     /// Kerberos configures NFS-Ganesha to secure NFS client connections with Kerberos.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kerberos: Option<CephNFSSecurityKerberos>,
-    /// SSSD enables integration with System Security Services Daemon (SSSD).
+    /// SSSD enables integration with System Security Services Daemon (SSSD). SSSD can be used to provide user ID mapping from a number of sources. See https://sssd.io for more information about the SSSD project.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sssd: Option<CephNFSSecuritySssd>,
 }
@@ -49,635 +49,457 @@ pub struct CephNFSSecurity {
 /// Kerberos configures NFS-Ganesha to secure NFS client connections with Kerberos.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberos {
-    /// ConfigFiles defines where the Kerberos configuration should be sourced from.
+    /// ConfigFiles defines where the Kerberos configuration should be sourced from. Config files will be placed into the `/etc/krb5.conf.rook/` directory. 
+    ///  If this is left empty, Rook will not add any files. This allows you to manage the files yourself however you wish. For example, you may build them into your custom Ceph container image or use the Vault agent injector to securely add the files via annotations on the CephNFS spec (passed to the NFS server pods). 
+    ///  Rook configures Kerberos to log to stderr. We suggest removing logging sections from config files to avoid consuming unnecessary disk space from logging to files.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFiles")]
     pub config_files: Option<CephNFSSecurityKerberosConfigFiles>,
     /// DomainName should be set to the Kerberos Realm.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
-    /// KeytabFile defines where the Kerberos keytab should be sourced from.
+    /// KeytabFile defines where the Kerberos keytab should be sourced from. The keytab file will be placed into `/etc/krb5.keytab`. If this is left empty, Rook will not add the file. This allows you to manage the `krb5.keytab` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keytabFile")]
     pub keytab_file: Option<CephNFSSecurityKerberosKeytabFile>,
-    /// PrincipalName corresponds directly to NFS-Ganesha's NFS_KRB5:PrincipalName config.
+    /// PrincipalName corresponds directly to NFS-Ganesha's NFS_KRB5:PrincipalName config. In practice, this is the service prefix of the principal name. The default is "nfs". This value is combined with (a) the namespace and name of the CephNFS (with a hyphen between) and (b) the Realm configured in the user-provided krb5.conf to determine the full principal name: <principalName>/<namespace>-<name>@<realm>. e.g., nfs/rook-ceph-my-nfs@example.net. See https://github.com/nfs-ganesha/nfs-ganesha/wiki/RPCSEC_GSS for more detail.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "principalName")]
     pub principal_name: Option<String>,
 }
 
-/// ConfigFiles defines where the Kerberos configuration should be sourced from.
+/// ConfigFiles defines where the Kerberos configuration should be sourced from. Config files will be placed into the `/etc/krb5.conf.rook/` directory. 
+///  If this is left empty, Rook will not add any files. This allows you to manage the files yourself however you wish. For example, you may build them into your custom Ceph container image or use the Vault agent injector to securely add the files via annotations on the CephNFS spec (passed to the NFS server pods). 
+///  Rook configures Kerberos to log to stderr. We suggest removing logging sections from config files to avoid consuming unnecessary disk space from logging to files.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFiles {
-    /// VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for Kerberos confi
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<CephNFSSecurityKerberosConfigFilesVolumeSource>,
 }
 
-/// VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for Kerberos confi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSource {
-    /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceConfigMap>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceEmptyDir>,
-    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceHostPath>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<CephNFSSecurityKerberosConfigFilesVolumeSourcePersistentVolumeClaim>,
-    /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjected>,
-    /// secret represents a secret that should populate this volume. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceSecret>,
 }
 
-/// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceEmptyDir {
-    /// medium represents what type of storage medium should back this directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceHostPath {
-    /// path of the directory on the host.
     pub path: String,
-    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourcePersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSources {
-    /// ClusterTrustBundle allows a pod to access the `.spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundle>,
-    /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigMap>,
-    /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApi>,
-    /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecret>,
-    /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
-/// ClusterTrustBundle allows a pod to access the `.spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundle {
-    /// Select all ClusterTrustBundles that match this label selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector>,
-    /// Select a single ClusterTrustBundle by object name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// Relative path from the volume root to write the bundle.
     pub path: String,
-    /// Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
-/// Select all ClusterTrustBundles that match this label selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApi {
-    /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 07
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created.
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
-    /// Required: resource to select
     pub resource: String,
 }
 
-/// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecretItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional field specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service account token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the token into.
     pub path: String,
 }
 
-/// secret represents a secret that should populate this volume. More info: https://kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceSecretItems>>,
-    /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// KeytabFile defines where the Kerberos keytab should be sourced from.
+/// KeytabFile defines where the Kerberos keytab should be sourced from. The keytab file will be placed into `/etc/krb5.keytab`. If this is left empty, Rook will not add the file. This allows you to manage the `krb5.keytab` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFile {
-    /// VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the Kerberos k
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<CephNFSSecurityKerberosKeytabFileVolumeSource>,
 }
 
-/// VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the Kerberos k
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSource {
-    /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceConfigMap>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceEmptyDir>,
-    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceHostPath>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<CephNFSSecurityKerberosKeytabFileVolumeSourcePersistentVolumeClaim>,
-    /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjected>,
-    /// secret represents a secret that should populate this volume. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceSecret>,
 }
 
-/// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceEmptyDir {
-    /// medium represents what type of storage medium should back this directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceHostPath {
-    /// path of the directory on the host.
     pub path: String,
-    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourcePersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSources {
-    /// ClusterTrustBundle allows a pod to access the `.spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundle>,
-    /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMap>,
-    /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApi>,
-    /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecret>,
-    /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
-/// ClusterTrustBundle allows a pod to access the `.spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundle {
-    /// Select all ClusterTrustBundles that match this label selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector>,
-    /// Select a single ClusterTrustBundle by object name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// Relative path from the volume root to write the bundle.
     pub path: String,
-    /// Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
-/// Select all ClusterTrustBundles that match this label selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApi {
-    /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 07
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created.
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
-    /// Required: resource to select
     pub resource: String,
 }
 
-/// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecretItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional field specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service account token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the token into.
     pub path: String,
 }
 
-/// secret represents a secret that should populate this volume. More info: https://kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceSecretItems>>,
-    /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// SSSD enables integration with System Security Services Daemon (SSSD).
+/// SSSD enables integration with System Security Services Daemon (SSSD). SSSD can be used to provide user ID mapping from a number of sources. See https://sssd.io for more information about the SSSD project.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssd {
     /// Sidecar tells Rook to run SSSD in a sidecar alongside the NFS-Ganesha server in each NFS pod.
@@ -688,10 +510,10 @@ pub struct CephNFSSecuritySssd {
 /// Sidecar tells Rook to run SSSD in a sidecar alongside the NFS-Ganesha server in each NFS pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecar {
-    /// AdditionalFiles defines any number of additional files that should be mounted into the SSSD sidecar.
+    /// AdditionalFiles defines any number of additional files that should be mounted into the SSSD sidecar. These files may be referenced by the sssd.conf config file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalFiles")]
     pub additional_files: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFiles>>,
-    /// DebugLevel sets the debug level for SSSD. If unset or set to 0, Rook does nothing.
+    /// DebugLevel sets the debug level for SSSD. If unset or set to 0, Rook does nothing. Otherwise, this may be a value between 1 and 10. See SSSD docs for more info: https://sssd.io/troubleshooting/basics.html#sssd-debug-logs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugLevel")]
     pub debug_level: Option<i64>,
     /// Image defines the container image that should be used for the SSSD sidecar.
@@ -699,331 +521,242 @@ pub struct CephNFSSecuritySssdSidecar {
     /// Resources allow specifying resource requests/limits on the SSSD sidecar container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<CephNFSSecuritySssdSidecarResources>,
-    /// SSSDConfigFile defines where the SSSD configuration should be sourced from.
+    /// SSSDConfigFile defines where the SSSD configuration should be sourced from. The config file will be placed into `/etc/sssd/sssd.conf`. If this is left empty, Rook will not add the file. This allows you to manage the `sssd.conf` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sssdConfigFile")]
     pub sssd_config_file: Option<CephNFSSecuritySssdSidecarSssdConfigFile>,
 }
 
-/// SSSDSidecarAdditionalFile represents the source from where additional files for the the SSSD configu
+/// SSSDSidecarAdditionalFile represents the source from where additional files for the the SSSD configuration should come from and are made available.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFiles {
-    /// SubPath defines the sub-path in `/etc/sssd/rook-additional/` where the additional file(s) will be pl
+    /// SubPath defines the sub-path in `/etc/sssd/rook-additional/` where the additional file(s) will be placed. Each subPath definition must be unique and must not contain ':'.
     #[serde(rename = "subPath")]
     pub sub_path: String,
-    /// VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the additional
     #[serde(rename = "volumeSource")]
     pub volume_source: CephNFSSecuritySssdSidecarAdditionalFilesVolumeSource,
 }
 
-/// VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the additional
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSource {
-    /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceConfigMap>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceEmptyDir>,
-    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceHostPath>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourcePersistentVolumeClaim>,
-    /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjected>,
-    /// secret represents a secret that should populate this volume. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceSecret>,
 }
 
-/// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceEmptyDir {
-    /// medium represents what type of storage medium should back this directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceHostPath {
-    /// path of the directory on the host.
     pub path: String,
-    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourcePersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources {
-    /// ClusterTrustBundle allows a pod to access the `.spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundle>,
-    /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMap>,
-    /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApi>,
-    /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesSecret>,
-    /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
-/// ClusterTrustBundle allows a pod to access the `.spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundle {
-    /// Select all ClusterTrustBundles that match this label selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector>,
-    /// Select a single ClusterTrustBundle by object name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// Relative path from the volume root to write the bundle.
     pub path: String,
-    /// Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
-/// Select all ClusterTrustBundles that match this label selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApi {
-    /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 07
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created.
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
-    /// Required: resource to select
     pub resource: String,
 }
 
-/// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesSecretItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional field specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service account token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the token into.
     pub path: String,
 }
 
-/// secret represents a secret that should populate this volume. More info: https://kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceSecretItems>>,
-    /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
 /// Resources allow specifying resource requests/limits on the SSSD sidecar container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarResources {
-    /// Claims lists the names of resources, defined in spec.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephNFSSecuritySssdSidecarResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1031,314 +764,223 @@ pub struct CephNFSSecuritySssdSidecarResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
 }
 
-/// SSSDConfigFile defines where the SSSD configuration should be sourced from.
+/// SSSDConfigFile defines where the SSSD configuration should be sourced from. The config file will be placed into `/etc/sssd/sssd.conf`. If this is left empty, Rook will not add the file. This allows you to manage the `sssd.conf` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFile {
-    /// VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the SSSD confi
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSource>,
 }
 
-/// VolumeSource accepts a pared down version of the standard Kubernetes VolumeSource for the SSSD confi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSource {
-    /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceConfigMap>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceEmptyDir>,
-    /// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceHostPath>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourcePersistentVolumeClaim>,
-    /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjected>,
-    /// secret represents a secret that should populate this volume. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceSecret>,
 }
 
-/// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceEmptyDir {
-    /// medium represents what type of storage medium should back this directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host machine that is directly exposed to
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceHostPath {
-    /// path of the directory on the host.
     pub path: String,
-    /// type for HostPath Volume Defaults to "" More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourcePersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSources {
-    /// ClusterTrustBundle allows a pod to access the `.spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundle>,
-    /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMap>,
-    /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApi>,
-    /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesSecret>,
-    /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
-/// ClusterTrustBundle allows a pod to access the `.spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundle {
-    /// Select all ClusterTrustBundles that match this label selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector>,
-    /// Select a single ClusterTrustBundle by object name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s) aren't available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// Relative path from the volume root to write the bundle.
     pub path: String,
-    /// Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
-/// Select all ClusterTrustBundles that match this label selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be proj
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMapItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApi {
-    /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 07
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created.
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
-    /// Required: resource to select
     pub resource: String,
 }
 
-/// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced Secret will be project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesSecretItems>>,
-    /// Name of the referent. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional field specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
-/// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service account token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the token into.
     pub path: String,
 }
 
-/// secret represents a secret that should populate this volume. More info: https://kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceSecretItems>>,
-    /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to. May not be an absolute path.
     pub path: String,
 }
 
@@ -1350,19 +992,18 @@ pub struct CephNFSServer {
     /// The annotations-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Whether host networking is enabled for the Ganesha server.
+    /// Whether host networking is enabled for the Ganesha server. If not set, the network settings from the cluster CR will be applied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// The labels-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// A liveness-probe to verify that Ganesha server has valid run-time state. If LivenessProbe.
+    /// A liveness-probe to verify that Ganesha server has valid run-time state. If LivenessProbe.Disabled is false and LivenessProbe.Probe is nil uses default probe.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<CephNFSServerLivenessProbe>,
     /// LogLevel set logging level
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
-    /// The affinity to place the ganesha pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<CephNFSServerPlacement>,
     /// PriorityClassName sets the priority class on the pods
@@ -1373,24 +1014,24 @@ pub struct CephNFSServer {
     pub resources: Option<CephNFSServerResources>,
 }
 
-/// A liveness-probe to verify that Ganesha server has valid run-time state. If LivenessProbe.
+/// A liveness-probe to verify that Ganesha server has valid run-time state. If LivenessProbe.Disabled is false and LivenessProbe.Probe is nil uses default probe.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbe {
     /// Disabled determines whether probe is disable or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Probe describes a health check to be performed against a container to determine whether it is alive 
+    /// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probe: Option<CephNFSServerLivenessProbeProbe>,
 }
 
-/// Probe describes a health check to be performed against a container to determine whether it is alive 
+/// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephNFSServerLivenessProbeProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1399,22 +1040,21 @@ pub struct CephNFSServerLivenessProbeProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephNFSServerLivenessProbeProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephNFSServerLivenessProbeProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1.
+    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1422,7 +1062,7 @@ pub struct CephNFSServerLivenessProbeProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  
+    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1432,7 +1072,8 @@ pub struct CephNFSServerLivenessProbeProbeExec {
 pub struct CephNFSServerLivenessProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
+    ///  If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1440,7 +1081,7 @@ pub struct CephNFSServerLivenessProbeProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1449,7 +1090,7 @@ pub struct CephNFSServerLivenessProbeProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535.
+    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
     /// Scheme to use for connecting to the host. Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1459,7 +1100,7 @@ pub struct CephNFSServerLivenessProbeProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeHttpGetHttpHeaders {
-    /// The header field name.
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1471,514 +1112,360 @@ pub struct CephNFSServerLivenessProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535.
+    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
-/// The affinity to place the ganesha pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacement {
-    /// NodeAffinity is a group of node affinity scheduling rules
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<CephNFSServerPlacementNodeAffinity>,
-    /// PodAffinity is a group of inter pod affinity scheduling rules
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<CephNFSServerPlacementPodAffinity>,
-    /// PodAntiAffinity is a group of inter pod anti affinity scheduling rules
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<CephNFSServerPlacementPodAntiAffinity>,
-    /// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<CephNFSServerPlacementTolerations>>,
-    /// TopologySpreadConstraint specifies how to spread matching pods among the given topology
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<CephNFSServerPlacementTopologySpreadConstraints>>,
 }
 
-/// NodeAffinity is a group of node affinity scheduling rules
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will no
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// A node selector term, associated with the corresponding weight.
     pub preference: CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
-    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
 
-/// A node selector term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
-    /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// If the affinity requirements specified by this field are not met at scheduling time, the pod will no
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of them are ANDed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
-    /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// PodAffinity is a group of inter pod affinity scheduling rules
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will no
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
     pub weight: i32,
 }
 
-/// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) t
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// PodAntiAffinity is a group of inter pod anti affinity scheduling rules
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions speci
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the anti-affinity requirements specified by this field are not met at scheduling time, the pod wi
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
     pub weight: i32,
 }
 
-/// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) t
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, o
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementTopologySpreadConstraints {
-    /// LabelSelector is used to find matching pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSServerPlacementTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MaxSkew describes the degree to which pods may be unevenly distributed.
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    /// MinDomains indicates a minimum number of eligible domains.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    /// NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
-    /// TopologyKey is the key of node labels.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
-    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint.
     #[serde(rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: String,
 }
 
-/// LabelSelector is used to find matching pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementTopologySpreadConstraintsLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephNFSServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -1986,13 +1473,15 @@ pub struct CephNFSServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpr
 /// Resources set resource requests and limits
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerResources {
-    /// Claims lists the names of resources, defined in spec.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephNFSServerResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -2000,7 +1489,7 @@ pub struct CephNFSServerResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
 }
 

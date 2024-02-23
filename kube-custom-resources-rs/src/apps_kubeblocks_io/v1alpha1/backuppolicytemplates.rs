@@ -7,68 +7,68 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
-/// BackupPolicyTemplateSpec defines the desired state of BackupPolicyTemplate
+/// Defines the desired state of the BackupPolicyTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "BackupPolicyTemplate", plural = "backuppolicytemplates")]
 #[kube(status = "BackupPolicyTemplateStatus")]
 #[kube(schema = "disabled")]
 pub struct BackupPolicyTemplateSpec {
-    /// backupPolicies is a list of backup policy template for the specified componentDefinition.
+    /// Represents an array of backup policy templates for the specified ComponentDefinition.
     #[serde(rename = "backupPolicies")]
     pub backup_policies: Vec<BackupPolicyTemplateBackupPolicies>,
-    /// clusterDefinitionRef references ClusterDefinition name, this is an immutable attribute.
+    /// Specifies a reference to the ClusterDefinition name. This is an immutable attribute that cannot be changed after creation.
     #[serde(rename = "clusterDefinitionRef")]
     pub cluster_definition_ref: String,
-    /// Identifier is a unique identifier for this BackupPolicyTemplate. this identifier will be the suffix of the automatically generated backupPolicy name. and must be added when multiple BackupPolicyTemplates exist, otherwise the generated backupPolicy override will occur.
+    /// Acts as a unique identifier for this BackupPolicyTemplate. This identifier will be used as a suffix for the automatically generated backupPolicy name. It is required when multiple BackupPolicyTemplates exist to prevent backupPolicy override.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPolicies {
-    /// Specifies the number of retries before marking the backup failed.
+    /// Specifies the number of retries before marking the backup as failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
-    /// backupMethods defines the backup methods.
+    /// Define the methods to be used for backups.
     #[serde(rename = "backupMethods")]
     pub backup_methods: Vec<BackupPolicyTemplateBackupPoliciesBackupMethods>,
-    /// componentDefRef references componentDef defined in ClusterDefinition spec. Need to comply with IANA Service Naming rule.
+    /// References a componentDef defined in the ClusterDefinition spec. Must comply with the IANA Service Naming rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
     pub component_def_ref: Option<String>,
-    /// componentDef references componentDefinition. Need to comply with IANA Service Naming rule.
+    /// References to componentDefinitions. Must comply with the IANA Service Naming rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefs")]
     pub component_defs: Option<Vec<String>>,
-    /// schedule policy for backup.
+    /// Define the policy for backup scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedules: Option<Vec<BackupPolicyTemplateBackupPoliciesSchedules>>,
-    /// target instance for backup.
+    /// The instance to be backed up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<BackupPolicyTemplateBackupPoliciesTarget>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethods {
-    /// actionSetName refers to the ActionSet object that defines the backup actions. For volume snapshot backup, the actionSet is not required, the controller will use the CSI volume snapshotter to create the snapshot.
+    /// Refers to the ActionSet object that defines the backup actions. For volume snapshot backup, the actionSet is not required, the controller will use the CSI volume snapshotter to create the snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionSetName")]
     pub action_set_name: Option<String>,
-    /// env specifies the environment variables for the backup workload.
+    /// Specifies the environment variables for the backup workload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsEnv>>,
-    /// envMapping defines the variables of cluster mapped to env values' keys.
+    /// Defines the mapping between the environment variables of the cluster and the keys of the environment values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envMapping")]
     pub env_mapping: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMapping>>,
-    /// the name of backup method.
+    /// The name of backup method.
     pub name: String,
-    /// runtimeSettings specifies runtime settings for the backup workload container.
+    /// Specifies runtime settings for the backup workload container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeSettings")]
     pub runtime_settings: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsRuntimeSettings>,
-    /// snapshotVolumes specifies whether to take snapshots of persistent volumes. if true, the BackupScript is not required, the controller will use the CSI volume snapshotter to create the snapshot.
+    /// Specifies whether to take snapshots of persistent volumes. If true, the ActionSetName is not required, the controller will use the CSI volume snapshotter to create the snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotVolumes")]
     pub snapshot_volumes: Option<bool>,
-    /// target specifies the target information to back up, it will override the global target policy.
+    /// Specifies the target information to back up, it will override the target in backup policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTarget>,
-    /// targetVolumes specifies which volumes from the target should be mounted in the backup workload.
+    /// Specifies which volumes from the target should be mounted in the backup workload.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetVolumes")]
     pub target_volumes: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetVolumes>,
 }
@@ -155,51 +155,51 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvValueFromSecretKeyR
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMapping {
-    /// env key which needs to mapping.
+    /// Specifies the environment variable key that requires mapping.
     pub key: String,
-    /// valueFrom defines source of the env value.
+    /// Defines the source from which the environment variable value is derived.
     #[serde(rename = "valueFrom")]
     pub value_from: BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFrom,
 }
 
-/// valueFrom defines source of the env value.
+/// Defines the source from which the environment variable value is derived.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFrom {
-    /// mapped ClusterVersionRef to env value.
+    /// Maps to the environment value. This is an optional field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionRef")]
     pub cluster_version_ref: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromClusterVersionRef>>,
-    /// mapped ComponentDefinition to env value.
+    /// Maps to the environment value. This is also an optional field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDef")]
     pub component_def: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromComponentDef>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromClusterVersionRef {
-    /// mapping value for the specified ClusterVersion names.
+    /// The value that corresponds to the specified ClusterVersion names.
     #[serde(rename = "mappingValue")]
     pub mapping_value: String,
-    /// the array of ClusterVersion name which can be mapped to the env value.
+    /// Represents an array of ClusterVersion names that can be mapped to an environment variable value.
     pub names: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsEnvMappingValueFromComponentDef {
-    /// mapping value for the specified ClusterVersion names.
+    /// The value that corresponds to the specified ClusterVersion names.
     #[serde(rename = "mappingValue")]
     pub mapping_value: String,
-    /// the array of ClusterVersion name which can be mapped to the env value.
+    /// Represents an array of ClusterVersion names that can be mapped to an environment variable value.
     pub names: Vec<String>,
 }
 
-/// runtimeSettings specifies runtime settings for the backup workload container.
+/// Specifies runtime settings for the backup workload container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsRuntimeSettings {
-    /// resources specifies the resource required by container. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+    /// Specifies the resource required by container. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsRuntimeSettingsResources>,
 }
 
-/// resources specifies the resource required by container. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+/// Specifies the resource required by container. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsRuntimeSettingsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -222,72 +222,77 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsRuntimeSettingsResourc
     pub name: String,
 }
 
-/// target specifies the target information to back up, it will override the global target policy.
+/// Specifies the target information to back up, it will override the target in backup policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTarget {
-    /// refer to spec.componentDef.systemAccounts.accounts[*].name in ClusterDefinition. the secret created by this account will be used to connect the database. if not set, the secret created by spec.ConnectionCredential of the ClusterDefinition will be used. it will be transformed to a secret for BackupPolicy's target secret.
+    /// Refers to spec.componentDef.systemAccounts.accounts[*].name in the ClusterDefinition. The secret created by this account will be used to connect to the database. If not set, the secret created by spec.ConnectionCredential of the ClusterDefinition will be used. 
+    ///  It will be transformed into a secret for the BackupPolicy's target secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
-    /// connectionCredential specifies the connection credential to connect to the target database cluster.
+    /// Specifies the connection credential to connect to the target database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetConnectionCredential>,
-    /// connectionCredentialKey defines connection credential key in secret which created by spec.ConnectionCredential of the ClusterDefinition. it will be ignored when "account" is set.
+    /// Defines the connection credential key in the secret created by spec.ConnectionCredential of the ClusterDefinition. It will be ignored when the "account" is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredentialKey")]
     pub connection_credential_key: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetConnectionCredentialKey>,
-    /// podSelector is used to find the target pod. The volumes of the target pod will be backed up.
+    /// Used to find the target pod. The volumes of the target pod will be backed up.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelector>,
-    /// resources specifies the kubernetes resources to back up.
+    /// Specifies the kubernetes resources to back up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetResources>,
-    /// select instance of corresponding role for backup, role are: - the name of Leader/Follower/Leaner for Consensus component. - primary or secondary for Replication component. finally, invalid role of the component will be ignored. such as if workload type is Replication and component's replicas is 1, the secondary role is invalid. and it also will be ignored when component is Stateful/Stateless. the role will be transformed to a role LabelSelector for BackupPolicy's target attribute.
+    /// Specifies the instance of the corresponding role for backup. The roles can be: 
+    ///  - Leader, Follower, or Leaner for the Consensus component. - Primary or Secondary for the Replication component. 
+    ///  Invalid roles of the component will be ignored. For example, if the workload type is Replication and the component's replicas is 1, the secondary role is invalid. It will also be ignored when the component is Stateful or Stateless. 
+    ///  The role will be transformed into a role LabelSelector for the BackupPolicy's target attribute.
     pub role: String,
-    /// serviceAccountName specifies the service account to run the backup workload.
+    /// Specifies the service account to run the backup workload.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    /// PodSelectionStrategy specifies the strategy to select when multiple pods are selected for backup target. Valid values are: - Any: select any one pod that match the labelsSelector. - All: select all pods that match the labelsSelector.
+    /// Specifies the PodSelectionStrategy to use when multiple pods are selected for the backup target. Valid values are: 
+    ///  - Any: Selects any one pod that matches the labelsSelector. - All: Selects all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetStrategy>,
 }
 
-/// connectionCredential specifies the connection credential to connect to the target database cluster.
+/// Specifies the connection credential to connect to the target database cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetConnectionCredential {
-    /// hostKey specifies the map key of the host in the connection credential secret.
+    /// Specifies the map key of the host in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
     pub host_key: Option<String>,
-    /// passwordKey specifies the map key of the password in the connection credential secret. This password will be saved in the backup annotation for full backup. You can use the environment variable DP_ENCRYPTION_KEY to specify encryption key.
+    /// Specifies the map key of the password in the connection credential secret. This password will be saved in the backup annotation for full backup. You can use the environment variable DP_ENCRYPTION_KEY to specify encryption key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// portKey specifies the map key of the port in the connection credential secret.
+    /// Specifies the map key of the port in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
-    /// secretName refers to the Secret object that contains the connection credential.
+    /// Refers to the Secret object that contains the connection credential.
     #[serde(rename = "secretName")]
     pub secret_name: String,
-    /// usernameKey specifies the map key of the user in the connection credential secret.
+    /// Specifies the map key of the user in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
-/// connectionCredentialKey defines connection credential key in secret which created by spec.ConnectionCredential of the ClusterDefinition. it will be ignored when "account" is set.
+/// Defines the connection credential key in the secret created by spec.ConnectionCredential of the ClusterDefinition. It will be ignored when the "account" is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetConnectionCredentialKey {
-    /// hostKey specifies the map key of the host in the connection credential secret.
+    /// Defines the map key of the host in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
     pub host_key: Option<String>,
-    /// the key of password in the ConnectionCredential secret. if not set, the default key is "password".
+    /// Represents the key of the password in the ConnectionCredential secret. If not specified, the default key "password" is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// portKey specifies the map key of the port in the connection credential secret.
+    /// Indicates the map key of the port in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
-    /// the key of username in the ConnectionCredential secret. if not set, the default key is "username".
+    /// Represents the key of the username in the ConnectionCredential secret. If not specified, the default key "username" is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
-/// podSelector is used to find the target pod. The volumes of the target pod will be backed up.
+/// Used to find the target pod. The volumes of the target pod will be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -296,7 +301,8 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelector {
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
-    /// strategy specifies the strategy to select the target pod when multiple pods are selected. Valid values are: - Any: select any one pod that match the labelsSelector. - All: select all pods that match the labelsSelector.
+    /// Specifies the strategy to select the target pod when multiple pods are selected. Valid values are: Any: select any one pod that match the labelsSelector. 
+    ///  - `Any`: select any one pod that match the labelsSelector. - `All`: select all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorStrategy>,
 }
@@ -313,28 +319,28 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorMatch
     pub values: Option<Vec<String>>,
 }
 
-/// podSelector is used to find the target pod. The volumes of the target pod will be backed up.
+/// Used to find the target pod. The volumes of the target pod will be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BackupPolicyTemplateBackupPoliciesBackupMethodsTargetPodSelectorStrategy {
     Any,
     All,
 }
 
-/// resources specifies the kubernetes resources to back up.
+/// Specifies the kubernetes resources to back up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetResources {
     /// excluded is a slice of namespaced-scoped resource type names to exclude in the kubernetes resources. The default value is empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub excluded: Option<Vec<String>>,
-    /// included is a slice of namespaced-scoped resource type names to include in the kubernetes resources. The default value is "*", which means all resource types will be included.
+    /// included is a slice of namespaced-scoped resource type names to include in the kubernetes resources. The default value is empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub included: Option<Vec<String>>,
-    /// selector is a metav1.LabelSelector to filter the target kubernetes resources that need to be backed up. If not set, will do not back up any kubernetes resources.
+    /// A metav1.LabelSelector to filter the target kubernetes resources that need to be backed up. If not set, will do not back up any kubernetes resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetResourcesSelector>,
 }
 
-/// selector is a metav1.LabelSelector to filter the target kubernetes resources that need to be backed up. If not set, will do not back up any kubernetes resources.
+/// A metav1.LabelSelector to filter the target kubernetes resources that need to be backed up. If not set, will do not back up any kubernetes resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -357,20 +363,20 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetResourcesSelecto
     pub values: Option<Vec<String>>,
 }
 
-/// target specifies the target information to back up, it will override the global target policy.
+/// Specifies the target information to back up, it will override the target in backup policy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BackupPolicyTemplateBackupPoliciesBackupMethodsTargetStrategy {
     Any,
     All,
 }
 
-/// targetVolumes specifies which volumes from the target should be mounted in the backup workload.
+/// Specifies which volumes from the target should be mounted in the backup workload.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetVolumes {
-    /// volumeMounts specifies the mount for the volumes specified in `Volumes` section.
+    /// Specifies the mount for the volumes specified in `volumes` section.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<BackupPolicyTemplateBackupPoliciesBackupMethodsTargetVolumesVolumeMounts>>,
-    /// Volumes indicates the list of volumes of targeted application that should be mounted on the backup job.
+    /// Specifies the list of volumes of targeted application that should be mounted on the backup workload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<String>>,
 }
@@ -399,61 +405,68 @@ pub struct BackupPolicyTemplateBackupPoliciesBackupMethodsTargetVolumesVolumeMou
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesSchedules {
-    /// backupMethod specifies the backup method name that is defined in backupPolicy.
+    /// Defines the backup method name that is defined in backupPolicy.
     #[serde(rename = "backupMethod")]
     pub backup_method: String,
-    /// the cron expression for schedule, the timezone is in UTC. see https://en.wikipedia.org/wiki/Cron.
+    /// Represents the cron expression for schedule, with the timezone set in UTC. Refer to https://en.wikipedia.org/wiki/Cron for more details.
     #[serde(rename = "cronExpression")]
     pub cron_expression: String,
-    /// enabled specifies whether the backup schedule is enabled or not.
+    /// Specifies whether the backup schedule is enabled or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// retentionPeriod determines a duration up to which the backup should be kept. controller will remove all backups that are older than the RetentionPeriod. For example, RetentionPeriod of `30d` will keep only the backups of last 30 days. Sample duration format: - years: 	2y - months: 	6mo - days: 		30d - hours: 	12h - minutes: 	30m You can also combine the above durations. For example: 30d12h30m
+    /// Determines the duration for which the backup should be retained. The controller will remove all backups that are older than the RetentionPeriod. For instance, a RetentionPeriod of `30d` will retain only the backups from the last 30 days. Sample duration format: 
+    ///  - years: 	2y - months: 	6mo - days: 		30d - hours: 	12h - minutes: 	30m 
+    ///  These durations can also be combined, for example: 30d12h30m.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
 }
 
-/// target instance for backup.
+/// The instance to be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesTarget {
-    /// refer to spec.componentDef.systemAccounts.accounts[*].name in ClusterDefinition. the secret created by this account will be used to connect the database. if not set, the secret created by spec.ConnectionCredential of the ClusterDefinition will be used. it will be transformed to a secret for BackupPolicy's target secret.
+    /// Refers to spec.componentDef.systemAccounts.accounts[*].name in the ClusterDefinition. The secret created by this account will be used to connect to the database. If not set, the secret created by spec.ConnectionCredential of the ClusterDefinition will be used. 
+    ///  It will be transformed into a secret for the BackupPolicy's target secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
-    /// connectionCredentialKey defines connection credential key in secret which created by spec.ConnectionCredential of the ClusterDefinition. it will be ignored when "account" is set.
+    /// Defines the connection credential key in the secret created by spec.ConnectionCredential of the ClusterDefinition. It will be ignored when the "account" is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredentialKey")]
     pub connection_credential_key: Option<BackupPolicyTemplateBackupPoliciesTargetConnectionCredentialKey>,
-    /// select instance of corresponding role for backup, role are: - the name of Leader/Follower/Leaner for Consensus component. - primary or secondary for Replication component. finally, invalid role of the component will be ignored. such as if workload type is Replication and component's replicas is 1, the secondary role is invalid. and it also will be ignored when component is Stateful/Stateless. the role will be transformed to a role LabelSelector for BackupPolicy's target attribute.
+    /// Specifies the instance of the corresponding role for backup. The roles can be: 
+    ///  - Leader, Follower, or Leaner for the Consensus component. - Primary or Secondary for the Replication component. 
+    ///  Invalid roles of the component will be ignored. For example, if the workload type is Replication and the component's replicas is 1, the secondary role is invalid. It will also be ignored when the component is Stateful or Stateless. 
+    ///  The role will be transformed into a role LabelSelector for the BackupPolicy's target attribute.
     pub role: String,
-    /// PodSelectionStrategy specifies the strategy to select when multiple pods are selected for backup target. Valid values are: - Any: select any one pod that match the labelsSelector. - All: select all pods that match the labelsSelector.
+    /// Specifies the PodSelectionStrategy to use when multiple pods are selected for the backup target. Valid values are: 
+    ///  - Any: Selects any one pod that matches the labelsSelector. - All: Selects all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateBackupPoliciesTargetStrategy>,
 }
 
-/// connectionCredentialKey defines connection credential key in secret which created by spec.ConnectionCredential of the ClusterDefinition. it will be ignored when "account" is set.
+/// Defines the connection credential key in the secret created by spec.ConnectionCredential of the ClusterDefinition. It will be ignored when the "account" is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateBackupPoliciesTargetConnectionCredentialKey {
-    /// hostKey specifies the map key of the host in the connection credential secret.
+    /// Defines the map key of the host in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
     pub host_key: Option<String>,
-    /// the key of password in the ConnectionCredential secret. if not set, the default key is "password".
+    /// Represents the key of the password in the ConnectionCredential secret. If not specified, the default key "password" is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// portKey specifies the map key of the port in the connection credential secret.
+    /// Indicates the map key of the port in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
-    /// the key of username in the ConnectionCredential secret. if not set, the default key is "username".
+    /// Represents the key of the username in the ConnectionCredential secret. If not specified, the default key "username" is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
-/// target instance for backup.
+/// The instance to be backed up.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BackupPolicyTemplateBackupPoliciesTargetStrategy {
     Any,
     All,
 }
 
-/// BackupPolicyTemplateStatus defines the observed state of BackupPolicyTemplate
+/// Populated by the system, it represents the current information about the BackupPolicyTemplate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupPolicyTemplateStatus {
 }

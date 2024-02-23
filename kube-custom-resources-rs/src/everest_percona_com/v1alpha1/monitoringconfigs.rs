@@ -12,15 +12,15 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "MonitoringConfigStatus")]
 #[kube(schema = "disabled")]
 pub struct MonitoringConfigSpec {
+    /// AllowedNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
+    pub allowed_namespaces: Option<Vec<String>>,
     /// CredentialsSecretName is the name of the secret with credentials.
     #[serde(rename = "credentialsSecretName")]
     pub credentials_secret_name: String,
     /// PMM is configuration for the PMM monitoring type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pmm: Option<MonitoringConfigPmm>,
-    /// TargetNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespaces")]
-    pub target_namespaces: Option<Vec<String>>,
     /// Type is type of monitoring.
     #[serde(rename = "type")]
     pub r#type: MonitoringConfigType,

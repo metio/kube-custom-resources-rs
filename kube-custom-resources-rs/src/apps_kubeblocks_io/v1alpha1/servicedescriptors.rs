@@ -13,46 +13,47 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ServiceDescriptorStatus")]
 #[kube(schema = "disabled")]
 pub struct ServiceDescriptorSpec {
-    /// auth is the auth of the service connection credential.
+    /// Represents the authentication details of the service connection credential.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<ServiceDescriptorAuth>,
-    /// endpoint is the endpoint of the service connection credential.
+    /// Represents the endpoint of the service connection credential.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<ServiceDescriptorEndpoint>,
-    /// port is the port of the service connection credential.
+    /// Represents the port of the service connection credential.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<ServiceDescriptorPort>,
-    /// service kind, indicating the type or nature of the service. It should be well-known application cluster type, e.g. {mysql, redis, mongodb}. The serviceKind is case-insensitive and supports abbreviations for some well-known databases. For example, both 'zk' and 'zookeeper' will be considered as a ZooKeeper cluster, and 'pg', 'postgres', 'postgresql' will all be considered as a PostgreSQL cluster.
+    /// Specifies the type or nature of the service. Should represent a well-known application cluster type, such as {mysql, redis, mongodb}. This field is case-insensitive and supports abbreviations for some well-known databases. For instance, both `zk` and `zookeeper` will be recognized as a ZooKeeper cluster, and `pg`, `postgres`, `postgresql` will all be recognized as a PostgreSQL cluster.
     #[serde(rename = "serviceKind")]
     pub service_kind: String,
-    /// The version of the service reference.
+    /// Represents the version of the service reference.
     #[serde(rename = "serviceVersion")]
     pub service_version: String,
 }
 
-/// auth is the auth of the service connection credential.
+/// Represents the authentication details of the service connection credential.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuth {
-    /// service connection based-on username and password credential.
+    /// Represents the password credential for the service connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ServiceDescriptorAuthPassword>,
-    /// service connection based-on username and password credential.
+    /// Represents the username credential for the service connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ServiceDescriptorAuthUsername>,
 }
 
-/// service connection based-on username and password credential.
+/// Represents the password credential for the service connection.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthPassword {
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Specifies an optional variable. Only one of the following may be specified. Variable references, denoted by $(VAR_NAME), are expanded using previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string remains unchanged. 
+    ///  Double $$ are reduced to a single $, enabling the escaping of the $(VAR_NAME) syntax. For instance, "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, irrespective of the variable's existence. The default value is "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    /// Defines the source for the environment variable's value. This cannot be used if the value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<ServiceDescriptorAuthPasswordValueFrom>,
 }
 
-/// Source for the environment variable's value. Cannot be used if value is not empty.
+/// Defines the source for the environment variable's value. This cannot be used if the value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthPasswordValueFrom {
     /// Selects a key of a ConfigMap.
@@ -119,18 +120,19 @@ pub struct ServiceDescriptorAuthPasswordValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// service connection based-on username and password credential.
+/// Represents the username credential for the service connection.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthUsername {
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Specifies an optional variable. Only one of the following may be specified. Variable references, denoted by $(VAR_NAME), are expanded using previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string remains unchanged. 
+    ///  Double $$ are reduced to a single $, enabling the escaping of the $(VAR_NAME) syntax. For instance, "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, irrespective of the variable's existence. The default value is "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    /// Defines the source for the environment variable's value. This cannot be used if the value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<ServiceDescriptorAuthUsernameValueFrom>,
 }
 
-/// Source for the environment variable's value. Cannot be used if value is not empty.
+/// Defines the source for the environment variable's value. This cannot be used if the value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthUsernameValueFrom {
     /// Selects a key of a ConfigMap.
@@ -197,18 +199,19 @@ pub struct ServiceDescriptorAuthUsernameValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// endpoint is the endpoint of the service connection credential.
+/// Represents the endpoint of the service connection credential.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorEndpoint {
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Specifies an optional variable. Only one of the following may be specified. Variable references, denoted by $(VAR_NAME), are expanded using previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string remains unchanged. 
+    ///  Double $$ are reduced to a single $, enabling the escaping of the $(VAR_NAME) syntax. For instance, "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, irrespective of the variable's existence. The default value is "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    /// Defines the source for the environment variable's value. This cannot be used if the value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<ServiceDescriptorEndpointValueFrom>,
 }
 
-/// Source for the environment variable's value. Cannot be used if value is not empty.
+/// Defines the source for the environment variable's value. This cannot be used if the value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorEndpointValueFrom {
     /// Selects a key of a ConfigMap.
@@ -275,18 +278,19 @@ pub struct ServiceDescriptorEndpointValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// port is the port of the service connection credential.
+/// Represents the port of the service connection credential.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorPort {
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Specifies an optional variable. Only one of the following may be specified. Variable references, denoted by $(VAR_NAME), are expanded using previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string remains unchanged. 
+    ///  Double $$ are reduced to a single $, enabling the escaping of the $(VAR_NAME) syntax. For instance, "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, irrespective of the variable's existence. The default value is "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    /// Defines the source for the environment variable's value. This cannot be used if the value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<ServiceDescriptorPortValueFrom>,
 }
 
-/// Source for the environment variable's value. Cannot be used if value is not empty.
+/// Defines the source for the environment variable's value. This cannot be used if the value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorPortValueFrom {
     /// Selects a key of a ConfigMap.
@@ -356,13 +360,13 @@ pub struct ServiceDescriptorPortValueFromSecretKeyRef {
 /// ServiceDescriptorStatus defines the observed state of ServiceDescriptor
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorStatus {
-    /// A human-readable message indicating details about why the ServiceConnectionCredential is in this phase.
+    /// Provides a human-readable explanation detailing the reason for the current phase of the ServiceConnectionCredential.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// generation number
+    /// Represents the generation number that has been processed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// phase - in list of [Available,Unavailable]
+    /// Indicates the current lifecycle phase of the ServiceDescriptor. This can be either 'Available' or 'Unavailable'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ServiceDescriptorStatusPhase>,
 }

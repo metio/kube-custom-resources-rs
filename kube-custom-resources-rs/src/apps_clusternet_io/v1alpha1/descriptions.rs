@@ -61,7 +61,8 @@ pub struct DescriptionStatusManifestStatuses {
     /// APIVersion defines the versioned schema of this representation of an object.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Kind is a string value representing the REST resource this object represents. In CamelCase.
+    /// Kind is a string value representing the REST resource this object represents.
+    /// In CamelCase.
     pub kind: String,
     /// Name of the target resource.
     pub name: String,

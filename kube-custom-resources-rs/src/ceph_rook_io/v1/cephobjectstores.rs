@@ -14,7 +14,7 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "CephObjectStoreStatus")]
 #[kube(schema = "disabled")]
 pub struct CephObjectStoreSpec {
-    /// The list of allowed namespaces in addition to the object store namespace where ceph object store use
+    /// The list of allowed namespaces in addition to the object store namespace where ceph object store users may be created. Specify "*" to allow all namespaces, otherwise list individual namespaces that are to be allowed. This is useful for applications that need object store credentials to be created in their own namespace, where neither OBCs nor COSI is being used to create buckets. The default is empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUsersInNamespaces")]
     pub allow_users_in_namespaces: Option<Vec<String>>,
     /// The data pool settings
@@ -46,7 +46,7 @@ pub struct CephObjectStoreDataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g.
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectStoreDataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -61,7 +61,7 @@ pub struct CephObjectStoreDataPool {
     /// The erasure code settings
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephObjectStoreDataPoolErasureCoded>,
-    /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush 
+    /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
@@ -102,10 +102,10 @@ pub struct CephObjectStoreDataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool t
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -175,12 +175,12 @@ pub struct CephObjectStoreDataPoolReplicated {
     /// RequireSafeReplicaSize if false allows you to set replica 1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
-    /// Size - Number of copies per object in a replicated storage pool, including the object itself (requir
+    /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
-    /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capac
+    /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
@@ -228,13 +228,13 @@ pub struct CephObjectStoreGateway {
     /// Whether rgw dashboard is enabled for the rgw daemon. If not set, the rgw dashboard will be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dashboardEnabled")]
     pub dashboard_enabled: Option<bool>,
-    /// DisableMultisiteSyncTraffic, when true, prevents this object store's gateways from transmitting mult
+    /// DisableMultisiteSyncTraffic, when true, prevents this object store's gateways from transmitting multisite replication data. Note that this value does not affect whether gateways receive multisite replication traffic: see ObjectZone.spec.customEndpoints for that. If false or unset, this object store's gateways will be able to transmit multisite replication data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMultisiteSyncTraffic")]
     pub disable_multisite_sync_traffic: Option<bool>,
-    /// ExternalRgwEndpoints points to external RGW endpoint(s).
+    /// ExternalRgwEndpoints points to external RGW endpoint(s). Multiple endpoints can be given, but for stability of ObjectBucketClaims, we highly recommend that users give only a single external RGW endpoint that is a load balancer that sends requests to the multiple RGWs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalRgwEndpoints")]
     pub external_rgw_endpoints: Option<Vec<CephObjectStoreGatewayExternalRgwEndpoints>>,
-    /// Whether host networking is enabled for the rgw daemon.
+    /// Whether host networking is enabled for the rgw daemon. If not set, the network settings from the cluster CR will be applied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// The number of pods in the rgw replicaset.
@@ -243,7 +243,6 @@ pub struct CephObjectStoreGateway {
     /// The labels-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// The affinity to place the rgw pods (default is to place on any available node)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<CephObjectStoreGatewayPlacement>,
     /// The port the rgw service will be listening on (http)
@@ -266,521 +265,367 @@ pub struct CephObjectStoreGateway {
     pub ssl_certificate_ref: Option<String>,
 }
 
-/// EndpointAddress is a tuple that describes a single IP address or host name.
+/// EndpointAddress is a tuple that describes a single IP address or host name. This is a subset of Kubernetes's v1.EndpointAddress.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayExternalRgwEndpoints {
-    /// The DNS-addressable Hostname of this endpoint.
+    /// The DNS-addressable Hostname of this endpoint. This field will be preferred over IP if both are given.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// The IP of this endpoint.
+    /// The IP of this endpoint. As a legacy behavior, this supports being given a DNS-adressable hostname as well.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
 }
 
-/// The affinity to place the rgw pods (default is to place on any available node)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacement {
-    /// NodeAffinity is a group of node affinity scheduling rules
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<CephObjectStoreGatewayPlacementNodeAffinity>,
-    /// PodAffinity is a group of inter pod affinity scheduling rules
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<CephObjectStoreGatewayPlacementPodAffinity>,
-    /// PodAntiAffinity is a group of inter pod anti affinity scheduling rules
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<CephObjectStoreGatewayPlacementPodAntiAffinity>,
-    /// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<CephObjectStoreGatewayPlacementTolerations>>,
-    /// TopologySpreadConstraint specifies how to spread matching pods among the given topology
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<CephObjectStoreGatewayPlacementTopologySpreadConstraints>>,
 }
 
-/// NodeAffinity is a group of node affinity scheduling rules
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will no
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// A node selector term, associated with the corresponding weight.
     pub preference: CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
-    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
 
-/// A node selector term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
-    /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// If the affinity requirements specified by this field are not met at scheduling time, the pod will no
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of them are ANDed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
-    /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// PodAffinity is a group of inter pod affinity scheduling rules
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will no
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
     pub weight: i32,
 }
 
-/// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) t
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// PodAntiAffinity is a group of inter pod anti affinity scheduling rules
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions speci
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the anti-affinity requirements specified by this field are not met at scheduling time, the pod wi
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
     pub weight: i32,
 }
 
-/// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) t
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, o
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraints {
-    /// LabelSelector is used to find matching pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MaxSkew describes the degree to which pods may be unevenly distributed.
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    /// MinDomains indicates a minimum number of eligible domains.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    /// NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
-    /// TopologyKey is the key of node labels.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
-    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint.
     #[serde(rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: String,
 }
 
-/// LabelSelector is used to find matching pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
     pub operator: String,
-    /// values is an array of string values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -788,13 +633,15 @@ pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelector
 /// The resource requirements for the rgw pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayResources {
-    /// Claims lists the names of resources, defined in spec.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephObjectStoreGatewayResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -802,7 +649,7 @@ pub struct CephObjectStoreGatewayResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
 }
 
@@ -831,18 +678,18 @@ pub struct CephObjectStoreHealthCheckReadinessProbe {
     /// Disabled determines whether probe is disable or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Probe describes a health check to be performed against a container to determine whether it is alive 
+    /// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probe: Option<CephObjectStoreHealthCheckReadinessProbeProbe>,
 }
 
-/// Probe describes a health check to be performed against a container to determine whether it is alive 
+/// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephObjectStoreHealthCheckReadinessProbeProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -851,22 +698,21 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephObjectStoreHealthCheckReadinessProbeProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephObjectStoreHealthCheckReadinessProbeProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1.
+    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -874,7 +720,7 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckReadinessProbeProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  
+    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -884,7 +730,8 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeExec {
 pub struct CephObjectStoreHealthCheckReadinessProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
+    ///  If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -892,7 +739,7 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -901,7 +748,7 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535.
+    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
     /// Scheme to use for connecting to the host. Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -911,7 +758,7 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGetHttpHeaders {
-    /// The header field name.
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -923,7 +770,7 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535.
+    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -933,18 +780,18 @@ pub struct CephObjectStoreHealthCheckStartupProbe {
     /// Disabled determines whether probe is disable or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Probe describes a health check to be performed against a container to determine whether it is alive 
+    /// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probe: Option<CephObjectStoreHealthCheckStartupProbeProbe>,
 }
 
-/// Probe describes a health check to be performed against a container to determine whether it is alive 
+/// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckStartupProbeProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephObjectStoreHealthCheckStartupProbeProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -953,22 +800,21 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephObjectStoreHealthCheckStartupProbeProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephObjectStoreHealthCheckStartupProbeProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1.
+    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -976,7 +822,7 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckStartupProbeProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  
+    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -986,7 +832,8 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeExec {
 pub struct CephObjectStoreHealthCheckStartupProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
+    ///  If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -994,7 +841,7 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1003,7 +850,7 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535.
+    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
     /// Scheme to use for connecting to the host. Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1013,7 +860,7 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGetHttpHeaders {
-    /// The header field name.
+    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1025,7 +872,7 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535.
+    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -1035,7 +882,7 @@ pub struct CephObjectStoreMetadataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g.
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectStoreMetadataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -1050,7 +897,7 @@ pub struct CephObjectStoreMetadataPool {
     /// The erasure code settings
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephObjectStoreMetadataPoolErasureCoded>,
-    /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush 
+    /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
@@ -1091,10 +938,10 @@ pub struct CephObjectStoreMetadataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool t
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -1164,12 +1011,12 @@ pub struct CephObjectStoreMetadataPoolReplicated {
     /// RequireSafeReplicaSize if false allows you to set replica 1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
-    /// Size - Number of copies per object in a replicated storage pool, including the object itself (requir
+    /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
-    /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capac
+    /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }

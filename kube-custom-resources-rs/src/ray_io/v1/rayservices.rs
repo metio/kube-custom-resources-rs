@@ -6308,6 +6308,8 @@ pub struct RayServiceStatus {
     pub active_service_status: Option<RayServiceStatusActiveServiceStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numServeEndpoints")]
+    pub num_serve_endpoints: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingServiceStatus")]

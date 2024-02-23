@@ -26,10 +26,10 @@ spec:
           description: "CephObjectStoreUser represents a Ceph Object Store Gateway User"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object."
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents."
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -41,7 +41,7 @@ spec:
                   nullable: true
                   properties:
                     amz-cache:
-                      description: "Add capabilities for user to send request to RGW Cache API header. Documented in https://docs.ceph."
+                      description: "Add capabilities for user to send request to RGW Cache API header. Documented in https://docs.ceph.com/en/quincy/radosgw/rgw-cache/#cache-api"
                       enum:
                         - "*"
                         - "read"
@@ -49,7 +49,7 @@ spec:
                         - "read, write"
                       type: "string"
                     bilog:
-                      description: "Add capabilities for user to change bucket index logging. Documented in https://docs.ceph."
+                      description: "Add capabilities for user to change bucket index logging. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -57,7 +57,7 @@ spec:
                         - "read, write"
                       type: "string"
                     bucket:
-                      description: "Admin capabilities to read/write Ceph object store buckets. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write Ceph object store buckets. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -65,7 +65,7 @@ spec:
                         - "read, write"
                       type: "string"
                     buckets:
-                      description: "Admin capabilities to read/write Ceph object store buckets. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write Ceph object store buckets. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -73,7 +73,7 @@ spec:
                         - "read, write"
                       type: "string"
                     datalog:
-                      description: "Add capabilities for user to change data logging. Documented in https://docs.ceph."
+                      description: "Add capabilities for user to change data logging. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -81,7 +81,7 @@ spec:
                         - "read, write"
                       type: "string"
                     info:
-                      description: "Admin capabilities to read/write information about the user. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write information about the user. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -89,7 +89,7 @@ spec:
                         - "read, write"
                       type: "string"
                     mdlog:
-                      description: "Add capabilities for user to change metadata logging. Documented in https://docs.ceph."
+                      description: "Add capabilities for user to change metadata logging. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -97,7 +97,7 @@ spec:
                         - "read, write"
                       type: "string"
                     metadata:
-                      description: "Admin capabilities to read/write Ceph object store metadata. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write Ceph object store metadata. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -105,7 +105,7 @@ spec:
                         - "read, write"
                       type: "string"
                     oidc-provider:
-                      description: "Add capabilities for user to change oidc provider. Documented in https://docs.ceph."
+                      description: "Add capabilities for user to change oidc provider. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -113,7 +113,7 @@ spec:
                         - "read, write"
                       type: "string"
                     ratelimit:
-                      description: "Add capabilities for user to set rate limiter for user and bucket. Documented in https://docs.ceph."
+                      description: "Add capabilities for user to set rate limiter for user and bucket. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -121,7 +121,7 @@ spec:
                         - "read, write"
                       type: "string"
                     roles:
-                      description: "Admin capabilities to read/write roles for user. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write roles for user. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -129,7 +129,7 @@ spec:
                         - "read, write"
                       type: "string"
                     usage:
-                      description: "Admin capabilities to read/write Ceph object store usage. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write Ceph object store usage. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -137,7 +137,7 @@ spec:
                         - "read, write"
                       type: "string"
                     user:
-                      description: "Admin capabilities to read/write Ceph object store users. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write Ceph object store users. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -145,7 +145,7 @@ spec:
                         - "read, write"
                       type: "string"
                     user-policy:
-                      description: "Add capabilities for user to change user policies. Documented in https://docs.ceph."
+                      description: "Add capabilities for user to change user policies. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -153,7 +153,7 @@ spec:
                         - "read, write"
                       type: "string"
                     users:
-                      description: "Admin capabilities to read/write Ceph object store users. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write Ceph object store users. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -161,7 +161,7 @@ spec:
                         - "read, write"
                       type: "string"
                     zone:
-                      description: "Admin capabilities to read/write Ceph object store zones. Documented in https://docs.ceph."
+                      description: "Admin capabilities to read/write Ceph object store zones. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities"
                       enum:
                         - "*"
                         - "read"
@@ -176,7 +176,7 @@ spec:
                   description: "The display name for the ceph users"
                   type: "string"
                 quotas:
-                  description: "ObjectUserQuotaSpec can be used to set quotas for the object store user to limit their usage."
+                  description: "ObjectUserQuotaSpec can be used to set quotas for the object store user to limit their usage. See the [Ceph docs](https://docs.ceph.com/en/latest/radosgw/admin/?#quota-management) for more"
                   nullable: true
                   properties:
                     maxBuckets:
@@ -192,7 +192,7 @@ spec:
                       anyOf:
                         - type: "integer"
                         - type: "string"
-                      description: "Maximum size limit of all objects across all the user's buckets See https://pkg.go.dev/k8s."
+                      description: "Maximum size limit of all objects across all the user's buckets See https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity for more info."
                       nullable: true
                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                       x-kubernetes-int-or-string: true

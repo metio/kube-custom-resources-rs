@@ -12,72 +12,75 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ActionSetStatus")]
 #[kube(schema = "disabled")]
 pub struct ActionSetSpec {
-    /// backup specifies the backup action.
+    /// Specifies the backup action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<ActionSetBackup>,
-    /// backupType specifies the backup type, supported values: Full, Continuous. Full means full backup. Incremental means back up data that have changed since the last backup (full or incremental). Differential means back up data that have changed since the last full backup. Continuous will back up the transaction log continuously, the PITR (Point in Time Recovery). can be performed based on the continuous backup and full backup.
+    /// Specifies the backup type. Supported values include: 
+    ///  - `Full` for a full backup. - `Incremental` back up data that have changed since the last backup (either full or incremental). - `Differential` back up data that has changed since the last full backup. - `Continuous` back up transaction logs continuously, such as MySQL binlog, PostgreSQL WAL, etc. 
+    ///  Continuous backup is essential for implementing Point-in-Time Recovery (PITR).
     #[serde(rename = "backupType")]
     pub backup_type: String,
-    /// List of environment variables to set in the container.
+    /// Specifies a list of environment variables to be set in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ActionSetEnv>>,
-    /// List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.
+    /// Specifies a list of sources to populate environment variables in the container. The keys within a source must be a C_IDENTIFIER. Any invalid keys will be reported as an event when the container starts. If a key exists in multiple sources, the value from the last source will take precedence. Any values defined by an Env with a duplicate key will take precedence. 
+    ///  This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<ActionSetEnvFrom>>,
-    /// restore specifies the restore action.
+    /// Specifies the restore action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restore: Option<ActionSetRestore>,
 }
 
-/// backup specifies the backup action.
+/// Specifies the backup action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackup {
-    /// backupData specifies the backup data action.
+    /// Represents the action to be performed for backing up data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupData")]
     pub backup_data: Option<ActionSetBackupBackupData>,
-    /// postBackup specifies a hook that should be executed after the backup.
+    /// Represents a set of actions that should be executed after the backup process has completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postBackup")]
     pub post_backup: Option<Vec<ActionSetBackupPostBackup>>,
-    /// preBackup specifies a hook that should be executed before the backup.
+    /// Represents a set of actions that should be executed before the backup process begins.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preBackup")]
     pub pre_backup: Option<Vec<ActionSetBackupPreBackup>>,
-    /// preDelete defines that custom deletion action which can be executed before executing the built-in deletion action. note that preDelete action job will ignore the env/envFrom.
+    /// Represents a custom deletion action that can be executed before the built-in deletion action. Note: The preDelete action job will ignore the env/envFrom.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preDelete")]
     pub pre_delete: Option<ActionSetBackupPreDelete>,
 }
 
-/// backupData specifies the backup data action.
+/// Represents the action to be performed for backing up data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupBackupData {
-    /// command specifies the commands to back up the volume data.
+    /// Defines the commands to back up the volume data.
     pub command: Vec<String>,
-    /// image specifies the image of backup container.
+    /// Specifies the image of the backup container.
     pub image: String,
-    /// OnError specifies how should behave if it encounters an error executing this action.
+    /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupBackupDataOnError>,
-    /// runOnTargetPodNode specifies whether to run the job workload on the target pod node. If backup container should mount the target pod's volumes, this field should be set to true. otherwise the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
-    /// syncProgress specifies whether to sync the backup progress and its interval seconds.
+    /// Determines if the backup progress should be synchronized and the interval for synchronization in seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncProgress")]
     pub sync_progress: Option<ActionSetBackupBackupDataSyncProgress>,
 }
 
-/// backupData specifies the backup data action.
+/// Represents the action to be performed for backing up data.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ActionSetBackupBackupDataOnError {
     Continue,
     Fail,
 }
 
-/// syncProgress specifies whether to sync the backup progress and its interval seconds.
+/// Determines if the backup progress should be synchronized and the interval for synchronization in seconds.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupBackupDataSyncProgress {
-    /// enabled specifies whether to sync the backup progress. If enabled, a sidecar container will be created to sync the backup progress to the Backup CR status.
+    /// Determines if the backup progress should be synchronized. If set to true, a sidecar container will be instantiated to synchronize the backup progress with the Backup Custom Resource (CR) status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// intervalSeconds specifies the interval seconds to sync the backup progress.
+    /// Defines the interval in seconds for synchronizing the backup progress.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i32>,
 }
@@ -85,53 +88,53 @@ pub struct ActionSetBackupBackupDataSyncProgress {
 /// ActionSpec defines an action that should be executed. Only one of the fields may be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupPostBackup {
-    /// exec specifies the action should be executed by the pod exec API in a container.
+    /// Specifies that the action should be executed using the pod's exec API within a container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ActionSetBackupPostBackupExec>,
-    /// job specifies the action should be executed by a Kubernetes Job.
+    /// Specifies that the action should be executed by a Kubernetes Job.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<ActionSetBackupPostBackupJob>,
 }
 
-/// exec specifies the action should be executed by the pod exec API in a container.
+/// Specifies that the action should be executed using the pod's exec API within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupPostBackupExec {
-    /// Command is the command and arguments to execute.
+    /// Defines the command and arguments to be executed.
     pub command: Vec<String>,
-    /// container is the container in the pod where the command should be executed. If not specified, the pod's first container is used.
+    /// Specifies the container within the pod where the command should be executed. If not specified, the first container in the pod is used by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
-    /// OnError specifies how should behave if it encounters an error executing this action.
+    /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupPostBackupExecOnError>,
-    /// Timeout defines the maximum amount of time should wait for the hook to complete before considering the execution a failure.
+    /// Specifies the maximum duration to wait for the hook to complete before considering the execution a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
 
-/// exec specifies the action should be executed by the pod exec API in a container.
+/// Specifies that the action should be executed using the pod's exec API within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ActionSetBackupPostBackupExecOnError {
     Continue,
     Fail,
 }
 
-/// job specifies the action should be executed by a Kubernetes Job.
+/// Specifies that the action should be executed by a Kubernetes Job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupPostBackupJob {
-    /// command specifies the commands to back up the volume data.
+    /// Defines the commands to back up the volume data.
     pub command: Vec<String>,
-    /// image specifies the image of backup container.
+    /// Specifies the image of the backup container.
     pub image: String,
-    /// OnError specifies how should behave if it encounters an error executing this action.
+    /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupPostBackupJobOnError>,
-    /// runOnTargetPodNode specifies whether to run the job workload on the target pod node. If backup container should mount the target pod's volumes, this field should be set to true. otherwise the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
 
-/// job specifies the action should be executed by a Kubernetes Job.
+/// Specifies that the action should be executed by a Kubernetes Job.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ActionSetBackupPostBackupJobOnError {
     Continue,
@@ -141,65 +144,65 @@ pub enum ActionSetBackupPostBackupJobOnError {
 /// ActionSpec defines an action that should be executed. Only one of the fields may be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupPreBackup {
-    /// exec specifies the action should be executed by the pod exec API in a container.
+    /// Specifies that the action should be executed using the pod's exec API within a container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ActionSetBackupPreBackupExec>,
-    /// job specifies the action should be executed by a Kubernetes Job.
+    /// Specifies that the action should be executed by a Kubernetes Job.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<ActionSetBackupPreBackupJob>,
 }
 
-/// exec specifies the action should be executed by the pod exec API in a container.
+/// Specifies that the action should be executed using the pod's exec API within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupPreBackupExec {
-    /// Command is the command and arguments to execute.
+    /// Defines the command and arguments to be executed.
     pub command: Vec<String>,
-    /// container is the container in the pod where the command should be executed. If not specified, the pod's first container is used.
+    /// Specifies the container within the pod where the command should be executed. If not specified, the first container in the pod is used by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
-    /// OnError specifies how should behave if it encounters an error executing this action.
+    /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupPreBackupExecOnError>,
-    /// Timeout defines the maximum amount of time should wait for the hook to complete before considering the execution a failure.
+    /// Specifies the maximum duration to wait for the hook to complete before considering the execution a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
 
-/// exec specifies the action should be executed by the pod exec API in a container.
+/// Specifies that the action should be executed using the pod's exec API within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ActionSetBackupPreBackupExecOnError {
     Continue,
     Fail,
 }
 
-/// job specifies the action should be executed by a Kubernetes Job.
+/// Specifies that the action should be executed by a Kubernetes Job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupPreBackupJob {
-    /// command specifies the commands to back up the volume data.
+    /// Defines the commands to back up the volume data.
     pub command: Vec<String>,
-    /// image specifies the image of backup container.
+    /// Specifies the image of the backup container.
     pub image: String,
-    /// OnError specifies how should behave if it encounters an error executing this action.
+    /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetBackupPreBackupJobOnError>,
-    /// runOnTargetPodNode specifies whether to run the job workload on the target pod node. If backup container should mount the target pod's volumes, this field should be set to true. otherwise the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
 
-/// job specifies the action should be executed by a Kubernetes Job.
+/// Specifies that the action should be executed by a Kubernetes Job.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ActionSetBackupPreBackupJobOnError {
     Continue,
     Fail,
 }
 
-/// preDelete defines that custom deletion action which can be executed before executing the built-in deletion action. note that preDelete action job will ignore the env/envFrom.
+/// Represents a custom deletion action that can be executed before the built-in deletion action. Note: The preDelete action job will ignore the env/envFrom.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackupPreDelete {
-    /// command specifies the commands to back up the volume data.
+    /// Defines the commands to back up the volume data.
     pub command: Vec<String>,
-    /// image specifies the image of backup container.
+    /// Specifies the image of the backup container.
     pub image: String,
 }
 
@@ -319,13 +322,13 @@ pub struct ActionSetEnvFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// restore specifies the restore action.
+/// Specifies the restore action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetRestore {
-    /// postReady specifies the action to execute after the data is ready.
+    /// Specifies the actions that should be executed after the data has been prepared and is ready for restoration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postReady")]
     pub post_ready: Option<Vec<ActionSetRestorePostReady>>,
-    /// prepareData specifies the action to prepare data.
+    /// Specifies the action required to prepare data for restoration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prepareData")]
     pub prepare_data: Option<ActionSetRestorePrepareData>,
 }
@@ -333,75 +336,75 @@ pub struct ActionSetRestore {
 /// ActionSpec defines an action that should be executed. Only one of the fields may be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetRestorePostReady {
-    /// exec specifies the action should be executed by the pod exec API in a container.
+    /// Specifies that the action should be executed using the pod's exec API within a container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ActionSetRestorePostReadyExec>,
-    /// job specifies the action should be executed by a Kubernetes Job.
+    /// Specifies that the action should be executed by a Kubernetes Job.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<ActionSetRestorePostReadyJob>,
 }
 
-/// exec specifies the action should be executed by the pod exec API in a container.
+/// Specifies that the action should be executed using the pod's exec API within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetRestorePostReadyExec {
-    /// Command is the command and arguments to execute.
+    /// Defines the command and arguments to be executed.
     pub command: Vec<String>,
-    /// container is the container in the pod where the command should be executed. If not specified, the pod's first container is used.
+    /// Specifies the container within the pod where the command should be executed. If not specified, the first container in the pod is used by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
-    /// OnError specifies how should behave if it encounters an error executing this action.
+    /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetRestorePostReadyExecOnError>,
-    /// Timeout defines the maximum amount of time should wait for the hook to complete before considering the execution a failure.
+    /// Specifies the maximum duration to wait for the hook to complete before considering the execution a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
 
-/// exec specifies the action should be executed by the pod exec API in a container.
+/// Specifies that the action should be executed using the pod's exec API within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ActionSetRestorePostReadyExecOnError {
     Continue,
     Fail,
 }
 
-/// job specifies the action should be executed by a Kubernetes Job.
+/// Specifies that the action should be executed by a Kubernetes Job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetRestorePostReadyJob {
-    /// command specifies the commands to back up the volume data.
+    /// Defines the commands to back up the volume data.
     pub command: Vec<String>,
-    /// image specifies the image of backup container.
+    /// Specifies the image of the backup container.
     pub image: String,
-    /// OnError specifies how should behave if it encounters an error executing this action.
+    /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetRestorePostReadyJobOnError>,
-    /// runOnTargetPodNode specifies whether to run the job workload on the target pod node. If backup container should mount the target pod's volumes, this field should be set to true. otherwise the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
 
-/// job specifies the action should be executed by a Kubernetes Job.
+/// Specifies that the action should be executed by a Kubernetes Job.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ActionSetRestorePostReadyJobOnError {
     Continue,
     Fail,
 }
 
-/// prepareData specifies the action to prepare data.
+/// Specifies the action required to prepare data for restoration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetRestorePrepareData {
-    /// command specifies the commands to back up the volume data.
+    /// Defines the commands to back up the volume data.
     pub command: Vec<String>,
-    /// image specifies the image of backup container.
+    /// Specifies the image of the backup container.
     pub image: String,
-    /// OnError specifies how should behave if it encounters an error executing this action.
+    /// Indicates how to behave if an error is encountered during the execution of this action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onError")]
     pub on_error: Option<ActionSetRestorePrepareDataOnError>,
-    /// runOnTargetPodNode specifies whether to run the job workload on the target pod node. If backup container should mount the target pod's volumes, this field should be set to true. otherwise the target pod's volumes will be ignored.
+    /// Determines whether to run the job workload on the target pod node. If the backup container needs to mount the target pod's volumes, this field should be set to true. Otherwise, the target pod's volumes will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
 
-/// prepareData specifies the action to prepare data.
+/// Specifies the action required to prepare data for restoration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ActionSetRestorePrepareDataOnError {
     Continue,
@@ -411,13 +414,13 @@ pub enum ActionSetRestorePrepareDataOnError {
 /// ActionSetStatus defines the observed state of ActionSet
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetStatus {
-    /// A human-readable message indicating details about why the ActionSet is in this phase.
+    /// Provides a human-readable explanation detailing the reason for the current phase of the ActionSet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// generation number
+    /// Represents the generation number that has been observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// phase - in list of [Available,Unavailable]
+    /// Indicates the phase of the ActionSet. This can be either 'Available' or 'Unavailable'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ActionSetStatusPhase>,
 }

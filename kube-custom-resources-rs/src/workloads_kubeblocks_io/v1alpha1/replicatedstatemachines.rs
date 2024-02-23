@@ -7,63 +7,65 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
-/// ReplicatedStateMachineSpec defines the desired state of ReplicatedStateMachine
+/// Defines the desired state of the state machine. It includes the configuration details for the state machine.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "workloads.kubeblocks.io", version = "v1alpha1", kind = "ReplicatedStateMachine", plural = "replicatedstatemachines")]
 #[kube(namespaced)]
 #[kube(status = "ReplicatedStateMachineStatus")]
 #[kube(schema = "disabled")]
 pub struct ReplicatedStateMachineSpec {
-    /// AlternativeServices defines Alternative Services selector pattern specifier. can be used for creating Readonly service.
+    /// Defines Alternative Services selector pattern specifier. Can be used for creating Readonly service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alternativeServices")]
     pub alternative_services: Option<Vec<ReplicatedStateMachineAlternativeServices>>,
     /// Credential used to connect to DB engine
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credential: Option<ReplicatedStateMachineCredential>,
-    /// MemberUpdateStrategy, Members(Pods) update strategy. serial: update Members one by one that guarantee minimum component unavailable time. Learner -> Follower(with AccessMode=none) -> Follower(with AccessMode=readonly) -> Follower(with AccessMode=readWrite) -> Leader bestEffortParallel: update Members in parallel that guarantee minimum component un-writable time. Learner, Follower(minority) in parallel -> Follower(majority) -> Leader, keep majority online all the time. parallel: force parallel
+    /// Members(Pods) update strategy. 
+    ///  - serial: update Members one by one that guarantee minimum component unavailable time. - bestEffortParallel: update Members in parallel that guarantee minimum component un-writable time. - parallel: force parallel
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberUpdateStrategy")]
     pub member_update_strategy: Option<ReplicatedStateMachineMemberUpdateStrategy>,
-    /// MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
+    /// Provides actions to do membership dynamic reconfiguration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "membershipReconfiguration")]
     pub membership_reconfiguration: Option<ReplicatedStateMachineMembershipReconfiguration>,
-    /// Minimum number of seconds for which a newly created pod should be ready without any of its container crashing for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready)
+    /// Defines the minimum number of seconds a newly created pod should be ready without any of its container crashing to be considered available. Defaults to 0, meaning the pod will be considered available as soon as it is ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
-    /// NodeAssignment defines the expected assignment of nodes.
+    /// Defines the expected assignment of nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAssignment")]
     pub node_assignment: Option<Vec<ReplicatedStateMachineNodeAssignment>>,
-    /// Paused indicates that the rsm is paused, means the reconciliation of this rsm object will be paused.
+    /// Indicates that the rsm is paused, meaning the reconciliation of this rsm object will be paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// podManagementPolicy controls how pods are created during initial scale up, when replacing pods on nodes, or when scaling down. The default policy is `OrderedReady`, where pods are created in increasing order (pod-0, then pod-1, etc) and the controller will wait until each pod is ready before continuing. When scaling down, the pods are removed in the opposite order. The alternative policy is `Parallel` which will create pods in parallel to match the desired scale without waiting, and on scale down will delete all pods at once.
+    /// Controls how pods are created during initial scale up, when replacing pods on nodes, or when scaling down. 
+    ///  The default policy is `OrderedReady`, where pods are created in increasing order and the controller waits until each pod is ready before continuing. When scaling down, the pods are removed in the opposite order. The alternative policy is `Parallel` which will create pods in parallel to match the desired scale without waiting, and on scale down will delete all pods at once.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
     pub pod_management_policy: Option<String>,
-    /// replicas is the desired number of replicas of the given Template. These are replicas in the sense that they are instantiations of the same Template, but individual replicas also have a consistent identity. If unspecified, defaults to 1.
+    /// Specifies the desired number of replicas of the given Template. These replicas are instantiations of the same Template, with each having a consistent identity. Defaults to 1 if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// RoleProbe provides method to probe role.
+    /// Provides method to probe role.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbe")]
     pub role_probe: Option<ReplicatedStateMachineRoleProbe>,
-    /// Roles, a list of roles defined in the system.
+    /// A list of roles defined in the system.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<ReplicatedStateMachineRoles>>,
-    /// RsmTransformPolicy defines the policy generate sts using rsm. Passed from cluster. ToSts: rsm transform to statefulSet ToPod: rsm transform to pod
+    /// Defines the policy to generate sts using rsm. Passed from cluster. ToSts: rsm transform to statefulSet ToPod: rsm transform to pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rsmTransformPolicy")]
     pub rsm_transform_policy: Option<ReplicatedStateMachineRsmTransformPolicy>,
-    /// selector is a label query over pods that should match the replica count. It must match the pod template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+    /// Represents a label query over pods that should match the replica count. It must match the pod template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
     pub selector: ReplicatedStateMachineSelector,
-    /// service defines the behavior of a service spec. provides read-write service https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+    /// Defines the behavior of a service spec. Provides read-write service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ReplicatedStateMachineService>,
-    /// serviceName is the name of the service that governs this StatefulSet. This service must exist before the StatefulSet, and is responsible for the network identity of the set. Pods get DNS/hostnames that follow the pattern: pod-specific-string.serviceName.default.svc.cluster.local where "pod-specific-string" is managed by the StatefulSet controller.
+    /// Refers to the name of the service that governs this StatefulSet. This service must exist before the StatefulSet and is responsible for the network identity of the set. Pods get DNS/hostnames that follow a specific pattern.
     #[serde(rename = "serviceName")]
     pub service_name: String,
     /// PodTemplateSpec describes the data a pod should have when created from a template
     pub template: ReplicatedStateMachineTemplate,
-    /// updateStrategy indicates the StatefulSetUpdateStrategy that will be employed to update Pods in the RSM when a revision is made to Template. UpdateStrategy.Type will be set to appsv1.OnDeleteStatefulSetStrategyType if MemberUpdateStrategy is not nil
+    /// Indicates the StatefulSetUpdateStrategy that will be employed to update Pods in the RSM when a revision is made to Template. UpdateStrategy.Type will be set to appsv1.OnDeleteStatefulSetStrategyType if MemberUpdateStrategy is not nil
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ReplicatedStateMachineUpdateStrategy>,
-    /// volumeClaimTemplates is a list of claims that pods are allowed to reference. The ReplicatedStateMachine controller is responsible for mapping network identities to claims in a way that maintains the identity of a pod. Every claim in this list must have at least one matching (by name) volumeMount in one container in the template. A claim in this list takes precedence over any volumes in the template, with the same name.
+    /// Represents a list of claims that pods are allowed to reference. The ReplicatedStateMachine controller is responsible for mapping network identities to claims in a way that maintains the identity of a pod. Every claim in this list must have at least one matching (by name) volumeMount in one container in the template. A claim in this list takes precedence over any volumes in the template, with the same name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<ReplicatedStateMachineVolumeClaimTemplates>>,
 }
@@ -287,24 +289,25 @@ pub struct ReplicatedStateMachineAlternativeServicesStatusLoadBalancerIngressPor
 /// Credential used to connect to DB engine
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineCredential {
-    /// Password variable name will be KB_RSM_PASSWORD
+    /// Represents the user's password for the credential. The corresponding environment variable will be KB_RSM_PASSWORD.
     pub password: ReplicatedStateMachineCredentialPassword,
-    /// Username variable name will be KB_RSM_USERNAME
+    /// Defines the user's name for the credential. The corresponding environment variable will be KB_RSM_USERNAME.
     pub username: ReplicatedStateMachineCredentialUsername,
 }
 
-/// Password variable name will be KB_RSM_PASSWORD
+/// Represents the user's password for the credential. The corresponding environment variable will be KB_RSM_PASSWORD.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineCredentialPassword {
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Specifies the value of the environment variable. This field is optional and defaults to an empty string. The value can include variable references in the format $(VAR_NAME) which will be expanded using previously defined environment variables in the container and any service environment variables. 
+    ///  If a variable cannot be resolved, the reference in the input string will remain unchanged. Double $$ can be used to escape the $(VAR_NAME) syntax, resulting in a single $ and producing the string literal "$(VAR_NAME)". Escaped references will not be expanded, regardless of whether the variable exists or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    /// Defines the source for the environment variable's value. This field is optional and cannot be used if the 'Value' field is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<ReplicatedStateMachineCredentialPasswordValueFrom>,
 }
 
-/// Source for the environment variable's value. Cannot be used if value is not empty.
+/// Defines the source for the environment variable's value. This field is optional and cannot be used if the 'Value' field is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineCredentialPasswordValueFrom {
     /// Selects a key of a ConfigMap.
@@ -371,18 +374,19 @@ pub struct ReplicatedStateMachineCredentialPasswordValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Username variable name will be KB_RSM_USERNAME
+/// Defines the user's name for the credential. The corresponding environment variable will be KB_RSM_USERNAME.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineCredentialUsername {
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Specifies the value of the environment variable. This field is optional and defaults to an empty string. The value can include variable references in the format $(VAR_NAME) which will be expanded using previously defined environment variables in the container and any service environment variables. 
+    ///  If a variable cannot be resolved, the reference in the input string will remain unchanged. Double $$ can be used to escape the $(VAR_NAME) syntax, resulting in a single $ and producing the string literal "$(VAR_NAME)". Escaped references will not be expanded, regardless of whether the variable exists or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    /// Defines the source for the environment variable's value. This field is optional and cannot be used if the 'Value' field is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<ReplicatedStateMachineCredentialUsernameValueFrom>,
 }
 
-/// Source for the environment variable's value. Cannot be used if value is not empty.
+/// Defines the source for the environment variable's value. This field is optional and cannot be used if the 'Value' field is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineCredentialUsernameValueFrom {
     /// Selects a key of a ConfigMap.
@@ -449,7 +453,7 @@ pub struct ReplicatedStateMachineCredentialUsernameValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// ReplicatedStateMachineSpec defines the desired state of ReplicatedStateMachine
+/// Defines the desired state of the state machine. It includes the configuration details for the state machine.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ReplicatedStateMachineMemberUpdateStrategy {
     Serial,
@@ -457,159 +461,153 @@ pub enum ReplicatedStateMachineMemberUpdateStrategy {
     Parallel,
 }
 
-/// MembershipReconfiguration provides actions to do membership dynamic reconfiguration.
+/// Provides actions to do membership dynamic reconfiguration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfiguration {
-    /// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
+    /// Defines the action to trigger the new member to start log syncing. If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSyncAction")]
     pub log_sync_action: Option<ReplicatedStateMachineMembershipReconfigurationLogSyncAction>,
-    /// MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
+    /// Defines the action to add a member. If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberJoinAction")]
     pub member_join_action: Option<ReplicatedStateMachineMembershipReconfigurationMemberJoinAction>,
-    /// MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
+    /// Defines the action to remove a member. If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberLeaveAction")]
     pub member_leave_action: Option<ReplicatedStateMachineMembershipReconfigurationMemberLeaveAction>,
-    /// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
+    /// Defines the action to inform the cluster that the new member can join voting now. If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteAction")]
     pub promote_action: Option<ReplicatedStateMachineMembershipReconfigurationPromoteAction>,
-    /// SwitchoverAction specifies how to do switchover latest [BusyBox](https://busybox.net/) image will be used if Image not configured
+    /// Specifies the environment variables that can be used in all following Actions: - KB_RSM_USERNAME: Represents the username part of the credential - KB_RSM_PASSWORD: Represents the password part of the credential - KB_RSM_LEADER_HOST: Represents the leader host - KB_RSM_TARGET_HOST: Represents the target host - KB_RSM_SERVICE_PORT: Represents the service port 
+    ///  Defines the action to perform a switchover. If the Image is not configured, the latest [BusyBox](https://busybox.net/) image will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchoverAction")]
     pub switchover_action: Option<ReplicatedStateMachineMembershipReconfigurationSwitchoverAction>,
 }
 
-/// LogSyncAction specifies how to trigger the new member to start log syncing previous none-nil action's Image will be used if not configured
+/// Defines the action to trigger the new member to start log syncing. If the Image is not configured, the Image from the previous non-nil action will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationLogSyncAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// MemberJoinAction specifies how to add member previous none-nil action's Image will be used if not configured
+/// Defines the action to add a member. If the Image is not configured, the Image from the previous non-nil action will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationMemberJoinAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// MemberLeaveAction specifies how to remove member previous none-nil action's Image will be used if not configured
+/// Defines the action to remove a member. If the Image is not configured, the Image from the previous non-nil action will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationMemberLeaveAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// PromoteAction specifies how to tell the cluster that the new member can join voting now previous none-nil action's Image will be used if not configured
+/// Defines the action to inform the cluster that the new member can join voting now. If the Image is not configured, the Image from the previous non-nil action will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationPromoteAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// SwitchoverAction specifies how to do switchover latest [BusyBox](https://busybox.net/) image will be used if Image not configured
+/// Specifies the environment variables that can be used in all following Actions: - KB_RSM_USERNAME: Represents the username part of the credential - KB_RSM_PASSWORD: Represents the password part of the credential - KB_RSM_LEADER_HOST: Represents the leader host - KB_RSM_TARGET_HOST: Represents the target host - KB_RSM_SERVICE_PORT: Represents the service port 
+///  Defines the action to perform a switchover. If the Image is not configured, the latest [BusyBox](https://busybox.net/) image will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineMembershipReconfigurationSwitchoverAction {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineNodeAssignment {
-    /// Name defines the name of statefulSet that needs to allocate node.
+    /// Specifies the identifier for the statefulSet requiring node allocation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// NodeSpec defines the detailed node info that will assign to the statefulSet.
+    /// Provides comprehensive details of the node to be assigned to the statefulSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSpec")]
     pub node_spec: Option<ReplicatedStateMachineNodeAssignmentNodeSpec>,
 }
 
-/// NodeSpec defines the detailed node info that will assign to the statefulSet.
+/// Provides comprehensive details of the node to be assigned to the statefulSet.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineNodeAssignmentNodeSpec {
-    /// NodeName is a type that holds a api.Node's Name identifier. Being a type captures intent and helps make sure that the node name is not confused with similar concepts (the hostname, the cloud provider id, the cloud provider name etc) 
-    ///  To clarify the various types: 
-    ///  - Node.Name is the Name field of the Node in the API.  This should be stored in a NodeName. Unfortunately, because Name is part of ObjectMeta, we can't store it as a NodeName at the API level. 
-    ///  - Hostname is the hostname of the local machine (from uname -n). However, some components allow the user to pass in a --hostname-override flag, which will override this in most places. In the absence of anything more meaningful, kubelet will use Hostname as the Node.Name when it creates the Node. 
-    ///  * The cloudproviders have the own names: GCE has InstanceName, AWS has InstanceId. 
-    ///  For GCE, InstanceName is the Name of an Instance object in the GCE API.  On GCE, Instance.Name becomes the Hostname, and thus it makes sense also to use it as the Node.Name.  But that is GCE specific, and it is up to the cloudprovider how to do this mapping. 
-    ///  For AWS, the InstanceID is not yet suitable for use as a Node.Name, so we actually use the PrivateDnsName for the Node.Name.  And this is _not_ always the same as the hostname: if we are using a custom DHCP domain it won't be.
+    /// Represents the name of the node. This is a unique identifier within the cluster and is used to identify the specific node for scheduling, reporting, and other tasks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
 }
 
-/// RoleProbe provides method to probe role.
+/// Provides method to probe role.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineRoleProbe {
-    /// BuiltinHandler specifies the builtin handler name to use to probe the role of the main container. current available handlers: mysql, postgres, mongodb, redis, etcd, kafka. use CustomHandler to define your own role probe function if none of them satisfies the requirement.
+    /// Specifies the builtin handler name to use to probe the role of the main container. Available handlers include: mysql, postgres, mongodb, redis, etcd, kafka. Use CustomHandler to define a custom role probe function if none of the built-in handlers meet the requirement.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandlerName")]
     pub builtin_handler_name: Option<String>,
-    /// CustomHandler defines the custom way to do role probe. if the BuiltinHandler satisfies the requirement, use it instead. 
-    ///  how the actions defined here works: 
-    ///  Actions will be taken in serial. after all actions done, the final output should be a single string of the role name defined in spec.Roles latest [BusyBox](https://busybox.net/) image will be used if Image not configured Environment variables can be used in Command: - v_KB_RSM_LAST_STDOUT stdout from last action, watch 'v_' prefixed - KB_RSM_USERNAME username part of credential - KB_RSM_PASSWORD password part of credential
+    /// Defines a custom method for role probing. If the BuiltinHandler meets the requirement, use it instead. Actions defined here are executed in series. Upon completion of all actions, the final output should be a single string representing the role name defined in spec.Roles. The latest [BusyBox](https://busybox.net/) image will be used if Image is not configured. Environment variables can be used in Command: - v_KB_RSM_LAST_STDOUT: stdout from the last action, watch for 'v_' prefix - KB_RSM_USERNAME: username part of the credential - KB_RSM_PASSWORD: password part of the credential
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<Vec<ReplicatedStateMachineRoleProbeCustomHandler>>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Specifies the minimum number of consecutive failures for the probe to be considered failed after having succeeded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Number of seconds after the container has started before role probe has started.
+    /// Specifies the number of seconds to wait after the container has started before initiating role probing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 2 seconds. Minimum value is 1.
+    /// Specifies the frequency (in seconds) of probe execution.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// RoleUpdateMechanism specifies the way how pod role label being updated.
+    /// Specifies the method for updating the pod role label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleUpdateMechanism")]
     pub role_update_mechanism: Option<ReplicatedStateMachineRoleProbeRoleUpdateMechanism>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Minimum value is 1.
+    /// Specifies the minimum number of consecutive successes for the probe to be considered successful after having failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1.
+    /// Specifies the number of seconds after which the probe times out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineRoleProbeCustomHandler {
-    /// Args is used to perform statements.
+    /// Additional parameters used to perform specific statements. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Command will be executed in Container to retrieve or process role info
+    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
     pub command: Vec<String>,
-    /// utility image contains command that can be used to retrieve of process role info
+    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 }
 
-/// RoleProbe provides method to probe role.
+/// Provides method to probe role.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ReplicatedStateMachineRoleProbeRoleUpdateMechanism {
     ReadinessProbeEventUpdate,
@@ -619,16 +617,16 @@ pub enum ReplicatedStateMachineRoleProbeRoleUpdateMechanism {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineRoles {
-    /// AccessMode, what service this member capable.
+    /// Specifies the service capabilities of this member.
     #[serde(rename = "accessMode")]
     pub access_mode: ReplicatedStateMachineRolesAccessMode,
-    /// CanVote, whether this member has voting rights
+    /// Indicates if this member has voting rights.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "canVote")]
     pub can_vote: Option<bool>,
-    /// IsLeader, whether this member is the leader
+    /// Determines if this member is the leader.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isLeader")]
     pub is_leader: Option<bool>,
-    /// Name, role name.
+    /// Defines the role name of the replica.
     pub name: String,
 }
 
@@ -639,14 +637,14 @@ pub enum ReplicatedStateMachineRolesAccessMode {
     ReadWrite,
 }
 
-/// ReplicatedStateMachineSpec defines the desired state of ReplicatedStateMachine
+/// Defines the desired state of the state machine. It includes the configuration details for the state machine.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ReplicatedStateMachineRsmTransformPolicy {
     ToPod,
     ToSts,
 }
 
-/// selector is a label query over pods that should match the replica count. It must match the pod template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+/// Represents a label query over pods that should match the replica count. It must match the pod template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -669,7 +667,7 @@ pub struct ReplicatedStateMachineSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// service defines the behavior of a service spec. provides read-write service https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+/// Defines the behavior of a service spec. Provides read-write service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineService {
     /// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
@@ -5032,7 +5030,7 @@ pub struct ReplicatedStateMachineTemplateSpecVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// updateStrategy indicates the StatefulSetUpdateStrategy that will be employed to update Pods in the RSM when a revision is made to Template. UpdateStrategy.Type will be set to appsv1.OnDeleteStatefulSetStrategyType if MemberUpdateStrategy is not nil
+/// Indicates the StatefulSetUpdateStrategy that will be employed to update Pods in the RSM when a revision is made to Template. UpdateStrategy.Type will be set to appsv1.OnDeleteStatefulSetStrategyType if MemberUpdateStrategy is not nil
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
@@ -5241,7 +5239,7 @@ pub struct ReplicatedStateMachineVolumeClaimTemplatesStatusConditions {
     pub r#type: String,
 }
 
-/// ReplicatedStateMachineStatus defines the observed state of ReplicatedStateMachine
+/// Represents the current information about the state machine. This data may be out of date.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineStatus {
     /// Total number of available pods (ready for at least minReadySeconds) targeted by this statefulset.
@@ -5253,7 +5251,7 @@ pub struct ReplicatedStateMachineStatus {
     /// Represents the latest available observations of a statefulset's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ReplicatedStateMachineStatusConditions>>,
-    /// CurrentGeneration, if not empty, indicates the version of the RSM used to generate the underlying workload
+    /// When not empty, indicates the version of the Replicated State Machine (RSM) used to generate the underlying workload.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentGeneration")]
     pub current_generation: Option<i64>,
     /// currentReplicas is the number of Pods created by the StatefulSet controller from the StatefulSet version indicated by currentRevision.
@@ -5262,16 +5260,16 @@ pub struct ReplicatedStateMachineStatus {
     /// currentRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [0,currentReplicas).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentRevision")]
     pub current_revision: Option<String>,
-    /// InitReplicas is the number of pods(members) when cluster first initialized it's set to spec.Replicas at object creation time and never changes
+    /// Defines the initial number of pods (members) when the cluster is first initialized. This value is set to spec.Replicas at the time of object creation and remains constant thereafter.
     #[serde(rename = "initReplicas")]
     pub init_replicas: i32,
-    /// members' status.
+    /// Provides the status of each member in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "membersStatus")]
     pub members_status: Option<Vec<ReplicatedStateMachineStatusMembersStatus>>,
     /// observedGeneration is the most recent generation observed for this StatefulSet. It corresponds to the StatefulSet's generation, which is updated on mutation by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// ReadyInitReplicas is the number of pods(members) already in MembersStatus in the cluster initialization stage will never change once equals to InitReplicas
+    /// Represents the number of pods (members) that have already reached the MembersStatus during the cluster initialization stage. This value remains constant once it equals InitReplicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyInitReplicas")]
     pub ready_init_replicas: Option<i32>,
     /// readyReplicas is the number of pods created for this StatefulSet with a Ready Condition.
@@ -5308,30 +5306,33 @@ pub struct ReplicatedStateMachineStatusConditions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineStatusMembersStatus {
-    /// PodName pod name.
+    /// Represents the name of the pod.
     #[serde(rename = "podName")]
     pub pod_name: String,
-    /// Is it required for rsm to have at least one primary pod to be ready.
+    /// Indicates whether it is required for the replica set manager (rsm) to have at least one primary pod ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyWithoutPrimary")]
     pub ready_without_primary: Option<bool>,
+    /// Defines the role of the replica in the cluster.
     pub role: ReplicatedStateMachineStatusMembersStatusRole,
 }
 
+/// Defines the role of the replica in the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineStatusMembersStatusRole {
-    /// AccessMode, what service this member capable.
+    /// Specifies the service capabilities of this member.
     #[serde(rename = "accessMode")]
     pub access_mode: ReplicatedStateMachineStatusMembersStatusRoleAccessMode,
-    /// CanVote, whether this member has voting rights
+    /// Indicates if this member has voting rights.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "canVote")]
     pub can_vote: Option<bool>,
-    /// IsLeader, whether this member is the leader
+    /// Determines if this member is the leader.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isLeader")]
     pub is_leader: Option<bool>,
-    /// Name, role name.
+    /// Defines the role name of the replica.
     pub name: String,
 }
 
+/// Defines the role of the replica in the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ReplicatedStateMachineStatusMembersStatusRoleAccessMode {
     None,

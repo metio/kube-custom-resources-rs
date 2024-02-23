@@ -1196,8 +1196,11 @@ pub struct DistributionDistributionConfigRestrictionsGeoRestriction {
 /// in the Amazon CloudFront Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigViewerCertificate {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aCMCertificateARN")]
-    pub a_cm_certificate_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acmCertificateARN")]
+    pub acm_certificate_arn: Option<String>,
+    /// Reference field for ACMCertificateARN
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acmCertificateRef")]
+    pub acm_certificate_ref: Option<DistributionDistributionConfigViewerCertificateAcmCertificateRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSource")]
@@ -1210,6 +1213,23 @@ pub struct DistributionDistributionConfigViewerCertificate {
     pub minimum_protocol_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslSupportMethod")]
     pub ssl_support_method: Option<String>,
+}
+
+/// Reference field for ACMCertificateARN
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DistributionDistributionConfigViewerCertificateAcmCertificateRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<DistributionDistributionConfigViewerCertificateAcmCertificateRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DistributionDistributionConfigViewerCertificateAcmCertificateRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// DistributionStatus defines the observed state of Distribution

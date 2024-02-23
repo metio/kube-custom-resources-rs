@@ -74,7 +74,7 @@ pub struct CephBucketTopicEndpointHttp {
     /// Indicate whether the server certificate is validated by the client or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableVerifySSL")]
     pub disable_verify_ssl: Option<bool>,
-    /// Send the notifications with the CloudEvents header: https://github.
+    /// Send the notifications with the CloudEvents header: https://github.com/cloudevents/spec/blob/main/cloudevents/adapters/aws-s3.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendCloudEvents")]
     pub send_cloud_events: Option<bool>,
     /// The URI of the HTTP endpoint to push notification to

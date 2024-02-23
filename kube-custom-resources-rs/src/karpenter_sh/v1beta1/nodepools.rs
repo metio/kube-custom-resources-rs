@@ -215,12 +215,16 @@ pub struct NodePoolTemplateSpecNodeClassRef {
     pub name: String,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
+/// A node selector requirement with min values is a selector that contains values, a key, an operator that relates the key and values
+/// and minValues that represent the requirement to have at least that many values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NodePoolTemplateSpecRequirements {
     /// The label key that the selector applies to.
     pub key: String,
+    /// This field is ALPHA and can be dropped or replaced at any time
+    /// MinValues is the minimum number of unique values required to define the flexibility of the specific requirement.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minValues")]
+    pub min_values: Option<i64>,
     /// Represents a key's relationship to a set of values.
     /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: NodePoolTemplateSpecRequirementsOperator,
@@ -233,8 +237,8 @@ pub struct NodePoolTemplateSpecRequirements {
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
+/// A node selector requirement with min values is a selector that contains values, a key, an operator that relates the key and values
+/// and minValues that represent the requirement to have at least that many values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NodePoolTemplateSpecRequirementsOperator {
     In,
