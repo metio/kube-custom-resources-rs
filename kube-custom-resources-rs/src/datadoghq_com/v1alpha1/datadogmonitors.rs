@@ -73,6 +73,9 @@ pub struct DatadogMonitorOptions {
     /// The number of minutes before a monitor notifies after data stops reporting. Datadog recommends at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. If omitted, 2x the evaluation timeframe is used for metric alerts, and 24 hours is used for service checks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noDataTimeframe")]
     pub no_data_timeframe: Option<i64>,
+    /// An enum that toggles the display of additional content sent in the monitor notification.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationPresetName")]
+    pub notification_preset_name: Option<String>,
     /// A Boolean indicating whether tagged users are notified on changes to this monitor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notifyAudit")]
     pub notify_audit: Option<bool>,

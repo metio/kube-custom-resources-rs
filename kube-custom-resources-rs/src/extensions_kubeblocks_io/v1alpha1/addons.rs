@@ -13,91 +13,97 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "AddonStatus")]
 #[kube(schema = "disabled")]
 pub struct AddonSpec {
-    /// Plugin installation spec.
+    /// Specifies the CLI plugin installation specifications.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliPlugins")]
     pub cli_plugins: Option<Vec<AddonCliPlugins>>,
-    /// Default installation parameters.
+    /// Specifies the default installation parameters.
     #[serde(rename = "defaultInstallValues")]
     pub default_install_values: Vec<AddonDefaultInstallValues>,
-    /// Addon description.
+    /// Specifies the description of the add-on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Helm installation spec. It's processed only when type=helm.
+    /// Represents the Helm installation specifications. This is only processed when the type is set to 'helm'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub helm: Option<AddonHelm>,
-    /// Installation parameters.
+    /// Defines the installation parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub install: Option<AddonInstall>,
-    /// Addon installable spec. It provides selector and auto-install settings.
+    /// Represents the installable specifications of the add-on. This includes the selector and auto-install settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installable: Option<AddonInstallable>,
-    /// Add-on type. The valid value is helm.
+    /// Specifies the provider of the add-on.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provider: Option<String>,
+    /// Defines the type of the add-on. The only valid value is 'helm'.
     #[serde(rename = "type")]
     pub r#type: AddonType,
+    /// Indicates the version of the add-on.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonCliPlugins {
-    /// The description of the plugin.
+    /// Provides a brief description of the plugin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// The index repository of the plugin.
+    /// Defines the index repository of the plugin.
     #[serde(rename = "indexRepository")]
     pub index_repository: String,
-    /// Name of the plugin.
+    /// Specifies the name of the plugin.
     pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonDefaultInstallValues {
-    /// enabled can be set if there are no specific installation attributes to be set.
+    /// Can be set to true if there are no specific installation attributes to be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Installs spec. for extra items.
+    /// Specifies the installation specifications for extra items.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extras: Option<Vec<AddonDefaultInstallValuesExtras>>,
-    /// Persistent Volume Enabled value.
+    /// Indicates whether the Persistent Volume is enabled or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeEnabled")]
     pub persistent_volume_enabled: Option<bool>,
-    /// Replicas value.
+    /// Specifies the number of replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resource requirements.
+    /// Specifies the resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonDefaultInstallValuesResources>,
-    /// Addon installs parameters selectors by default. If multiple selectors are provided, all selectors must evaluate to true.
+    /// Indicates the default selectors for add-on installations. If multiple selectors are provided, all selectors must evaluate to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<Vec<AddonDefaultInstallValuesSelectors>>,
-    /// Storage class name.
+    /// Specifies the name of the storage class.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
-    /// Tolerations JSON array string value.
+    /// Specifies the tolerations in a JSON array string format.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonDefaultInstallValuesExtras {
-    /// Name of the item.
+    /// Specifies the name of the item.
     pub name: String,
-    /// Persistent Volume Enabled value.
+    /// Indicates whether the Persistent Volume is enabled or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeEnabled")]
     pub persistent_volume_enabled: Option<bool>,
-    /// Replicas value.
+    /// Specifies the number of replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resource requirements.
+    /// Specifies the resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonDefaultInstallValuesExtrasResources>,
-    /// Storage class name.
+    /// Specifies the name of the storage class.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
-    /// Tolerations JSON array string value.
+    /// Specifies the tolerations in a JSON array string format.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<String>,
 }
 
-/// Resource requirements.
+/// Specifies the resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonDefaultInstallValuesExtrasResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
@@ -108,7 +114,7 @@ pub struct AddonDefaultInstallValuesExtrasResources {
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// Resource requirements.
+/// Specifies the resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonDefaultInstallValuesResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
@@ -121,12 +127,14 @@ pub struct AddonDefaultInstallValuesResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonDefaultInstallValuesSelectors {
-    /// The selector key. Valid values are KubeVersion, KubeGitVersion and KubeProvider. "KubeVersion" the semver expression of Kubernetes versions, i.e., v1.24. "KubeGitVersion" may contain distro. info., i.e., v1.24.4+eks. "KubeProvider" the Kubernetes provider, i.e., aws, gcp, azure, huaweiCloud, tencentCloud etc.
+    /// The selector key. Valid values are KubeVersion, KubeGitVersion and KubeProvider. 
+    ///  - `KubeVersion` the semver expression of Kubernetes versions, i.e., v1.24. - `KubeGitVersion` may contain distro. info., i.e., v1.24.4+eks. - `KubeProvider` the Kubernetes provider, i.e., aws, gcp, azure, huaweiCloud, tencentCloud etc.
     pub key: AddonDefaultInstallValuesSelectorsKey,
     /// Represents a key's relationship to a set of values. Valid operators are Contains, NotIn, DoesNotContain, MatchRegex, and DoesNoteMatchRegex. 
-    ///  Possible enum values: `"Contains"` line contains a string. `"DoesNotContain"` line does not contain a string. `"MatchRegex"` line contains a match to the regular expression. `"DoesNotMatchRegex"` line does not contain a match to the regular expression.
+    ///  Possible enum values: 
+    ///  - `Contains` line contains a string. - `DoesNotContain` line does not contain a string. - `MatchRegex` line contains a match to the regular expression. - `DoesNotMatchRegex` line does not contain a match to the regular expression.
     pub operator: AddonDefaultInstallValuesSelectorsOperator,
-    /// An array of string values. It serves as an "OR" expression to the operator.
+    /// Represents an array of string values. This serves as an "OR" expression to the operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -146,260 +154,269 @@ pub enum AddonDefaultInstallValuesSelectorsOperator {
     DoesNotMatchRegex,
 }
 
-/// Helm installation spec. It's processed only when type=helm.
+/// Represents the Helm installation specifications. This is only processed when the type is set to 'helm'.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelm {
-    /// A Helm Chart location URL.
+    /// Specifies the URL location of the Helm Chart.
     #[serde(rename = "chartLocationURL")]
     pub chart_location_url: String,
-    /// chartsImage defines the image of Helm charts.
+    /// Defines the image of Helm charts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartsImage")]
     pub charts_image: Option<String>,
-    /// chartsPathInImage defines the path of Helm charts in the image. It's used to copy Helm charts from the image to the shared volume.
+    /// Defines the path of Helm charts in the image. This path is used to copy Helm charts from the image to the shared volume. The default path is "/charts".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartsPathInImage")]
     pub charts_path_in_image: Option<String>,
-    /// installOptions defines Helm release installation options.
+    /// Defines the options for Helm release installation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installOptions")]
     pub install_options: Option<BTreeMap<String, String>>,
-    /// HelmInstallValues defines Helm release installation set values.
+    /// Defines the set values for Helm release installation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installValues")]
     pub install_values: Option<AddonHelmInstallValues>,
-    /// valuesMapping defines add-on normalized resources parameters mapped to Helm values' keys.
+    /// Defines the mapping of add-on normalized resources parameters to Helm values' keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesMapping")]
     pub values_mapping: Option<AddonHelmValuesMapping>,
 }
 
-/// HelmInstallValues defines Helm release installation set values.
+/// Defines the set values for Helm release installation.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmInstallValues {
-    /// Selects a key of a ConfigMap item list. The value of ConfigMap can be a JSON or YAML string content. Use a key name with ".json" or ".yaml" or ".yml" extension name to specify a content type.
+    /// Selects a key from a ConfigMap item list. The value can be a JSON or YAML string content. Use a key name with ".json", ".yaml", or ".yml" extension to specify a content type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRefs")]
     pub config_map_refs: Option<Vec<AddonHelmInstallValuesConfigMapRefs>>,
-    /// Selects a key of a Secrets item list. The value of Secrets can be a JSON or YAML string content. Use a key name with ".json" or ".yaml" or ".yml" extension name to specify a content type.
+    /// Selects a key from a Secrets item list. The value can be a JSON or YAML string content. Use a key name with ".json", ".yaml", or ".yml" extension to specify a content type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRefs")]
     pub secret_refs: Option<Vec<AddonHelmInstallValuesSecretRefs>>,
-    /// Helm install set JSON values. It can specify multiple or separate values with commas(key1=jsonval1,key2=jsonval2).
+    /// JSON values set during Helm installation. Multiple or separate values can be specified with commas (key1=jsonval1,key2=jsonval2).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setJSONValues")]
     pub set_json_values: Option<Vec<String>>,
-    /// Helm install set values. It can specify multiple or separate values with commas(key1=val1,key2=val2).
+    /// Values set during Helm installation. Multiple or separate values can be specified with commas (key1=val1,key2=val2).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setValues")]
     pub set_values: Option<Vec<String>>,
+    /// Specifies the URL location of the values file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub urls: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmInstallValuesConfigMapRefs {
-    /// The key to select.
+    /// Specifies the key to be selected.
     pub key: String,
-    /// Object name of the referent.
+    /// Defines the name of the object being referred to.
     pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmInstallValuesSecretRefs {
-    /// The key to select.
+    /// Specifies the key to be selected.
     pub key: String,
-    /// Object name of the referent.
+    /// Defines the name of the object being referred to.
     pub name: String,
 }
 
-/// valuesMapping defines add-on normalized resources parameters mapped to Helm values' keys.
+/// Defines the mapping of add-on normalized resources parameters to Helm values' keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMapping {
     /// Helm value mapping items for extra items.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extras: Option<Vec<AddonHelmValuesMappingExtras>>,
-    /// jsonMap defines the "key" mapping values. The valid key is tolerations. Enum values explained: `"tolerations"` sets the toleration mapping key.
+    /// Defines the "key" mapping values. The valid key is tolerations. Enum values explained: 
+    ///  - `tolerations` sets the toleration mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonMap")]
     pub json_map: Option<AddonHelmValuesMappingJsonMap>,
-    /// resources sets resources related mapping keys.
+    /// Sets resources related mapping keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonHelmValuesMappingResources>,
-    /// valueMap define the "key" mapping values. Valid keys are replicaCount, persistentVolumeEnabled, and storageClass. Enum values explained: `"replicaCount"` sets the replicaCount value mapping key. `"persistentVolumeEnabled"` sets the persistent volume enabled mapping key. `"storageClass"` sets the storageClass mapping key.
+    /// Defines the "key" mapping values. Valid keys include `replicaCount`, `persistentVolumeEnabled`, and `storageClass`. Enum values explained: 
+    ///  - `replicaCount` sets the replicaCount value mapping key. - `persistentVolumeEnabled` sets the persistent volume enabled mapping key. - `storageClass` sets the storageClass mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueMap")]
     pub value_map: Option<AddonHelmValuesMappingValueMap>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingExtras {
-    /// jsonMap defines the "key" mapping values. The valid key is tolerations. Enum values explained: `"tolerations"` sets the toleration mapping key.
+    /// Defines the "key" mapping values. The valid key is tolerations. Enum values explained: 
+    ///  - `tolerations` sets the toleration mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonMap")]
     pub json_map: Option<AddonHelmValuesMappingExtrasJsonMap>,
     /// Name of the item.
     pub name: String,
-    /// resources sets resources related mapping keys.
+    /// Sets resources related mapping keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonHelmValuesMappingExtrasResources>,
-    /// valueMap define the "key" mapping values. Valid keys are replicaCount, persistentVolumeEnabled, and storageClass. Enum values explained: `"replicaCount"` sets the replicaCount value mapping key. `"persistentVolumeEnabled"` sets the persistent volume enabled mapping key. `"storageClass"` sets the storageClass mapping key.
+    /// Defines the "key" mapping values. Valid keys include `replicaCount`, `persistentVolumeEnabled`, and `storageClass`. Enum values explained: 
+    ///  - `replicaCount` sets the replicaCount value mapping key. - `persistentVolumeEnabled` sets the persistent volume enabled mapping key. - `storageClass` sets the storageClass mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueMap")]
     pub value_map: Option<AddonHelmValuesMappingExtrasValueMap>,
 }
 
-/// jsonMap defines the "key" mapping values. The valid key is tolerations. Enum values explained: `"tolerations"` sets the toleration mapping key.
+/// Defines the "key" mapping values. The valid key is tolerations. Enum values explained: 
+///  - `tolerations` sets the toleration mapping key.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingExtrasJsonMap {
-    /// tolerations sets the toleration mapping key.
+    /// Specifies the toleration mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<String>,
 }
 
-/// resources sets resources related mapping keys.
+/// Sets resources related mapping keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingExtrasResources {
-    /// cpu sets CPU requests and limits mapping keys.
+    /// Specifies the key used for mapping both CPU requests and limits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<AddonHelmValuesMappingExtrasResourcesCpu>,
-    /// memory sets Memory requests and limits mapping keys.
+    /// Specifies the key used for mapping both Memory requests and limits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<AddonHelmValuesMappingExtrasResourcesMemory>,
-    /// storage sets the storage size value mapping key.
+    /// Specifies the key used for mapping the storage size value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<String>,
 }
 
-/// cpu sets CPU requests and limits mapping keys.
+/// Specifies the key used for mapping both CPU requests and limits.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingExtrasResourcesCpu {
-    /// Limits value mapping key.
+    /// Specifies the mapping key for the limit value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<String>,
-    /// Requests value mapping key.
+    /// Specifies the mapping key for the request value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<String>,
 }
 
-/// memory sets Memory requests and limits mapping keys.
+/// Specifies the key used for mapping both Memory requests and limits.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingExtrasResourcesMemory {
-    /// Limits value mapping key.
+    /// Specifies the mapping key for the limit value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<String>,
-    /// Requests value mapping key.
+    /// Specifies the mapping key for the request value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<String>,
 }
 
-/// valueMap define the "key" mapping values. Valid keys are replicaCount, persistentVolumeEnabled, and storageClass. Enum values explained: `"replicaCount"` sets the replicaCount value mapping key. `"persistentVolumeEnabled"` sets the persistent volume enabled mapping key. `"storageClass"` sets the storageClass mapping key.
+/// Defines the "key" mapping values. Valid keys include `replicaCount`, `persistentVolumeEnabled`, and `storageClass`. Enum values explained: 
+///  - `replicaCount` sets the replicaCount value mapping key. - `persistentVolumeEnabled` sets the persistent volume enabled mapping key. - `storageClass` sets the storageClass mapping key.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingExtrasValueMap {
-    /// persistentVolumeEnabled sets the persistent volume enabled mapping key.
+    /// Indicates whether the persistent volume is enabled in the Helm values map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeEnabled")]
     pub persistent_volume_enabled: Option<String>,
-    /// replicaCount sets the replicaCount value mapping key.
+    /// Defines the key for setting the replica count in the Helm values map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaCount")]
     pub replica_count: Option<String>,
-    /// storageClass sets the storageClass mapping key.
+    /// Specifies the key for setting the storage class in the Helm values map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
 }
 
-/// jsonMap defines the "key" mapping values. The valid key is tolerations. Enum values explained: `"tolerations"` sets the toleration mapping key.
+/// Defines the "key" mapping values. The valid key is tolerations. Enum values explained: 
+///  - `tolerations` sets the toleration mapping key.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingJsonMap {
-    /// tolerations sets the toleration mapping key.
+    /// Specifies the toleration mapping key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<String>,
 }
 
-/// resources sets resources related mapping keys.
+/// Sets resources related mapping keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingResources {
-    /// cpu sets CPU requests and limits mapping keys.
+    /// Specifies the key used for mapping both CPU requests and limits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<AddonHelmValuesMappingResourcesCpu>,
-    /// memory sets Memory requests and limits mapping keys.
+    /// Specifies the key used for mapping both Memory requests and limits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<AddonHelmValuesMappingResourcesMemory>,
-    /// storage sets the storage size value mapping key.
+    /// Specifies the key used for mapping the storage size value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<String>,
 }
 
-/// cpu sets CPU requests and limits mapping keys.
+/// Specifies the key used for mapping both CPU requests and limits.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingResourcesCpu {
-    /// Limits value mapping key.
+    /// Specifies the mapping key for the limit value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<String>,
-    /// Requests value mapping key.
+    /// Specifies the mapping key for the request value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<String>,
 }
 
-/// memory sets Memory requests and limits mapping keys.
+/// Specifies the key used for mapping both Memory requests and limits.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingResourcesMemory {
-    /// Limits value mapping key.
+    /// Specifies the mapping key for the limit value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<String>,
-    /// Requests value mapping key.
+    /// Specifies the mapping key for the request value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<String>,
 }
 
-/// valueMap define the "key" mapping values. Valid keys are replicaCount, persistentVolumeEnabled, and storageClass. Enum values explained: `"replicaCount"` sets the replicaCount value mapping key. `"persistentVolumeEnabled"` sets the persistent volume enabled mapping key. `"storageClass"` sets the storageClass mapping key.
+/// Defines the "key" mapping values. Valid keys include `replicaCount`, `persistentVolumeEnabled`, and `storageClass`. Enum values explained: 
+///  - `replicaCount` sets the replicaCount value mapping key. - `persistentVolumeEnabled` sets the persistent volume enabled mapping key. - `storageClass` sets the storageClass mapping key.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonHelmValuesMappingValueMap {
-    /// persistentVolumeEnabled sets the persistent volume enabled mapping key.
+    /// Indicates whether the persistent volume is enabled in the Helm values map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeEnabled")]
     pub persistent_volume_enabled: Option<String>,
-    /// replicaCount sets the replicaCount value mapping key.
+    /// Defines the key for setting the replica count in the Helm values map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaCount")]
     pub replica_count: Option<String>,
-    /// storageClass sets the storageClass mapping key.
+    /// Specifies the key for setting the storage class in the Helm values map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
 }
 
-/// Installation parameters.
+/// Defines the installation parameters.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonInstall {
-    /// enabled can be set if there are no specific installation attributes to be set.
+    /// Can be set to true if there are no specific installation attributes to be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Installs spec. for extra items.
+    /// Specifies the installation specifications for extra items.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extras: Option<Vec<AddonInstallExtras>>,
-    /// Persistent Volume Enabled value.
+    /// Indicates whether the Persistent Volume is enabled or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeEnabled")]
     pub persistent_volume_enabled: Option<bool>,
-    /// Replicas value.
+    /// Specifies the number of replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resource requirements.
+    /// Specifies the resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonInstallResources>,
-    /// Storage class name.
+    /// Specifies the name of the storage class.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
-    /// Tolerations JSON array string value.
+    /// Specifies the tolerations in a JSON array string format.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonInstallExtras {
-    /// Name of the item.
+    /// Specifies the name of the item.
     pub name: String,
-    /// Persistent Volume Enabled value.
+    /// Indicates whether the Persistent Volume is enabled or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeEnabled")]
     pub persistent_volume_enabled: Option<bool>,
-    /// Replicas value.
+    /// Specifies the number of replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resource requirements.
+    /// Specifies the resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AddonInstallExtrasResources>,
-    /// Storage class name.
+    /// Specifies the name of the storage class.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
-    /// Tolerations JSON array string value.
+    /// Specifies the tolerations in a JSON array string format.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<String>,
 }
 
-/// Resource requirements.
+/// Specifies the resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonInstallExtrasResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
@@ -410,7 +427,7 @@ pub struct AddonInstallExtrasResources {
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// Resource requirements.
+/// Specifies the resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonInstallResources {
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
@@ -421,25 +438,27 @@ pub struct AddonInstallResources {
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// Addon installable spec. It provides selector and auto-install settings.
+/// Represents the installable specifications of the add-on. This includes the selector and auto-install settings.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonInstallable {
-    /// autoInstall defines an add-on should be installed automatically.
+    /// Indicates whether an add-on should be installed automatically.
     #[serde(rename = "autoInstall")]
     pub auto_install: bool,
-    /// Add-on installable selectors. If multiple selectors are provided, all selectors must evaluate to true.
+    /// Specifies the selectors for add-on installation. If multiple selectors are provided, they must all evaluate to true for the add-on to be installed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<Vec<AddonInstallableSelectors>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonInstallableSelectors {
-    /// The selector key. Valid values are KubeVersion, KubeGitVersion and KubeProvider. "KubeVersion" the semver expression of Kubernetes versions, i.e., v1.24. "KubeGitVersion" may contain distro. info., i.e., v1.24.4+eks. "KubeProvider" the Kubernetes provider, i.e., aws, gcp, azure, huaweiCloud, tencentCloud etc.
+    /// The selector key. Valid values are KubeVersion, KubeGitVersion and KubeProvider. 
+    ///  - `KubeVersion` the semver expression of Kubernetes versions, i.e., v1.24. - `KubeGitVersion` may contain distro. info., i.e., v1.24.4+eks. - `KubeProvider` the Kubernetes provider, i.e., aws, gcp, azure, huaweiCloud, tencentCloud etc.
     pub key: AddonInstallableSelectorsKey,
     /// Represents a key's relationship to a set of values. Valid operators are Contains, NotIn, DoesNotContain, MatchRegex, and DoesNoteMatchRegex. 
-    ///  Possible enum values: `"Contains"` line contains a string. `"DoesNotContain"` line does not contain a string. `"MatchRegex"` line contains a match to the regular expression. `"DoesNotMatchRegex"` line does not contain a match to the regular expression.
+    ///  Possible enum values: 
+    ///  - `Contains` line contains a string. - `DoesNotContain` line does not contain a string. - `MatchRegex` line contains a match to the regular expression. - `DoesNotMatchRegex` line does not contain a match to the regular expression.
     pub operator: AddonInstallableSelectorsOperator,
-    /// An array of string values. It serves as an "OR" expression to the operator.
+    /// Represents an array of string values. This serves as an "OR" expression to the operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -468,13 +487,13 @@ pub enum AddonType {
 /// AddonStatus defines the observed state of an add-on.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AddonStatus {
-    /// Describes the current state of add-on API installation conditions.
+    /// Provides a detailed description of the current state of add-on API installation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<AddonStatusConditions>>,
-    /// observedGeneration is the most recent generation observed for this add-on. It corresponds to the add-on's generation, which is updated on mutation by the API Server.
+    /// Represents the most recent generation observed for this add-on. It corresponds to the add-on's generation, which is updated on mutation by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Add-on installation phases. Valid values are Disabled, Enabled, Failed, Enabling, Disabling.
+    /// Defines the current installation phase of the add-on. It can take one of the following values: `Disabled`, `Enabled`, `Failed`, `Enabling`, `Disabling`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<AddonStatusPhase>,
 }

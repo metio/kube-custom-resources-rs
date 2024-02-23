@@ -23,10 +23,10 @@ spec:
           description: "CephRBDMirror represents a Ceph RBD Mirror"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object."
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents."
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -62,33 +62,23 @@ spec:
                       type: "array"
                   type: "object"
                 placement:
-                  description: "The affinity to place the rgw pods (default is to place on any available node)"
                   nullable: true
                   properties:
                     nodeAffinity:
-                      description: "NodeAffinity is a group of node affinity scheduling rules"
                       properties:
                         preferredDuringSchedulingIgnoredDuringExecution:
-                          description: "The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified "
                           items:
-                            description: "An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op)."
                             properties:
                               preference:
-                                description: "A node selector term, associated with the corresponding weight."
                                 properties:
                                   matchExpressions:
-                                    description: "A list of node selector requirements by node's labels."
                                     items:
-                                      description: "A node selector requirement is a selector that contains values, a key, and an operator that relates "
                                       properties:
                                         key:
-                                          description: "The label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "Represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -98,18 +88,13 @@ spec:
                                       type: "object"
                                     type: "array"
                                   matchFields:
-                                    description: "A list of node selector requirements by node's fields."
                                     items:
-                                      description: "A node selector requirement is a selector that contains values, a key, and an operator that relates "
                                       properties:
                                         key:
-                                          description: "The label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "Represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -121,7 +106,6 @@ spec:
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               weight:
-                                description: "Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100."
                                 format: "int32"
                                 type: "integer"
                             required:
@@ -130,26 +114,18 @@ spec:
                             type: "object"
                           type: "array"
                         requiredDuringSchedulingIgnoredDuringExecution:
-                          description: "If the affinity requirements specified by this field are not met at scheduling time, the pod will no"
                           properties:
                             nodeSelectorTerms:
-                              description: "Required. A list of node selector terms. The terms are ORed."
                               items:
-                                description: "A null or empty node selector term matches no objects. The requirements of them are ANDed."
                                 properties:
                                   matchExpressions:
-                                    description: "A list of node selector requirements by node's labels."
                                     items:
-                                      description: "A node selector requirement is a selector that contains values, a key, and an operator that relates "
                                       properties:
                                         key:
-                                          description: "The label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "Represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -159,18 +135,13 @@ spec:
                                       type: "object"
                                     type: "array"
                                   matchFields:
-                                    description: "A list of node selector requirements by node's fields."
                                     items:
-                                      description: "A node selector requirement is a selector that contains values, a key, and an operator that relates "
                                       properties:
                                         key:
-                                          description: "The label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "Represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -188,32 +159,22 @@ spec:
                           x-kubernetes-map-type: "atomic"
                       type: "object"
                     podAffinity:
-                      description: "PodAffinity is a group of inter pod affinity scheduling rules"
                       properties:
                         preferredDuringSchedulingIgnoredDuringExecution:
-                          description: "The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified "
                           items:
-                            description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most"
                             properties:
                               podAffinityTerm:
-                                description: "Required. A pod affinity term, associated with the corresponding weight."
                                 properties:
                                   labelSelector:
-                                    description: "A label query over a set of resources, in this case pods."
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -225,38 +186,29 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs."
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   namespaceSelector:
-                                    description: "A label query over the set of namespaces that the term applies to."
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -268,23 +220,19 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs."
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   namespaces:
-                                    description: "namespaces specifies a static list of namespace names that the term applies to."
                                     items:
                                       type: "string"
                                     type: "array"
                                   topologyKey:
-                                    description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th"
                                     type: "string"
                                 required:
                                   - "topologyKey"
                                 type: "object"
                               weight:
-                                description: "weight associated with matching the corresponding podAffinityTerm, in the range 1-100."
                                 format: "int32"
                                 type: "integer"
                             required:
@@ -293,26 +241,18 @@ spec:
                             type: "object"
                           type: "array"
                         requiredDuringSchedulingIgnoredDuringExecution:
-                          description: "If the affinity requirements specified by this field are not met at scheduling time, the pod will no"
                           items:
-                            description: "Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) t"
                             properties:
                               labelSelector:
-                                description: "A label query over a set of resources, in this case pods."
                                 properties:
                                   matchExpressions:
-                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                     items:
-                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                       properties:
                                         key:
-                                          description: "key is the label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "operator represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "values is an array of string values."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -324,38 +264,29 @@ spec:
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "matchLabels is a map of {key,value} pairs."
                                     type: "object"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               matchLabelKeys:
-                                description: "MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                 items:
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               mismatchLabelKeys:
-                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                 items:
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               namespaceSelector:
-                                description: "A label query over the set of namespaces that the term applies to."
                                 properties:
                                   matchExpressions:
-                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                     items:
-                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                       properties:
                                         key:
-                                          description: "key is the label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "operator represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "values is an array of string values."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -367,17 +298,14 @@ spec:
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "matchLabels is a map of {key,value} pairs."
                                     type: "object"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               namespaces:
-                                description: "namespaces specifies a static list of namespace names that the term applies to."
                                 items:
                                   type: "string"
                                 type: "array"
                               topologyKey:
-                                description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th"
                                 type: "string"
                             required:
                               - "topologyKey"
@@ -385,32 +313,22 @@ spec:
                           type: "array"
                       type: "object"
                     podAntiAffinity:
-                      description: "PodAntiAffinity is a group of inter pod anti affinity scheduling rules"
                       properties:
                         preferredDuringSchedulingIgnoredDuringExecution:
-                          description: "The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions speci"
                           items:
-                            description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most"
                             properties:
                               podAffinityTerm:
-                                description: "Required. A pod affinity term, associated with the corresponding weight."
                                 properties:
                                   labelSelector:
-                                    description: "A label query over a set of resources, in this case pods."
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -422,38 +340,29 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs."
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   namespaceSelector:
-                                    description: "A label query over the set of namespaces that the term applies to."
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -465,23 +374,19 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs."
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   namespaces:
-                                    description: "namespaces specifies a static list of namespace names that the term applies to."
                                     items:
                                       type: "string"
                                     type: "array"
                                   topologyKey:
-                                    description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th"
                                     type: "string"
                                 required:
                                   - "topologyKey"
                                 type: "object"
                               weight:
-                                description: "weight associated with matching the corresponding podAffinityTerm, in the range 1-100."
                                 format: "int32"
                                 type: "integer"
                             required:
@@ -490,26 +395,18 @@ spec:
                             type: "object"
                           type: "array"
                         requiredDuringSchedulingIgnoredDuringExecution:
-                          description: "If the anti-affinity requirements specified by this field are not met at scheduling time, the pod wi"
                           items:
-                            description: "Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) t"
                             properties:
                               labelSelector:
-                                description: "A label query over a set of resources, in this case pods."
                                 properties:
                                   matchExpressions:
-                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                     items:
-                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                       properties:
                                         key:
-                                          description: "key is the label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "operator represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "values is an array of string values."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -521,38 +418,29 @@ spec:
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "matchLabels is a map of {key,value} pairs."
                                     type: "object"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               matchLabelKeys:
-                                description: "MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                 items:
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               mismatchLabelKeys:
-                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration."
                                 items:
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               namespaceSelector:
-                                description: "A label query over the set of namespaces that the term applies to."
                                 properties:
                                   matchExpressions:
-                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                     items:
-                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                       properties:
                                         key:
-                                          description: "key is the label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "operator represents a key's relationship to a set of values."
                                           type: "string"
                                         values:
-                                          description: "values is an array of string values."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -564,17 +452,14 @@ spec:
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "matchLabels is a map of {key,value} pairs."
                                     type: "object"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               namespaces:
-                                description: "namespaces specifies a static list of namespace names that the term applies to."
                                 items:
                                   type: "string"
                                 type: "array"
                               topologyKey:
-                                description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching th"
                                 type: "string"
                             required:
                               - "topologyKey"
@@ -582,49 +467,34 @@ spec:
                           type: "array"
                       type: "object"
                     tolerations:
-                      description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect"
                       items:
-                        description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect"
                         properties:
                           effect:
-                            description: "Effect indicates the taint effect to match. Empty means match all taint effects."
                             type: "string"
                           key:
-                            description: "Key is the taint key that the toleration applies to. Empty means match all taint keys."
                             type: "string"
                           operator:
-                            description: "Operator represents a key's relationship to the value. Valid operators are Exists and Equal."
                             type: "string"
                           tolerationSeconds:
-                            description: "TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, o"
                             format: "int64"
                             type: "integer"
                           value:
-                            description: "Value is the taint value the toleration matches to."
                             type: "string"
                         type: "object"
                       type: "array"
                     topologySpreadConstraints:
-                      description: "TopologySpreadConstraint specifies how to spread matching pods among the given topology"
                       items:
-                        description: "TopologySpreadConstraint specifies how to spread matching pods among the given topology."
                         properties:
                           labelSelector:
-                            description: "LabelSelector is used to find matching pods."
                             properties:
                               matchExpressions:
-                                description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                 items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates"
                                   properties:
                                     key:
-                                      description: "key is the label key that the selector applies to."
                                       type: "string"
                                     operator:
-                                      description: "operator represents a key's relationship to a set of values."
                                       type: "string"
                                     values:
-                                      description: "values is an array of string values."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -636,35 +506,27 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
-                                description: "matchLabels is a map of {key,value} pairs."
                                 type: "object"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
                           matchLabelKeys:
-                            description: "MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated"
                             items:
                               type: "string"
                             type: "array"
                             x-kubernetes-list-type: "atomic"
                           maxSkew:
-                            description: "MaxSkew describes the degree to which pods may be unevenly distributed."
                             format: "int32"
                             type: "integer"
                           minDomains:
-                            description: "MinDomains indicates a minimum number of eligible domains."
                             format: "int32"
                             type: "integer"
                           nodeAffinityPolicy:
-                            description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod "
                             type: "string"
                           nodeTaintsPolicy:
-                            description: "NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew."
                             type: "string"
                           topologyKey:
-                            description: "TopologyKey is the key of node labels."
                             type: "string"
                           whenUnsatisfiable:
-                            description: "WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint."
                             type: "string"
                         required:
                           - "maxSkew"
@@ -682,12 +544,12 @@ spec:
                   nullable: true
                   properties:
                     claims:
-                      description: "Claims lists the names of resources, defined in spec."
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
                       items:
                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                         properties:
                           name:
-                            description: "Name must match the name of one entry in pod.spec."
+                            description: "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container."
                             type: "string"
                         required:
                           - "name"
@@ -703,7 +565,7 @@ spec:
                           - type: "string"
                         pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                         x-kubernetes-int-or-string: true
-                      description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes."
+                      description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       type: "object"
                     requests:
                       additionalProperties:
@@ -712,7 +574,7 @@ spec:
                           - type: "string"
                         pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                         x-kubernetes-int-or-string: true
-                      description: "Requests describes the minimum amount of compute resources required."
+                      description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       type: "object"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true

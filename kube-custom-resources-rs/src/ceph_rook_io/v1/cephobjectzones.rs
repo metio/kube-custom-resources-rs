@@ -13,7 +13,8 @@ use std::collections::BTreeMap;
 #[kube(status = "CephObjectZoneStatus")]
 #[kube(schema = "disabled")]
 pub struct CephObjectZoneSpec {
-    /// If this zone cannot be accessed from other peer Ceph clusters via the ClusterIP Service endpoint cre
+    /// If this zone cannot be accessed from other peer Ceph clusters via the ClusterIP Service endpoint created by Rook, you must set this to the externally reachable endpoint(s). You may include the port in the definition. For example: "https://my-object-store.my-domain.net:443". In many cases, you should set this to the endpoint of the ingress resource that makes the CephObjectStore associated with this CephObjectStoreZone reachable to peer clusters. The list can have one or more endpoints pointing to different RGW servers in the zone. 
+    ///  If a CephObjectStore endpoint is omitted from this list, that object store's gateways will not receive multisite replication data (see CephObjectStore.spec.gateway.disableMultisiteSyncTraffic).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customEndpoints")]
     pub custom_endpoints: Option<Vec<String>>,
     /// The data pool settings
@@ -36,7 +37,7 @@ pub struct CephObjectZoneDataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g.
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectZoneDataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -51,7 +52,7 @@ pub struct CephObjectZoneDataPool {
     /// The erasure code settings
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephObjectZoneDataPoolErasureCoded>,
-    /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush 
+    /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
@@ -92,10 +93,10 @@ pub struct CephObjectZoneDataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool t
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -165,12 +166,12 @@ pub struct CephObjectZoneDataPoolReplicated {
     /// RequireSafeReplicaSize if false allows you to set replica 1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
-    /// Size - Number of copies per object in a replicated storage pool, including the object itself (requir
+    /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
-    /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capac
+    /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
@@ -212,7 +213,7 @@ pub struct CephObjectZoneMetadataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g.
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectZoneMetadataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -227,7 +228,7 @@ pub struct CephObjectZoneMetadataPool {
     /// The erasure code settings
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephObjectZoneMetadataPoolErasureCoded>,
-    /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush 
+    /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
@@ -268,10 +269,10 @@ pub struct CephObjectZoneMetadataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool t
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -341,12 +342,12 @@ pub struct CephObjectZoneMetadataPoolReplicated {
     /// RequireSafeReplicaSize if false allows you to set replica 1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
-    /// Size - Number of copies per object in a replicated storage pool, including the object itself (requir
+    /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
-    /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capac
+    /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }

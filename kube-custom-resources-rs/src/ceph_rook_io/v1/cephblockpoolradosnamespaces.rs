@@ -16,7 +16,7 @@ pub struct CephBlockPoolRadosNamespaceSpec {
     /// BlockPoolName is the name of Ceph BlockPool. Typically it's the name of the CephBlockPool CR.
     #[serde(rename = "blockPoolName")]
     pub block_pool_name: String,
-    /// The name of the CephBlockPoolRadosNamespaceSpec namespace.
+    /// The name of the CephBlockPoolRadosNamespaceSpec namespace. If not set, the default is the name of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

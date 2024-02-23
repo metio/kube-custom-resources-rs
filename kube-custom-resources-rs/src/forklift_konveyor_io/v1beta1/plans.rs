@@ -433,6 +433,9 @@ pub struct PlanStatusMigrationVms {
     /// Errors
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<PlanStatusMigrationVmsError>,
+    /// The firmware type detected from the OVF file produced by virt-v2v.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub firmware: Option<String>,
     /// Enable hooks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hooks: Option<Vec<PlanStatusMigrationVmsHooks>>,

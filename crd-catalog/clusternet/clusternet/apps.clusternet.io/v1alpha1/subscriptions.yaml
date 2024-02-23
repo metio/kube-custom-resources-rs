@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.10.0"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "subscriptions.apps.clusternet.io"
 spec:
   group: "apps.clusternet.io"
@@ -28,10 +28,10 @@ spec:
           description: "Subscription represents the policy that install a group of resources to one or more clusters."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -41,23 +41,23 @@ spec:
                 clusterTolerations:
                   description: "ClusterTolerations tolerates any matched taints of ManagedCluster."
                   items:
-                    description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>."
+                    description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
                     properties:
                       effect:
-                        description: "Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                        description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
                         type: "string"
                       key:
-                        description: "Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                        description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                         type: "string"
                       operator:
-                        description: "Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category."
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
                         type: "string"
                       tolerationSeconds:
-                        description: "TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system."
+                        description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
                         format: "int64"
                         type: "integer"
                       value:
-                        description: "Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string."
+                        description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
                         type: "string"
                     type: "object"
                   type: "array"
@@ -76,9 +76,9 @@ spec:
                           format: "int32"
                           type: "integer"
                         preferredClusters:
-                          description: "PreferredClusters describes the assigning preference. If we have a preference for cluster group A compared to cluster group B (i.e., group A has a larger Weight), desired replicas will be assigned to cluster group A as many as possible, while the rest ones will be assigned to cluster group B."
+                          description: "PreferredClusters describes the assigning preference. If we have a preference for cluster group A\ncompared to cluster group B (i.e., group A has a larger Weight), desired replicas will be assigned\nto cluster group A as many as possible, while the rest ones will be assigned to cluster group B."
                           items:
-                            description: "An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op)."
+                            description: "An empty preferred scheduling term matches all objects with implicit weight 0\n(i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op)."
                             properties:
                               preference:
                                 description: "A node selector term, associated with the corresponding weight."
@@ -86,16 +86,16 @@ spec:
                                   matchExpressions:
                                     description: "A list of node selector requirements by node's labels."
                                     items:
-                                      description: "A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                      description: "A node selector requirement is a selector that contains values, a key, and an operator\nthat relates the key and values."
                                       properties:
                                         key:
                                           description: "The label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+                                          description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
                                           type: "string"
                                         values:
-                                          description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch."
+                                          description: "An array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. If the operator is Gt or Lt, the values\narray must have a single element, which will be interpreted as an integer.\nThis array is replaced during a strategic merge patch."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -107,16 +107,16 @@ spec:
                                   matchFields:
                                     description: "A list of node selector requirements by node's fields."
                                     items:
-                                      description: "A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                      description: "A node selector requirement is a selector that contains values, a key, and an operator\nthat relates the key and values."
                                       properties:
                                         key:
                                           description: "The label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+                                          description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
                                           type: "string"
                                         values:
-                                          description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch."
+                                          description: "An array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. If the operator is Gt or Lt, the values\narray must have a single element, which will be interpreted as an integer.\nThis array is replaced during a strategic merge patch."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -144,26 +144,26 @@ spec:
                             - "Binpack"
                           type: "string"
                         topologySpreadConstraints:
-                          description: "TopologySpreadConstraints describes how a group of replicas ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed. Present only for spread divided scheduling."
+                          description: "TopologySpreadConstraints describes how a group of replicas ought to spread across topology\ndomains. Scheduler will schedule pods in a way which abides by the constraints.\nAll topologySpreadConstraints are ANDed.\nPresent only for spread divided scheduling."
                           items:
                             description: "TopologySpreadConstraint specifies how to spread matching pods among the given topology."
                             properties:
                               labelSelector:
-                                description: "LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain."
+                                description: "LabelSelector is used to find matching pods.\nPods that match this label selector are counted to determine the number of pods\nin their corresponding topology domain."
                                 properties:
                                   matchExpressions:
                                     description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                     items:
-                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                       properties:
                                         key:
                                           description: "key is the label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                           type: "string"
                                         values:
-                                          description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -175,35 +175,35 @@ spec:
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                     type: "object"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               matchLabelKeys:
-                                description: "MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. \n This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
                                 items:
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               maxSkew:
-                                description: "MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. The global minimum is the minimum number of matching pods in an eligible domain or zero if the number of eligible domains is less than MinDomains. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 2/2/1: In this case, the global minimum is 1. | zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed."
+                                description: "MaxSkew describes the degree to which pods may be unevenly distributed.\nWhen `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference\nbetween the number of matching pods in the target topology and the global minimum.\nThe global minimum is the minimum number of matching pods in an eligible domain\nor zero if the number of eligible domains is less than MinDomains.\nFor example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same\nlabelSelector spread as 2/2/1:\nIn this case, the global minimum is 1.\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |   P   |\n- if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2;\nscheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2)\nviolate MaxSkew(1).\n- if MaxSkew is 2, incoming pod can be scheduled onto any zone.\nWhen `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence\nto topologies that satisfy it.\nIt's a required field. Default value is 1 and 0 is not allowed."
                                 format: "int32"
                                 type: "integer"
                               minDomains:
-                                description: "MinDomains indicates a minimum number of eligible domains. When the number of eligible domains with matching topology keys is less than minDomains, Pod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed. And when the number of eligible domains with matching topology keys equals or greater than minDomains, this value has no effect on scheduling. As a result, when the number of eligible domains is less than minDomains, scheduler won't schedule more than maxSkew Pods to those domains. If value is nil, the constraint behaves as if MinDomains is equal to 1. Valid values are integers greater than 0. When value is not nil, WhenUnsatisfiable must be DoNotSchedule. \n For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same labelSelector spread as 2/2/2: | zone1 | zone2 | zone3 | |  P P  |  P P  |  P P  | The number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0. In this situation, new pod with the same labelSelector cannot be scheduled, because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones, it will violate MaxSkew. \n This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
                                 format: "int32"
                                 type: "integer"
                               nodeAffinityPolicy:
-                                description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod topology spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations. - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations. \n If this value is nil, the behavior is equivalent to the Honor policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                                description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                                 type: "string"
                               nodeTaintsPolicy:
-                                description: "NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew. Options are: - Honor: nodes without taints, along with tainted nodes for which the incoming pod has a toleration, are included. - Ignore: node taints are ignored. All nodes are included. \n If this value is nil, the behavior is equivalent to the Ignore policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                                description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                                 type: "string"
                               topologyKey:
-                                description: "TopologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. We consider each <key, value> as a \"bucket\", and try to put balanced number of pods into each bucket. We define a domain as a particular instance of a topology. Also, we define an eligible domain as a domain whose nodes meet the requirements of nodeAffinityPolicy and nodeTaintsPolicy. e.g. If TopologyKey is \"kubernetes.io/hostname\", each Node is a domain of that topology. And, if TopologyKey is \"topology.kubernetes.io/zone\", each zone is a domain of that topology. It's a required field."
+                                description: "TopologyKey is the key of node labels. Nodes that have a label with this key\nand identical values are considered to be in the same topology.\nWe consider each <key, value> as a \"bucket\", and try to put balanced number\nof pods into each bucket.\nWe define a domain as a particular instance of a topology.\nAlso, we define an eligible domain as a domain whose nodes meet the requirements of\nnodeAffinityPolicy and nodeTaintsPolicy.\ne.g. If TopologyKey is \"kubernetes.io/hostname\", each Node is a domain of that topology.\nAnd, if TopologyKey is \"topology.kubernetes.io/zone\", each zone is a domain of that topology.\nIt's a required field."
                                 type: "string"
                               whenUnsatisfiable:
-                                description: "WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it. - ScheduleAnyway tells the scheduler to schedule the pod in any location, but giving higher precedence to topologies that would help reduce the skew. A constraint is considered \"Unsatisfiable\" for an incoming pod if and only if every possible node assignment for that pod would violate \"MaxSkew\" on some topology. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field."
+                                description: "WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy\nthe spread constraint.\n- DoNotSchedule (default) tells the scheduler not to schedule it.\n- ScheduleAnyway tells the scheduler to schedule the pod in any location,\n  but giving higher precedence to topologies that would help reduce the\n  skew.\nA constraint is considered \"Unsatisfiable\" for an incoming pod\nif and only if every possible node assignment for that pod would violate\n\"MaxSkew\" on some topology.\nFor example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same\nlabelSelector spread as 3/1/1:\n| zone1 | zone2 | zone3 |\n| P P P |   P   |   P   |\nIf WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled\nto zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies\nMaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler\nwon't make it *more* imbalanced.\nIt's a required field."
                                 type: "string"
                             required:
                               - "maxSkew"
@@ -233,7 +233,7 @@ spec:
                         description: "APIVersion defines the versioned schema of this representation of an object."
                         type: "string"
                       kind:
-                        description: "Kind is a string value representing the REST resource this object represents. In CamelCase."
+                        description: "Kind is a string value representing the REST resource this object represents.\nIn CamelCase."
                         type: "string"
                       name:
                         description: "Name of the target resource."
@@ -249,25 +249,25 @@ spec:
                   type: "array"
                 preemptionPolicy:
                   default: "PreemptLowerPriority"
-                  description: "PreemptionPolicy is the Policy for preempting subscriptions with lower priority. One of Never, PreemptLowerPriority. Defaults to PreemptLowerPriority if unset."
+                  description: "PreemptionPolicy is the Policy for preempting subscriptions with lower priority.\nOne of Never, PreemptLowerPriority.\nDefaults to PreemptLowerPriority if unset."
                   enum:
                     - "PreemptLowerPriority"
                     - "PreemptNever"
                   type: "string"
                 priority:
-                  description: "The priority value. clusternet-scheduler use this field to find the priority of the subscription. The higher the value, the higher the priority."
+                  description: "The priority value. clusternet-scheduler use this field to find the\npriority of the subscription.\nThe higher the value, the higher the priority."
                   format: "int32"
                   type: "integer"
                 schedulerName:
                   default: "default"
-                  description: "If specified, the Subscription will be handled by specified scheduler. If not specified, the Subscription will be handled by default scheduler."
+                  description: "If specified, the Subscription will be handled by specified scheduler.\nIf not specified, the Subscription will be handled by default scheduler."
                   type: "string"
                 schedulingBySubGroup:
-                  description: "If specified, the Subscription will be handled with SchedulingBySubGroup. Used together with SubGroupStrategy in every Subscriber. Can work with all supported SchedulingStrategy, such as Replication, Dividing."
+                  description: "If specified, the Subscription will be handled with SchedulingBySubGroup.\nUsed together with SubGroupStrategy in every Subscriber.\nCan work with all supported SchedulingStrategy, such as Replication, Dividing."
                   type: "boolean"
                 schedulingStrategy:
                   default: "Replication"
-                  description: "If specified, the Subscription will be handled with specified SchedulingStrategy. Otherwise, with generic SchedulingStrategy."
+                  description: "If specified, the Subscription will be handled with specified SchedulingStrategy.\nOtherwise, with generic SchedulingStrategy."
                   enum:
                     - "Replication"
                     - "Dividing"
@@ -283,16 +283,16 @@ spec:
                           matchExpressions:
                             description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                             items:
-                              description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                              description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                               properties:
                                 key:
                                   description: "key is the label key that the selector applies to."
                                   type: "string"
                                 operator:
-                                  description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                  description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                   type: "string"
                                 values:
-                                  description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                  description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                   items:
                                     type: "string"
                                   type: "array"
@@ -304,21 +304,21 @@ spec:
                           matchLabels:
                             additionalProperties:
                               type: "string"
-                            description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                            description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                             type: "object"
                         type: "object"
                         x-kubernetes-map-type: "atomic"
                       subGroupStrategy:
-                        description: "SubGroupStrategy defines the subgroup strategy for the clusters matched by this subscriber. During the scheduling, all the matching clusters will be treated as a subgroup instead of individual clusters. With subgroup, we can describe clusters with different regions, zones, etc. Present only when SchedulingBySubGroup is set."
+                        description: "SubGroupStrategy defines the subgroup strategy for the clusters matched by this subscriber.\nDuring the scheduling, all the matching clusters will be treated as a subgroup instead of individual clusters.\nWith subgroup, we can describe clusters with different regions, zones, etc.\nPresent only when SchedulingBySubGroup is set."
                         properties:
                           minClusters:
-                            description: "MinClusters is the minimum number of clusters to be selected in this subgroup. If this value is more than the total number of clusters in this subgroup, then all clusters will be selected."
+                            description: "MinClusters is the minimum number of clusters to be selected in this subgroup.\nIf this value is more than the total number of clusters in this subgroup, then all clusters will be selected."
                             format: "int32"
                             minimum: 0.0
                             type: "integer"
                         type: "object"
                       weight:
-                        description: "Static weight of subscriber when dividing replicas. Present only for static divided scheduling."
+                        description: "Static weight of subscriber when dividing replicas.\nPresent only for static divided scheduling."
                         format: "int32"
                         minimum: 0.0
                         type: "integer"
@@ -370,7 +370,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 currentReplicas:
-                                  description: "currentReplicas is the number of Pods created by the workload controller from the StatefulSet version indicated by currentRevision."
+                                  description: "currentReplicas is the number of Pods created by the workload controller from the StatefulSet version\nindicated by currentRevision."
                                   format: "int32"
                                   type: "integer"
                                 failed:
@@ -394,7 +394,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 unavailableReplicas:
-                                  description: "Total number of unavailable pods targeted by this workload. This is the total number of pods that are still required for the workload to have 100% available capacity. They may either be pods that are running but not yet available or pods that still have not been created."
+                                  description: "Total number of unavailable pods targeted by this workload. This is the total number of\npods that are still required for the workload to have 100% available capacity. They may\neither be pods that are running but not yet available or pods that still have not been created."
                                   format: "int32"
                                   type: "integer"
                                 updatedReplicas:
@@ -422,7 +422,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               currentReplicas:
-                                description: "currentReplicas is the number of Pods created by the workload controller from the StatefulSet version indicated by currentRevision."
+                                description: "currentReplicas is the number of Pods created by the workload controller from the StatefulSet version\nindicated by currentRevision."
                                 format: "int32"
                                 type: "integer"
                               failed:
@@ -446,7 +446,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               unavailableReplicas:
-                                description: "Total number of unavailable pods targeted by this workload. This is the total number of pods that are still required for the workload to have 100% available capacity. They may either be pods that are running but not yet available or pods that still have not been created."
+                                description: "Total number of unavailable pods targeted by this workload. This is the total number of\npods that are still required for the workload to have 100% available capacity. They may\neither be pods that are running but not yet available or pods that still have not been created."
                                 format: "int32"
                                 type: "integer"
                               updatedReplicas:
@@ -456,7 +456,7 @@ spec:
                             type: "object"
                         type: "object"
                       kind:
-                        description: "Kind is a string value representing the REST resource this object represents. In CamelCase."
+                        description: "Kind is a string value representing the REST resource this object represents.\nIn CamelCase."
                         type: "string"
                       name:
                         description: "Name of the target resource."

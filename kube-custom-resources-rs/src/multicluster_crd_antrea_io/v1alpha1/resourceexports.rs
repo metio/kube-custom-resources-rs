@@ -418,7 +418,7 @@ pub struct ResourceExportClusterNetworkPolicyEgressFrom {
     /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyEgressFromExternalEntitySelector>,
-    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs, i.e. "google.com", "db-svc.default.svc.cluster.local" Wildcard expressions, i.e. "*wayfair.com".
+    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as "google.com". Wildcard expressions such as "*wayfair.com".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fqdn: Option<String>,
     /// Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector.
@@ -650,7 +650,7 @@ pub struct ResourceExportClusterNetworkPolicyEgressTo {
     /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyEgressToExternalEntitySelector>,
-    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs, i.e. "google.com", "db-svc.default.svc.cluster.local" Wildcard expressions, i.e. "*wayfair.com".
+    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as "google.com". Wildcard expressions such as "*wayfair.com".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fqdn: Option<String>,
     /// Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector.
@@ -985,7 +985,7 @@ pub struct ResourceExportClusterNetworkPolicyIngressFrom {
     /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyIngressFromExternalEntitySelector>,
-    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs, i.e. "google.com", "db-svc.default.svc.cluster.local" Wildcard expressions, i.e. "*wayfair.com".
+    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as "google.com". Wildcard expressions such as "*wayfair.com".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fqdn: Option<String>,
     /// Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector.
@@ -1217,7 +1217,7 @@ pub struct ResourceExportClusterNetworkPolicyIngressTo {
     /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyIngressToExternalEntitySelector>,
-    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs, i.e. "google.com", "db-svc.default.svc.cluster.local" Wildcard expressions, i.e. "*wayfair.com".
+    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as "google.com". Wildcard expressions such as "*wayfair.com".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fqdn: Option<String>,
     /// Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector.

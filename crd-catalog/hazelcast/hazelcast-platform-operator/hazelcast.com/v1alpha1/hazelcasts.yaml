@@ -427,9 +427,6 @@ spec:
                 persistence:
                   description: "Persistence configuration"
                   properties:
-                    baseDir:
-                      description: "Persistence base directory."
-                      type: "string"
                     clusterDataRecoveryPolicy:
                       default: "FullRecoveryOnly"
                       description: "Configuration of the cluster recovery strategy."
@@ -492,8 +489,6 @@ spec:
                         - "ForceStart"
                         - "PartialStart"
                       type: "string"
-                  required:
-                    - "baseDir"
                   type: "object"
                 properties:
                   additionalProperties:
@@ -1255,6 +1250,9 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
+                serviceAccountName:
+                  description: "ServiceAccountName is the name of the ServiceAccount to use to run Hazelcast cluster. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/"
+                  type: "string"
                 sql:
                   description: "Hazelcast SQL configuration"
                   properties:

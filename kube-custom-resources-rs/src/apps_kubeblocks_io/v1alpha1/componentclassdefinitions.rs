@@ -23,7 +23,8 @@ pub struct ComponentClassDefinitionGroups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub series: Option<Vec<ComponentClassDefinitionGroupsSeries>>,
     /// template is a class definition template that uses the Go template syntax and allows for variable declaration. When defining a class in Series, specifying the variable's value is sufficient, as the complete class definition will be generated through rendering the template. 
-    ///  For example: template: | cpu: "{{ or .cpu 1 }}" memory: "{{ or .memory 4 }}Gi"
+    ///  For example: 
+    ///  ```yaml template: | cpu: "{{ or .cpu 1 }}" memory: "{{ or .memory 4 }}Gi" ```
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
     /// vars defines the variables declared in the template and will be used to generating the complete class definition by render the template.

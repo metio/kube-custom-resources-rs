@@ -23,7 +23,7 @@ pub struct CephObjectStoreUserSpec {
     /// The display name for the ceph users
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
-    /// ObjectUserQuotaSpec can be used to set quotas for the object store user to limit their usage.
+    /// ObjectUserQuotaSpec can be used to set quotas for the object store user to limit their usage. See the [Ceph docs](https://docs.ceph.com/en/latest/radosgw/admin/?#quota-management) for more
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quotas: Option<CephObjectStoreUserQuotas>,
     /// The store the user will be created in
@@ -34,52 +34,52 @@ pub struct CephObjectStoreUserSpec {
 /// Additional admin-level capabilities for the Ceph object store user
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreUserCapabilities {
-    /// Add capabilities for user to send request to RGW Cache API header. Documented in https://docs.ceph.
+    /// Add capabilities for user to send request to RGW Cache API header. Documented in https://docs.ceph.com/en/quincy/radosgw/rgw-cache/#cache-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "amz-cache")]
     pub amz_cache: Option<CephObjectStoreUserCapabilitiesAmzCache>,
-    /// Add capabilities for user to change bucket index logging. Documented in https://docs.ceph.
+    /// Add capabilities for user to change bucket index logging. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bilog: Option<CephObjectStoreUserCapabilitiesBilog>,
-    /// Admin capabilities to read/write Ceph object store buckets. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write Ceph object store buckets. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<CephObjectStoreUserCapabilitiesBucket>,
-    /// Admin capabilities to read/write Ceph object store buckets. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write Ceph object store buckets. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buckets: Option<CephObjectStoreUserCapabilitiesBuckets>,
-    /// Add capabilities for user to change data logging. Documented in https://docs.ceph.
+    /// Add capabilities for user to change data logging. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datalog: Option<CephObjectStoreUserCapabilitiesDatalog>,
-    /// Admin capabilities to read/write information about the user. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write information about the user. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<CephObjectStoreUserCapabilitiesInfo>,
-    /// Add capabilities for user to change metadata logging. Documented in https://docs.ceph.
+    /// Add capabilities for user to change metadata logging. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mdlog: Option<CephObjectStoreUserCapabilitiesMdlog>,
-    /// Admin capabilities to read/write Ceph object store metadata. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write Ceph object store metadata. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<CephObjectStoreUserCapabilitiesMetadata>,
-    /// Add capabilities for user to change oidc provider. Documented in https://docs.ceph.
+    /// Add capabilities for user to change oidc provider. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oidc-provider")]
     pub oidc_provider: Option<CephObjectStoreUserCapabilitiesOidcProvider>,
-    /// Add capabilities for user to set rate limiter for user and bucket. Documented in https://docs.ceph.
+    /// Add capabilities for user to set rate limiter for user and bucket. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ratelimit: Option<CephObjectStoreUserCapabilitiesRatelimit>,
-    /// Admin capabilities to read/write roles for user. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write roles for user. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<CephObjectStoreUserCapabilitiesRoles>,
-    /// Admin capabilities to read/write Ceph object store usage. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write Ceph object store usage. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usage: Option<CephObjectStoreUserCapabilitiesUsage>,
-    /// Admin capabilities to read/write Ceph object store users. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write Ceph object store users. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<CephObjectStoreUserCapabilitiesUser>,
-    /// Add capabilities for user to change user policies. Documented in https://docs.ceph.
+    /// Add capabilities for user to change user policies. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "user-policy")]
     pub user_policy: Option<CephObjectStoreUserCapabilitiesUserPolicy>,
-    /// Admin capabilities to read/write Ceph object store users. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write Ceph object store users. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<CephObjectStoreUserCapabilitiesUsers>,
-    /// Admin capabilities to read/write Ceph object store zones. Documented in https://docs.ceph.
+    /// Admin capabilities to read/write Ceph object store zones. Documented in https://docs.ceph.com/en/latest/radosgw/admin/?#add-remove-admin-capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<CephObjectStoreUserCapabilitiesZone>,
 }
@@ -292,7 +292,7 @@ pub enum CephObjectStoreUserCapabilitiesZone {
     ReadWrite,
 }
 
-/// ObjectUserQuotaSpec can be used to set quotas for the object store user to limit their usage.
+/// ObjectUserQuotaSpec can be used to set quotas for the object store user to limit their usage. See the [Ceph docs](https://docs.ceph.com/en/latest/radosgw/admin/?#quota-management) for more
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreUserQuotas {
     /// Maximum bucket limit for the ceph user
@@ -301,7 +301,7 @@ pub struct CephObjectStoreUserQuotas {
     /// Maximum number of objects across all the user's buckets
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
-    /// Maximum size limit of all objects across all the user's buckets See https://pkg.go.dev/k8s.
+    /// Maximum size limit of all objects across all the user's buckets See https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity for more info.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
     pub max_size: Option<IntOrString>,
 }

@@ -23,21 +23,21 @@ spec:
           description: "CephBlockPool represents a Ceph Storage Pool"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object."
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents."
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
             spec:
-              description: "NamedBlockPoolSpec allows a block pool to be created with a non-default name."
+              description: "NamedBlockPoolSpec allows a block pool to be created with a non-default name. This is more specific than the NamedPoolSpec so we get schema validation on the allowed pool names that can be specified."
               properties:
                 application:
                   description: "The application name to set on the pool. Only expected to be set for rgw pools."
                   type: "string"
                 compressionMode:
-                  description: "DEPRECATED: use Parameters instead, e.g."
+                  description: "DEPRECATED: use Parameters instead, e.g., Parameters[\"compression_mode\"] = \"force\" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters"
                   enum:
                     - "none"
                     - "passive"
@@ -64,11 +64,11 @@ spec:
                       description: "The algorithm for erasure coding"
                       type: "string"
                     codingChunks:
-                      description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool"
+                      description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered."
                       minimum: 0.0
                       type: "integer"
                     dataChunks:
-                      description: "Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool t"
+                      description: "Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery."
                       minimum: 0.0
                       type: "integer"
                   required:
@@ -76,7 +76,7 @@ spec:
                     - "dataChunks"
                   type: "object"
                 failureDomain:
-                  description: "The failure domain: osd/host/(region or zone if available) - technically also any type in the crush "
+                  description: "The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map"
                   type: "string"
                 mirroring:
                   description: "The mirroring settings"
@@ -172,14 +172,14 @@ spec:
                       description: "RequireSafeReplicaSize if false allows you to set replica 1"
                       type: "boolean"
                     size:
-                      description: "Size - Number of copies per object in a replicated storage pool, including the object itself (requir"
+                      description: "Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)"
                       minimum: 0.0
                       type: "integer"
                     subFailureDomain:
                       description: "SubFailureDomain the name of the sub-failure domain"
                       type: "string"
                     targetSizeRatio:
-                      description: "TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capac"
+                      description: "TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity"
                       type: "number"
                   required:
                     - "size"

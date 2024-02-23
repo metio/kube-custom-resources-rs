@@ -637,7 +637,7 @@ pub struct RestoreS3 {
     pub bucket: String,
     /// Endpoint is the S3 API endpoint without scheme.
     pub endpoint: String,
-    /// Prefix allows backups to be placed under a specific prefix in the bucket.
+    /// Prefix allows backups to be placed under a specific prefix in the bucket. A trailing slash '/' is added if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// Region is the S3 region name to use.

@@ -101,7 +101,10 @@ pub struct APIManagerApicastProductionSpec {
     /// NoProxy specifies a comma-separated list of hostnames and domain names for which the requests should not be proxied. Setting to a single * character, which matches all hosts, effectively disables the proxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// OpenTracing contains the OpenTracing integration configuration with APIcast in the production environment.
+    /// OpenTelemetry contains the gateway instrumentation configuration with APIcast.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
+    pub open_telemetry: Option<APIManagerApicastProductionSpecOpenTelemetry>,
+    /// OpenTracing contains the OpenTracing integration configuration with APIcast in the production environment. Deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTracing")]
     pub open_tracing: Option<APIManagerApicastProductionSpecOpenTracing>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
@@ -592,7 +595,29 @@ pub enum APIManagerApicastProductionSpecLogLevel {
     Emerg,
 }
 
-/// OpenTracing contains the OpenTracing integration configuration with APIcast in the production environment.
+/// OpenTelemetry contains the gateway instrumentation configuration with APIcast.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct APIManagerApicastProductionSpecOpenTelemetry {
+    /// Enabled controls whether OpenTelemetry integration with APIcast is enabled. By default it is not enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// TracingConfigSecretKey contains the key of the secret to select the configuration from. if unspecified, the first secret key in lexicographical order will be selected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfigSecretKey")]
+    pub tracing_config_secret_key: Option<String>,
+    /// TracingConfigSecretRef contains a Secret reference the Opentelemetry configuration. The configuration file specification is defined in the Nginx instrumentation library repo https://github.com/open-telemetry/opentelemetry-cpp-contrib/tree/main/instrumentation/nginx
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfigSecretRef")]
+    pub tracing_config_secret_ref: Option<APIManagerApicastProductionSpecOpenTelemetryTracingConfigSecretRef>,
+}
+
+/// TracingConfigSecretRef contains a Secret reference the Opentelemetry configuration. The configuration file specification is defined in the Nginx instrumentation library repo https://github.com/open-telemetry/opentelemetry-cpp-contrib/tree/main/instrumentation/nginx
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct APIManagerApicastProductionSpecOpenTelemetryTracingConfigSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// OpenTracing contains the OpenTracing integration configuration with APIcast in the production environment. Deprecated
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIManagerApicastProductionSpecOpenTracing {
     /// Enabled controls whether OpenTracing integration with APIcast is enabled. By default it is not enabled.
@@ -728,7 +753,10 @@ pub struct APIManagerApicastStagingSpec {
     /// NoProxy specifies a comma-separated list of hostnames and domain names for which the requests should not be proxied. Setting to a single * character, which matches all hosts, effectively disables the proxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// OpenTracing contains the OpenTracing integration configuration with APIcast in the staging environment.
+    /// OpenTelemetry contains the gateway instrumentation configuration with APIcast.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
+    pub open_telemetry: Option<APIManagerApicastStagingSpecOpenTelemetry>,
+    /// OpenTracing contains the OpenTracing integration configuration with APIcast in the staging environment. Deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTracing")]
     pub open_tracing: Option<APIManagerApicastStagingSpecOpenTracing>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
@@ -1217,7 +1245,29 @@ pub enum APIManagerApicastStagingSpecLogLevel {
     Emerg,
 }
 
-/// OpenTracing contains the OpenTracing integration configuration with APIcast in the staging environment.
+/// OpenTelemetry contains the gateway instrumentation configuration with APIcast.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct APIManagerApicastStagingSpecOpenTelemetry {
+    /// Enabled controls whether OpenTelemetry integration with APIcast is enabled. By default it is not enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// TracingConfigSecretKey contains the key of the secret to select the configuration from. if unspecified, the first secret key in lexicographical order will be selected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfigSecretKey")]
+    pub tracing_config_secret_key: Option<String>,
+    /// TracingConfigSecretRef contains a Secret reference the Opentelemetry configuration. The configuration file specification is defined in the Nginx instrumentation library repo https://github.com/open-telemetry/opentelemetry-cpp-contrib/tree/main/instrumentation/nginx
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfigSecretRef")]
+    pub tracing_config_secret_ref: Option<APIManagerApicastStagingSpecOpenTelemetryTracingConfigSecretRef>,
+}
+
+/// TracingConfigSecretRef contains a Secret reference the Opentelemetry configuration. The configuration file specification is defined in the Nginx instrumentation library repo https://github.com/open-telemetry/opentelemetry-cpp-contrib/tree/main/instrumentation/nginx
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct APIManagerApicastStagingSpecOpenTelemetryTracingConfigSecretRef {
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// OpenTracing contains the OpenTracing integration configuration with APIcast in the staging environment. Deprecated
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIManagerApicastStagingSpecOpenTracing {
     /// Enabled controls whether OpenTracing integration with APIcast is enabled. By default it is not enabled.

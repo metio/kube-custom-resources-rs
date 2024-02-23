@@ -17,41 +17,44 @@ pub struct RestoreSpec {
     /// Specifies the number of retries before marking the restore failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
-    /// backup to be restored. The restore behavior based on the backup type: 1. Full: will be restored the full backup directly. 2. Incremental: will be restored sequentially from the most recent full backup of this incremental backup. 3. Differential: will be restored sequentially from the parent backup of the differential backup. 4. Continuous: will find the most recent full backup at this time point and the continuous backups after it to restore.
+    /// Specifies the backup to be restored. The restore behavior is based on the backup type: 
+    ///  1. Full: will be restored the full backup directly. 2. Incremental: will be restored sequentially from the most recent full backup of this incremental backup. 3. Differential: will be restored sequentially from the parent backup of the differential backup. 4. Continuous: will find the most recent full backup at this time point and the continuous backups after it to restore.
     pub backup: RestoreBackup,
-    /// specified the required resources of restore job's container.
+    /// Specifies the required resources of restore job's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResources")]
     pub container_resources: Option<RestoreContainerResources>,
-    /// list of environment variables to set in the container for restore and will be merged with the env of Backup and ActionSet. The priority of merging is as follows: Restore env > Backup env > ActionSet env.
+    /// List of environment variables to set in the container for restore. These will be merged with the env of Backup and ActionSet. 
+    ///  The priority of merging is as follows: `Restore env > Backup env > ActionSet env`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<RestoreEnv>>,
-    /// configuration for the action of "prepareData" phase, including the persistent volume claims that need to be restored and scheduling strategy of temporary recovery pod.
+    /// Configuration for the action of "prepareData" phase, including the persistent volume claims that need to be restored and scheduling strategy of temporary recovery pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prepareDataConfig")]
     pub prepare_data_config: Option<RestorePrepareDataConfig>,
-    /// configuration for the action of "postReady" phase.
+    /// Configuration for the action of "postReady" phase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyConfig")]
     pub ready_config: Option<RestoreReadyConfig>,
-    /// restore the specified resources of kubernetes.
+    /// Restores the specified resources of Kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RestoreResources>,
-    /// restoreTime is the point in time for restoring.
+    /// Specifies the point in time for restoring.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreTime")]
     pub restore_time: Option<String>,
-    /// service account name which needs for recovery pod.
+    /// Specifies the service account name needed for recovery pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
 
-/// backup to be restored. The restore behavior based on the backup type: 1. Full: will be restored the full backup directly. 2. Incremental: will be restored sequentially from the most recent full backup of this incremental backup. 3. Differential: will be restored sequentially from the parent backup of the differential backup. 4. Continuous: will find the most recent full backup at this time point and the continuous backups after it to restore.
+/// Specifies the backup to be restored. The restore behavior is based on the backup type: 
+///  1. Full: will be restored the full backup directly. 2. Incremental: will be restored sequentially from the most recent full backup of this incremental backup. 3. Differential: will be restored sequentially from the parent backup of the differential backup. 4. Continuous: will find the most recent full backup at this time point and the continuous backups after it to restore.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreBackup {
-    /// backup name
+    /// Specifies the backup name.
     pub name: String,
-    /// backup namespace
+    /// Specifies the backup namespace.
     pub namespace: String,
 }
 
-/// specified the required resources of restore job's container.
+/// Specifies the required resources of restore job's container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -154,61 +157,62 @@ pub struct RestoreEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// configuration for the action of "prepareData" phase, including the persistent volume claims that need to be restored and scheduling strategy of temporary recovery pod.
+/// Configuration for the action of "prepareData" phase, including the persistent volume claims that need to be restored and scheduling strategy of temporary recovery pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfig {
-    /// dataSourceRef describes the configuration when using `persistentVolumeClaim.spec.dataSourceRef` method for restoring. it describes the source volume of the backup targetVolumes and how to mount path in the restoring container.
+    /// Specifies the configuration when using `persistentVolumeClaim.spec.dataSourceRef` method for restoring. Describes the source volume of the backup targetVolumes and the mount path in the restoring container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<RestorePrepareDataConfigDataSourceRef>,
-    /// scheduling spec for restoring pod.
+    /// Specifies the scheduling spec for the restoring pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingSpec")]
     pub scheduling_spec: Option<RestorePrepareDataConfigSchedulingSpec>,
-    /// VolumeClaimRestorePolicy defines restore policy for persistent volume claim. Supported policies are as follows: 1. Parallel: parallel recovery of persistent volume claim. 2. Serial: restore the persistent volume claim in sequence, and wait until the previous persistent volume claim is restored before restoring a new one.
+    /// Defines restore policy for persistent volume claim. Supported policies are as follows: 
+    ///  - `Parallel`: parallel recovery of persistent volume claim. - `Serial`: restore the persistent volume claim in sequence, and wait until the previous persistent volume claim is restored before restoring a new one.
     #[serde(rename = "volumeClaimRestorePolicy")]
     pub volume_claim_restore_policy: RestorePrepareDataConfigVolumeClaimRestorePolicy,
-    /// volumeClaims defines the persistent Volume claims that need to be restored and mount them together into the restore job. these persistent Volume claims will be created if not exist.
+    /// Defines the persistent Volume claims that need to be restored and mounted together into the restore job. These persistent Volume claims will be created if they do not exist.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaims")]
     pub volume_claims: Option<Vec<RestorePrepareDataConfigVolumeClaims>>,
-    /// volumeClaimsTemplate defines a template to build persistent Volume claims that need to be restored. these claims will be created in an orderly manner based on the number of replicas or reused if already exist.
+    /// Defines a template to build persistent Volume claims that need to be restored. These claims will be created in an orderly manner based on the number of replicas or reused if they already exist.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimsTemplate")]
     pub volume_claims_template: Option<RestorePrepareDataConfigVolumeClaimsTemplate>,
 }
 
-/// dataSourceRef describes the configuration when using `persistentVolumeClaim.spec.dataSourceRef` method for restoring. it describes the source volume of the backup targetVolumes and how to mount path in the restoring container.
+/// Specifies the configuration when using `persistentVolumeClaim.spec.dataSourceRef` method for restoring. Describes the source volume of the backup targetVolumes and the mount path in the restoring container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigDataSourceRef {
-    /// mountPath path within the restoring container at which the volume should be mounted.
+    /// Specifies the path within the restoring container at which the volume should be mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    /// volumeSource describes the volume will be restored from the specified volume of the backup targetVolumes. required if the backup uses volume snapshot.
+    /// Describes the volume that will be restored from the specified volume of the backup targetVolumes. This is required if the backup uses a volume snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<String>,
 }
 
-/// scheduling spec for restoring pod.
+/// Specifies the scheduling spec for the restoring pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigSchedulingSpec {
-    /// affinity is a group of affinity scheduling rules. refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    /// Contains a group of affinity scheduling rules. Refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<RestorePrepareDataConfigSchedulingSpecAffinity>,
-    /// nodeName is a request to schedule this pod onto a specific node. If it is non-empty, the scheduler simply schedules this pod onto that node, assuming that it fits resource requirements.
+    /// Specifies a request to schedule this pod onto a specific node. If it is non-empty, the scheduler simply schedules this pod onto that node, assuming that it fits resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
-    /// nodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    /// Defines a selector which must be true for the pod to fit on a node. The selector must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// If specified, the pod will be dispatched by specified scheduler. If not specified, the pod will be dispatched by default scheduler.
+    /// Specifies the scheduler to dispatch the pod. If not specified, the pod will be dispatched by the default scheduler.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    /// the restoring pod's tolerations.
+    /// Specifies the tolerations for the restoring pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<RestorePrepareDataConfigSchedulingSpecTolerations>>,
-    /// topologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. refer to https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+    /// Describes how a group of pods ought to spread across topology domains. The scheduler will schedule pods in a way which abides by the constraints. Refer to https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraints>>,
 }
 
-/// affinity is a group of affinity scheduling rules. refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+/// Contains a group of affinity scheduling rules. Refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigSchedulingSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -691,7 +695,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraintsLabelS
     pub values: Option<Vec<String>>,
 }
 
-/// configuration for the action of "prepareData" phase, including the persistent volume claims that need to be restored and scheduling strategy of temporary recovery pod.
+/// Configuration for the action of "prepareData" phase, including the persistent volume claims that need to be restored and scheduling strategy of temporary recovery pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RestorePrepareDataConfigVolumeClaimRestorePolicy {
     Parallel,
@@ -700,20 +704,20 @@ pub enum RestorePrepareDataConfigVolumeClaimRestorePolicy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigVolumeClaims {
-    /// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+    /// Specifies the standard metadata for the object. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     pub metadata: RestorePrepareDataConfigVolumeClaimsMetadata,
-    /// mountPath path within the restoring container at which the volume should be mounted.
+    /// Specifies the path within the restoring container at which the volume should be mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    /// volumeClaimSpec defines the desired characteristics of a persistent volume claim.
+    /// Defines the desired characteristics of a persistent volume claim.
     #[serde(rename = "volumeClaimSpec")]
     pub volume_claim_spec: RestorePrepareDataConfigVolumeClaimsVolumeClaimSpec,
-    /// volumeSource describes the volume will be restored from the specified volume of the backup targetVolumes. required if the backup uses volume snapshot.
+    /// Describes the volume that will be restored from the specified volume of the backup targetVolumes. This is required if the backup uses a volume snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<String>,
 }
 
-/// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+/// Specifies the standard metadata for the object. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigVolumeClaimsMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -728,7 +732,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsMetadata {
     pub namespace: Option<String>,
 }
 
-/// volumeClaimSpec defines the desired characteristics of a persistent volume claim.
+/// Defines the desired characteristics of a persistent volume claim.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpec {
     /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
@@ -830,34 +834,34 @@ pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpecSelectorMatchExpre
     pub values: Option<Vec<String>>,
 }
 
-/// volumeClaimsTemplate defines a template to build persistent Volume claims that need to be restored. these claims will be created in an orderly manner based on the number of replicas or reused if already exist.
+/// Defines a template to build persistent Volume claims that need to be restored. These claims will be created in an orderly manner based on the number of replicas or reused if they already exist.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigVolumeClaimsTemplate {
-    /// the replicas of persistent volume claim which need to be created and restored. the format of created claim name is "<template-name>-<index>".
+    /// Specifies the replicas of persistent volume claim that need to be created and restored. The format of the created claim name is `$(template-name)-$(index)`.
     pub replicas: i32,
-    /// the starting index for the created persistent volume claim by according to template. minimum is 0.
+    /// Specifies the starting index for the created persistent volume claim according to the template. The minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingIndex")]
     pub starting_index: Option<i32>,
-    /// templates is a list of volume claims.
+    /// Contains a list of volume claims.
     pub templates: Vec<RestorePrepareDataConfigVolumeClaimsTemplateTemplates>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplates {
-    /// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+    /// Specifies the standard metadata for the object. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     pub metadata: RestorePrepareDataConfigVolumeClaimsTemplateTemplatesMetadata,
-    /// mountPath path within the restoring container at which the volume should be mounted.
+    /// Specifies the path within the restoring container at which the volume should be mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    /// volumeClaimSpec defines the desired characteristics of a persistent volume claim.
+    /// Defines the desired characteristics of a persistent volume claim.
     #[serde(rename = "volumeClaimSpec")]
     pub volume_claim_spec: RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpec,
-    /// volumeSource describes the volume will be restored from the specified volume of the backup targetVolumes. required if the backup uses volume snapshot.
+    /// Describes the volume that will be restored from the specified volume of the backup targetVolumes. This is required if the backup uses a volume snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<String>,
 }
 
-/// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+/// Specifies the standard metadata for the object. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -872,7 +876,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesMetadata {
     pub namespace: Option<String>,
 }
 
-/// volumeClaimSpec defines the desired characteristics of a persistent volume claim.
+/// Defines the desired characteristics of a persistent volume claim.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpec {
     /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
@@ -974,60 +978,60 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecS
     pub values: Option<Vec<String>>,
 }
 
-/// configuration for the action of "postReady" phase.
+/// Configuration for the action of "postReady" phase.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfig {
-    /// credential template used for creating a connection credential
+    /// Defines the credential template used to create a connection credential.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<RestoreReadyConfigConnectionCredential>,
-    /// configuration for exec action.
+    /// Specifies the configuration for an exec action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "execAction")]
     pub exec_action: Option<RestoreReadyConfigExecAction>,
-    /// configuration for job action.
+    /// Specifies the configuration for a job action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobAction")]
     pub job_action: Option<RestoreReadyConfigJobAction>,
-    /// periodic probe of the service readiness. controller will perform postReadyHooks of BackupScript.spec.restore after the service readiness when readinessProbe is configured.
+    /// Defines a periodic probe of the service readiness. The controller will perform postReadyHooks of BackupScript.spec.restore after the service readiness when readinessProbe is configured.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RestoreReadyConfigReadinessProbe>,
 }
 
-/// credential template used for creating a connection credential
+/// Defines the credential template used to create a connection credential.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigConnectionCredential {
-    /// hostKey specifies the map key of the host in the connection credential secret.
+    /// Specifies the map key of the host in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostKey")]
     pub host_key: Option<String>,
-    /// passwordKey specifies the map key of the password in the connection credential secret. This password will be saved in the backup annotation for full backup. You can use the environment variable DP_ENCRYPTION_KEY to specify encryption key.
+    /// Specifies the map key of the password in the connection credential secret. This password will be saved in the backup annotation for full backup. You can use the environment variable DP_ENCRYPTION_KEY to specify encryption key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// portKey specifies the map key of the port in the connection credential secret.
+    /// Specifies the map key of the port in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
-    /// secretName refers to the Secret object that contains the connection credential.
+    /// Refers to the Secret object that contains the connection credential.
     #[serde(rename = "secretName")]
     pub secret_name: String,
-    /// usernameKey specifies the map key of the user in the connection credential secret.
+    /// Specifies the map key of the user in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
-/// configuration for exec action.
+/// Specifies the configuration for an exec action.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigExecAction {
-    /// execActionTarget defines the pods that need to be executed for the exec action. will execute on all pods that meet the conditions.
+    /// Defines the pods that need to be executed for the exec action. Execution will occur on all pods that meet the conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<RestoreReadyConfigExecActionTarget>,
 }
 
-/// execActionTarget defines the pods that need to be executed for the exec action. will execute on all pods that meet the conditions.
+/// Defines the pods that need to be executed for the exec action. Execution will occur on all pods that meet the conditions.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigExecActionTarget {
-    /// kubectl exec in all selected pods.
+    /// Executes kubectl in all selected pods.
     #[serde(rename = "podSelector")]
     pub pod_selector: RestoreReadyConfigExecActionTargetPodSelector,
 }
 
-/// kubectl exec in all selected pods.
+/// Executes kubectl in all selected pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigExecActionTargetPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1050,25 +1054,25 @@ pub struct RestoreReadyConfigExecActionTargetPodSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// configuration for job action.
+/// Specifies the configuration for a job action.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigJobAction {
-    /// jobActionTarget defines the pod that need to be executed for the job action. will select a pod that meets the conditions to execute.
+    /// Defines the pod that needs to be executed for the job action. A pod that meets the conditions will be selected for execution.
     pub target: RestoreReadyConfigJobActionTarget,
 }
 
-/// jobActionTarget defines the pod that need to be executed for the job action. will select a pod that meets the conditions to execute.
+/// Defines the pod that needs to be executed for the job action. A pod that meets the conditions will be selected for execution.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigJobActionTarget {
-    /// select one of the pods which selected by labels to build the job spec, such as mount required volumes and inject built-in env of the selected pod.
+    /// Selects one of the pods, identified by labels, to build the job spec. This includes mounting required volumes and injecting built-in environment variables of the selected pod.
     #[serde(rename = "podSelector")]
     pub pod_selector: RestoreReadyConfigJobActionTargetPodSelector,
-    /// volumeMounts defines which volumes of the selected pod need to be mounted on the restoring pod.
+    /// Defines which volumes of the selected pod need to be mounted on the restoring pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<RestoreReadyConfigJobActionTargetVolumeMounts>>,
 }
 
-/// select one of the pods which selected by labels to build the job spec, such as mount required volumes and inject built-in env of the selected pod.
+/// Selects one of the pods, identified by labels, to build the job spec. This includes mounting required volumes and injecting built-in environment variables of the selected pod.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigJobActionTargetPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1113,35 +1117,35 @@ pub struct RestoreReadyConfigJobActionTargetVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// periodic probe of the service readiness. controller will perform postReadyHooks of BackupScript.spec.restore after the service readiness when readinessProbe is configured.
+/// Defines a periodic probe of the service readiness. The controller will perform postReadyHooks of BackupScript.spec.restore after the service readiness when readinessProbe is configured.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigReadinessProbe {
-    /// exec specifies the action to take.
+    /// Specifies the action to take.
     pub exec: RestoreReadyConfigReadinessProbeExec,
-    /// number of seconds after the container has started before probe is initiated.
+    /// Specifies the number of seconds after the container has started before the probe is initiated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// how often (in seconds) to perform the probe. defaults to 5 second, minimum value is 1.
+    /// Specifies how often (in seconds) to perform the probe. The default value is 5 seconds, and the minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// number of seconds after which the probe times out. defaults to 30 second, minimum value is 1.
+    /// Specifies the number of seconds after which the probe times out. The default value is 30 seconds, and the minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// exec specifies the action to take.
+/// Specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreReadyConfigReadinessProbeExec {
-    /// refer to container command.
+    /// Refers to the container command.
     pub command: Vec<String>,
-    /// refer to container image.
+    /// Refers to the container image.
     pub image: String,
 }
 
-/// restore the specified resources of kubernetes.
+/// Restores the specified resources of Kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreResources {
-    /// will restore the specified resources
+    /// Restores the specified resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub included: Option<Vec<RestoreResourcesIncluded>>,
 }
@@ -1150,12 +1154,12 @@ pub struct RestoreResources {
 pub struct RestoreResourcesIncluded {
     #[serde(rename = "groupResource")]
     pub group_resource: String,
-    /// select the specified resource for recovery by label.
+    /// Selects the specified resource for recovery by label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<RestoreResourcesIncludedLabelSelector>,
 }
 
-/// select the specified resource for recovery by label.
+/// Selects the specified resource for recovery by label.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreResourcesIncludedLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1181,57 +1185,57 @@ pub struct RestoreResourcesIncludedLabelSelectorMatchExpressions {
 /// RestoreStatus defines the observed state of Restore
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreStatus {
-    /// recorded all restore actions performed.
+    /// Records all restore actions performed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<RestoreStatusActions>,
-    /// Date/time when the restore finished being processed.
+    /// Records the date/time when the restore finished being processed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
-    /// describe current state of restore API Resource, like warning.
+    /// Describes the current state of the restore API Resource, like warning.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<RestoreStatusConditions>>,
-    /// The duration time of restore execution. When converted to a string, the form is "1h2m0.5s".
+    /// Records the duration of the restore execution. When converted to a string, the form is "1h2m0.5s".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    /// RestorePhase The current phase. Valid values are Running, Completed, Failed, AsDataSource.
+    /// Represents the current phase of the restore.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<RestoreStatusPhase>,
-    /// Date/time when the restore started being processed.
+    /// Records the date/time when the restore started being processed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
 }
 
-/// recorded all restore actions performed.
+/// Records all restore actions performed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreStatusActions {
-    /// record the actions for postReady phase.
+    /// Records the actions for the postReady phase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postReady")]
     pub post_ready: Option<Vec<RestoreStatusActionsPostReady>>,
-    /// record the actions for prepareData phase.
+    /// Records the actions for the prepareData phase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prepareData")]
     pub prepare_data: Option<Vec<RestoreStatusActionsPrepareData>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreStatusActionsPostReady {
-    /// which backup's restore action belongs to.
+    /// Describes which backup's restore action belongs to.
     #[serde(rename = "backupName")]
     pub backup_name: String,
-    /// endTime is the completion time for the restore job.
+    /// The completion time of the restore job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
     pub end_time: Option<String>,
-    /// message is a human readable message indicating details about the object condition.
+    /// Provides a human-readable message indicating details about the object condition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// name describes the name of the recovery action based on the current backup.
+    /// Describes the name of the restore action based on the current backup.
     pub name: String,
-    /// the execution object of the restore action.
+    /// Describes the execution object of the restore action.
     #[serde(rename = "objectKey")]
     pub object_key: String,
-    /// startTime is the start time for the restore job.
+    /// The start time of the restore job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
-    /// the status of this action.
+    /// The status of this action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<RestoreStatusActionsPostReadyStatus>,
 }
@@ -1245,24 +1249,24 @@ pub enum RestoreStatusActionsPostReadyStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RestoreStatusActionsPrepareData {
-    /// which backup's restore action belongs to.
+    /// Describes which backup's restore action belongs to.
     #[serde(rename = "backupName")]
     pub backup_name: String,
-    /// endTime is the completion time for the restore job.
+    /// The completion time of the restore job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
     pub end_time: Option<String>,
-    /// message is a human readable message indicating details about the object condition.
+    /// Provides a human-readable message indicating details about the object condition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// name describes the name of the recovery action based on the current backup.
+    /// Describes the name of the restore action based on the current backup.
     pub name: String,
-    /// the execution object of the restore action.
+    /// Describes the execution object of the restore action.
     #[serde(rename = "objectKey")]
     pub object_key: String,
-    /// startTime is the start time for the restore job.
+    /// The start time of the restore job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
-    /// the status of this action.
+    /// The status of this action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<RestoreStatusActionsPrepareDataStatus>,
 }

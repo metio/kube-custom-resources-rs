@@ -18,6 +18,7 @@ spec:
     shortNames:
       - "lhr"
     singular: "replica"
+  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:

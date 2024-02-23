@@ -14,135 +14,139 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "OpsRequestStatus")]
 #[kube(schema = "disabled")]
 pub struct OpsRequestSpec {
-    /// backupSpec defines how to backup the cluster.
+    /// Defines how to backup the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSpec")]
     pub backup_spec: Option<OpsRequestBackupSpec>,
-    /// cancel defines the action to cancel the Pending/Creating/Running opsRequest, supported types: [VerticalScaling, HorizontalScaling]. once cancel is set to true, this opsRequest will be canceled and modifying this property again will not take effect.
+    /// Defines the action to cancel the `Pending/Creating/Running` opsRequest, supported types: `VerticalScaling/HorizontalScaling`. Once set to true, this opsRequest will be canceled and modifying this property again will not take effect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel: Option<bool>,
-    /// clusterRef references cluster object.
+    /// References the cluster object.
     #[serde(rename = "clusterRef")]
     pub cluster_ref: String,
+    /// Specifies a custom operation as defined by OpsDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customSpec")]
     pub custom_spec: Option<OpsRequestCustomSpec>,
-    /// expose defines services the component needs to expose.
+    /// Defines services the component needs to expose.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expose: Option<Vec<OpsRequestExpose>>,
-    /// horizontalScaling defines what component need to horizontal scale the specified replicas.
+    /// Defines what component need to horizontal scale the specified replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalScaling")]
     pub horizontal_scaling: Option<Vec<OpsRequestHorizontalScaling>>,
-    /// reconfigure defines the variables that need to input when updating configuration.
+    /// Deprecated: replace by reconfigures. Defines the variables that need to input when updating configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconfigure: Option<OpsRequestReconfigure>,
-    /// reconfigure defines the variables that need to input when updating configuration.
+    /// Defines the variables that need to input when updating configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconfigures: Option<Vec<OpsRequestReconfigures>>,
-    /// restart the specified components.
+    /// Restarts the specified components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restart: Option<Vec<OpsRequestRestart>>,
-    /// cluster RestoreFrom backup or point in time
+    /// Cluster RestoreFrom backup or point in time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreFrom")]
     pub restore_from: Option<OpsRequestRestoreFrom>,
-    /// restoreSpec defines how to restore the cluster. note that this restore operation will roll back cluster services.
+    /// Defines how to restore the cluster. Note that this restore operation will roll back cluster services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSpec")]
     pub restore_spec: Option<OpsRequestRestoreSpec>,
-    /// scriptSpec defines the script to be executed.
+    /// Defines the script to be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpec")]
     pub script_spec: Option<OpsRequestScriptSpec>,
-    /// switchover the specified components.
+    /// Switches over the specified components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub switchover: Option<Vec<OpsRequestSwitchover>>,
-    /// ttlSecondsAfterSucceed OpsRequest will be deleted after TTLSecondsAfterSucceed second when OpsRequest.status.phase is Succeed.
+    /// OpsRequest will be deleted after TTLSecondsAfterSucceed second when OpsRequest.status.phase is Succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterSucceed")]
     pub ttl_seconds_after_succeed: Option<i32>,
-    /// ttlSecondsBeforeAbort OpsRequest will wait at most TTLSecondsBeforeAbort seconds for start-conditions to be met. If not specified, the default value is 0, which means that the start-conditions must be met immediately.
+    /// OpsRequest will wait at most TTLSecondsBeforeAbort seconds for start-conditions to be met. If not specified, the default value is 0, which means that the start-conditions must be met immediately.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsBeforeAbort")]
     pub ttl_seconds_before_abort: Option<i32>,
-    /// type defines the operation type.
+    /// Defines the operation type.
     #[serde(rename = "type")]
     pub r#type: OpsRequestType,
-    /// upgrade specifies the cluster version by specifying clusterVersionRef.
+    /// Specifies the cluster version by specifying clusterVersionRef.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upgrade: Option<OpsRequestUpgrade>,
-    /// verticalScaling defines what component need to vertical scale the specified compute resources.
+    /// Note: Quantity struct can not do immutable check by CEL. Defines what component need to vertical scale the specified compute resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verticalScaling")]
     pub vertical_scaling: Option<Vec<OpsRequestVerticalScaling>>,
-    /// volumeExpansion defines what component and volumeClaimTemplate need to expand the specified storage.
+    /// Note: Quantity struct can not do immutable check by CEL. Defines what component and volumeClaimTemplate need to expand the specified storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeExpansion")]
     pub volume_expansion: Option<Vec<OpsRequestVolumeExpansion>>,
 }
 
-/// backupSpec defines how to backup the cluster.
+/// Defines how to backup the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestBackupSpec {
-    /// Backup method name that is defined in backupPolicy.
+    /// Defines the backup method that is defined in backupPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupMethod")]
     pub backup_method: Option<String>,
-    /// backupName is the name of the backup.
+    /// Specifies the name of the backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupName")]
     pub backup_name: Option<String>,
-    /// Which backupPolicy is applied to perform this backup
+    /// Indicates the backupPolicy applied to perform this backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPolicyName")]
     pub backup_policy_name: Option<String>,
-    /// deletionPolicy determines whether the backup contents stored in backup repository should be deleted when the backup custom resource is deleted. Supported values are "Retain" and "Delete". "Retain" means that the backup content and its physical snapshot on backup repository are kept. "Delete" means that the backup content and its physical snapshot on backup repository are deleted.
+    /// Determines whether the backup contents stored in backup repository should be deleted when the backup custom resource is deleted. Supported values are `Retain` and `Delete`. - `Retain` means that the backup content and its physical snapshot on backup repository are kept. - `Delete` means that the backup content and its physical snapshot on backup repository are deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<OpsRequestBackupSpecDeletionPolicy>,
-    /// if backupType is incremental, parentBackupName is required.
+    /// If backupType is incremental, parentBackupName is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentBackupName")]
     pub parent_backup_name: Option<String>,
-    /// retentionPeriod determines a duration up to which the backup should be kept. Controller will remove all backups that are older than the RetentionPeriod. For example, RetentionPeriod of `30d` will keep only the backups of last 30 days. Sample duration format: - years: 	2y - months: 	6mo - days: 		30d - hours: 	12h - minutes: 	30m You can also combine the above durations. For example: 30d12h30m. If not set, the backup will be kept forever.
+    /// Determines a duration up to which the backup should be kept. Controller will remove all backups that are older than the RetentionPeriod. For example, RetentionPeriod of `30d` will keep only the backups of last 30 days. Sample duration format: 
+    ///  - years: 2y - months: 6mo - days: 30d - hours: 12h - minutes: 30m 
+    ///  You can also combine the above durations. For example: 30d12h30m. If not set, the backup will be kept forever.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
 }
 
-/// backupSpec defines how to backup the cluster.
+/// Defines how to backup the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestBackupSpecDeletionPolicy {
     Delete,
     Retain,
 }
 
+/// Specifies a custom operation as defined by OpsDefinition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestCustomSpec {
-    /// cluster component name.
+    /// Refers to the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// reference a opsDefinition
+    /// Is a reference to an OpsDefinition.
     #[serde(rename = "opsDefinitionRef")]
     pub ops_definition_ref: String,
-    /// the input for this operation declared in the opsDefinition.spec.parametersSchema. will create corresponding jobs for each array element. if the param type is array, the format must be "v1,v2,v3".
+    /// Represents the input for this operation as declared in the opsDefinition.spec.parametersSchema. It will create corresponding jobs for each array element. If the param type is an array, the format must be "v1,v2,v3".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<Vec<BTreeMap<String, String>>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestExpose {
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// Setting the list of services to be exposed or removed.
+    /// A list of services that are to be exposed or removed.
     pub services: Vec<OpsRequestExposeServices>,
-    /// switch defines the switch of expose operation. if switch is set to Enable, the service will be exposed. if switch is set to Disable, the service will be removed.
+    /// Controls the expose operation. If set to Enable, the corresponding service will be exposed. Conversely, if set to Disable, the service will be removed.
     pub switch: OpsRequestExposeSwitch,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestExposeServices {
-    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
+    /// Contains cloud provider related parameters if ServiceType is LoadBalancer. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Name defines the name of the service. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
+    /// Specifies the name of the service. This name is used by others to refer to this service (e.g., connection credential). Note: This field cannot be updated.
     pub name: String,
-    /// The list of ports that are exposed by this service. If Ports are not provided, the default Services Ports defined in the ClusterDefinition or ComponentDefinition that are neither of NodePort nor LoadBalancer service type will be used. If there is no corresponding Service defined in the ClusterDefinition or ComponentDefinition, the expose operation will fail. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// Lists the ports that are exposed by this service. If not provided, the default Services Ports defined in the ClusterDefinition or ComponentDefinition that are neither of NodePort nor LoadBalancer service type will be used. If there is no corresponding Service defined in the ClusterDefinition or ComponentDefinition, the expose operation will fail. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<OpsRequestExposeServicesPorts>>,
-    /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service.
+    /// Allows you to specify a defined role as a selector for the service, extending the ServiceSpec.Selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
-    /// Route service traffic to pods with label keys and values matching this selector. If empty or not present, the service is assumed to have an external process managing its endpoints, which Kubernetes will not modify. Only applies to types ClusterIP, NodePort, and LoadBalancer. Ignored if type is ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/
+    /// Routes service traffic to pods with label keys and values matching this selector. If empty or not present, the service is assumed to have an external process managing its endpoints, which Kubernetes will not modify. This only applies to types ClusterIP, NodePort, and LoadBalancer and is ignored if type is ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. "ExternalName" aliases this service to the specified externalName. Several other fields do not apply to ExternalName services. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    /// Determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
 }
@@ -181,57 +185,58 @@ pub enum OpsRequestExposeSwitch {
 /// HorizontalScaling defines the variables of horizontal scaling operation
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestHorizontalScaling {
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// Instances defines the name of instance that rsm scale down priorly. If the RsmTransformPolicy is specified as ToPod and expected replicas is less than current replicas, the list of Instances will be used. current replicas - expected replicas > len(Instances): Scale down from the list of Instances priorly, the others will select from NodeAssignment. current replicas - expected replicas < len(Instances): Scale down from the list of Instances. current replicas - expected replicas < len(Instances): Scale down from a part of Instances.
+    /// Defines the names of instances that the rsm should prioritize for scale-down operations. If the RsmTransformPolicy is set to ToPod and the expected number of replicas is less than the current number, the list of Instances will be used. 
+    ///  - `current replicas - expected replicas > len(Instances)`: Scale down from the list of Instances priorly, the others will select from NodeAssignment. - `current replicas - expected replicas < len(Instances)`: Scale down from the list of Instances. - `current replicas - expected replicas < len(Instances)`: Scale down from a part of Instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<String>>,
-    /// Nodes defines the list of nodes that pods can schedule when scale up If the RsmTransformPolicy is specified as ToPod and expected replicas is more than current replicas,the list of Nodes will be used. If the list of Nodes is empty, no specific node will be assigned. However, if the list of Nodes is filled, all pods will be evenly scheduled across the Nodes in the list when scale up.
+    /// Defines the list of nodes where pods can be scheduled during a scale-up operation. If the RsmTransformPolicy is set to ToPod and the expected number of replicas is greater than the current number, the list of Nodes will be used. If the list of Nodes is empty, pods will not be assigned to any specific node. However, if the list of Nodes is populated, pods will be evenly distributed across the nodes in the list during scale-up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
-    /// replicas for the workloads.
+    /// Specifies the number of replicas for the workloads.
     pub replicas: i32,
 }
 
-/// reconfigure defines the variables that need to input when updating configuration.
+/// Deprecated: replace by reconfigures. Defines the variables that need to input when updating configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestReconfigure {
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// configurations defines which components perform the operation.
+    /// Specifies the components that will perform the operation.
     pub configurations: Vec<OpsRequestReconfigureConfigurations>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestReconfigureConfigurations {
-    /// keys is used to set the parameters to be updated.
+    /// Sets the parameters to be updated. It should contain at least one item. The keys are merged and retained during patch operations.
     pub keys: Vec<OpsRequestReconfigureConfigurationsKeys>,
-    /// name is a config template name.
+    /// Specifies the name of the configuration template.
     pub name: String,
-    /// policy defines the upgrade policy.
+    /// Defines the upgrade policy for the configuration. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<OpsRequestReconfigureConfigurationsPolicy>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestReconfigureConfigurationsKeys {
-    /// fileContent indicates the configuration file content. update whole file.
+    /// Represents the content of the configuration file. This field is used to update the entire content of the file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileContent")]
     pub file_content: Option<String>,
-    /// key indicates the key name of ConfigMap.
+    /// Represents the unique identifier for the ConfigMap.
     pub key: String,
-    /// Setting the list of parameters for a single configuration file. update specified the parameters.
+    /// Defines a list of key-value pairs for a single configuration file. These parameters are used to update the specified configuration settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<OpsRequestReconfigureConfigurationsKeysParameters>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestReconfigureConfigurationsKeysParameters {
-    /// key is name of the parameter to be updated.
+    /// Represents the name of the parameter that is to be updated.
     pub key: String,
-    /// parameter values to be updated. if set nil, the parameter defined by the key field will be deleted from the configuration file.
+    /// Represents the parameter values that are to be updated. If set to nil, the parameter defined by the Key field will be removed from the configuration file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -250,44 +255,44 @@ pub enum OpsRequestReconfigureConfigurationsPolicy {
     OperatorSyncUpdate,
 }
 
-/// Reconfigure defines the variables that need to input when updating configuration.
+/// Reconfigure represents the variables required for updating a configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestReconfigures {
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// configurations defines which components perform the operation.
+    /// Specifies the components that will perform the operation.
     pub configurations: Vec<OpsRequestReconfiguresConfigurations>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestReconfiguresConfigurations {
-    /// keys is used to set the parameters to be updated.
+    /// Sets the parameters to be updated. It should contain at least one item. The keys are merged and retained during patch operations.
     pub keys: Vec<OpsRequestReconfiguresConfigurationsKeys>,
-    /// name is a config template name.
+    /// Specifies the name of the configuration template.
     pub name: String,
-    /// policy defines the upgrade policy.
+    /// Defines the upgrade policy for the configuration. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<OpsRequestReconfiguresConfigurationsPolicy>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestReconfiguresConfigurationsKeys {
-    /// fileContent indicates the configuration file content. update whole file.
+    /// Represents the content of the configuration file. This field is used to update the entire content of the file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileContent")]
     pub file_content: Option<String>,
-    /// key indicates the key name of ConfigMap.
+    /// Represents the unique identifier for the ConfigMap.
     pub key: String,
-    /// Setting the list of parameters for a single configuration file. update specified the parameters.
+    /// Defines a list of key-value pairs for a single configuration file. These parameters are used to update the specified configuration settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<OpsRequestReconfiguresConfigurationsKeysParameters>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestReconfiguresConfigurationsKeysParameters {
-    /// key is name of the parameter to be updated.
+    /// Represents the name of the parameter that is to be updated.
     pub key: String,
-    /// parameter values to be updated. if set nil, the parameter defined by the key field will be deleted from the configuration file.
+    /// Represents the parameter values that are to be updated. If set to nil, the parameter defined by the Key field will be removed from the configuration file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -306,119 +311,119 @@ pub enum OpsRequestReconfiguresConfigurationsPolicy {
     OperatorSyncUpdate,
 }
 
-/// ComponentOps defines the common variables of component scope operations.
+/// ComponentOps represents the common variables required for operations within the scope of a component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestart {
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
 }
 
-/// cluster RestoreFrom backup or point in time
+/// Cluster RestoreFrom backup or point in time.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestoreFrom {
-    /// use the backup name and component name for restore, support for multiple components' recovery.
+    /// Refers to the backup name and component name used for restoration. Supports recovery of multiple components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<Vec<OpsRequestRestoreFromBackup>>,
-    /// specified the point in time to recovery
+    /// Refers to the specific point in time for recovery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pointInTime")]
     pub point_in_time: Option<OpsRequestRestoreFromPointInTime>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestoreFromBackup {
-    /// specify a reference backup to restore
+    /// Refers to a reference backup that needs to be restored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ref")]
     pub r#ref: Option<OpsRequestRestoreFromBackupRef>,
 }
 
-/// specify a reference backup to restore
+/// Refers to a reference backup that needs to be restored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestoreFromBackupRef {
-    /// specified the name
+    /// Refers to the specific name of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// specified the namespace
+    /// Refers to the specific namespace of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// specified the point in time to recovery
+/// Refers to the specific point in time for recovery.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestoreFromPointInTime {
-    /// specify a reference source cluster to restore
+    /// Refers to a reference source cluster that needs to be restored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ref")]
     pub r#ref: Option<OpsRequestRestoreFromPointInTimeRef>,
-    /// specify the time point to restore, with UTC as the time zone.
+    /// Refers to the specific time point for restoration, with UTC as the time zone.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<String>,
 }
 
-/// specify a reference source cluster to restore
+/// Refers to a reference source cluster that needs to be restored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestoreFromPointInTimeRef {
-    /// specified the name
+    /// Refers to the specific name of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// specified the namespace
+    /// Refers to the specific namespace of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// restoreSpec defines how to restore the cluster. note that this restore operation will roll back cluster services.
+/// Defines how to restore the cluster. Note that this restore operation will roll back cluster services.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestRestoreSpec {
-    /// backupName is the name of the backup.
+    /// Specifies the name of the backup.
     #[serde(rename = "backupName")]
     pub backup_name: String,
-    /// effectiveCommonComponentDef describes this backup will be restored for all components which refer to common ComponentDefinition.
+    /// Indicates if this backup will be restored for all components which refer to common ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCommonComponentDef")]
     pub effective_common_component_def: Option<bool>,
-    /// restoreTime point in time to restore
+    /// Defines the point in time to restore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreTimeStr")]
     pub restore_time_str: Option<String>,
-    /// the volume claim restore policy, support values: [Serial, Parallel]
+    /// Specifies the volume claim restore policy, support values: [Serial, Parallel]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeRestorePolicy")]
     pub volume_restore_policy: Option<OpsRequestRestoreSpecVolumeRestorePolicy>,
 }
 
-/// restoreSpec defines how to restore the cluster. note that this restore operation will roll back cluster services.
+/// Defines how to restore the cluster. Note that this restore operation will roll back cluster services.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestRestoreSpecVolumeRestorePolicy {
     Serial,
     Parallel,
 }
 
-/// scriptSpec defines the script to be executed.
+/// Defines the script to be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestScriptSpec {
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// exec command with image, by default use the image of kubeblocks-datascript.
+    /// Specifies the image to be used for the exec command. By default, the image of kubeblocks-datascript is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// script defines the script to be executed.
+    /// Defines the script to be executed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub script: Option<Vec<String>>,
-    /// scriptFrom defines the script to be executed from configMap or secret.
+    /// Defines the script to be executed from a configMap or secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptFrom")]
     pub script_from: Option<OpsRequestScriptSpecScriptFrom>,
-    /// secret defines the secret to be used to execute the script. If not specified, the default cluster root credential secret will be used.
+    /// Defines the secret to be used to execute the script. If not specified, the default cluster root credential secret is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<OpsRequestScriptSpecSecret>,
-    /// KubeBlocks, by default, will execute the script on the primary pod, with role=leader. There are some exceptions, such as Redis, which does not synchronize accounts info between primary and secondary. In this case, we need to execute the script on all pods, matching the selector. selector indicates the components on which the script is executed.
+    /// By default, KubeBlocks will execute the script on the primary pod with role=leader. Exceptions exist, such as Redis, which does not synchronize account information between primary and secondary. In such cases, the script needs to be executed on all pods matching the selector. Indicates the components on which the script is executed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<OpsRequestScriptSpecSelector>,
 }
 
-/// scriptFrom defines the script to be executed from configMap or secret.
+/// Defines the script to be executed from a configMap or secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestScriptSpecScriptFrom {
-    /// configMapRef defines the configMap to be executed.
+    /// Specifies the configMap that is to be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<Vec<OpsRequestScriptSpecScriptFromConfigMapRef>>,
-    /// secretRef defines the secret to be executed.
+    /// Specifies the secret that is to be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<Vec<OpsRequestScriptSpecScriptFromSecretRef>>,
 }
@@ -449,20 +454,20 @@ pub struct OpsRequestScriptSpecScriptFromSecretRef {
     pub optional: Option<bool>,
 }
 
-/// secret defines the secret to be used to execute the script. If not specified, the default cluster root credential secret will be used.
+/// Defines the secret to be used to execute the script. If not specified, the default cluster root credential secret is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestScriptSpecSecret {
-    /// name is the name of the secret.
+    /// Specifies the name of the secret.
     pub name: String,
-    /// passwordKey field is used to specify the password of the secret.
+    /// Used to specify the password part of the secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// usernameKey field is used to specify the username of the secret.
+    /// Used to specify the username part of the secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
-/// KubeBlocks, by default, will execute the script on the primary pod, with role=leader. There are some exceptions, such as Redis, which does not synchronize accounts info between primary and secondary. In this case, we need to execute the script on all pods, matching the selector. selector indicates the components on which the script is executed.
+/// By default, KubeBlocks will execute the script on the primary pod with role=leader. Exceptions exist, such as Redis, which does not synchronize account information between primary and secondary. In such cases, the script needs to be executed on all pods matching the selector. Indicates the components on which the script is executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestScriptSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -487,10 +492,13 @@ pub struct OpsRequestScriptSpecSelectorMatchExpressions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestSwitchover {
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// instanceName is used to specify the candidate primary or leader instanceName for switchover. If instanceName is set to "*", it means that no specific primary or leader is specified for the switchover, and the switchoverAction defined in clusterDefinition.componentDefs[x].switchoverSpec.withoutCandidate will be executed, It is required that clusterDefinition.componentDefs[x].switchoverSpec.withoutCandidate is not empty. If instanceName is set to a valid instanceName other than "*", it means that a specific candidate primary or leader is specified for the switchover. the value of instanceName can be obtained using `kbcli cluster list-instances`, any other value is invalid. In this case, the `switchoverAction` defined in clusterDefinition.componentDefs[x].switchoverSpec.withCandidate will be executed, and it is required that clusterDefinition.componentDefs[x].switchoverSpec.withCandidate is not empty.
+    /// Utilized to designate the candidate primary or leader instance for the switchover process. If assigned "*", it signifies that no specific primary or leader is designated for the switchover, and the switchoverAction defined in `clusterDefinition.componentDefs[x].switchoverSpec.withoutCandidate` will be executed. 
+    ///  It is mandatory that `clusterDefinition.componentDefs[x].switchoverSpec.withoutCandidate` is not left blank. 
+    ///  If assigned a valid instance name other than "*", it signifies that a specific candidate primary or leader is designated for the switchover. The value can be retrieved using `kbcli cluster list-instances`, any other value is considered invalid. 
+    ///  In this scenario, the `switchoverAction` defined in clusterDefinition.componentDefs[x].switchoverSpec.withCandidate will be executed, and it is mandatory that clusterDefinition.componentDefs[x].switchoverSpec.withCandidate is not left blank.
     #[serde(rename = "instanceName")]
     pub instance_name: String,
 }
@@ -514,15 +522,15 @@ pub enum OpsRequestType {
     Custom,
 }
 
-/// upgrade specifies the cluster version by specifying clusterVersionRef.
+/// Specifies the cluster version by specifying clusterVersionRef.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestUpgrade {
-    /// clusterVersionRef references ClusterVersion name.
+    /// A reference to the name of the ClusterVersion.
     #[serde(rename = "clusterVersionRef")]
     pub cluster_version_ref: String,
 }
 
-/// VerticalScaling defines the variables that need to input when scaling compute resources.
+/// VerticalScaling defines the parameters required for scaling compute resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestVerticalScaling {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -530,10 +538,10 @@ pub struct OpsRequestVerticalScaling {
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpsRequestVerticalScalingClaims>>,
-    /// classDefRef reference class defined in ComponentClassDefinition.
+    /// A reference to a class defined in ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
     pub class_def_ref: Option<OpsRequestVerticalScalingClassDefRef>,
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -551,20 +559,20 @@ pub struct OpsRequestVerticalScalingClaims {
     pub name: String,
 }
 
-/// classDefRef reference class defined in ComponentClassDefinition.
+/// A reference to a class defined in ComponentClassDefinition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestVerticalScalingClassDefRef {
-    /// Class refers to the name of the class that is defined in the ComponentClassDefinition.
+    /// Defines the name of the class that is defined in the ComponentClassDefinition.
     pub class: String,
-    /// Name refers to the name of the ComponentClassDefinition.
+    /// Specifies the name of the ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// VolumeExpansion defines the variables of volume expansion operation.
+/// VolumeExpansion encapsulates the parameters required for a volume expansion operation.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestVolumeExpansion {
-    /// componentName cluster component name.
+    /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
     /// volumeClaimTemplates specifies the storage size and volumeClaimTemplate name.
@@ -574,72 +582,73 @@ pub struct OpsRequestVolumeExpansion {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestVolumeExpansionVolumeClaimTemplates {
-    /// name references volumeClaimTemplate name from cluster components.
+    /// A reference to the volumeClaimTemplate name from the cluster components.
     pub name: String,
-    /// Request storage size.
+    /// Specifies the requested storage size for the volume.
     pub storage: IntOrString,
 }
 
-/// OpsRequestStatus defines the observed state of OpsRequest
+/// OpsRequestStatus represents the observed state of an OpsRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatus {
-    /// CancelTimestamp defines cancel time.
+    /// Defines the time when the OpsRequest was cancelled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cancelTimestamp")]
     pub cancel_timestamp: Option<String>,
-    /// ClusterGeneration records the cluster generation after handling the opsRequest action.
+    /// Specifies the cluster generation after the OpsRequest action has been handled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterGeneration")]
     pub cluster_generation: Option<i64>,
-    /// completionTimestamp defines the OpsRequest completion time.
+    /// Specifies the time when the OpsRequest was completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
-    /// components defines the recorded the status information of changed components for operation request.
+    /// Records the status information of components changed due to the operation request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<BTreeMap<String, OpsRequestStatusComponents>>,
-    /// conditions describes opsRequest detail status.
+    /// Describes the detailed status of the OpsRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<OpsRequestStatusConditions>>,
-    /// lastConfiguration records the last configuration before this operation take effected.
+    /// Records the last configuration before this operation took effect.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastConfiguration")]
     pub last_configuration: Option<OpsRequestStatusLastConfiguration>,
-    /// phase describes OpsRequest phase.
+    /// Defines the phase of the OpsRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<OpsRequestStatusPhase>,
+    /// Represents the progress of the OpsRequest.
     pub progress: String,
-    /// reconfiguringStatus defines the status information of reconfiguring.
+    /// Deprecated: Replaced by ReconfiguringStatusAsComponent. Defines the status information of reconfiguring.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfiguringStatus")]
     pub reconfiguring_status: Option<OpsRequestStatusReconfiguringStatus>,
-    /// reconfiguringStatus defines the status information of reconfiguring.
+    /// Represents the status information of reconfiguring.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfiguringStatusAsComponent")]
     pub reconfiguring_status_as_component: Option<BTreeMap<String, OpsRequestStatusReconfiguringStatusAsComponent>>,
-    /// startTimestamp The time when the OpsRequest started processing.
+    /// Indicates the time when the OpsRequest started processing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
 }
 
-/// components defines the recorded the status information of changed components for operation request.
+/// Records the status information of components changed due to the operation request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusComponents {
-    /// lastFailedTime is the last time the component phase transitioned to Failed or Abnormal.
+    /// Indicates the last time the component phase transitioned to Failed or Abnormal.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastFailedTime")]
     pub last_failed_time: Option<String>,
-    /// message is a human-readable message indicating details about this operation.
+    /// Provides a human-readable message indicating details about this operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// phase describes the component phase, reference Cluster.status.component.phase.
+    /// Describes the component phase, referencing Cluster.status.component.phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<OpsRequestStatusComponentsPhase>,
-    /// progressDetails describes the progress details of the component for this operation.
+    /// Describes the progress details of the component for this operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressDetails")]
     pub progress_details: Option<Vec<OpsRequestStatusComponentsProgressDetails>>,
-    /// reason describes the reason for the component phase.
+    /// Describes the reason for the component phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// workloadType references workload type of component in ClusterDefinition.
+    /// References the workload type of component in ClusterDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadType")]
     pub workload_type: Option<OpsRequestStatusComponentsWorkloadType>,
 }
 
-/// components defines the recorded the status information of changed components for operation request.
+/// Records the status information of components changed due to the operation request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestStatusComponentsPhase {
     Creating,
@@ -654,22 +663,22 @@ pub enum OpsRequestStatusComponentsPhase {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusComponentsProgressDetails {
-    /// endTime is the completion time of object processing.
+    /// Represents the completion time of object processing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
     pub end_time: Option<String>,
-    /// group describes which group the current object belongs to. if the objects of a component belong to the same group, we can ignore it.
+    /// Specifies the group to which the current object belongs. If the objects of a component belong to the same group, they can be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// message is a human readable message indicating details about the object condition.
+    /// Provides a human-readable message detailing the condition of the object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// objectKey is the unique key of the object.
+    /// Represents the unique key of the object.
     #[serde(rename = "objectKey")]
     pub object_key: String,
-    /// startTime is the start time of object processing.
+    /// Represents the start time of object processing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
-    /// status describes the state of processing the object.
+    /// Indicates the state of processing the object.
     pub status: OpsRequestStatusComponentsProgressDetailsStatus,
 }
 
@@ -681,7 +690,7 @@ pub enum OpsRequestStatusComponentsProgressDetailsStatus {
     Succeed,
 }
 
-/// components defines the recorded the status information of changed components for operation request.
+/// Records the status information of components changed due to the operation request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestStatusComponentsWorkloadType {
     Stateless,
@@ -722,18 +731,18 @@ pub enum OpsRequestStatusConditionsStatus {
     Unknown,
 }
 
-/// lastConfiguration records the last configuration before this operation take effected.
+/// Records the last configuration before this operation took effect.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusLastConfiguration {
-    /// clusterVersionRef references ClusterVersion name.
+    /// Specifies the reference to the ClusterVersion name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionRef")]
     pub cluster_version_ref: Option<String>,
-    /// components records last configuration of the component.
+    /// Records the last configuration of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<BTreeMap<String, OpsRequestStatusLastConfigurationComponents>>,
 }
 
-/// components records last configuration of the component.
+/// Records the last configuration of the component.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponents {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
@@ -741,25 +750,25 @@ pub struct OpsRequestStatusLastConfigurationComponents {
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpsRequestStatusLastConfigurationComponentsClaims>>,
-    /// classDefRef reference class defined in ComponentClassDefinition.
+    /// References a class defined in ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
     pub class_def_ref: Option<OpsRequestStatusLastConfigurationComponentsClassDefRef>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// replicas are the last replicas of the component.
+    /// Represents the last replicas of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-    /// services records the last services of the component.
+    /// Records the last services of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<OpsRequestStatusLastConfigurationComponentsServices>>,
-    /// targetResources records the affecting target resources information for the component. resource key is in list of [pods].
+    /// Records the information about the target resources affected by the component. The resource key is in the list of [pods].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetResources")]
     pub target_resources: Option<BTreeMap<String, String>>,
-    /// volumeClaimTemplates records the last volumeClaimTemplates of the component.
+    /// Records the last volumeClaimTemplates of the component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<OpsRequestStatusLastConfigurationComponentsVolumeClaimTemplates>>,
 }
@@ -771,24 +780,26 @@ pub struct OpsRequestStatusLastConfigurationComponentsClaims {
     pub name: String,
 }
 
-/// classDefRef reference class defined in ComponentClassDefinition.
+/// References a class defined in ComponentClassDefinition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsClassDefRef {
-    /// Class refers to the name of the class that is defined in the ComponentClassDefinition.
+    /// Defines the name of the class that is defined in the ComponentClassDefinition.
     pub class: String,
-    /// Name refers to the name of the ComponentClassDefinition.
+    /// Specifies the name of the ComponentClassDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsServices {
-    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
+    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Service name
+    /// The name of the service.
     pub name: String,
-    /// serviceType determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
+    /// Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. 
+    ///  - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
+    ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<OpsRequestStatusLastConfigurationComponentsServicesServiceType>,
 }
@@ -803,13 +814,13 @@ pub enum OpsRequestStatusLastConfigurationComponentsServicesServiceType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsVolumeClaimTemplates {
-    /// name references volumeClaimTemplate name from cluster components.
+    /// A reference to the volumeClaimTemplate name from the cluster components.
     pub name: String,
-    /// Request storage size.
+    /// Specifies the requested storage size for the volume.
     pub storage: IntOrString,
 }
 
-/// OpsRequestStatus defines the observed state of OpsRequest
+/// OpsRequestStatus represents the observed state of an OpsRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpsRequestStatusPhase {
     Pending,
@@ -821,13 +832,13 @@ pub enum OpsRequestStatusPhase {
     Succeed,
 }
 
-/// reconfiguringStatus defines the status information of reconfiguring.
+/// Deprecated: Replaced by ReconfiguringStatusAsComponent. Defines the status information of reconfiguring.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatus {
-    /// conditions describes reconfiguring detail status.
+    /// Describes the reconfiguring detail status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<OpsRequestStatusReconfiguringStatusConditions>>,
-    /// configurationStatus describes the status of the component reconfiguring.
+    /// Describes the status of the component reconfiguring.
     #[serde(rename = "configurationStatus")]
     pub configuration_status: Vec<OpsRequestStatusReconfiguringStatusConfigurationStatus>,
 }
@@ -866,30 +877,30 @@ pub enum OpsRequestStatusReconfiguringStatusConditionsStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatusConfigurationStatus {
-    /// expectedCount describes the number of expected reconfiguring.
+    /// Specifies the number of expected reconfigurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedCount")]
     pub expected_count: Option<i32>,
-    /// LastAppliedConfiguration describes the last configuration.
+    /// Stores the last applied configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedConfiguration")]
     pub last_applied_configuration: Option<BTreeMap<String, String>>,
-    /// lastStatus describes the last status for the reconfiguring controller.
+    /// Records the last status of the reconfiguration controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStatus")]
     pub last_status: Option<String>,
-    /// message describes the details about this operation.
+    /// Provides details about the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// name is a config template name.
+    /// Specifies the name of the configuration template.
     pub name: String,
-    /// status describes the current state of the reconfiguring state machine.
+    /// Indicates the current state of the reconfiguration state machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    /// succeedCount describes the number of successful reconfiguring.
+    /// Counts the number of successful reconfigurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "succeedCount")]
     pub succeed_count: Option<i32>,
-    /// updatePolicy describes the policy of reconfiguring.
+    /// Defines the policy for reconfiguration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatePolicy>,
-    /// updatedParameters describes the updated parameters.
+    /// Contains the updated parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedParameters")]
     pub updated_parameters: Option<OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatedParameters>,
 }
@@ -908,27 +919,27 @@ pub enum OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatePolicy {
     OperatorSyncUpdate,
 }
 
-/// updatedParameters describes the updated parameters.
+/// Contains the updated parameters.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatedParameters {
-    /// addedKeys describes the key added.
+    /// Lists the keys that have been added.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addedKeys")]
     pub added_keys: Option<BTreeMap<String, String>>,
-    /// deletedKeys describes the key deleted.
+    /// Lists the keys that have been deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletedKeys")]
     pub deleted_keys: Option<BTreeMap<String, String>>,
-    /// updatedKeys describes the key updated.
+    /// Lists the keys that have been updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedKeys")]
     pub updated_keys: Option<BTreeMap<String, String>>,
 }
 
-/// reconfiguringStatus defines the status information of reconfiguring.
+/// Represents the status information of reconfiguring.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatusAsComponent {
-    /// conditions describes reconfiguring detail status.
+    /// Describes the reconfiguring detail status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<OpsRequestStatusReconfiguringStatusAsComponentConditions>>,
-    /// configurationStatus describes the status of the component reconfiguring.
+    /// Describes the status of the component reconfiguring.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationStatus")]
     pub configuration_status: Option<Vec<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatus>>,
 }
@@ -967,30 +978,30 @@ pub enum OpsRequestStatusReconfiguringStatusAsComponentConditionsStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatus {
-    /// expectedCount describes the number of expected reconfiguring.
+    /// Specifies the number of expected reconfigurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedCount")]
     pub expected_count: Option<i32>,
-    /// LastAppliedConfiguration describes the last configuration.
+    /// Stores the last applied configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedConfiguration")]
     pub last_applied_configuration: Option<BTreeMap<String, String>>,
-    /// lastStatus describes the last status for the reconfiguring controller.
+    /// Records the last status of the reconfiguration controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStatus")]
     pub last_status: Option<String>,
-    /// message describes the details about this operation.
+    /// Provides details about the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// name is a config template name.
+    /// Specifies the name of the configuration template.
     pub name: String,
-    /// status describes the current state of the reconfiguring state machine.
+    /// Indicates the current state of the reconfiguration state machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    /// succeedCount describes the number of successful reconfiguring.
+    /// Counts the number of successful reconfigurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "succeedCount")]
     pub succeed_count: Option<i32>,
-    /// updatePolicy describes the policy of reconfiguring.
+    /// Defines the policy for reconfiguration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatePolicy>,
-    /// updatedParameters describes the updated parameters.
+    /// Contains the updated parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedParameters")]
     pub updated_parameters: Option<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatedParameters>,
 }
@@ -1009,16 +1020,16 @@ pub enum OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdate
     OperatorSyncUpdate,
 }
 
-/// updatedParameters describes the updated parameters.
+/// Contains the updated parameters.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatedParameters {
-    /// addedKeys describes the key added.
+    /// Lists the keys that have been added.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addedKeys")]
     pub added_keys: Option<BTreeMap<String, String>>,
-    /// deletedKeys describes the key deleted.
+    /// Lists the keys that have been deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletedKeys")]
     pub deleted_keys: Option<BTreeMap<String, String>>,
-    /// updatedKeys describes the key updated.
+    /// Lists the keys that have been updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedKeys")]
     pub updated_keys: Option<BTreeMap<String, String>>,
 }

@@ -20,7 +20,10 @@ pub struct LocalizationSpec {
     /// Overrides holds all the OverrideConfig.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<LocalizationOverrides>>,
-    /// Priority is an integer defining the relative importance of this Localization compared to others. Lower numbers are considered lower priority. And these Localization(s) will be applied by order from lower priority to higher. That means override values in lower Localization will be overridden by those in higher Localization.
+    /// Priority is an integer defining the relative importance of this Localization compared to others.
+    /// Lower numbers are considered lower priority.
+    /// And these Localization(s) will be applied by order from lower priority to higher.
+    /// That means override values in lower Localization will be overridden by those in higher Localization.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
 }
@@ -31,7 +34,8 @@ pub struct LocalizationFeed {
     /// APIVersion defines the versioned schema of this representation of an object.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Kind is a string value representing the REST resource this object represents. In CamelCase.
+    /// Kind is a string value representing the REST resource this object represents.
+    /// In CamelCase.
     pub kind: String,
     /// Name of the target resource.
     pub name: String,

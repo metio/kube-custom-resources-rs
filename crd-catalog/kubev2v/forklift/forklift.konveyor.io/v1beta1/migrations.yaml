@@ -211,6 +211,9 @@ spec:
                           - "phase"
                           - "reasons"
                         type: "object"
+                      firmware:
+                        description: "The firmware type detected from the OVF file produced by virt-v2v."
+                        type: "string"
                       hooks:
                         description: "Enable hooks."
                         items:

@@ -14,63 +14,66 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ConfigConstraintStatus")]
 #[kube(schema = "disabled")]
 pub struct ConfigConstraintSpec {
-    /// cfgSchemaTopLevelName is cue type name, which generates openapi schema.
+    /// The cue type name, which generates the openapi schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cfgSchemaTopLevelName")]
     pub cfg_schema_top_level_name: Option<String>,
-    /// configurationSchema imposes restrictions on database parameter's rule.
+    /// Imposes restrictions on database parameter's rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationSchema")]
     pub configuration_schema: Option<ConfigConstraintConfigurationSchema>,
-    /// downwardAPIOptions is used to watch pod fields.
+    /// Used to monitor pod fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPIOptions")]
     pub downward_api_options: Option<Vec<ConfigConstraintDownwardApiOptions>>,
-    /// dynamicParameters, list of DynamicParameter, modifications of them trigger a config dynamic reload without process restart.
+    /// A list of DynamicParameter. Modifications of these parameters trigger a config dynamic reload without process restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicParameters")]
     pub dynamic_parameters: Option<Vec<String>>,
-    /// formatterConfig describes the format of the configuration file, the controller 1. parses configuration file 2. analyzes the modified parameters 3. applies corresponding policies.
+    /// Indicates whether to execute hot update parameters when the pod needs to be restarted. If set to true, the controller performs the hot update and then restarts the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceHotUpdate")]
+    pub force_hot_update: Option<bool>,
+    /// Describes the format of the configuration file. The controller will: 1. Parse the configuration file 2. Analyze the modified parameters 3. Apply corresponding policies.
     #[serde(rename = "formatterConfig")]
     pub formatter_config: ConfigConstraintFormatterConfig,
-    /// immutableParameters describes parameters that prohibit user from modification.
+    /// Describes parameters that users are prohibited from modifying.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "immutableParameters")]
     pub immutable_parameters: Option<Vec<String>>,
-    /// reloadOptions indicates whether the process supports reload. if set, the controller will determine the behavior of the engine instance based on the configuration templates, restart or reload depending on whether any parameters in the StaticParameters have been modified.
+    /// Specifies whether the process supports reload. If set, the controller determines the behavior of the engine instance based on the configuration templates. It will either restart or reload depending on whether any parameters in the StaticParameters have been modified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadOptions")]
     pub reload_options: Option<ConfigConstraintReloadOptions>,
-    /// scriptConfigs, list of ScriptConfig, witch these scripts can be used by volume trigger,downward trigger, or tool image
+    /// A list of ScriptConfig. These scripts can be used by volume trigger, downward trigger, or tool image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptConfigs")]
     pub script_configs: Option<Vec<ConfigConstraintScriptConfigs>>,
-    /// selector is used to match the label on the pod, for example, a pod of the primary is match on the patroni cluster.
+    /// Used to match the label on the pod. For example, a pod of the primary matches on the patroni cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ConfigConstraintSelector>,
-    /// staticParameters, list of StaticParameter, modifications of them trigger a process restart.
+    /// A list of StaticParameter. Modifications of these parameters trigger a process restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticParameters")]
     pub static_parameters: Option<Vec<String>>,
-    /// toolConfig used to config init container.
+    /// Used to configure the init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toolsImageSpec")]
     pub tools_image_spec: Option<ConfigConstraintToolsImageSpec>,
 }
 
-/// configurationSchema imposes restrictions on database parameter's rule.
+/// Imposes restrictions on database parameter's rule.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintConfigurationSchema {
-    /// cue that to let provider verify user configuration through cue language.
+    /// Enables providers to verify user configurations using the CUE language.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cue: Option<String>,
-    /// schema provides a way for providers to validate the changed parameters through json.
+    /// Provides a mechanism that allows providers to validate the modified parameters using JSON.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<HashMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintDownwardApiOptions {
-    /// command used to execute for downwrad api.
+    /// The command used to execute for the downward API. This field is optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Items is a list of downward API volume file
+    /// Represents a list of downward API volume files. This is a required field.
     pub items: Vec<ConfigConstraintDownwardApiOptionsItems>,
-    /// mountPoint is the mount point of the scripts file.
+    /// Specifies the mount point of the scripts file. This is a required field and must be a string of maximum length 128.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
-    /// Specify the name of the field.
+    /// Specifies the name of the field. This is a required field and must be a string of maximum length 63. The name should match the regex pattern `^[a-z0-9]([a-z0-9\.\-]*[a-z0-9])?$`.
     pub name: String,
 }
 
@@ -114,18 +117,18 @@ pub struct ConfigConstraintDownwardApiOptionsItemsResourceFieldRef {
     pub resource: String,
 }
 
-/// formatterConfig describes the format of the configuration file, the controller 1. parses configuration file 2. analyzes the modified parameters 3. applies corresponding policies.
+/// Describes the format of the configuration file. The controller will: 1. Parse the configuration file 2. Analyze the modified parameters 3. Apply corresponding policies.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintFormatterConfig {
-    /// The configuration file format. Valid values are ini, xml, yaml, json, hcl, dotenv, properties and toml. 
-    ///  ini: a configuration file that consists of a text-based content with a structure and syntax comprising key–value pairs for properties, reference wiki: https://en.wikipedia.org/wiki/INI_file xml: reference wiki: https://en.wikipedia.org/wiki/XML yaml: a configuration file support for complex data types and structures. json: reference wiki: https://en.wikipedia.org/wiki/JSON hcl: : The HashiCorp Configuration Language (HCL) is a configuration language authored by HashiCorp, reference url: https://www.linode.com/docs/guides/introduction-to-hcl/ dotenv: this was a plain text file with simple key–value pairs, reference wiki: https://en.wikipedia.org/wiki/Configuration_file#MS-DOS properties: a file extension mainly used in Java, reference wiki: https://en.wikipedia.org/wiki/.properties toml: reference wiki: https://en.wikipedia.org/wiki/TOML props-plus: a file extension mainly used in Java, support CamelCase(e.g: brokerMaxConnectionsPerIp)
+    /// The configuration file format. Valid values are `ini`, `xml`, `yaml`, `json`, `hcl`, `dotenv`, `properties` and `toml`. Each format has its own characteristics and use cases. 
+    ///  - ini: a configuration file that consists of a text-based content with a structure and syntax comprising key–value pairs for properties, reference wiki: https://en.wikipedia.org/wiki/INI_file - xml: reference wiki: https://en.wikipedia.org/wiki/XML - yaml: a configuration file support for complex data types and structures. - json: reference wiki: https://en.wikipedia.org/wiki/JSON - hcl: The HashiCorp Configuration Language (HCL) is a configuration language authored by HashiCorp, reference url: https://www.linode.com/docs/guides/introduction-to-hcl/ - dotenv: this was a plain text file with simple key–value pairs, reference wiki: https://en.wikipedia.org/wiki/Configuration_file#MS-DOS - properties: a file extension mainly used in Java, reference wiki: https://en.wikipedia.org/wiki/.properties - toml: reference wiki: https://en.wikipedia.org/wiki/TOML - props-plus: a file extension mainly used in Java, support CamelCase(e.g: brokerMaxConnectionsPerIp)
     pub format: ConfigConstraintFormatterConfigFormat,
-    /// iniConfig represents the ini options.
+    /// A pointer to an IniConfig struct that holds the ini options.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iniConfig")]
     pub ini_config: Option<ConfigConstraintFormatterConfigIniConfig>,
 }
 
-/// formatterConfig describes the format of the configuration file, the controller 1. parses configuration file 2. analyzes the modified parameters 3. applies corresponding policies.
+/// Describes the format of the configuration file. The controller will: 1. Parse the configuration file 2. Analyze the modified parameters 3. Apply corresponding policies.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ConfigConstraintFormatterConfigFormat {
     #[serde(rename = "xml")]
@@ -150,74 +153,74 @@ pub enum ConfigConstraintFormatterConfigFormat {
     PropsPlus,
 }
 
-/// iniConfig represents the ini options.
+/// A pointer to an IniConfig struct that holds the ini options.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintFormatterConfigIniConfig {
-    /// sectionName describes ini section.
+    /// A string that describes the name of the ini section.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
 }
 
-/// reloadOptions indicates whether the process supports reload. if set, the controller will determine the behavior of the engine instance based on the configuration templates, restart or reload depending on whether any parameters in the StaticParameters have been modified.
+/// Specifies whether the process supports reload. If set, the controller determines the behavior of the engine instance based on the configuration templates. It will either restart or reload depending on whether any parameters in the StaticParameters have been modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptions {
-    /// autoTrigger performs the reload command.
+    /// Used to automatically perform the reload command when certain conditions are met.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoTrigger")]
     pub auto_trigger: Option<ConfigConstraintReloadOptionsAutoTrigger>,
-    /// shellTrigger performs the reload command.
+    /// Used to perform the reload command via a shell script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shellTrigger")]
     pub shell_trigger: Option<ConfigConstraintReloadOptionsShellTrigger>,
-    /// goTplTrigger performs the reload command.
+    /// Used to perform the reload command via a Go template script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tplScriptTrigger")]
     pub tpl_script_trigger: Option<ConfigConstraintReloadOptionsTplScriptTrigger>,
-    /// unixSignalTrigger used to reload by sending a signal.
+    /// Used to trigger a reload by sending a specific Unix signal to the process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unixSignalTrigger")]
     pub unix_signal_trigger: Option<ConfigConstraintReloadOptionsUnixSignalTrigger>,
 }
 
-/// autoTrigger performs the reload command.
+/// Used to automatically perform the reload command when certain conditions are met.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsAutoTrigger {
-    /// processName is process name
+    /// The name of the process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "processName")]
     pub process_name: Option<String>,
 }
 
-/// shellTrigger performs the reload command.
+/// Used to perform the reload command via a shell script.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsShellTrigger {
-    /// command used to execute for reload.
+    /// Specifies the list of strings used to execute for reload.
     pub command: Vec<String>,
-    /// Specify synchronize updates parameters to the config manager.
+    /// Specifies whether to synchronize updates parameters to the config manager.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
 }
 
-/// goTplTrigger performs the reload command.
+/// Used to perform the reload command via a Go template script.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsTplScriptTrigger {
-    /// Specify the namespace of the referenced the tpl script ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+    /// Specifies the namespace where the referenced tpl script ConfigMap object resides. If left empty, it defaults to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// scriptConfigMapRef used to execute for reload.
+    /// Specifies the reference to the ConfigMap that contains the script to be executed for reload.
     #[serde(rename = "scriptConfigMapRef")]
     pub script_config_map_ref: String,
-    /// Specify synchronize updates parameters to the config manager.
+    /// Specifies whether to synchronize updates parameters to the config manager.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
 }
 
-/// unixSignalTrigger used to reload by sending a signal.
+/// Used to trigger a reload by sending a specific Unix signal to the process.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsUnixSignalTrigger {
-    /// processName is process name, sends unix signal to proc.
+    /// Represents the name of the process to which the Unix signal is sent.
     #[serde(rename = "processName")]
     pub process_name: String,
-    /// signal is valid for unix signal. e.g: SIGHUP url: ../../pkg/configuration/configmap/handler.go:allUnixSignals
+    /// Represents a valid Unix signal. Refer to the following URL for a list of all Unix signals: ../../pkg/configuration/configmap/handler.go:allUnixSignals
     pub signal: ConfigConstraintReloadOptionsUnixSignalTriggerSignal,
 }
 
-/// unixSignalTrigger used to reload by sending a signal.
+/// Used to trigger a reload by sending a specific Unix signal to the process.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ConfigConstraintReloadOptionsUnixSignalTriggerSignal {
     #[serde(rename = "SIGHUP")]
@@ -286,15 +289,15 @@ pub enum ConfigConstraintReloadOptionsUnixSignalTriggerSignal {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintScriptConfigs {
-    /// Specify the namespace of the referenced the tpl script ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+    /// Specifies the namespace where the referenced tpl script ConfigMap object resides. If left empty, it defaults to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// scriptConfigMapRef used to execute for reload.
+    /// Specifies the reference to the ConfigMap that contains the script to be executed for reload.
     #[serde(rename = "scriptConfigMapRef")]
     pub script_config_map_ref: String,
 }
 
-/// selector is used to match the label on the pod, for example, a pod of the primary is match on the patroni cluster.
+/// Used to match the label on the pod. For example, a pod of the primary matches on the patroni cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -317,44 +320,42 @@ pub struct ConfigConstraintSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// toolConfig used to config init container.
+/// Used to configure the init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintToolsImageSpec {
-    /// mountPoint is the mount point of the scripts file.
+    /// Represents the location where the scripts file will be mounted.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
-    /// toolConfig used to config init container.
+    /// Used to configure the initialization container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toolConfigs")]
     pub tool_configs: Option<Vec<ConfigConstraintToolsImageSpecToolConfigs>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintToolsImageSpecToolConfigs {
-    /// exec used to execute for init containers.
+    /// Used to execute commands for init containers.
     pub command: Vec<String>,
-    /// tools Container image name.
+    /// Represents the name of the container image for the tools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Specify the name of initContainer. Must be a DNS_LABEL name.
+    /// Specifies the name of the initContainer. This must be a DNS_LABEL name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// ConfigConstraintStatus defines the observed state of ConfigConstraint.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintStatus {
-    /// message field describes the reasons of abnormal status.
+    /// Provides a description of any abnormal statuses that may be present.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// observedGeneration is the latest generation observed for this ClusterDefinition. It refers to the ConfigConstraint's generation, which is updated by the API Server.
+    /// Refers to the most recent generation observed for this ConfigConstraint. This value is updated by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// phase is status of configuration template, when set to CCAvailablePhase, it can be referenced by ClusterDefinition or ClusterVersion.
+    /// Specifies the status of the configuration template. When set to CCAvailablePhase, the ConfigConstraint can be referenced by ClusterDefinition or ClusterVersion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ConfigConstraintStatusPhase>,
 }
 
-/// ConfigConstraintStatus defines the observed state of ConfigConstraint.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ConfigConstraintStatusPhase {
     Available,

@@ -13,10 +13,10 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ClusterVersionStatus")]
 #[kube(schema = "disabled")]
 pub struct ClusterVersionSpec {
-    /// ref ClusterDefinition.
+    /// Specifies a reference to the ClusterDefinition.
     #[serde(rename = "clusterDefinitionRef")]
     pub cluster_definition_ref: String,
-    /// List of components' containers versioning context, i.e., container image ID, container commands, args., and environments.
+    /// Contains a list of versioning contexts for the components' containers.
     #[serde(rename = "componentVersions")]
     pub component_versions: Vec<ClusterVersionComponentVersions>,
 }
@@ -24,68 +24,70 @@ pub struct ClusterVersionSpec {
 /// ClusterComponentVersion is an application version component spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersions {
-    /// componentDefRef reference one of the cluster component definition names in ClusterDefinition API (spec.componentDefs.name).
+    /// Specifies a reference to one of the cluster component definition names in the ClusterDefinition API (spec.componentDefs.name).
     #[serde(rename = "componentDefRef")]
     pub component_def_ref: String,
-    /// configSpecs defines a configuration extension mechanism to handle configuration differences between versions, the configTemplateRefs field, together with configTemplateRefs in the ClusterDefinition, determines the final configuration file.
+    /// Defines a configuration extension mechanism to handle configuration differences between versions. The configTemplateRefs field, in conjunction with the configTemplateRefs in the ClusterDefinition, determines the final configuration file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSpecs")]
     pub config_specs: Option<Vec<ClusterVersionComponentVersionsConfigSpecs>>,
-    /// switchoverSpec defines images for the component to do switchover. It overrides `image` and `env` attributes defined in ClusterDefinition.spec.componentDefs.SwitchoverSpec.CommandExecutorEnvItem.
+    /// Defines the images for the component to perform a switchover. This overrides the image and env attributes defined in clusterDefinition.spec.componentDefs.SwitchoverSpec.CommandExecutorEnvItem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchoverSpec")]
     pub switchover_spec: Option<ClusterVersionComponentVersionsSwitchoverSpec>,
-    /// systemAccountSpec define image for the component to connect database or engines. It overrides `image` and `env` attributes defined in ClusterDefinition.spec.componentDefs.systemAccountSpec.cmdExecutorConfig. To clean default envs settings, set `SystemAccountSpec.CmdExecutorConfig.Env` to empty list.
+    /// Defines the image for the component to connect to databases or engines. This overrides the `image` and `env` attributes defined in clusterDefinition.spec.componentDefs.systemAccountSpec.cmdExecutorConfig. To clear default environment settings, set systemAccountSpec.cmdExecutorConfig.env to an empty list.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccountSpec")]
     pub system_account_spec: Option<ClusterVersionComponentVersionsSystemAccountSpec>,
-    /// versionContext defines containers images' context for component versions, this value replaces ClusterDefinition.spec.componentDefs.podSpec.[initContainers | containers]
+    /// Defines the context for container images for component versions. This value replaces the values in clusterDefinition.spec.componentDefs.podSpec.[initContainers | containers].
     #[serde(rename = "versionsContext")]
     pub versions_context: ClusterVersionComponentVersionsVersionsContext,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsConfigSpecs {
-    /// asEnvFrom is optional: the list of containers will be injected into EnvFrom.
+    /// An optional field where the list of containers will be injected into EnvFrom.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asEnvFrom")]
     pub as_env_from: Option<Vec<String>>,
-    /// Specify the name of the referenced the configuration constraints object.
+    /// An optional field that defines the name of the referenced configuration constraints object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintRef")]
     pub constraint_ref: Option<String>,
-    /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+    /// Refers to the mode bits used to set permissions on created files by default. 
+    ///  Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. 
+    ///  Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Specify a list of keys. If empty, ConfigConstraint takes effect for all keys in configmap.
+    /// Defines a list of keys. If left empty, ConfigConstraint applies to all keys in the configmap.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
-    /// lazyRenderedConfigSpec is optional: specify the secondary rendered config spec.
+    /// An optional field that defines the secondary rendered config spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacyRenderedConfigSpec")]
     pub legacy_rendered_config_spec: Option<ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpec>,
-    /// Specify the name of configuration template.
+    /// Specifies the name of the configuration template.
     pub name: String,
-    /// Specify the namespace of the referenced the configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+    /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specify the name of the referenced the configuration template ConfigMap object.
+    /// Specifies the name of the referenced configuration template ConfigMap object.
     #[serde(rename = "templateRef")]
     pub template_ref: String,
-    /// volumeName is the volume name of PodTemplate, which the configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
+    /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration template will be mounted to the corresponding volume. Must be a DNS_LABEL name. The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(rename = "volumeName")]
     pub volume_name: String,
 }
 
-/// lazyRenderedConfigSpec is optional: specify the secondary rendered config spec.
+/// An optional field that defines the secondary rendered config spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpec {
-    /// Specify the namespace of the referenced the configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
+    /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// policy defines how to merge external imported templates into component templates.
+    /// Defines the strategy for merging externally imported templates into component templates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpecPolicy>,
-    /// Specify the name of the referenced the configuration template ConfigMap object.
+    /// Specifies the name of the referenced configuration template ConfigMap object.
     #[serde(rename = "templateRef")]
     pub template_ref: String,
 }
 
-/// lazyRenderedConfigSpec is optional: specify the secondary rendered config spec.
+/// An optional field that defines the secondary rendered config spec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpecPolicy {
     #[serde(rename = "patch")]
@@ -96,21 +98,21 @@ pub enum ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpecPolic
     None,
 }
 
-/// switchoverSpec defines images for the component to do switchover. It overrides `image` and `env` attributes defined in ClusterDefinition.spec.componentDefs.SwitchoverSpec.CommandExecutorEnvItem.
+/// Defines the images for the component to perform a switchover. This overrides the image and env attributes defined in clusterDefinition.spec.componentDefs.SwitchoverSpec.CommandExecutorEnvItem.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsSwitchoverSpec {
-    /// CmdExecutorConfig is the command executor config.
+    /// Represents the configuration for the command executor.
     #[serde(rename = "cmdExecutorConfig")]
     pub cmd_executor_config: ClusterVersionComponentVersionsSwitchoverSpecCmdExecutorConfig,
 }
 
-/// CmdExecutorConfig is the command executor config.
+/// Represents the configuration for the command executor.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsSwitchoverSpecCmdExecutorConfig {
-    /// envs is a list of environment variables.
+    /// A list of environment variables that will be injected into the command execution context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterVersionComponentVersionsSwitchoverSpecCmdExecutorConfigEnv>>,
-    /// image for Connector when executing the command.
+    /// Specifies the image used to execute the command.
     pub image: String,
 }
 
@@ -194,21 +196,21 @@ pub struct ClusterVersionComponentVersionsSwitchoverSpecCmdExecutorConfigEnvValu
     pub optional: Option<bool>,
 }
 
-/// systemAccountSpec define image for the component to connect database or engines. It overrides `image` and `env` attributes defined in ClusterDefinition.spec.componentDefs.systemAccountSpec.cmdExecutorConfig. To clean default envs settings, set `SystemAccountSpec.CmdExecutorConfig.Env` to empty list.
+/// Defines the image for the component to connect to databases or engines. This overrides the `image` and `env` attributes defined in clusterDefinition.spec.componentDefs.systemAccountSpec.cmdExecutorConfig. To clear default environment settings, set systemAccountSpec.cmdExecutorConfig.env to an empty list.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsSystemAccountSpec {
-    /// cmdExecutorConfig configs how to get client SDK and perform statements.
+    /// Configures the method for obtaining the client SDK and executing statements.
     #[serde(rename = "cmdExecutorConfig")]
     pub cmd_executor_config: ClusterVersionComponentVersionsSystemAccountSpecCmdExecutorConfig,
 }
 
-/// cmdExecutorConfig configs how to get client SDK and perform statements.
+/// Configures the method for obtaining the client SDK and executing statements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsSystemAccountSpecCmdExecutorConfig {
-    /// envs is a list of environment variables.
+    /// A list of environment variables that will be injected into the command execution context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterVersionComponentVersionsSystemAccountSpecCmdExecutorConfigEnv>>,
-    /// image for Connector when executing the command.
+    /// Specifies the image used to execute the command.
     pub image: String,
 }
 
@@ -292,13 +294,13 @@ pub struct ClusterVersionComponentVersionsSystemAccountSpecCmdExecutorConfigEnvV
     pub optional: Option<bool>,
 }
 
-/// versionContext defines containers images' context for component versions, this value replaces ClusterDefinition.spec.componentDefs.podSpec.[initContainers | containers]
+/// Defines the context for container images for component versions. This value replaces the values in clusterDefinition.spec.componentDefs.podSpec.[initContainers | containers].
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsVersionsContext {
-    /// Provide ClusterDefinition.spec.componentDefs.podSpec.containers override values, typical scenarios are application container image updates.
+    /// Provides override values for ClusterDefinition.spec.componentDefs.podSpec.containers. Typically used in scenarios such as updating application container images.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ClusterVersionComponentVersionsVersionsContextContainers>>,
-    /// Provide ClusterDefinition.spec.componentDefs.podSpec.initContainers override values, typical scenarios are application container image updates.
+    /// Provides override values for ClusterDefinition.spec.componentDefs.podSpec.initContainers. Typically used in scenarios such as updating application container images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ClusterVersionComponentVersionsVersionsContextInitContainers>>,
 }
@@ -1866,16 +1868,16 @@ pub struct ClusterVersionComponentVersionsVersionsContextInitContainersVolumeMou
 /// ClusterVersionStatus defines the observed state of ClusterVersion
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionStatus {
-    /// clusterDefGeneration represents the generation number of ClusterDefinition referenced.
+    /// The generation number of the ClusterDefinition that is currently being referenced.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDefGeneration")]
     pub cluster_def_generation: Option<i64>,
-    /// A human readable message indicating details about why the ClusterVersion is in this phase.
+    /// Provides additional information about the current phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// generation number
+    /// The generation number that has been observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// phase - in list of [Available,Unavailable]
+    /// The current phase of the ClusterVersion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterVersionStatusPhase>,
 }

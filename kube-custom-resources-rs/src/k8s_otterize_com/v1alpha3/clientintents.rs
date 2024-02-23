@@ -53,6 +53,8 @@ pub struct ClientIntentsCallsDatabaseResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientIntentsCallsInternet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domains: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ips: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<i64>>,
@@ -89,8 +91,18 @@ pub struct ClientIntentsStatus {
     /// The last generation of the intents that was successfully reconciled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedIPs")]
+    pub resolved_i_ps: Option<Vec<ClientIntentsStatusResolvedIPs>>,
     /// upToDate field reflects whether the client intents have successfully been applied to the cluster to the state specified
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDate")]
     pub up_to_date: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClientIntentsStatusResolvedIPs {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dns: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ips: Option<Vec<String>>,
 }
 
