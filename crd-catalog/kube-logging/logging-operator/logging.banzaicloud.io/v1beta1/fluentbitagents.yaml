@@ -433,6 +433,8 @@ spec:
                       type: "string"
                     storage.checksum:
                       type: "string"
+                    storage.delete_irrecoverable_chunks:
+                      type: "string"
                     storage.metrics:
                       type: "string"
                     storage.path:

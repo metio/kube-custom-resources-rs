@@ -265,6 +265,9 @@ pub struct ApplicationOperationSyncSourceKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -522,6 +525,9 @@ pub struct ApplicationOperationSyncSourcesKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -875,6 +881,9 @@ pub struct ApplicationSourceKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -1132,6 +1141,9 @@ pub struct ApplicationSourcesKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -1547,6 +1559,9 @@ pub struct ApplicationStatusHistorySourceKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -1804,6 +1819,9 @@ pub struct ApplicationStatusHistorySourcesKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -2190,6 +2208,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSourceKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -2447,6 +2468,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSourcesKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -2792,6 +2816,9 @@ pub struct ApplicationStatusOperationStateSyncResultSourceKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -3049,6 +3076,9 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -3420,6 +3450,9 @@ pub struct ApplicationStatusSyncComparedToSourceKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,
@@ -3677,6 +3710,9 @@ pub struct ApplicationStatusSyncComparedToSourcesKustomize {
     /// CommonLabels is a list of additional labels to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
+    /// Components specifies a list of kustomize components to add to the kustomization before building
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<String>>,
     /// ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonAnnotations")]
     pub force_common_annotations: Option<bool>,

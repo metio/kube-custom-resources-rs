@@ -124,7 +124,7 @@ pub struct OpsRequestExpose {
     /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// A list of services that are to be exposed or removed.
+    /// A list of services that are to be exposed or removed. If componentNamem is not specified, each `OpsService` in the list must specify ports and selectors.
     pub services: Vec<OpsRequestExposeServices>,
     /// Controls the expose operation. If set to Enable, the corresponding service will be exposed. Conversely, if set to Disable, the service will be removed.
     pub switch: OpsRequestExposeSwitch,

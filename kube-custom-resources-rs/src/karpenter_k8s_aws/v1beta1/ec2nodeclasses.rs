@@ -89,6 +89,8 @@ pub struct EC2NodeClassSpec {
 pub enum EC2NodeClassAmiFamily {
     #[serde(rename = "AL2")]
     Al2,
+    #[serde(rename = "AL2023")]
+    Al2023,
     Bottlerocket,
     Ubuntu,
     Custom,

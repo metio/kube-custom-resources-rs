@@ -19,8 +19,9 @@ pub struct DatasetSpec {
     /// DataRestoreLocation is the location to load data of dataset  been backuped
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataRestoreLocation")]
     pub data_restore_location: Option<DatasetDataRestoreLocation>,
-    /// Mount Points to be mounted on Alluxio.
-    pub mounts: Vec<DatasetMounts>,
+    /// Mount Points to be mounted on cache runtime. <br> This field can be empty because some runtimes don't need to mount external storage (e.g. <a href="https://v6d.io/">Vineyard</a>).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mounts: Option<Vec<DatasetMounts>>,
     /// NodeAffinity defines constraints that limit what nodes this dataset can be cached to. This field influences the scheduling of pods that use the cached dataset.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<DatasetNodeAffinity>,

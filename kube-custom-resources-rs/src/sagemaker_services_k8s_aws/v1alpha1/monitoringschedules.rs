@@ -141,6 +141,8 @@ pub struct MonitoringScheduleMonitoringScheduleConfigMonitoringJobDefinitionMoni
     pub end_time_offset: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointName")]
     pub endpoint_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeFeaturesAttribute")]
+    pub exclude_features_attribute: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featuresAttribute")]
     pub features_attribute: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferenceAttribute")]
@@ -220,20 +222,18 @@ pub struct MonitoringScheduleMonitoringScheduleConfigMonitoringJobDefinitionNetw
     pub enable_inter_container_traffic_encryption: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
-    /// Specifies a VPC that your training jobs and hosted models have access to.
-    /// Control access to and from your training and model containers by configuring
-    /// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
-    /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
-    /// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+    /// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
+    /// hosted models, and compute resources have access to. You can control access
+    /// to and from your resources by configuring a VPC. For more information, see
+    /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
     pub vpc_config: Option<MonitoringScheduleMonitoringScheduleConfigMonitoringJobDefinitionNetworkConfigVpcConfig>,
 }
 
-/// Specifies a VPC that your training jobs and hosted models have access to.
-/// Control access to and from your training and model containers by configuring
-/// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
-/// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
-/// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+/// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
+/// hosted models, and compute resources have access to. You can control access
+/// to and from your resources by configuring a VPC. For more information, see
+/// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MonitoringScheduleMonitoringScheduleConfigMonitoringJobDefinitionNetworkConfigVpcConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -252,6 +252,10 @@ pub struct MonitoringScheduleMonitoringScheduleConfigMonitoringJobDefinitionStop
 /// Configuration details about the monitoring schedule.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MonitoringScheduleMonitoringScheduleConfigScheduleConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataAnalysisEndTime")]
+    pub data_analysis_end_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataAnalysisStartTime")]
+    pub data_analysis_start_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduleExpression")]
     pub schedule_expression: Option<String>,
 }
@@ -263,7 +267,7 @@ pub struct MonitoringScheduleMonitoringScheduleConfigScheduleConfig {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources

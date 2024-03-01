@@ -96,6 +96,8 @@ spec:
                           type: "string"
                         endpointName:
                           type: "string"
+                        excludeFeaturesAttribute:
+                          type: "string"
                         featuresAttribute:
                           type: "string"
                         inferenceAttribute:
@@ -150,7 +152,7 @@ spec:
                     enableNetworkIsolation:
                       type: "boolean"
                     vpcConfig:
-                      description: "Specifies a VPC that your training jobs and hosted models have access to.\nControl access to and from your training and model containers by configuring\nthe VPC. For more information, see Protect Endpoints by Using an Amazon Virtual\nPrivate Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)\nand Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
+                      description: "Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,\nhosted models, and compute resources have access to. You can control access\nto and from your resources by configuring a VPC. For more information, see\nGive SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html)."
                       properties:
                         securityGroupIDs:
                           items:
@@ -175,7 +177,7 @@ spec:
                 tags:
                   description: "(Optional) An array of key-value pairs. For more information, see Using Cost\nAllocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-whatURL)\nin the Amazon Web Services Billing and Cost Management User Guide."
                   items:
-                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags.\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
+                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
                     properties:
                       key:
                         type: "string"

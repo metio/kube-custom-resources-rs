@@ -75,13 +75,13 @@ pub struct TrainingJobSpec {
     /// Specified when you call the following APIs:
     /// 
     /// 
-    ///    * CreateProcessingJob
+    ///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
     /// 
     /// 
-    ///    * CreateTrainingJob
+    ///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
     /// 
     /// 
-    ///    * CreateTransformJob
+    ///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentConfig")]
     pub experiment_config: Option<TrainingJobExperimentConfig>,
     /// Algorithm-specific parameters that influence the quality of the model. You
@@ -101,6 +101,10 @@ pub struct TrainingJobSpec {
     /// and return an exception error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameters")]
     pub hyper_parameters: Option<BTreeMap<String, String>>,
+    /// Contains information about the infrastructure health check configuration
+    /// for the training job.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infraCheckConfig")]
+    pub infra_check_config: Option<TrainingJobInfraCheckConfig>,
     /// An array of Channel objects. Each channel is a named input source. InputDataConfig
     /// describes the input data and its location.
     /// 
@@ -118,6 +122,10 @@ pub struct TrainingJobSpec {
     /// container, or makes it available as input streams. For example, if you specify
     /// an EFS location, input data files are available as input streams. They do
     /// not need to be downloaded.
+    /// 
+    /// 
+    /// Your input must be in the same Amazon Web Services region as your training
+    /// job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputDataConfig")]
     pub input_data_config: Option<Vec<TrainingJobInputDataConfig>>,
     /// Specifies the path to the S3 location where you want to store model artifacts.
@@ -132,6 +140,11 @@ pub struct TrainingJobSpec {
     /// system and framework metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilerRuleConfigurations")]
     pub profiler_rule_configurations: Option<Vec<TrainingJobProfilerRuleConfigurations>>,
+    /// Configuration for remote debugging. To learn more about the remote debugging
+    /// functionality of SageMaker, see Access a training container through Amazon
+    /// Web Services Systems Manager (SSM) for remote debugging (https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteDebugConfig")]
+    pub remote_debug_config: Option<TrainingJobRemoteDebugConfig>,
     /// The resources, including the ML compute instances and ML storage volumes,
     /// to use for model training.
     /// 
@@ -186,10 +199,11 @@ pub struct TrainingJobSpec {
     /// Services Region in an Amazon Web Services account.
     #[serde(rename = "trainingJobName")]
     pub training_job_name: String,
-    /// A VpcConfig object that specifies the VPC that you want your training job
-    /// to connect to. Control access to and from your training container by configuring
-    /// the VPC. For more information, see Protect Training Jobs by Using an Amazon
-    /// Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+    /// A VpcConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html)
+    /// object that specifies the VPC that you want your training job to connect
+    /// to. Control access to and from your training container by configuring the
+    /// VPC. For more information, see Protect Training Jobs by Using an Amazon Virtual
+    /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
     pub vpc_config: Option<TrainingJobVpcConfig>,
 }
@@ -259,9 +273,12 @@ pub struct TrainingJobAlgorithmSpecification {
 }
 
 /// Specifies a metric that the training algorithm writes to stderr or stdout.
-/// SageMakerhyperparameter tuning captures all defined metrics. You specify
-/// one metric that a hyperparameter tuning job uses as its objective metric
-/// to choose the best training job.
+/// You can view these logs to understand how your training job performs and
+/// check for any errors encountered during training. SageMaker hyperparameter
+/// tuning captures all defined metrics. Specify one of the defined metrics to
+/// use as an objective metric using the TuningObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-TuningObjective)
+/// parameter in the HyperParameterTrainingJobDefinition API to evaluate job
+/// performance during hyperparameter tuning.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobAlgorithmSpecificationMetricDefinitions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -333,13 +350,13 @@ pub struct TrainingJobDebugRuleConfigurations {
 /// Specified when you call the following APIs:
 /// 
 /// 
-///    * CreateProcessingJob
+///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
 /// 
 /// 
-///    * CreateTrainingJob
+///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
 /// 
 /// 
-///    * CreateTransformJob
+///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobExperimentConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentName")]
@@ -348,6 +365,14 @@ pub struct TrainingJobExperimentConfig {
     pub trial_component_display_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trialName")]
     pub trial_name: Option<String>,
+}
+
+/// Contains information about the infrastructure health check configuration
+/// for the training job.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TrainingJobInfraCheckConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInfraCheck")]
+    pub enable_infra_check: Option<bool>,
 }
 
 /// A channel is a named input source that training algorithms can consume.
@@ -437,6 +462,10 @@ pub struct TrainingJobInputDataConfigDataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
     pub file_system_data_source: Option<TrainingJobInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
+    /// 
+    /// 
+    /// Your input bucket must be in the same Amazon Web Services region as your
+    /// training job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataSource")]
     pub s3_data_source: Option<TrainingJobInputDataConfigDataSourceS3DataSource>,
 }
@@ -455,6 +484,10 @@ pub struct TrainingJobInputDataConfigDataSourceFileSystemDataSource {
 }
 
 /// Describes the S3 data source.
+/// 
+/// 
+/// Your input bucket must be in the same Amazon Web Services region as your
+/// training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobInputDataConfigDataSourceS3DataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeNames")]
@@ -494,6 +527,8 @@ pub struct TrainingJobInputDataConfigShuffleConfig {
 /// SageMaker creates subfolders for the artifacts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobOutputDataConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
+    pub compression_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
@@ -531,6 +566,15 @@ pub struct TrainingJobProfilerRuleConfigurations {
     pub volume_size_in_gb: Option<i64>,
 }
 
+/// Configuration for remote debugging. To learn more about the remote debugging
+/// functionality of SageMaker, see Access a training container through Amazon
+/// Web Services Systems Manager (SSM) for remote debugging (https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TrainingJobRemoteDebugConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRemoteDebug")]
+    pub enable_remote_debug: Option<bool>,
+}
+
 /// The resources, including the ML compute instances and ML storage volumes,
 /// to use for model training.
 /// 
@@ -548,6 +592,8 @@ pub struct TrainingJobResourceConfig {
     pub instance_groups: Option<Vec<TrainingJobResourceConfigInstanceGroups>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
+    /// Optional. Customer requested period in seconds for which the Training cluster
+    /// is kept alive after the job is finished.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAlivePeriodInSeconds")]
     pub keep_alive_period_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
@@ -587,6 +633,9 @@ pub struct TrainingJobRetryStrategy {
 /// to save the model artifacts, so the results of training are not lost.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobStoppingCondition {
+    /// Maximum job scheduler pending time in seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingTimeInSeconds")]
+    pub max_pending_time_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
     pub max_runtime_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWaitTimeInSeconds")]
@@ -600,7 +649,7 @@ pub struct TrainingJobStoppingCondition {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
@@ -626,10 +675,11 @@ pub struct TrainingJobTensorBoardOutputConfig {
     pub s3_output_path: Option<String>,
 }
 
-/// A VpcConfig object that specifies the VPC that you want your training job
-/// to connect to. Control access to and from your training container by configuring
-/// the VPC. For more information, see Protect Training Jobs by Using an Amazon
-/// Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+/// A VpcConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html)
+/// object that specifies the VPC that you want your training job to connect
+/// to. Control access to and from your training container by configuring the
+/// VPC. For more information, see Protect Training Jobs by Using an Amazon Virtual
+/// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobVpcConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -678,7 +728,7 @@ pub struct TrainingJobStatus {
     pub profiling_status: Option<String>,
     /// Provides detailed information about the state of the training job. For detailed
     /// information on the secondary status of the training job, see StatusMessage
-    /// under SecondaryStatusTransition.
+    /// under SecondaryStatusTransition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SecondaryStatusTransition.html).
     /// 
     /// 
     /// SageMaker provides primary statuses and secondary statuses that apply to
@@ -871,6 +921,9 @@ pub struct TrainingJobStatusProfilerRuleEvaluationStatuses {
 /// The status of the warm pool associated with the training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobStatusWarmPoolStatus {
+    /// Optional. Indicates how many seconds the resource stayed in ResourceRetained
+    /// state. Populated only after resource reaches ResourceReused or ResourceReleased
+    /// state.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRetainedBillableTimeInSeconds")]
     pub resource_retained_billable_time_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reusedByJob")]

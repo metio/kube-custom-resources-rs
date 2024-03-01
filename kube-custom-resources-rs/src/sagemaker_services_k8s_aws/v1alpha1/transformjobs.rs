@@ -51,13 +51,13 @@ pub struct TransformJobSpec {
     /// Specified when you call the following APIs:
     /// 
     /// 
-    ///    * CreateProcessingJob
+    ///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
     /// 
     /// 
-    ///    * CreateTrainingJob
+    ///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
     /// 
     /// 
-    ///    * CreateTransformJob
+    ///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentConfig")]
     pub experiment_config: Option<TransformJobExperimentConfig>,
     /// The maximum number of parallel requests that can be sent to each instance
@@ -139,13 +139,13 @@ pub struct TransformJobDataProcessing {
 /// Specified when you call the following APIs:
 /// 
 /// 
-///    * CreateProcessingJob
+///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
 /// 
 /// 
-///    * CreateTrainingJob
+///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
 /// 
 /// 
-///    * CreateTransformJob
+///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransformJobExperimentConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentName")]
@@ -173,7 +173,7 @@ pub struct TransformJobModelClientConfig {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources

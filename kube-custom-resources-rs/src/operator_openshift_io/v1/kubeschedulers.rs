@@ -102,8 +102,8 @@ pub struct KubeSchedulerStatusConditions {
     pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// GenerationStatus keeps track of the generation for a given resource so that decisions about forced updates can be made.
@@ -154,8 +154,8 @@ pub struct KubeSchedulerStatusNodeStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastFallbackCount")]
     pub last_fallback_count: Option<i64>,
     /// nodeName is the name of the node
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
-    pub node_name: Option<String>,
+    #[serde(rename = "nodeName")]
+    pub node_name: String,
     /// targetRevision is the generation of the deployment we're trying to apply
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<i32>,

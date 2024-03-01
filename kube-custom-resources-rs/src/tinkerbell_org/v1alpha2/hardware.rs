@@ -17,10 +17,12 @@ pub struct HardwareSpec {
     /// Instance describes instance specific data that is generally unused by Tinkerbell core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instance: Option<HardwareInstance>,
-    /// IPXE provides iPXE script override fields. This is useful for debugging or netboot customization.
+    /// IPXE provides iPXE script override fields. This is useful for debugging or netboot
+    /// customization.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipxe: Option<HardwareIpxe>,
-    /// KernelParams passed to the kernel when launching the OSIE. Parameters are joined with a space.
+    /// KernelParams passed to the kernel when launching the OSIE. Parameters are joined with a
+    /// space.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelParams")]
     pub kernel_params: Option<Vec<String>>,
     /// NetworkInterfaces defines the desired DHCP and netboot configuration for a network interface.
@@ -37,7 +39,9 @@ pub struct HardwareSpec {
 /// BMCRef references a Rufio Machine object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareBmcRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -53,7 +57,8 @@ pub struct HardwareInstance {
     pub vendordata: Option<String>,
 }
 
-/// IPXE provides iPXE script override fields. This is useful for debugging or netboot customization.
+/// IPXE provides iPXE script override fields. This is useful for debugging or netboot
+/// customization.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareIpxe {
     /// Content is an inline iPXE script.
@@ -67,18 +72,21 @@ pub struct HardwareIpxe {
 /// NetworkInterfaces defines the desired DHCP and netboot configuration for a network interface.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareNetworkInterfaces {
-    /// DHCP is the basic network information for serving DHCP requests. Required when DisbaleDHCP is false.
+    /// DHCP is the basic network information for serving DHCP requests. Required when DisbaleDHCP
+    /// is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dhcp: Option<HardwareNetworkInterfacesDhcp>,
     /// DisableDHCP disables DHCP for this interface. Implies DisableNetboot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDhcp")]
     pub disable_dhcp: Option<bool>,
-    /// DisableNetboot disables netbooting for this interface. The interface will still receive network information specified by DHCP.
+    /// DisableNetboot disables netbooting for this interface. The interface will still receive
+    /// network information specified by DHCP.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNetboot")]
     pub disable_netboot: Option<bool>,
 }
 
-/// DHCP is the basic network information for serving DHCP requests. Required when DisbaleDHCP is false.
+/// DHCP is the basic network information for serving DHCP requests. Required when DisbaleDHCP
+/// is false.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareNetworkInterfacesDhcp {
     /// Gateway is the default gateway address to serve.
@@ -89,7 +97,8 @@ pub struct HardwareNetworkInterfacesDhcp {
     /// IP is an IPv4 address to serve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
-    /// LeaseTimeSeconds to serve. 24h default. Maximum equates to max uint32 as defined by RFC 2132 § 9.2 (https://www.rfc-editor.org/rfc/rfc2132.html#section-9.2).
+    /// LeaseTimeSeconds to serve. 24h default. Maximum equates to max uint32 as defined by RFC 2132
+    /// § 9.2 (https://www.rfc-editor.org/rfc/rfc2132.html#section-9.2).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "leaseTimeSeconds")]
     pub lease_time_seconds: Option<i64>,
     /// Nameservers to serve.
@@ -109,7 +118,9 @@ pub struct HardwareNetworkInterfacesDhcp {
 /// OSIE describes the Operating System Installation Environment to be netbooted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareOsie {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

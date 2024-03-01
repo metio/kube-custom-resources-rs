@@ -11,13 +11,17 @@ use std::collections::BTreeMap;
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct TemplateSpec {
-    /// Actions defines the set of actions to be run on a target machine. Actions are run sequentially in the order they are specified. At least 1 action must be specified. Names of actions must be unique within a Template.
+    /// Actions defines the set of actions to be run on a target machine. Actions are run sequentially
+    /// in the order they are specified. At least 1 action must be specified. Names of actions
+    /// must be unique within a Template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<TemplateActions>>,
-    /// Env defines environment variables to be available in all actions. If an action specifies the same environment variable it will take precedence.
+    /// Env defines environment variables to be available in all actions. If an action specifies
+    /// the same environment variable it will take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
-    /// Volumes to be mounted on all actions. If an action specifies the same volume it will take precedence.
+    /// Volumes to be mounted on all actions. If an action specifies the same volume it will take
+    /// precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<String>>,
 }
@@ -25,10 +29,12 @@ pub struct TemplateSpec {
 /// Action defines an individual action to be run on a target machine.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TemplateActions {
-    /// Args are a set of arguments to be passed to the command executed by the container on launch.
+    /// Args are a set of arguments to be passed to the command executed by the container on
+    /// launch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Cmd defines the command to use when launching the image. It overrides the default command of the action. It must be a unix path to an executable program.
+    /// Cmd defines the command to use when launching the image. It overrides the default command
+    /// of the action. It must be a unix path to an executable program.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cmd: Option<String>,
     /// Env defines environment variables used when launching the container.

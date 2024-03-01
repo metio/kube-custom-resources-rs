@@ -65,7 +65,7 @@ spec:
                           description: "Defines the traffic routing strategy during an endpoint deployment to shift\ntraffic from the old fleet to the new fleet."
                           properties:
                             canarySize:
-                              description: "Specifies the endpoint capacity to activate for production."
+                              description: "Specifies the type and size of the endpoint capacity to activate for a blue/green\ndeployment, a rolling deployment, or a rollback strategy. You can specify\nyour batches as either instance count or the overall percentage or your fleet.\n\n\nFor a rollback strategy, if you don't specify the fields in this object,\nor if you set the Value to 100%, then SageMaker uses a blue/green rollback\nstrategy and rolls all traffic back to the blue fleet."
                               properties:
                                 type_:
                                   type: "string"
@@ -74,7 +74,7 @@ spec:
                                   type: "integer"
                               type: "object"
                             linearStepSize:
-                              description: "Specifies the endpoint capacity to activate for production."
+                              description: "Specifies the type and size of the endpoint capacity to activate for a blue/green\ndeployment, a rolling deployment, or a rollback strategy. You can specify\nyour batches as either instance count or the overall percentage or your fleet.\n\n\nFor a rollback strategy, if you don't specify the fields in this object,\nor if you set the Value to 100%, then SageMaker uses a blue/green rollback\nstrategy and rolls all traffic back to the blue fleet."
                               properties:
                                 type_:
                                   type: "string"
@@ -89,17 +89,45 @@ spec:
                               type: "integer"
                           type: "object"
                       type: "object"
+                    rollingUpdatePolicy:
+                      description: "Specifies a rolling deployment strategy for updating a SageMaker endpoint."
+                      properties:
+                        maximumBatchSize:
+                          description: "Specifies the type and size of the endpoint capacity to activate for a blue/green\ndeployment, a rolling deployment, or a rollback strategy. You can specify\nyour batches as either instance count or the overall percentage or your fleet.\n\n\nFor a rollback strategy, if you don't specify the fields in this object,\nor if you set the Value to 100%, then SageMaker uses a blue/green rollback\nstrategy and rolls all traffic back to the blue fleet."
+                          properties:
+                            type_:
+                              type: "string"
+                            value:
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                        maximumExecutionTimeoutInSeconds:
+                          format: "int64"
+                          type: "integer"
+                        rollbackMaximumBatchSize:
+                          description: "Specifies the type and size of the endpoint capacity to activate for a blue/green\ndeployment, a rolling deployment, or a rollback strategy. You can specify\nyour batches as either instance count or the overall percentage or your fleet.\n\n\nFor a rollback strategy, if you don't specify the fields in this object,\nor if you set the Value to 100%, then SageMaker uses a blue/green rollback\nstrategy and rolls all traffic back to the blue fleet."
+                          properties:
+                            type_:
+                              type: "string"
+                            value:
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                        waitIntervalInSeconds:
+                          format: "int64"
+                          type: "integer"
+                      type: "object"
                   type: "object"
                 endpointConfigName:
-                  description: "The name of an endpoint configuration. For more information, see CreateEndpointConfig."
+                  description: "The name of an endpoint configuration. For more information, see CreateEndpointConfig\n(https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html)."
                   type: "string"
                 endpointName:
-                  description: "The name of the endpoint.The name must be unique within an Amazon Web Services\nRegion in your Amazon Web Services account. The name is case-insensitive\nin CreateEndpoint, but the case is preserved and must be matched in ."
+                  description: "The name of the endpoint.The name must be unique within an Amazon Web Services\nRegion in your Amazon Web Services account. The name is case-insensitive\nin CreateEndpoint, but the case is preserved and must be matched in InvokeEndpoint\n(https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html)."
                   type: "string"
                 tags:
                   description: "An array of key-value pairs. You can use tags to categorize your Amazon Web\nServices resources in different ways, for example, by purpose, owner, or\nenvironment. For more information, see Tagging Amazon Web Services Resources\n(https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)."
                   items:
-                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags.\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
+                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
                     properties:
                       key:
                         type: "string"
@@ -161,7 +189,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 endpointStatus:
-                  description: "The status of the endpoint.\n\n\n   * OutOfService: Endpoint is not available to take incoming requests.\n\n\n   * Creating: CreateEndpoint is executing.\n\n\n   * Updating: UpdateEndpoint or UpdateEndpointWeightsAndCapacities is executing.\n\n\n   * SystemUpdating: Endpoint is undergoing maintenance and cannot be updated\n   or deleted or re-scaled until it has completed. This maintenance operation\n   does not change any customer-specified values such as VPC config, KMS\n   encryption, model, instance type, or instance count.\n\n\n   * RollingBack: Endpoint fails to scale up or down or change its variant\n   weight and is in the process of rolling back to its previous configuration.\n   Once the rollback completes, endpoint returns to an InService status.\n   This transitional status only applies to an endpoint that has autoscaling\n   enabled and is undergoing variant weight or capacity changes as part of\n   an UpdateEndpointWeightsAndCapacities call or when the UpdateEndpointWeightsAndCapacities\n   operation is called explicitly.\n\n\n   * InService: Endpoint is available to process incoming requests.\n\n\n   * Deleting: DeleteEndpoint is executing.\n\n\n   * Failed: Endpoint could not be created, updated, or re-scaled. Use DescribeEndpointOutput$FailureReason\n   for information about the failure. DeleteEndpoint is the only operation\n   that can be performed on a failed endpoint."
+                  description: "The status of the endpoint.\n\n\n   * OutOfService: Endpoint is not available to take incoming requests.\n\n\n   * Creating: CreateEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html)\n   is executing.\n\n\n   * Updating: UpdateEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html)\n   or UpdateEndpointWeightsAndCapacities (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html)\n   is executing.\n\n\n   * SystemUpdating: Endpoint is undergoing maintenance and cannot be updated\n   or deleted or re-scaled until it has completed. This maintenance operation\n   does not change any customer-specified values such as VPC config, KMS\n   encryption, model, instance type, or instance count.\n\n\n   * RollingBack: Endpoint fails to scale up or down or change its variant\n   weight and is in the process of rolling back to its previous configuration.\n   Once the rollback completes, endpoint returns to an InService status.\n   This transitional status only applies to an endpoint that has autoscaling\n   enabled and is undergoing variant weight or capacity changes as part of\n   an UpdateEndpointWeightsAndCapacities (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html)\n   call or when the UpdateEndpointWeightsAndCapacities (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html)\n   operation is called explicitly.\n\n\n   * InService: Endpoint is available to process incoming requests.\n\n\n   * Deleting: DeleteEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpoint.html)\n   is executing.\n\n\n   * Failed: Endpoint could not be created, updated, or re-scaled. Use the\n   FailureReason value returned by DescribeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeEndpoint.html)\n   for information about the failure. DeleteEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpoint.html)\n   is the only operation that can be performed on a failed endpoint.\n\n\n   * UpdateRollbackFailed: Both the rolling deployment and auto-rollback\n   failed. Your endpoint is in service with a mix of the old and new endpoint\n   configurations. For information about how to remedy this issue and restore\n   the endpoint's status to InService, see Rolling Deployments (https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-rolling.html)."
                   type: "string"
                 failureReason:
                   description: "If the status of the endpoint is Failed, the reason why it failed."
@@ -177,7 +205,7 @@ spec:
                       type: "string"
                     productionVariants:
                       items:
-                        description: "The production variant summary for a deployment when an endpoint is creating\nor updating with the CreateEndpoint or UpdateEndpoint operations. Describes\nthe VariantStatus , weight and capacity for a production variant associated\nwith an endpoint."
+                        description: "The production variant summary for a deployment when an endpoint is creating\nor updating with the CreateEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html)\nor UpdateEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html)\noperations. Describes the VariantStatus , weight and capacity for a production\nvariant associated with an endpoint."
                         properties:
                           acceleratorType:
                             type: "string"
@@ -193,12 +221,15 @@ spec:
                               memorySizeInMB:
                                 format: "int64"
                                 type: "integer"
+                              provisionedConcurrency:
+                                format: "int64"
+                                type: "integer"
                             type: "object"
                           currentWeight:
                             type: "number"
                           deployedImages:
                             items:
-                              description: "Gets the Amazon EC2 Container Registry path of the docker image of the model\nthat is hosted in this ProductionVariant.\n\n\nIf you used the registry/repository[:tag] form to specify the image path\nof the primary container when you created the model hosted in this ProductionVariant,\nthe path resolves to a path of the form registry/repository[@digest]. A digest\nis a hash value that identifies a specific version of an image. For information\nabout Amazon ECR paths, see Pulling an Image (https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-pull-ecr-image.html)\nin the Amazon ECR User Guide."
+                              description: "Gets the Amazon EC2 Container Registry path of the docker image of the model\nthat is hosted in this ProductionVariant (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProductionVariant.html).\n\n\nIf you used the registry/repository[:tag] form to specify the image path\nof the primary container when you created the model hosted in this ProductionVariant,\nthe path resolves to a path of the form registry/repository[@digest]. A digest\nis a hash value that identifies a specific version of an image. For information\nabout Amazon ECR paths, see Pulling an Image (https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-pull-ecr-image.html)\nin the Amazon ECR User Guide."
                               properties:
                                 resolutionTime:
                                   format: "date-time"
@@ -221,11 +252,32 @@ spec:
                               memorySizeInMB:
                                 format: "int64"
                                 type: "integer"
+                              provisionedConcurrency:
+                                format: "int64"
+                                type: "integer"
                             type: "object"
                           desiredWeight:
                             type: "number"
                           instanceType:
                             type: "string"
+                          managedInstanceScaling:
+                            description: "Settings that control the range in the number of instances that the endpoint\nprovisions as it scales up or down to accommodate traffic."
+                            properties:
+                              maxInstanceCount:
+                                format: "int64"
+                                type: "integer"
+                              minInstanceCount:
+                                format: "int64"
+                                type: "integer"
+                              status:
+                                type: "string"
+                            type: "object"
+                          routingConfig:
+                            description: "Settings that control how the endpoint routes incoming traffic to the instances\nthat the endpoint hosts."
+                            properties:
+                              routingStrategy:
+                                type: "string"
+                            type: "object"
                           variantName:
                             type: "string"
                           variantStatus:
@@ -248,7 +300,7 @@ spec:
                       type: "string"
                   type: "object"
                 productionVariants:
-                  description: "An array of ProductionVariantSummary objects, one for each model hosted behind\nthis endpoint."
+                  description: "An array of ProductionVariantSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProductionVariantSummary.html)\nobjects, one for each model hosted behind this endpoint."
                   items:
                     description: "Describes weight and capacities for a production variant associated with\nan endpoint. If you sent a request to the UpdateEndpointWeightsAndCapacities\nAPI and the endpoint status is Updating, you get different desired and current\nvalues."
                     properties:
@@ -264,12 +316,15 @@ spec:
                           memorySizeInMB:
                             format: "int64"
                             type: "integer"
+                          provisionedConcurrency:
+                            format: "int64"
+                            type: "integer"
                         type: "object"
                       currentWeight:
                         type: "number"
                       deployedImages:
                         items:
-                          description: "Gets the Amazon EC2 Container Registry path of the docker image of the model\nthat is hosted in this ProductionVariant.\n\n\nIf you used the registry/repository[:tag] form to specify the image path\nof the primary container when you created the model hosted in this ProductionVariant,\nthe path resolves to a path of the form registry/repository[@digest]. A digest\nis a hash value that identifies a specific version of an image. For information\nabout Amazon ECR paths, see Pulling an Image (https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-pull-ecr-image.html)\nin the Amazon ECR User Guide."
+                          description: "Gets the Amazon EC2 Container Registry path of the docker image of the model\nthat is hosted in this ProductionVariant (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProductionVariant.html).\n\n\nIf you used the registry/repository[:tag] form to specify the image path\nof the primary container when you created the model hosted in this ProductionVariant,\nthe path resolves to a path of the form registry/repository[@digest]. A digest\nis a hash value that identifies a specific version of an image. For information\nabout Amazon ECR paths, see Pulling an Image (https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-pull-ecr-image.html)\nin the Amazon ECR User Guide."
                           properties:
                             resolutionTime:
                               format: "date-time"
@@ -292,9 +347,30 @@ spec:
                           memorySizeInMB:
                             format: "int64"
                             type: "integer"
+                          provisionedConcurrency:
+                            format: "int64"
+                            type: "integer"
                         type: "object"
                       desiredWeight:
                         type: "number"
+                      managedInstanceScaling:
+                        description: "Settings that control the range in the number of instances that the endpoint\nprovisions as it scales up or down to accommodate traffic."
+                        properties:
+                          maxInstanceCount:
+                            format: "int64"
+                            type: "integer"
+                          minInstanceCount:
+                            format: "int64"
+                            type: "integer"
+                          status:
+                            type: "string"
+                        type: "object"
+                      routingConfig:
+                        description: "Settings that control how the endpoint routes incoming traffic to the instances\nthat the endpoint hosts."
+                        properties:
+                          routingStrategy:
+                            type: "string"
+                        type: "object"
                       variantName:
                         type: "string"
                       variantStatus:

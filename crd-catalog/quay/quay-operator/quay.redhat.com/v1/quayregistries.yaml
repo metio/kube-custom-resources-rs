@@ -608,6 +608,7 @@ spec:
                             type: "object"
                           replicas:
                             format: "int32"
+                            nullable: true
                             type: "integer"
                           resources:
                             description: "Resources describes the resource limits and requests for a component."

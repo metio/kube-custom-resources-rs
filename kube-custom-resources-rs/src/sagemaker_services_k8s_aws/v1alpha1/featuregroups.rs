@@ -88,15 +88,18 @@ pub struct FeatureGroupSpec {
     ///    and Apache Iceberg (https://iceberg.apache.org/).
     /// 
     /// 
-    /// To learn more about this parameter, see OfflineStoreConfig.
+    /// To learn more about this parameter, see OfflineStoreConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OfflineStoreConfig.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineStoreConfig")]
     pub offline_store_config: Option<FeatureGroupOfflineStoreConfig>,
     /// You can turn the OnlineStore on or off by specifying True for the EnableOnlineStore
-    /// flag in OnlineStoreConfig; the default value is False.
+    /// flag in OnlineStoreConfig.
     /// 
     /// 
     /// You can also include an Amazon Web Services KMS key ID (KMSKeyId) for at-rest
     /// encryption of the OnlineStore.
+    /// 
+    /// 
+    /// The default value is False.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineStoreConfig")]
     pub online_store_config: Option<FeatureGroupOnlineStoreConfig>,
     /// The name of the Feature whose value uniquely identifies a Record defined
@@ -125,16 +128,52 @@ pub struct FeatureGroupSpec {
     /// Tags used to identify Features in each FeatureGroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<FeatureGroupTags>>,
+    /// Used to set feature group throughput configuration. There are two modes:
+    /// ON_DEMAND and PROVISIONED. With on-demand mode, you are charged for data
+    /// reads and writes that your application performs on your feature group. You
+    /// do not need to specify read and write throughput because Feature Store accommodates
+    /// your workloads as they ramp up and down. You can switch a feature group to
+    /// on-demand only once in a 24 hour period. With provisioned throughput mode,
+    /// you specify the read and write capacity per second that you expect your application
+    /// to require, and you are billed based on those limits. Exceeding provisioned
+    /// throughput will result in your requests being throttled.
+    /// 
+    /// 
+    /// Note: PROVISIONED throughput mode is supported only for feature groups that
+    /// are offline-only, or use the Standard (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OnlineStoreConfig.html#sagemaker-Type-OnlineStoreConfig-StorageType)
+    /// tier online store.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throughputConfig")]
+    pub throughput_config: Option<FeatureGroupThroughputConfig>,
 }
 
 /// A list of features. You must include FeatureName and FeatureType. Valid feature
 /// FeatureTypes are Integral, Fractional and String.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupFeatureDefinitions {
+    /// Configuration for your collection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectionConfig")]
+    pub collection_config: Option<FeatureGroupFeatureDefinitionsCollectionConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectionType")]
+    pub collection_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureName")]
     pub feature_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureType")]
     pub feature_type: Option<String>,
+}
+
+/// Configuration for your collection.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FeatureGroupFeatureDefinitionsCollectionConfig {
+    /// Configuration for your vector collection type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorConfig")]
+    pub vector_config: Option<FeatureGroupFeatureDefinitionsCollectionConfigVectorConfig>,
+}
+
+/// Configuration for your vector collection type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FeatureGroupFeatureDefinitionsCollectionConfigVectorConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dimension: Option<i64>,
 }
 
 /// Use this to configure an OfflineFeatureStore. This parameter allows you to
@@ -160,7 +199,7 @@ pub struct FeatureGroupFeatureDefinitions {
 ///    and Apache Iceberg (https://iceberg.apache.org/).
 /// 
 /// 
-/// To learn more about this parameter, see OfflineStoreConfig.
+/// To learn more about this parameter, see OfflineStoreConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OfflineStoreConfig.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupOfflineStoreConfig {
     /// The meta data of the Glue table which serves as data catalog for the OfflineStore.
@@ -198,11 +237,14 @@ pub struct FeatureGroupOfflineStoreConfigS3StorageConfig {
 }
 
 /// You can turn the OnlineStore on or off by specifying True for the EnableOnlineStore
-/// flag in OnlineStoreConfig; the default value is False.
+/// flag in OnlineStoreConfig.
 /// 
 /// 
 /// You can also include an Amazon Web Services KMS key ID (KMSKeyId) for at-rest
 /// encryption of the OnlineStore.
+/// 
+/// 
+/// The default value is False.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupOnlineStoreConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOnlineStore")]
@@ -210,6 +252,14 @@ pub struct FeatureGroupOnlineStoreConfig {
     /// The security configuration for OnlineStore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityConfig")]
     pub security_config: Option<FeatureGroupOnlineStoreConfigSecurityConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageType")]
+    pub storage_type: Option<String>,
+    /// Time to live duration, where the record is hard deleted after the expiration
+    /// time is reached; ExpiresAt = EventTime + TtlDuration. For information on
+    /// HardDelete, see the DeleteRecord (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html)
+    /// API in the Amazon SageMaker API Reference guide.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlDuration")]
+    pub ttl_duration: Option<FeatureGroupOnlineStoreConfigTtlDuration>,
 }
 
 /// The security configuration for OnlineStore.
@@ -219,6 +269,18 @@ pub struct FeatureGroupOnlineStoreConfigSecurityConfig {
     pub kms_key_id: Option<String>,
 }
 
+/// Time to live duration, where the record is hard deleted after the expiration
+/// time is reached; ExpiresAt = EventTime + TtlDuration. For information on
+/// HardDelete, see the DeleteRecord (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html)
+/// API in the Amazon SageMaker API Reference guide.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FeatureGroupOnlineStoreConfigTtlDuration {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub unit: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<i64>,
+}
+
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
 /// 
@@ -226,7 +288,7 @@ pub struct FeatureGroupOnlineStoreConfigSecurityConfig {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
@@ -240,6 +302,30 @@ pub struct FeatureGroupTags {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Used to set feature group throughput configuration. There are two modes:
+/// ON_DEMAND and PROVISIONED. With on-demand mode, you are charged for data
+/// reads and writes that your application performs on your feature group. You
+/// do not need to specify read and write throughput because Feature Store accommodates
+/// your workloads as they ramp up and down. You can switch a feature group to
+/// on-demand only once in a 24 hour period. With provisioned throughput mode,
+/// you specify the read and write capacity per second that you expect your application
+/// to require, and you are billed based on those limits. Exceeding provisioned
+/// throughput will result in your requests being throttled.
+/// 
+/// 
+/// Note: PROVISIONED throughput mode is supported only for feature groups that
+/// are offline-only, or use the Standard (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OnlineStoreConfig.html#sagemaker-Type-OnlineStoreConfig-StorageType)
+/// tier online store.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FeatureGroupThroughputConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedReadCapacityUnits")]
+    pub provisioned_read_capacity_units: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedWriteCapacityUnits")]
+    pub provisioned_write_capacity_units: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throughputMode")]
+    pub throughput_mode: Option<String>,
 }
 
 /// FeatureGroupStatus defines the observed state of FeatureGroup

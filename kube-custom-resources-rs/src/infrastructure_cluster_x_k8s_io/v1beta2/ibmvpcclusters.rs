@@ -46,6 +46,9 @@ pub struct IBMVPCClusterControlPlaneLoadBalancer {
     /// AdditionalListeners sets the additional listeners for the control plane load balancer. .
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
     pub additional_listeners: Option<Vec<IBMVPCClusterControlPlaneLoadBalancerAdditionalListeners>>,
+    /// id of the loadbalancer
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
     /// Name sets the name of the VPC load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

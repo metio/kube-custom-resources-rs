@@ -53,6 +53,8 @@ pub struct PerconaServerMySQLSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PerconaServerMySQLBackup {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
+    pub backoff_limit: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMySQLBackupContainerSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

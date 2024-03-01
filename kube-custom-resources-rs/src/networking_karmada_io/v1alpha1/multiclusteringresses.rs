@@ -163,6 +163,12 @@ pub struct MultiClusterIngressStatus {
     /// loadBalancer contains the current status of the load-balancer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<MultiClusterIngressStatusLoadBalancer>,
+    /// ServiceLocations records the locations of MulticlusterIngress's backend Service resources. It will be set by the system controller.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLocations")]
+    pub service_locations: Option<Vec<MultiClusterIngressStatusServiceLocations>>,
+    /// TrafficBlockClusters records the cluster name list that needs to perform traffic block. When the cloud provider implements its multicluster-cloud-provider and refreshes the service backend address to the LoadBalancer Service, it needs to filter out the backend addresses in these clusters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficBlockClusters")]
+    pub traffic_block_clusters: Option<Vec<String>>,
 }
 
 /// loadBalancer contains the current status of the load-balancer.
@@ -197,5 +203,15 @@ pub struct MultiClusterIngressStatusLoadBalancerIngressPorts {
     pub port: i32,
     /// protocol is the protocol of the ingress port. The supported values are: "TCP", "UDP", "SCTP"
     pub protocol: String,
+}
+
+/// ServiceLocation records the locations of MulticlusterIngress's backend Service resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MultiClusterIngressStatusServiceLocations {
+    /// Clusters records the cluster list where the Service is located.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub clusters: Option<Vec<String>>,
+    /// name is the referenced service. The service must exist in the same namespace as the MultiClusterService object.
+    pub name: String,
 }
 

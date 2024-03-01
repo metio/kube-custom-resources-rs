@@ -493,6 +493,9 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSource {
     /// Privileged for the source pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
+    /// Tolerations for the source pod
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceTolerations>>,
     /// VolumesMount for the source pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMount")]
     pub volume_mount: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumeMount>>,
@@ -587,6 +590,26 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceImagePullSecrets {
     /// Name of the referent
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// The pod with this Toleration tolerates any taint matches the <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceTolerations {
+    /// Effect to match. Empty means all effects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Taint key the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operators are Exists or Equal. Defaults to Equal.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// Period of time the toleration tolerates the taint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.

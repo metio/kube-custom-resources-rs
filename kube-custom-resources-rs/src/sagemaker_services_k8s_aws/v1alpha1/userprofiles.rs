@@ -51,7 +51,7 @@ pub struct UserProfileSpec {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
@@ -70,8 +70,25 @@ pub struct UserProfileTags {
 /// A collection of settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettings {
+    /// The Code Editor application settings.
+    /// 
+    /// 
+    /// For more information about Code Editor, see Get started with Code Editor
+    /// in Amazon SageMaker (https://docs.aws.amazon.com/sagemaker/latest/dg/code-editor.html).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeEditorAppSettings")]
+    pub code_editor_app_settings: Option<UserProfileUserSettingsCodeEditorAppSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customFileSystemConfigs")]
+    pub custom_file_system_configs: Option<Vec<UserProfileUserSettingsCustomFileSystemConfigs>>,
+    /// Details about the POSIX identity that is used for file system operations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPosixUserConfig")]
+    pub custom_posix_user_config: Option<UserProfileUserSettingsCustomPosixUserConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultLandingURI")]
+    pub default_landing_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRole")]
     pub execution_role: Option<String>,
+    /// The settings for the JupyterLab application.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jupyterLabAppSettings")]
+    pub jupyter_lab_app_settings: Option<UserProfileUserSettingsJupyterLabAppSettings>,
     /// The JupyterServer app settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jupyterServerAppSettings")]
     pub jupyter_server_app_settings: Option<UserProfileUserSettingsJupyterServerAppSettings>,
@@ -79,21 +96,127 @@ pub struct UserProfileUserSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelGatewayAppSettings")]
     pub kernel_gateway_app_settings: Option<UserProfileUserSettingsKernelGatewayAppSettings>,
     /// A collection of settings that configure user interaction with the RStudioServerPro
-    /// app. RStudioServerProAppSettings cannot be updated. The RStudioServerPro
-    /// app must be deleted and a new one created to make any changes.
+    /// app.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rStudioServerProAppSettings")]
     pub r_studio_server_pro_app_settings: Option<UserProfileUserSettingsRStudioServerProAppSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<String>>,
-    /// Specifies options for sharing SageMaker Studio notebooks. These settings
+    /// Specifies options for sharing Amazon SageMaker Studio notebooks. These settings
     /// are specified as part of DefaultUserSettings when the CreateDomain API is
     /// called, and as part of UserSettings when the CreateUserProfile API is called.
     /// When SharingSettings is not specified, notebook sharing isn't allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharingSettings")]
     pub sharing_settings: Option<UserProfileUserSettingsSharingSettings>,
+    /// The default storage settings for a private space.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spaceStorageSettings")]
+    pub space_storage_settings: Option<UserProfileUserSettingsSpaceStorageSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "studioWebPortal")]
+    pub studio_web_portal: Option<String>,
     /// The TensorBoard app settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tensorBoardAppSettings")]
     pub tensor_board_app_settings: Option<UserProfileUserSettingsTensorBoardAppSettings>,
+}
+
+/// The Code Editor application settings.
+/// 
+/// 
+/// For more information about Code Editor, see Get started with Code Editor
+/// in Amazon SageMaker (https://docs.aws.amazon.com/sagemaker/latest/dg/code-editor.html).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsCodeEditorAppSettings {
+    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+    /// the instance type that the version runs on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<UserProfileUserSettingsCodeEditorAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
+    pub lifecycle_config_ar_ns: Option<Vec<String>>,
+}
+
+/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+/// the instance type that the version runs on.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsCodeEditorAppSettingsDefaultResourceSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
+    pub instance_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
+    pub lifecycle_config_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
+    pub sage_maker_image_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
+    pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
+}
+
+/// The settings for assigning a custom file system to a user profile or space
+/// for an Amazon SageMaker Domain. Permitted users can access this file system
+/// in Amazon SageMaker Studio.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsCustomFileSystemConfigs {
+    /// The settings for assigning a custom Amazon EFS file system to a user profile
+    /// or space for an Amazon SageMaker Domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "efsFileSystemConfig")]
+    pub efs_file_system_config: Option<UserProfileUserSettingsCustomFileSystemConfigsEfsFileSystemConfig>,
+}
+
+/// The settings for assigning a custom Amazon EFS file system to a user profile
+/// or space for an Amazon SageMaker Domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsCustomFileSystemConfigsEfsFileSystemConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
+    pub file_system_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemPath")]
+    pub file_system_path: Option<String>,
+}
+
+/// Details about the POSIX identity that is used for file system operations.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsCustomPosixUserConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
+}
+
+/// The settings for the JupyterLab application.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsJupyterLabAppSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImages")]
+    pub custom_images: Option<Vec<UserProfileUserSettingsJupyterLabAppSettingsCustomImages>>,
+    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+    /// the instance type that the version runs on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<UserProfileUserSettingsJupyterLabAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
+    pub lifecycle_config_ar_ns: Option<Vec<String>>,
+}
+
+/// A custom SageMaker image. For more information, see Bring your own SageMaker
+/// image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsJupyterLabAppSettingsCustomImages {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appImageConfigName")]
+    pub app_image_config_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageName")]
+    pub image_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageVersionNumber")]
+    pub image_version_number: Option<i64>,
+}
+
+/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
+/// the instance type that the version runs on.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsJupyterLabAppSettingsDefaultResourceSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
+    pub instance_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
+    pub lifecycle_config_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
+    pub sage_maker_image_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
+    pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
 }
 
 /// The JupyterServer app settings.
@@ -119,6 +242,8 @@ pub struct UserProfileUserSettingsJupyterServerAppSettingsDefaultResourceSpec {
     pub sage_maker_image_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
 }
 
 /// The KernelGateway app settings.
@@ -158,11 +283,12 @@ pub struct UserProfileUserSettingsKernelGatewayAppSettingsDefaultResourceSpec {
     pub sage_maker_image_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
 }
 
 /// A collection of settings that configure user interaction with the RStudioServerPro
-/// app. RStudioServerProAppSettings cannot be updated. The RStudioServerPro
-/// app must be deleted and a new one created to make any changes.
+/// app.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsRStudioServerProAppSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStatus")]
@@ -171,7 +297,7 @@ pub struct UserProfileUserSettingsRStudioServerProAppSettings {
     pub user_group: Option<String>,
 }
 
-/// Specifies options for sharing SageMaker Studio notebooks. These settings
+/// Specifies options for sharing Amazon SageMaker Studio notebooks. These settings
 /// are specified as part of DefaultUserSettings when the CreateDomain API is
 /// called, and as part of UserSettings when the CreateUserProfile API is called.
 /// When SharingSettings is not specified, notebook sharing isn't allowed.
@@ -183,6 +309,25 @@ pub struct UserProfileUserSettingsSharingSettings {
     pub s3_kms_key_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
+}
+
+/// The default storage settings for a private space.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsSpaceStorageSettings {
+    /// A collection of default EBS storage settings that applies to private spaces
+    /// created within a domain or user profile.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEBSStorageSettings")]
+    pub default_ebs_storage_settings: Option<UserProfileUserSettingsSpaceStorageSettingsDefaultEbsStorageSettings>,
+}
+
+/// A collection of default EBS storage settings that applies to private spaces
+/// created within a domain or user profile.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct UserProfileUserSettingsSpaceStorageSettingsDefaultEbsStorageSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEBSVolumeSizeInGb")]
+    pub default_ebs_volume_size_in_gb: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumEBSVolumeSizeInGb")]
+    pub maximum_ebs_volume_size_in_gb: Option<i64>,
 }
 
 /// The TensorBoard app settings.
@@ -206,6 +351,8 @@ pub struct UserProfileUserSettingsTensorBoardAppSettingsDefaultResourceSpec {
     pub sage_maker_image_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
 }
 
 /// UserProfileStatus defines the observed state of UserProfile

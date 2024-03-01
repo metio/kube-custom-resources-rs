@@ -15,14 +15,18 @@ pub struct WorkflowSpec {
     /// HardwareRef is a reference to a Hardware resource this workflow will execute on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareRef")]
     pub hardware_ref: Option<WorkflowHardwareRef>,
-    /// TemplateParams are a list of key-value pairs that are injected into templates at render time. TemplateParams are exposed to templates using a top level .Params key. 
-    ///  For example, TemplateParams = {"foo": "bar"}, the foo key can be accessed via .Params.foo.
+    /// TemplateParams are a list of key-value pairs that are injected into templates at render
+    /// time. TemplateParams are exposed to templates using a top level .Params key.
+    /// 
+    /// 
+    /// For example, TemplateParams = {"foo": "bar"}, the foo key can be accessed via .Params.foo.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateParams")]
     pub template_params: Option<BTreeMap<String, String>>,
     /// TemplateRef is a reference to a Template resource used to render workflow actions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<WorkflowTemplateRef>,
-    /// TimeoutSeconds defines the time the workflow has to complete. The timer begins when the first action is requested. When set to 0, no timeout is applied.
+    /// TimeoutSeconds defines the time the workflow has to complete. The timer begins when the first
+    /// action is requested. When set to 0, no timeout is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i64>,
 }
@@ -30,7 +34,9 @@ pub struct WorkflowSpec {
 /// HardwareRef is a reference to a Hardware resource this workflow will execute on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowHardwareRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -38,7 +44,9 @@ pub struct WorkflowHardwareRef {
 /// TemplateRef is a reference to a Template resource used to render workflow actions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplateRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -48,11 +56,13 @@ pub struct WorkflowStatus {
     /// Actions is a list of action states.
     pub actions: Vec<WorkflowStatusActions>,
     /// Conditions details a set of observations about the Workflow.
-    pub conditions: Vec<WorkflowStatusConditions>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<WorkflowStatusConditions>>,
     /// LastTransition is the observed time when State transitioned last.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitioned")]
     pub last_transitioned: Option<String>,
-    /// StartedAt is the time the first action was requested. Nil indicates the Workflow has not started.
+    /// StartedAt is the time the first action was requested. Nil indicates the Workflow has not
+    /// started.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startedAt")]
     pub started_at: Option<String>,
     /// State describes the current state of the Workflow.
@@ -63,10 +73,12 @@ pub struct WorkflowStatus {
 /// ActionStatus describes status information about an action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowStatusActions {
-    /// FailureMessage is a free-form user friendly message describing why the Action entered the ActionStateFailed state. Typically, this is an elaboration on the Reason.
+    /// FailureMessage is a free-form user friendly message describing why the Action entered the
+    /// ActionStateFailed state. Typically, this is an elaboration on the Reason.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
-    /// FailureReason is a short CamelCase word or phrase describing why the Action entered ActionStateFailed.
+    /// FailureReason is a short CamelCase word or phrase describing why the Action entered
+    /// ActionStateFailed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// ID uniquely identifies the action status.
@@ -77,7 +89,8 @@ pub struct WorkflowStatusActions {
     /// Rendered is the rendered action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rendered: Option<WorkflowStatusActionsRendered>,
-    /// StartedAt is the time the action was started as reported by the client. Nil indicates the Action has not started.
+    /// StartedAt is the time the action was started as reported by the client. Nil indicates the
+    /// Action has not started.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startedAt")]
     pub started_at: Option<String>,
     /// State describes the current state of the action.
@@ -88,10 +101,12 @@ pub struct WorkflowStatusActions {
 /// Rendered is the rendered action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowStatusActionsRendered {
-    /// Args are a set of arguments to be passed to the command executed by the container on launch.
+    /// Args are a set of arguments to be passed to the command executed by the container on
+    /// launch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Cmd defines the command to use when launching the image. It overrides the default command of the action. It must be a unix path to an executable program.
+    /// Cmd defines the command to use when launching the image. It overrides the default command
+    /// of the action. It must be a unix path to an executable program.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cmd: Option<String>,
     /// Env defines environment variables used when launching the container.
@@ -120,7 +135,8 @@ pub struct WorkflowStatusActionsRenderedNamespaces {
     pub pid: Option<i64>,
 }
 
-/// Condition defines an observation on a resource that is generally attainable by inspecting other status fields.
+/// Condition defines an observation on a resource that is generally attainable by inspecting
+/// other status fields.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowStatusConditions {
     /// LastTransition is the last time the condition transitioned from one status to another.

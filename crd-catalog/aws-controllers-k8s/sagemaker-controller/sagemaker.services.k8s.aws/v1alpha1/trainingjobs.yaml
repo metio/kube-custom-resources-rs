@@ -49,7 +49,7 @@ spec:
                       type: "boolean"
                     metricDefinitions:
                       items:
-                        description: "Specifies a metric that the training algorithm writes to stderr or stdout.\nSageMakerhyperparameter tuning captures all defined metrics. You specify\none metric that a hyperparameter tuning job uses as its objective metric\nto choose the best training job."
+                        description: "Specifies a metric that the training algorithm writes to stderr or stdout.\nYou can view these logs to understand how your training job performs and\ncheck for any errors encountered during training. SageMaker hyperparameter\ntuning captures all defined metrics. Specify one of the defined metrics to\nuse as an objective metric using the TuningObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-TuningObjective)\nparameter in the HyperParameterTrainingJobDefinition API to evaluate job\nperformance during hyperparameter tuning."
                         properties:
                           name:
                             type: "string"
@@ -134,7 +134,7 @@ spec:
                   description: "The environment variables to set in the Docker container."
                   type: "object"
                 experimentConfig:
-                  description: "Associates a SageMaker job as a trial component with an experiment and trial.\nSpecified when you call the following APIs:\n\n\n   * CreateProcessingJob\n\n\n   * CreateTrainingJob\n\n\n   * CreateTransformJob"
+                  description: "Associates a SageMaker job as a trial component with an experiment and trial.\nSpecified when you call the following APIs:\n\n\n   * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)\n\n\n   * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)\n\n\n   * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)"
                   properties:
                     experimentName:
                       type: "string"
@@ -148,8 +148,14 @@ spec:
                     type: "string"
                   description: "Algorithm-specific parameters that influence the quality of the model. You\nset hyperparameters before you start the learning process. For a list of\nhyperparameters for each training algorithm provided by SageMaker, see Algorithms\n(https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).\n\n\nYou can specify a maximum of 100 hyperparameters. Each hyperparameter is\na key-value pair. Each key and value is limited to 256 characters, as specified\nby the Length Constraint.\n\n\nDo not include any security-sensitive information including account access\nIDs, secrets or tokens in any hyperparameter field. If the use of security-sensitive\ncredentials are detected, SageMaker will reject your training job request\nand return an exception error."
                   type: "object"
+                infraCheckConfig:
+                  description: "Contains information about the infrastructure health check configuration\nfor the training job."
+                  properties:
+                    enableInfraCheck:
+                      type: "boolean"
+                  type: "object"
                 inputDataConfig:
-                  description: "An array of Channel objects. Each channel is a named input source. InputDataConfig\ndescribes the input data and its location.\n\n\nAlgorithms can accept input data from one or more channels. For example,\nan algorithm might have two channels of input data, training_data and validation_data.\nThe configuration for each channel provides the S3, EFS, or FSx location\nwhere the input data is stored. It also provides information about the stored\ndata: the MIME type, compression method, and whether the data is wrapped\nin RecordIO format.\n\n\nDepending on the input mode that the algorithm supports, SageMaker either\ncopies input data files from an S3 bucket to a local directory in the Docker\ncontainer, or makes it available as input streams. For example, if you specify\nan EFS location, input data files are available as input streams. They do\nnot need to be downloaded."
+                  description: "An array of Channel objects. Each channel is a named input source. InputDataConfig\ndescribes the input data and its location.\n\n\nAlgorithms can accept input data from one or more channels. For example,\nan algorithm might have two channels of input data, training_data and validation_data.\nThe configuration for each channel provides the S3, EFS, or FSx location\nwhere the input data is stored. It also provides information about the stored\ndata: the MIME type, compression method, and whether the data is wrapped\nin RecordIO format.\n\n\nDepending on the input mode that the algorithm supports, SageMaker either\ncopies input data files from an S3 bucket to a local directory in the Docker\ncontainer, or makes it available as input streams. For example, if you specify\nan EFS location, input data files are available as input streams. They do\nnot need to be downloaded.\n\n\nYour input must be in the same Amazon Web Services region as your training\njob."
                   items:
                     description: "A channel is a named input source that training algorithms can consume."
                     properties:
@@ -175,7 +181,7 @@ spec:
                                 type: "string"
                             type: "object"
                           s3DataSource:
-                            description: "Describes the S3 data source."
+                            description: "Describes the S3 data source.\n\n\nYour input bucket must be in the same Amazon Web Services region as your\ntraining job."
                             properties:
                               attributeNames:
                                 items:
@@ -210,6 +216,8 @@ spec:
                 outputDataConfig:
                   description: "Specifies the path to the S3 location where you want to store model artifacts.\nSageMaker creates subfolders for the artifacts."
                   properties:
+                    compressionType:
+                      type: "string"
                     kmsKeyID:
                       type: "string"
                     s3OutputPath:
@@ -252,6 +260,12 @@ spec:
                         type: "integer"
                     type: "object"
                   type: "array"
+                remoteDebugConfig:
+                  description: "Configuration for remote debugging. To learn more about the remote debugging\nfunctionality of SageMaker, see Access a training container through Amazon\nWeb Services Systems Manager (SSM) for remote debugging (https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html)."
+                  properties:
+                    enableRemoteDebug:
+                      type: "boolean"
+                  type: "object"
                 resourceConfig:
                   description: "The resources, including the ML compute instances and ML storage volumes,\nto use for model training.\n\n\nML storage volumes store model artifacts and incremental states. Training\nalgorithms might also use ML storage volumes for scratch space. If you want\nSageMaker to use the ML storage volume to store the training data, choose\nFile as the TrainingInputMode in the algorithm specification. For distributed\ntraining algorithms, specify an instance count greater than 1."
                   properties:
@@ -274,6 +288,7 @@ spec:
                     instanceType:
                       type: "string"
                     keepAlivePeriodInSeconds:
+                      description: "Optional. Customer requested period in seconds for which the Training cluster\nis kept alive after the job is finished."
                       format: "int64"
                       type: "integer"
                     volumeKMSKeyID:
@@ -295,6 +310,10 @@ spec:
                 stoppingCondition:
                   description: "Specifies a limit to how long a model training job can run. It also specifies\nhow long a managed Spot training job has to complete. When the job reaches\nthe time limit, SageMaker ends the training job. Use this API to cap model\ntraining costs.\n\n\nTo stop a job, SageMaker sends the algorithm the SIGTERM signal, which delays\njob termination for 120 seconds. Algorithms can use this 120-second window\nto save the model artifacts, so the results of training are not lost."
                   properties:
+                    maxPendingTimeInSeconds:
+                      description: "Maximum job scheduler pending time in seconds."
+                      format: "int64"
+                      type: "integer"
                     maxRuntimeInSeconds:
                       format: "int64"
                       type: "integer"
@@ -305,7 +324,7 @@ spec:
                 tags:
                   description: "An array of key-value pairs. You can use tags to categorize your Amazon Web\nServices resources in different ways, for example, by purpose, owner, or\nenvironment. For more information, see Tagging Amazon Web Services Resources\n(https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)."
                   items:
-                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags.\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
+                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
                     properties:
                       key:
                         type: "string"
@@ -325,7 +344,7 @@ spec:
                   description: "The name of the training job. The name must be unique within an Amazon Web\nServices Region in an Amazon Web Services account."
                   type: "string"
                 vpcConfig:
-                  description: "A VpcConfig object that specifies the VPC that you want your training job\nto connect to. Control access to and from your training container by configuring\nthe VPC. For more information, see Protect Training Jobs by Using an Amazon\nVirtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
+                  description: "A VpcConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html)\nobject that specifies the VPC that you want your training job to connect\nto. Control access to and from your training container by configuring the\nVPC. For more information, see Protect Training Jobs by Using an Amazon Virtual\nPrivate Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
                   properties:
                     securityGroupIDs:
                       items:
@@ -446,7 +465,7 @@ spec:
                   description: "Profiling status of a training job."
                   type: "string"
                 secondaryStatus:
-                  description: "Provides detailed information about the state of the training job. For detailed\ninformation on the secondary status of the training job, see StatusMessage\nunder SecondaryStatusTransition.\n\n\nSageMaker provides primary statuses and secondary statuses that apply to\neach of them:\n\n\nInProgress\n\n\n   * Starting - Starting the training job.\n\n\n   * Downloading - An optional stage for algorithms that support File training\n   input mode. It indicates that data is being downloaded to the ML storage\n   volumes.\n\n\n   * Training - Training is in progress.\n\n\n   * Interrupted - The job stopped because the managed spot training instances\n   were interrupted.\n\n\n   * Uploading - Training is complete and the model artifacts are being uploaded\n   to the S3 location.\n\n\nCompleted\n\n\n   * Completed - The training job has completed.\n\n\nFailed\n\n\n   * Failed - The training job has failed. The reason for the failure is\n   returned in the FailureReason field of DescribeTrainingJobResponse.\n\n\nStopped\n\n\n   * MaxRuntimeExceeded - The job stopped because it exceeded the maximum\n   allowed runtime.\n\n\n   * MaxWaitTimeExceeded - The job stopped because it exceeded the maximum\n   allowed wait time.\n\n\n   * Stopped - The training job has stopped.\n\n\nStopping\n\n\n   * Stopping - Stopping the training job.\n\n\nValid values for SecondaryStatus are subject to change.\n\n\nWe no longer support the following secondary statuses:\n\n\n   * LaunchingMLInstances\n\n\n   * PreparingTraining\n\n\n   * DownloadingTrainingImage"
+                  description: "Provides detailed information about the state of the training job. For detailed\ninformation on the secondary status of the training job, see StatusMessage\nunder SecondaryStatusTransition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SecondaryStatusTransition.html).\n\n\nSageMaker provides primary statuses and secondary statuses that apply to\neach of them:\n\n\nInProgress\n\n\n   * Starting - Starting the training job.\n\n\n   * Downloading - An optional stage for algorithms that support File training\n   input mode. It indicates that data is being downloaded to the ML storage\n   volumes.\n\n\n   * Training - Training is in progress.\n\n\n   * Interrupted - The job stopped because the managed spot training instances\n   were interrupted.\n\n\n   * Uploading - Training is complete and the model artifacts are being uploaded\n   to the S3 location.\n\n\nCompleted\n\n\n   * Completed - The training job has completed.\n\n\nFailed\n\n\n   * Failed - The training job has failed. The reason for the failure is\n   returned in the FailureReason field of DescribeTrainingJobResponse.\n\n\nStopped\n\n\n   * MaxRuntimeExceeded - The job stopped because it exceeded the maximum\n   allowed runtime.\n\n\n   * MaxWaitTimeExceeded - The job stopped because it exceeded the maximum\n   allowed wait time.\n\n\n   * Stopped - The training job has stopped.\n\n\nStopping\n\n\n   * Stopping - Stopping the training job.\n\n\nValid values for SecondaryStatus are subject to change.\n\n\nWe no longer support the following secondary statuses:\n\n\n   * LaunchingMLInstances\n\n\n   * PreparingTraining\n\n\n   * DownloadingTrainingImage"
                   type: "string"
                 trainingJobStatus:
                   description: "The status of the training job.\n\n\nSageMaker provides the following training job statuses:\n\n\n   * InProgress - The training is in progress.\n\n\n   * Completed - The training job has completed.\n\n\n   * Failed - The training job has failed. To see the reason for the failure,\n   see the FailureReason field in the response to a DescribeTrainingJobResponse\n   call.\n\n\n   * Stopping - The training job is stopping.\n\n\n   * Stopped - The training job has stopped.\n\n\nFor more detailed information, see SecondaryStatus."
@@ -455,6 +474,7 @@ spec:
                   description: "The status of the warm pool associated with the training job."
                   properties:
                     resourceRetainedBillableTimeInSeconds:
+                      description: "Optional. Indicates how many seconds the resource stayed in ResourceRetained\nstate. Populated only after resource reaches ResourceReused or ResourceReleased\nstate."
                       format: "int64"
                       type: "integer"
                     reusedByJob:

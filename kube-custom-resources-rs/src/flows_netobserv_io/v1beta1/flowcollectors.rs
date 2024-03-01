@@ -83,6 +83,9 @@ pub struct FlowCollectorAgentEbpf {
     /// `logLevel` defines the log level for the NetObserv eBPF Agent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorAgentEbpfLogLevel>,
+    /// `metrics` defines the eBPF agent configuration regarding metrics
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<FlowCollectorAgentEbpfMetrics>,
     /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges. Some agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
@@ -127,6 +130,111 @@ pub enum FlowCollectorAgentEbpfLogLevel {
     Fatal,
     #[serde(rename = "panic")]
     Panic,
+}
+
+/// `metrics` defines the eBPF agent configuration regarding metrics
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorAgentEbpfMetrics {
+    /// Set `enable` to `true` to enable eBPF agent metrics collection.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// Metrics server endpoint configuration for Prometheus scraper
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub server: Option<FlowCollectorAgentEbpfMetricsServer>,
+}
+
+/// Metrics server endpoint configuration for Prometheus scraper
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorAgentEbpfMetricsServer {
+    /// The prometheus HTTP port
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// TLS configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<FlowCollectorAgentEbpfMetricsServerTls>,
+}
+
+/// TLS configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorAgentEbpfMetricsServerTls {
+    /// `insecureSkipVerify` allows skipping client-side verification of the provided certificate. If set to `true`, the `providedCaFile` field is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// TLS configuration when `type` is set to `PROVIDED`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provided: Option<FlowCollectorAgentEbpfMetricsServerTlsProvided>,
+    /// Reference to the CA file when `type` is set to `PROVIDED`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providedCaFile")]
+    pub provided_ca_file: Option<FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFile>,
+    /// Select the type of TLS configuration:<br> - `DISABLED` (default) to not configure TLS for the endpoint. - `PROVIDED` to manually provide cert file and a key file. - `AUTO` to use OpenShift auto generated certificate using annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<FlowCollectorAgentEbpfMetricsServerTlsType>,
+}
+
+/// TLS configuration when `type` is set to `PROVIDED`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorAgentEbpfMetricsServerTlsProvided {
+    /// `certFile` defines the path to the certificate file name within the config map or secret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
+    pub cert_key: Option<String>,
+    /// Name of the config map or secret containing certificates
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Type for the certificate reference: `configmap` or `secret`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<FlowCollectorAgentEbpfMetricsServerTlsProvidedType>,
+}
+
+/// TLS configuration when `type` is set to `PROVIDED`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorAgentEbpfMetricsServerTlsProvidedType {
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "secret")]
+    Secret,
+}
+
+/// Reference to the CA file when `type` is set to `PROVIDED`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFile {
+    /// File name within the config map or secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<String>,
+    /// Name of the config map or secret containing the file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Type for the file reference: "configmap" or "secret"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFileType>,
+}
+
+/// Reference to the CA file when `type` is set to `PROVIDED`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFileType {
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "secret")]
+    Secret,
+}
+
+/// TLS configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorAgentEbpfMetricsServerTlsType {
+    #[serde(rename = "DISABLED")]
+    Disabled,
+    #[serde(rename = "PROVIDED")]
+    Provided,
+    #[serde(rename = "AUTO")]
+    Auto,
 }
 
 /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
