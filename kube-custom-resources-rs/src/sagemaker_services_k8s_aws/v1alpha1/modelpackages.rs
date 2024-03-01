@@ -108,12 +108,20 @@ pub struct ModelPackageSpec {
     /// call.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "samplePayloadURL")]
     pub sample_payload_url: Option<String>,
+    /// Indicates if you want to skip model validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipModelValidation")]
+    pub skip_model_validation: Option<String>,
     /// Details about the algorithm that was used to create the model package.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAlgorithmSpecification")]
     pub source_algorithm_specification: Option<ModelPackageSourceAlgorithmSpecification>,
     /// A list of key value pairs associated with the model. For more information,
     /// see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
     /// in the Amazon Web Services General Reference Guide.
+    /// 
+    /// 
+    /// If you supply ModelPackageGroupName, your model package belongs to the model
+    /// group you specify and uses the tags associated with the model group. In this
+    /// case, you cannot supply a tag argument.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ModelPackageTags>>,
     /// The machine learning task your model package accomplishes. Common machine
@@ -156,6 +164,10 @@ pub struct ModelPackageAdditionalInferenceSpecifications {
 /// Describes the Docker container for the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageAdditionalInferenceSpecificationsContainers {
+    /// A data source used for training or inference that is in addition to the input
+    /// dataset or model data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalS3DataSource")]
+    pub additional_s3_data_source: Option<ModelPackageAdditionalInferenceSpecificationsContainersAdditionalS3DataSource>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerHostname")]
     pub container_hostname: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -177,6 +189,18 @@ pub struct ModelPackageAdditionalInferenceSpecificationsContainers {
     pub nearest_model_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "productID")]
     pub product_id: Option<String>,
+}
+
+/// A data source used for training or inference that is in addition to the input
+/// dataset or model data.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ModelPackageAdditionalInferenceSpecificationsContainersAdditionalS3DataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
+    pub compression_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
+    pub s3_data_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
+    pub s3_uri: Option<String>,
 }
 
 /// Input object for the model.
@@ -391,6 +415,10 @@ pub struct ModelPackageInferenceSpecification {
 /// Describes the Docker container for the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageInferenceSpecificationContainers {
+    /// A data source used for training or inference that is in addition to the input
+    /// dataset or model data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalS3DataSource")]
+    pub additional_s3_data_source: Option<ModelPackageInferenceSpecificationContainersAdditionalS3DataSource>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerHostname")]
     pub container_hostname: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -412,6 +440,18 @@ pub struct ModelPackageInferenceSpecificationContainers {
     pub nearest_model_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "productID")]
     pub product_id: Option<String>,
+}
+
+/// A data source used for training or inference that is in addition to the input
+/// dataset or model data.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ModelPackageInferenceSpecificationContainersAdditionalS3DataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
+    pub compression_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
+    pub s3_data_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
+    pub s3_uri: Option<String>,
 }
 
 /// Input object for the model.
@@ -608,7 +648,7 @@ pub struct ModelPackageSourceAlgorithmSpecificationSourceAlgorithms {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources

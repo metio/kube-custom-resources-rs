@@ -149,6 +149,9 @@ pub struct InputManifestNodePools {
 ///  E.g. if the nodepool isn't used, it won't even be created. Or if the same nodepool is used in two different clusters, it will be created twice. In OOP analogy, a dynamic nodepool would be a class that would get instantiated N >= 0 times depending on which clusters reference it.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InputManifestNodePoolsDynamic {
+    /// User defined annotations for this nodepool.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Autoscaler configuration for this nodepool. Mutually exclusive with count.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaler: Option<InputManifestNodePoolsDynamicAutoscaler>,
@@ -229,6 +232,8 @@ pub struct InputManifestNodePoolsDynamicTaints {
 /// StaticNodePool defines nodepool of already existing nodes, managed outside of Claudie.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InputManifestNodePoolsStatic {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name of the nodepool.

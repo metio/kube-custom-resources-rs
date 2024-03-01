@@ -13,9 +13,6 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "IBMPowerVSMachineStatus")]
 #[kube(schema = "disabled")]
 pub struct IBMPowerVSMachineSpec {
-    /// Ignition defined options related to the bootstrapping systems where Ignition is used.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ignition: Option<IBMPowerVSMachineIgnition>,
     /// Image the reference to the image which is used to create the instance. supported image identifier in IBMPowerVSResourceReference are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<IBMPowerVSMachineImage>,
@@ -48,31 +45,6 @@ pub struct IBMPowerVSMachineSpec {
     /// systemType is the System type used to host the instance. systemType determines the number of cores and memory that is available. Few of the supported SystemTypes are s922,e880,e980. e880 systemType available only in Dallas Datacenters. e980 systemType available in Datacenters except Dallas and Washington. When omitted, this means that the user has no opinion and the platform is left to choose a reasonable default, which is subject to change over time. The current default is s922 which is generally available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemType")]
     pub system_type: Option<IBMPowerVSMachineSystemType>,
-}
-
-/// Ignition defined options related to the bootstrapping systems where Ignition is used.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IBMPowerVSMachineIgnition {
-    /// Version defines which version of Ignition will be used to generate bootstrap data.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub version: Option<IBMPowerVSMachineIgnitionVersion>,
-}
-
-/// Ignition defined options related to the bootstrapping systems where Ignition is used.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum IBMPowerVSMachineIgnitionVersion {
-    #[serde(rename = "2.3")]
-    r#_23,
-    #[serde(rename = "3.0")]
-    r#_30,
-    #[serde(rename = "3.1")]
-    r#_31,
-    #[serde(rename = "3.2")]
-    r#_32,
-    #[serde(rename = "3.3")]
-    r#_33,
-    #[serde(rename = "3.4")]
-    r#_34,
 }
 
 /// Image the reference to the image which is used to create the instance. supported image identifier in IBMPowerVSResourceReference are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
@@ -144,6 +116,8 @@ pub enum IBMPowerVSMachineSystemType {
     E880,
     #[serde(rename = "e980")]
     E980,
+    #[serde(rename = "s1022")]
+    S1022,
     #[serde(rename = "")]
     KopiumEmpty,
 }

@@ -9050,6 +9050,8 @@ pub struct RayJobStatus {
     pub ray_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterStatus")]
     pub ray_cluster_status: Option<RayJobStatusRayClusterStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
 }

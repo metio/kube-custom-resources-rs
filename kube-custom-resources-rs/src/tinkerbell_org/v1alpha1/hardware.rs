@@ -14,7 +14,9 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "HardwareStatus")]
 #[kube(schema = "disabled")]
 pub struct HardwareSpec {
-    /// BMCRef contains a relation to a BMC state management type in the same namespace as the Hardware. This may be used for BMC management by orchestrators.
+    /// BMCRef contains a relation to a BMC state management type in the same
+    /// namespace as the Hardware. This may be used for BMC management by
+    /// orchestrators.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bmcRef")]
     pub bmc_ref: Option<HardwareBmcRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -23,23 +25,30 @@ pub struct HardwareSpec {
     pub interfaces: Option<Vec<HardwareInterfaces>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<HardwareMetadata>,
-    /// Resources represents known resources that are available on a machine. Resources may be used for scheduling by orchestrators.
+    /// Resources represents known resources that are available on a machine.
+    /// Resources may be used for scheduling by orchestrators.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tinkVersion")]
     pub tink_version: Option<i64>,
-    /// UserData is the user data to configure in the hardware's metadata
+    /// UserData is the user data to configure in the hardware's
+    /// metadata
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userData")]
     pub user_data: Option<String>,
-    /// VendorData is the vendor data to configure in the hardware's metadata
+    /// VendorData is the vendor data to configure in the hardware's
+    /// metadata
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vendorData")]
     pub vendor_data: Option<String>,
 }
 
-/// BMCRef contains a relation to a BMC state management type in the same namespace as the Hardware. This may be used for BMC management by orchestrators.
+/// BMCRef contains a relation to a BMC state management type in the same
+/// namespace as the Hardware. This may be used for BMC management by
+/// orchestrators.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareBmcRef {
-    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced

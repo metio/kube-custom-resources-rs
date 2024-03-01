@@ -91,12 +91,61 @@ pub struct ScyllaClusterSpec {
 /// alternator designates this cluster an Alternator cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScyllaClusterAlternator {
-    /// port is the port number used to bind the Alternator API.
+    /// insecureDisableAuthorization disables Alternator authorization. If not specified, the authorization is enabled. For backwards compatibility the authorization is disabled when this field is not specified and a manual port is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureDisableAuthorization")]
+    pub insecure_disable_authorization: Option<bool>,
+    /// insecureEnableHTTP enables serving Alternator traffic also on insecure HTTP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEnableHTTP")]
+    pub insecure_enable_http: Option<bool>,
+    /// port is the port number used to bind the Alternator API. Deprecated: `port` is deprecated and may be ignored in the future. Please make sure to avoid using hostNetworking and work with standard Kubernetes concepts like Services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+    /// servingCertificate references a TLS certificate for serving secure traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servingCertificate")]
+    pub serving_certificate: Option<ScyllaClusterAlternatorServingCertificate>,
     /// writeIsolation indicates the isolation level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIsolation")]
     pub write_isolation: Option<String>,
+}
+
+/// servingCertificate references a TLS certificate for serving secure traffic.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScyllaClusterAlternatorServingCertificate {
+    /// operatorManagedOptions specifies options for certificates manged by the operator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorManagedOptions")]
+    pub operator_managed_options: Option<ScyllaClusterAlternatorServingCertificateOperatorManagedOptions>,
+    /// type determines the source of this certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<ScyllaClusterAlternatorServingCertificateType>,
+    /// userManagedOptions specifies options for certificates manged by users.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userManagedOptions")]
+    pub user_managed_options: Option<ScyllaClusterAlternatorServingCertificateUserManagedOptions>,
+}
+
+/// operatorManagedOptions specifies options for certificates manged by the operator.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScyllaClusterAlternatorServingCertificateOperatorManagedOptions {
+    /// additionalDNSNames represents external DNS names that the certificates should be signed for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalDNSNames")]
+    pub additional_dns_names: Option<Vec<String>>,
+    /// additionalIPAddresses represents external IP addresses that the certificates should be signed for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalIPAddresses")]
+    pub additional_ip_addresses: Option<Vec<String>>,
+}
+
+/// servingCertificate references a TLS certificate for serving secure traffic.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScyllaClusterAlternatorServingCertificateType {
+    OperatorManaged,
+    UserManaged,
+}
+
+/// userManagedOptions specifies options for certificates manged by users.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScyllaClusterAlternatorServingCertificateUserManagedOptions {
+    /// secretName references a kubernetes.io/tls type secret containing the TLS cert and key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

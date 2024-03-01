@@ -42,6 +42,16 @@ spec:
                         items:
                           description: "Describes the Docker container for the model package."
                           properties:
+                            additionalS3DataSource:
+                              description: "A data source used for training or inference that is in addition to the input\ndataset or model data."
+                              properties:
+                                compressionType:
+                                  type: "string"
+                                s3DataType:
+                                  type: "string"
+                                s3URI:
+                                  type: "string"
+                              type: "object"
                             containerHostname:
                               type: "string"
                             environment:
@@ -226,6 +236,16 @@ spec:
                       items:
                         description: "Describes the Docker container for the model package."
                         properties:
+                          additionalS3DataSource:
+                            description: "A data source used for training or inference that is in addition to the input\ndataset or model data."
+                            properties:
+                              compressionType:
+                                type: "string"
+                              s3DataType:
+                                type: "string"
+                              s3URI:
+                                type: "string"
+                            type: "object"
                           containerHostname:
                             type: "string"
                           environment:
@@ -398,6 +418,9 @@ spec:
                 samplePayloadURL:
                   description: "The Amazon Simple Storage Service (Amazon S3) path where the sample payload\nis stored. This path must point to a single gzip compressed tar archive (.tar.gz\nsuffix). This archive can hold multiple files that are all equally used in\nthe load test. Each file in the archive must satisfy the size constraints\nof the InvokeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax)\ncall."
                   type: "string"
+                skipModelValidation:
+                  description: "Indicates if you want to skip model validation."
+                  type: "string"
                 sourceAlgorithmSpecification:
                   description: "Details about the algorithm that was used to create the model package."
                   properties:
@@ -413,9 +436,9 @@ spec:
                       type: "array"
                   type: "object"
                 tags:
-                  description: "A list of key value pairs associated with the model. For more information,\nsee Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)\nin the Amazon Web Services General Reference Guide."
+                  description: "A list of key value pairs associated with the model. For more information,\nsee Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)\nin the Amazon Web Services General Reference Guide.\n\n\nIf you supply ModelPackageGroupName, your model package belongs to the model\ngroup you specify and uses the tags associated with the model group. In this\ncase, you cannot supply a tag argument."
                   items:
-                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags.\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
+                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
                     properties:
                       key:
                         type: "string"

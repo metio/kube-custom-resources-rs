@@ -13,10 +13,46 @@ use std::collections::BTreeMap;
 #[kube(status = "HyperParameterTuningJobStatus")]
 #[kube(schema = "disabled")]
 pub struct HyperParameterTuningJobSpec {
-    /// The HyperParameterTuningJobConfig object that describes the tuning job, including
-    /// the search strategy, the objective metric used to evaluate training jobs,
-    /// ranges of parameters to search, and resource limits for the tuning job. For
-    /// more information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html).
+    /// Configures SageMaker Automatic model tuning (AMT) to automatically find optimal
+    /// parameters for the following fields:
+    /// 
+    /// 
+    ///    * ParameterRanges (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges):
+    ///    The names and ranges of parameters that a hyperparameter tuning job can
+    ///    optimize.
+    /// 
+    /// 
+    ///    * ResourceLimits (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html):
+    ///    The maximum resources that can be used for a training job. These resources
+    ///    include the maximum number of training jobs, the maximum runtime of a
+    ///    tuning job, and the maximum number of training jobs to run at the same
+    ///    time.
+    /// 
+    /// 
+    ///    * TrainingJobEarlyStoppingType (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType):
+    ///    A flag that specifies whether or not to use early stopping for training
+    ///    jobs launched by a hyperparameter tuning job.
+    /// 
+    /// 
+    ///    * RetryStrategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy):
+    ///    The number of times to retry a training job.
+    /// 
+    /// 
+    ///    * Strategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html):
+    ///    Specifies how hyperparameter tuning chooses the combinations of hyperparameter
+    ///    values to use for the training jobs that it launches.
+    /// 
+    /// 
+    ///    * ConvergenceDetected (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html):
+    ///    A flag to indicate that Automatic model tuning (AMT) has detected model
+    ///    convergence.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub autotune: Option<HyperParameterTuningJobAutotune>,
+    /// The HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html)
+    /// object that describes the tuning job, including the search strategy, the
+    /// objective metric used to evaluate training jobs, ranges of parameters to
+    /// search, and resource limits for the tuning job. For more information, see
+    /// How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html).
     #[serde(rename = "hyperParameterTuningJobConfig")]
     pub hyper_parameter_tuning_job_config: HyperParameterTuningJobHyperParameterTuningJobConfig,
     /// The name of the tuning job. This name is the prefix for the names of all
@@ -36,14 +72,14 @@ pub struct HyperParameterTuningJobSpec {
     /// that the tuning job launches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<HyperParameterTuningJobTags>>,
-    /// The HyperParameterTrainingJobDefinition object that describes the training
-    /// jobs that this tuning job launches, including static hyperparameters, input
-    /// data configuration, output data configuration, resource configuration, and
-    /// stopping condition.
+    /// The HyperParameterTrainingJobDefinition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html)
+    /// object that describes the training jobs that this tuning job launches, including
+    /// static hyperparameters, input data configuration, output data configuration,
+    /// resource configuration, and stopping condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobDefinition")]
     pub training_job_definition: Option<HyperParameterTuningJobTrainingJobDefinition>,
-    /// A list of the HyperParameterTrainingJobDefinition objects launched for this
-    /// tuning job.
+    /// A list of the HyperParameterTrainingJobDefinition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html)
+    /// objects launched for this tuning job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobDefinitions")]
     pub training_job_definitions: Option<Vec<HyperParameterTuningJobTrainingJobDefinitions>>,
     /// Specifies the configuration for starting the hyperparameter tuning job using
@@ -68,16 +104,58 @@ pub struct HyperParameterTuningJobSpec {
     pub warm_start_config: Option<HyperParameterTuningJobWarmStartConfig>,
 }
 
-/// The HyperParameterTuningJobConfig object that describes the tuning job, including
-/// the search strategy, the objective metric used to evaluate training jobs,
-/// ranges of parameters to search, and resource limits for the tuning job. For
-/// more information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html).
+/// Configures SageMaker Automatic model tuning (AMT) to automatically find optimal
+/// parameters for the following fields:
+/// 
+/// 
+///    * ParameterRanges (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges):
+///    The names and ranges of parameters that a hyperparameter tuning job can
+///    optimize.
+/// 
+/// 
+///    * ResourceLimits (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html):
+///    The maximum resources that can be used for a training job. These resources
+///    include the maximum number of training jobs, the maximum runtime of a
+///    tuning job, and the maximum number of training jobs to run at the same
+///    time.
+/// 
+/// 
+///    * TrainingJobEarlyStoppingType (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType):
+///    A flag that specifies whether or not to use early stopping for training
+///    jobs launched by a hyperparameter tuning job.
+/// 
+/// 
+///    * RetryStrategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy):
+///    The number of times to retry a training job.
+/// 
+/// 
+///    * Strategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html):
+///    Specifies how hyperparameter tuning chooses the combinations of hyperparameter
+///    values to use for the training jobs that it launches.
+/// 
+/// 
+///    * ConvergenceDetected (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html):
+///    A flag to indicate that Automatic model tuning (AMT) has detected model
+///    convergence.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobAutotune {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<String>,
+}
+
+/// The HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html)
+/// object that describes the tuning job, including the search strategy, the
+/// objective metric used to evaluate training jobs, ranges of parameters to
+/// search, and resource limits for the tuning job. For more information, see
+/// How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfig {
     /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
     /// tuning uses the value of this metric to evaluate the training jobs it launches,
     /// and returns the training job that results in either the highest or lowest
     /// value for this metric, depending on the value you specify for the Type parameter.
+    /// If you want to define a custom objective metric, see Define metrics and environment
+    /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterTuningJobObjective")]
     pub hyper_parameter_tuning_job_objective: Option<HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTuningJobObjective>,
     /// Specifies ranges of integer, continuous, and categorical hyperparameters
@@ -113,6 +191,8 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfig {
 /// tuning uses the value of this metric to evaluate the training jobs it launches,
 /// and returns the training job that results in either the highest or lowest
 /// value for this metric, depending on the value you specify for the Type parameter.
+/// If you want to define a custom objective metric, see Define metrics and environment
+/// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTuningJobObjective {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
@@ -135,12 +215,26 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTun
 /// all the ranges can't exceed the maximum number specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRanges {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoParameters")]
+    pub auto_parameters: Option<Vec<HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesAutoParameters>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "categoricalParameterRanges")]
     pub categorical_parameter_ranges: Option<Vec<HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesCategoricalParameterRanges>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "continuousParameterRanges")]
     pub continuous_parameter_ranges: Option<Vec<HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesContinuousParameterRanges>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "integerParameterRanges")]
     pub integer_parameter_ranges: Option<Vec<HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesIntegerParameterRanges>>,
+}
+
+/// The name and an example value of the hyperparameter that you want to use
+/// in Autotune. If Automatic model tuning (AMT) determines that your hyperparameter
+/// is eligible for Autotune, an optimal hyperparameter range is selected for
+/// you.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesAutoParameters {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueHint")]
+    pub value_hint: Option<String>,
 }
 
 /// A list of categorical hyperparameters to tune.
@@ -203,7 +297,7 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigTuningJobCompleti
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
@@ -219,10 +313,10 @@ pub struct HyperParameterTuningJobTags {
     pub value: Option<String>,
 }
 
-/// The HyperParameterTrainingJobDefinition object that describes the training
-/// jobs that this tuning job launches, including static hyperparameters, input
-/// data configuration, output data configuration, resource configuration, and
-/// stopping condition.
+/// The HyperParameterTrainingJobDefinition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html)
+/// object that describes the training jobs that this tuning job launches, including
+/// static hyperparameters, input data configuration, output data configuration,
+/// resource configuration, and stopping condition.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinition {
     /// Specifies which training algorithm to use for training jobs that a hyperparameter
@@ -302,13 +396,14 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
     /// tuning uses the value of this metric to evaluate the training jobs it launches,
     /// and returns the training job that results in either the highest or lowest
     /// value for this metric, depending on the value you specify for the Type parameter.
+    /// If you want to define a custom objective metric, see Define metrics and environment
+    /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tuningObjective")]
     pub tuning_objective: Option<HyperParameterTuningJobTrainingJobDefinitionTuningObjective>,
-    /// Specifies a VPC that your training jobs and hosted models have access to.
-    /// Control access to and from your training and model containers by configuring
-    /// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
-    /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
-    /// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+    /// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
+    /// hosted models, and compute resources have access to. You can control access
+    /// to and from your resources by configuring a VPC. For more information, see
+    /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
     pub vpc_config: Option<HyperParameterTuningJobTrainingJobDefinitionVpcConfig>,
 }
@@ -373,9 +468,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification {
 }
 
 /// Specifies a metric that the training algorithm writes to stderr or stdout.
-/// SageMakerhyperparameter tuning captures all defined metrics. You specify
-/// one metric that a hyperparameter tuning job uses as its objective metric
-/// to choose the best training job.
+/// You can view these logs to understand how your training job performs and
+/// check for any errors encountered during training. SageMaker hyperparameter
+/// tuning captures all defined metrics. Specify one of the defined metrics to
+/// use as an objective metric using the TuningObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-TuningObjective)
+/// parameter in the HyperParameterTrainingJobDefinition API to evaluate job
+/// performance during hyperparameter tuning.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecificationMetricDefinitions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -408,12 +506,26 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionCheckpointConfig {
 /// all the ranges can't exceed the maximum number specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRanges {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoParameters")]
+    pub auto_parameters: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesAutoParameters>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "categoricalParameterRanges")]
     pub categorical_parameter_ranges: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesCategoricalParameterRanges>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "continuousParameterRanges")]
     pub continuous_parameter_ranges: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesContinuousParameterRanges>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "integerParameterRanges")]
     pub integer_parameter_ranges: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesIntegerParameterRanges>>,
+}
+
+/// The name and an example value of the hyperparameter that you want to use
+/// in Autotune. If Automatic model tuning (AMT) determines that your hyperparameter
+/// is eligible for Autotune, an optimal hyperparameter range is selected for
+/// you.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesAutoParameters {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueHint")]
+    pub value_hint: Option<String>,
 }
 
 /// A list of categorical hyperparameters to tune.
@@ -539,6 +651,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
     pub file_system_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
+    /// 
+    /// 
+    /// Your input bucket must be in the same Amazon Web Services region as your
+    /// training job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataSource")]
     pub s3_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSource>,
 }
@@ -557,6 +673,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource
 }
 
 /// Describes the S3 data source.
+/// 
+/// 
+/// Your input bucket must be in the same Amazon Web Services region as your
+/// training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeNames")]
@@ -595,6 +715,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigShuffleCon
 /// Provides information about how to store model training results (model artifacts).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionOutputDataConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
+    pub compression_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
@@ -611,6 +733,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfig {
     pub instance_groups: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGroups>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
+    /// Optional. Customer requested period in seconds for which the Training cluster
+    /// is kept alive after the job is finished.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAlivePeriodInSeconds")]
     pub keep_alive_period_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
@@ -666,6 +790,9 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionRetryStrategy {
 /// sufficient for the training job to complete.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionStoppingCondition {
+    /// Maximum job scheduler pending time in seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingTimeInSeconds")]
+    pub max_pending_time_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
     pub max_runtime_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWaitTimeInSeconds")]
@@ -676,6 +803,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionStoppingCondition {
 /// tuning uses the value of this metric to evaluate the training jobs it launches,
 /// and returns the training job that results in either the highest or lowest
 /// value for this metric, depending on the value you specify for the Type parameter.
+/// If you want to define a custom objective metric, see Define metrics and environment
+/// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionTuningObjective {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
@@ -684,11 +813,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionTuningObjective {
     pub r#type: Option<String>,
 }
 
-/// Specifies a VPC that your training jobs and hosted models have access to.
-/// Control access to and from your training and model containers by configuring
-/// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
-/// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
-/// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+/// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
+/// hosted models, and compute resources have access to. You can control access
+/// to and from your resources by configuring a VPC. For more information, see
+/// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionVpcConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -777,13 +905,14 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
     /// tuning uses the value of this metric to evaluate the training jobs it launches,
     /// and returns the training job that results in either the highest or lowest
     /// value for this metric, depending on the value you specify for the Type parameter.
+    /// If you want to define a custom objective metric, see Define metrics and environment
+    /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tuningObjective")]
     pub tuning_objective: Option<HyperParameterTuningJobTrainingJobDefinitionsTuningObjective>,
-    /// Specifies a VPC that your training jobs and hosted models have access to.
-    /// Control access to and from your training and model containers by configuring
-    /// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
-    /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
-    /// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+    /// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
+    /// hosted models, and compute resources have access to. You can control access
+    /// to and from your resources by configuring a VPC. For more information, see
+    /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
     pub vpc_config: Option<HyperParameterTuningJobTrainingJobDefinitionsVpcConfig>,
 }
@@ -848,9 +977,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification {
 }
 
 /// Specifies a metric that the training algorithm writes to stderr or stdout.
-/// SageMakerhyperparameter tuning captures all defined metrics. You specify
-/// one metric that a hyperparameter tuning job uses as its objective metric
-/// to choose the best training job.
+/// You can view these logs to understand how your training job performs and
+/// check for any errors encountered during training. SageMaker hyperparameter
+/// tuning captures all defined metrics. Specify one of the defined metrics to
+/// use as an objective metric using the TuningObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-TuningObjective)
+/// parameter in the HyperParameterTrainingJobDefinition API to evaluate job
+/// performance during hyperparameter tuning.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecificationMetricDefinitions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -883,12 +1015,26 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsCheckpointConfig {
 /// all the ranges can't exceed the maximum number specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRanges {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoParameters")]
+    pub auto_parameters: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesAutoParameters>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "categoricalParameterRanges")]
     pub categorical_parameter_ranges: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesCategoricalParameterRanges>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "continuousParameterRanges")]
     pub continuous_parameter_ranges: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesContinuousParameterRanges>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "integerParameterRanges")]
     pub integer_parameter_ranges: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesIntegerParameterRanges>>,
+}
+
+/// The name and an example value of the hyperparameter that you want to use
+/// in Autotune. If Automatic model tuning (AMT) determines that your hyperparameter
+/// is eligible for Autotune, an optimal hyperparameter range is selected for
+/// you.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesAutoParameters {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueHint")]
+    pub value_hint: Option<String>,
 }
 
 /// A list of categorical hyperparameters to tune.
@@ -1014,6 +1160,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
     pub file_system_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
+    /// 
+    /// 
+    /// Your input bucket must be in the same Amazon Web Services region as your
+    /// training job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataSource")]
     pub s3_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSource>,
 }
@@ -1032,6 +1182,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourc
 }
 
 /// Describes the S3 data source.
+/// 
+/// 
+/// Your input bucket must be in the same Amazon Web Services region as your
+/// training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeNames")]
@@ -1070,6 +1224,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigShuffleCo
 /// Provides information about how to store model training results (model artifacts).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsOutputDataConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
+    pub compression_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
@@ -1086,6 +1242,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfig {
     pub instance_groups: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGroups>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
+    /// Optional. Customer requested period in seconds for which the Training cluster
+    /// is kept alive after the job is finished.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAlivePeriodInSeconds")]
     pub keep_alive_period_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
@@ -1141,6 +1299,9 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsRetryStrategy {
 /// sufficient for the training job to complete.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsStoppingCondition {
+    /// Maximum job scheduler pending time in seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingTimeInSeconds")]
+    pub max_pending_time_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
     pub max_runtime_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWaitTimeInSeconds")]
@@ -1151,6 +1312,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsStoppingCondition {
 /// tuning uses the value of this metric to evaluate the training jobs it launches,
 /// and returns the training job that results in either the highest or lowest
 /// value for this metric, depending on the value you specify for the Type parameter.
+/// If you want to define a custom objective metric, see Define metrics and environment
+/// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsTuningObjective {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
@@ -1159,11 +1322,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsTuningObjective {
     pub r#type: Option<String>,
 }
 
-/// Specifies a VPC that your training jobs and hosted models have access to.
-/// Control access to and from your training and model containers by configuring
-/// the VPC. For more information, see Protect Endpoints by Using an Amazon Virtual
-/// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
-/// and Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
+/// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
+/// hosted models, and compute resources have access to. You can control access
+/// to and from your resources by configuring a VPC. For more information, see
+/// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsVpcConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
@@ -1214,8 +1376,9 @@ pub struct HyperParameterTuningJobStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<HyperParameterTuningJobStatusAckResourceMetadata>,
-    /// A TrainingJobSummary object that describes the training job that completed
-    /// with the best current HyperParameterTuningJobObjective.
+    /// A TrainingJobSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TrainingJobSummary.html)
+    /// object that describes the training job that completed with the best current
+    /// HyperParameterTuningJobObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobObjective.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bestTrainingJob")]
     pub best_training_job: Option<HyperParameterTuningJobStatusBestTrainingJob>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
@@ -1227,14 +1390,14 @@ pub struct HyperParameterTuningJobStatus {
     /// If the tuning job failed, the reason it failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// The status of the tuning job: InProgress, Completed, Failed, Stopping, or
-    /// Stopped.
+    /// The status of the tuning job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterTuningJobStatus")]
     pub hyper_parameter_tuning_job_status: Option<String>,
     /// If the hyperparameter tuning job is an warm start tuning job with a WarmStartType
-    /// of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training
-    /// job with the best objective metric value of all training jobs launched by
-    /// this tuning job and all parent jobs specified for the warm start tuning job.
+    /// of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TrainingJobSummary.html)
+    /// for the training job with the best objective metric value of all training
+    /// jobs launched by this tuning job and all parent jobs specified for the warm
+    /// start tuning job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "overallBestTrainingJob")]
     pub overall_best_training_job: Option<HyperParameterTuningJobStatusOverallBestTrainingJob>,
 }
@@ -1262,8 +1425,9 @@ pub struct HyperParameterTuningJobStatusAckResourceMetadata {
     pub region: String,
 }
 
-/// A TrainingJobSummary object that describes the training job that completed
-/// with the best current HyperParameterTuningJobObjective.
+/// A TrainingJobSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TrainingJobSummary.html)
+/// object that describes the training job that completed with the best current
+/// HyperParameterTuningJobObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobObjective.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusBestTrainingJob {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
@@ -1272,7 +1436,7 @@ pub struct HyperParameterTuningJobStatusBestTrainingJob {
     pub failure_reason: Option<String>,
     /// Shows the latest objective metric emitted by a training job that was launched
     /// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
-    /// parameter of HyperParameterTuningJobConfig.
+    /// parameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "finalHyperParameterTuningJobObjectiveMetric")]
     pub final_hyper_parameter_tuning_job_objective_metric: Option<HyperParameterTuningJobStatusBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectiveStatus")]
@@ -1297,7 +1461,7 @@ pub struct HyperParameterTuningJobStatusBestTrainingJob {
 
 /// Shows the latest objective metric emitted by a training job that was launched
 /// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
-/// parameter of HyperParameterTuningJobConfig.
+/// parameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
@@ -1330,9 +1494,10 @@ pub struct HyperParameterTuningJobStatusConditions {
 }
 
 /// If the hyperparameter tuning job is an warm start tuning job with a WarmStartType
-/// of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training
-/// job with the best objective metric value of all training jobs launched by
-/// this tuning job and all parent jobs specified for the warm start tuning job.
+/// of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TrainingJobSummary.html)
+/// for the training job with the best objective metric value of all training
+/// jobs launched by this tuning job and all parent jobs specified for the warm
+/// start tuning job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusOverallBestTrainingJob {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
@@ -1341,7 +1506,7 @@ pub struct HyperParameterTuningJobStatusOverallBestTrainingJob {
     pub failure_reason: Option<String>,
     /// Shows the latest objective metric emitted by a training job that was launched
     /// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
-    /// parameter of HyperParameterTuningJobConfig.
+    /// parameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "finalHyperParameterTuningJobObjectiveMetric")]
     pub final_hyper_parameter_tuning_job_objective_metric: Option<HyperParameterTuningJobStatusOverallBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectiveStatus")]
@@ -1366,7 +1531,7 @@ pub struct HyperParameterTuningJobStatusOverallBestTrainingJob {
 
 /// Shows the latest objective metric emitted by a training job that was launched
 /// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
-/// parameter of HyperParameterTuningJobConfig.
+/// parameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusOverallBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]

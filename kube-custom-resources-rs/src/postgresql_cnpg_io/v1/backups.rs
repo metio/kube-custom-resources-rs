@@ -5,7 +5,8 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// Specification of the desired behavior of the backup. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+/// Specification of the desired behavior of the backup.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "postgresql.cnpg.io", version = "v1", kind = "Backup", plural = "backups")]
 #[kube(namespaced)]
@@ -14,16 +15,25 @@ use serde::{Serialize, Deserialize};
 pub struct BackupSpec {
     /// The cluster to backup
     pub cluster: BackupCluster,
-    /// The backup method to be used, possible options are `barmanObjectStore` and `volumeSnapshot`. Defaults to: `barmanObjectStore`.
+    /// The backup method to be used, possible options are `barmanObjectStore`
+    /// and `volumeSnapshot`. Defaults to: `barmanObjectStore`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<BackupMethod>,
-    /// Whether the default type of backup with volume snapshots is online/hot (`true`, default) or offline/cold (`false`) Overrides the default setting specified in the cluster field '.spec.backup.volumeSnapshot.online'
+    /// Whether the default type of backup with volume snapshots is
+    /// online/hot (`true`, default) or offline/cold (`false`)
+    /// Overrides the default setting specified in the cluster field '.spec.backup.volumeSnapshot.online'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub online: Option<bool>,
-    /// Configuration parameters to control the online/hot backup with volume snapshots Overrides the default settings specified in the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
+    /// Configuration parameters to control the online/hot backup with volume snapshots
+    /// Overrides the default settings specified in the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineConfiguration")]
     pub online_configuration: Option<BackupOnlineConfiguration>,
-    /// The policy to decide which instance should perform this backup. If empty, it defaults to `cluster.spec.backup.target`. Available options are empty string, `primary` and `prefer-standby`. `primary` to have backups run always on primary instances, `prefer-standby` to have backups run preferably on the most updated standby, if available.
+    /// The policy to decide which instance should perform this backup. If empty,
+    /// it defaults to `cluster.spec.backup.target`.
+    /// Available options are empty string, `primary` and `prefer-standby`.
+    /// `primary` to have backups run always on primary instances,
+    /// `prefer-standby` to have backups run preferably on the most updated
+    /// standby, if available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<BackupTarget>,
 }
@@ -35,7 +45,8 @@ pub struct BackupCluster {
     pub name: String,
 }
 
-/// Specification of the desired behavior of the backup. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+/// Specification of the desired behavior of the backup.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BackupMethod {
     #[serde(rename = "barmanObjectStore")]
@@ -44,18 +55,32 @@ pub enum BackupMethod {
     VolumeSnapshot,
 }
 
-/// Configuration parameters to control the online/hot backup with volume snapshots Overrides the default settings specified in the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
+/// Configuration parameters to control the online/hot backup with volume snapshots
+/// Overrides the default settings specified in the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupOnlineConfiguration {
-    /// Control whether the I/O workload for the backup initial checkpoint will be limited, according to the `checkpoint_completion_target` setting on the PostgreSQL server. If set to true, an immediate checkpoint will be used, meaning PostgreSQL will complete the checkpoint as soon as possible. `false` by default.
+    /// Control whether the I/O workload for the backup initial checkpoint will
+    /// be limited, according to the `checkpoint_completion_target` setting on
+    /// the PostgreSQL server. If set to true, an immediate checkpoint will be
+    /// used, meaning PostgreSQL will complete the checkpoint as soon as
+    /// possible. `false` by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "immediateCheckpoint")]
     pub immediate_checkpoint: Option<bool>,
-    /// If false, the function will return immediately after the backup is completed, without waiting for WAL to be archived. This behavior is only useful with backup software that independently monitors WAL archiving. Otherwise, WAL required to make the backup consistent might be missing and make the backup useless. By default, or when this parameter is true, pg_backup_stop will wait for WAL to be archived when archiving is enabled. On a standby, this means that it will wait only when archive_mode = always. If write activity on the primary is low, it may be useful to run pg_switch_wal on the primary in order to trigger an immediate segment switch.
+    /// If false, the function will return immediately after the backup is completed,
+    /// without waiting for WAL to be archived.
+    /// This behavior is only useful with backup software that independently monitors WAL archiving.
+    /// Otherwise, WAL required to make the backup consistent might be missing and make the backup useless.
+    /// By default, or when this parameter is true, pg_backup_stop will wait for WAL to be archived when archiving is
+    /// enabled.
+    /// On a standby, this means that it will wait only when archive_mode = always.
+    /// If write activity on the primary is low, it may be useful to run pg_switch_wal on the primary in order to trigger
+    /// an immediate segment switch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForArchive")]
     pub wait_for_archive: Option<bool>,
 }
 
-/// Specification of the desired behavior of the backup. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+/// Specification of the desired behavior of the backup.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BackupTarget {
     #[serde(rename = "primary")]
@@ -64,7 +89,9 @@ pub enum BackupTarget {
     PreferStandby,
 }
 
-/// Most recently observed status of the backup. This data may not be up to date. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+/// Most recently observed status of the backup. This data may not be up to
+/// date. Populated by the system. Read-only.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatus {
     /// The credentials to use to upload data to Azure Blob Storage
@@ -91,7 +118,9 @@ pub struct BackupStatus {
     /// Unused. Retained for compatibility with old versions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commandOutput")]
     pub command_output: Option<String>,
-    /// The path where to store the backup (i.e. s3://bucket/path/to/folder) this path, with different destination folders, will be used for WALs and for data. This may not be populated in case of errors.
+    /// The path where to store the backup (i.e. s3://bucket/path/to/folder)
+    /// this path, with different destination folders, will be used for WALs
+    /// and for data. This may not be populated in case of errors.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationPath")]
     pub destination_path: Option<String>,
     /// Encryption method required to S3 API
@@ -103,10 +132,13 @@ pub struct BackupStatus {
     /// The ending WAL
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endWal")]
     pub end_wal: Option<String>,
-    /// EndpointCA store the CA bundle of the barman endpoint. Useful when using self-signed certificates to avoid errors with certificate issuer and barman-cloud-wal-archive.
+    /// EndpointCA store the CA bundle of the barman endpoint.
+    /// Useful when using self-signed certificates to avoid
+    /// errors with certificate issuer and barman-cloud-wal-archive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointCA")]
     pub endpoint_ca: Option<BackupStatusEndpointCa>,
-    /// Endpoint to be used to upload data to the cloud, overriding the automatic endpoint discovery
+    /// Endpoint to be used to upload data to the cloud,
+    /// overriding the automatic endpoint discovery
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointURL")]
     pub endpoint_url: Option<String>,
     /// The detected error
@@ -130,7 +162,8 @@ pub struct BackupStatus {
     /// The credentials to use to upload data to S3
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Credentials")]
     pub s3_credentials: Option<BackupStatusS3Credentials>,
-    /// The server name on S3, the cluster name is used if this parameter is omitted
+    /// The server name on S3, the cluster name is used if this
+    /// parameter is omitted
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
     /// Status of the volumeSnapshot backup
@@ -159,10 +192,12 @@ pub struct BackupStatusAzureCredentials {
     /// The storage account where to upload data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAccount")]
     pub storage_account: Option<BackupStatusAzureCredentialsStorageAccount>,
-    /// The storage account key to be used in conjunction with the storage account name
+    /// The storage account key to be used in conjunction
+    /// with the storage account name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageKey")]
     pub storage_key: Option<BackupStatusAzureCredentialsStorageKey>,
-    /// A shared-access-signature to be used in conjunction with the storage account name
+    /// A shared-access-signature to be used in conjunction with
+    /// the storage account name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageSasToken")]
     pub storage_sas_token: Option<BackupStatusAzureCredentialsStorageSasToken>,
 }
@@ -185,7 +220,8 @@ pub struct BackupStatusAzureCredentialsStorageAccount {
     pub name: String,
 }
 
-/// The storage account key to be used in conjunction with the storage account name
+/// The storage account key to be used in conjunction
+/// with the storage account name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusAzureCredentialsStorageKey {
     /// The key to select
@@ -194,7 +230,8 @@ pub struct BackupStatusAzureCredentialsStorageKey {
     pub name: String,
 }
 
-/// A shared-access-signature to be used in conjunction with the storage account name
+/// A shared-access-signature to be used in conjunction with
+/// the storage account name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusAzureCredentialsStorageSasToken {
     /// The key to select
@@ -203,7 +240,9 @@ pub struct BackupStatusAzureCredentialsStorageSasToken {
     pub name: String,
 }
 
-/// EndpointCA store the CA bundle of the barman endpoint. Useful when using self-signed certificates to avoid errors with certificate issuer and barman-cloud-wal-archive.
+/// EndpointCA store the CA bundle of the barman endpoint.
+/// Useful when using self-signed certificates to avoid
+/// errors with certificate issuer and barman-cloud-wal-archive.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStatusEndpointCa {
     /// The key to select
@@ -218,7 +257,8 @@ pub struct BackupStatusGoogleCredentials {
     /// The secret containing the Google Cloud Storage JSON file with the credentials
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentials")]
     pub application_credentials: Option<BackupStatusGoogleCredentialsApplicationCredentials>,
-    /// If set to true, will presume that it's running inside a GKE environment, default to false.
+    /// If set to true, will presume that it's running inside a GKE environment,
+    /// default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gkeEnvironment")]
     pub gke_environment: Option<bool>,
 }
@@ -312,7 +352,8 @@ pub struct BackupStatusSnapshotBackupStatus {
 pub struct BackupStatusSnapshotBackupStatusElements {
     /// Name is the snapshot resource name
     pub name: String,
-    /// TablespaceName is the name of the snapshotted tablespace. Only set when type is PG_TABLESPACE
+    /// TablespaceName is the name of the snapshotted tablespace. Only set
+    /// when type is PG_TABLESPACE
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tablespaceName")]
     pub tablespace_name: Option<String>,
     /// Type is tho role of the snapshot in the cluster, such as PG_DATA, PG_WAL and PG_TABLESPACE

@@ -130,47 +130,47 @@ spec:
                   description: "If specified, overrides the default GitLab Runner image. Default is the Runner image the operator was bundled with."
                   type: "string"
                 s3:
-                  description: "options used to setup S3 object store as GitLab Runner Cache."
+                  description: "options used to setup S3 object store as GitLab Runner Cache"
                   properties:
                     bucket:
-                      description: "Name of the bucket in which the cache will be stored."
+                      description: "Name of the bucket in which the cache will be stored"
                       type: "string"
                     credentials:
                       description: "Name of the secret containing the 'accesskey' and 'secretkey' used to access the object storage"
                       type: "string"
                     insecure:
-                      description: "Use insecure connections or HTTP."
+                      description: "Use insecure connections or HTTP"
                       type: "boolean"
                     location:
-                      description: "Name of the S3 region in use."
+                      description: "Name of the S3 region in use"
                       type: "string"
                     server:
                       type: "string"
                   type: "object"
                 serviceaccount:
-                  description: "allow user to override service account used by GitLab Runner."
+                  description: "allow user to override service account used by GitLab Runner"
                   type: "string"
                 tags:
-                  description: "List of comma separated tags to be applied to the runner. More info: https://docs.gitlab.com/ee/ci/runners/#use-tags-to-limit-the-number-of-jobs-using-the-runner"
+                  description: "List of comma separated tags to be applied to the runner More info: https://docs.gitlab.com/ee/ci/runners/#use-tags-to-limit-the-number-of-jobs-using-the-runner"
                   type: "string"
                 token:
-                  description: "Name of secret containing the 'runner-token'."
+                  description: "Name of secret containing the 'runner-registration-token' key used to register the runner"
                   type: "string"
               required:
                 - "gitlabUrl"
                 - "token"
               type: "object"
             status:
-              description: "Most recently observed status of the GitLab Runner. It is read-only to the user."
+              description: "Most recently observed status of the GitLab Runner. It is read-only to the user"
               properties:
                 message:
-                  description: "Additional information of GitLab Runner registration."
+                  description: "Additional information of GitLab Runner registration"
                   type: "string"
                 phase:
-                  description: "Reports status of the GitLab Runner instance."
+                  description: "Reports status of the GitLab Runner instance"
                   type: "string"
                 registration:
-                  description: "Reports status of GitLab Runner registration."
+                  description: "Reports status of GitLab Runner registration"
                   type: "string"
               type: "object"
           type: "object"

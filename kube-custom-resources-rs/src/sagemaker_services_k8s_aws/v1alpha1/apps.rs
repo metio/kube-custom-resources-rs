@@ -60,6 +60,8 @@ pub struct AppResourceSpec {
     pub sage_maker_image_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
@@ -69,7 +71,7 @@ pub struct AppResourceSpec {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources

@@ -104,7 +104,6 @@ spec:
                         description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                         type: "object"
                     type: "object"
-                    x-kubernetes-map-type: "atomic"
                   resources:
                     description: "Resources is an optional reference to the resource checked by the policy and rule"
                     items:
@@ -132,7 +131,6 @@ spec:
                           description: "UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
                           type: "string"
                       type: "object"
-                      x-kubernetes-map-type: "atomic"
                     type: "array"
                   rule:
                     description: "Rule is the name of the policy rule"
@@ -185,7 +183,6 @@ spec:
                   description: "UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
                   type: "string"
               type: "object"
-              x-kubernetes-map-type: "atomic"
             scopeSelector:
               description: "ScopeSelector is an optional selector for multiple scopes (e.g. Pods). Either one of, or none of, but not both of, Scope or ScopeSelector should be specified."
               properties:
@@ -216,7 +213,6 @@ spec:
                   description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                   type: "object"
               type: "object"
-              x-kubernetes-map-type: "atomic"
             summary:
               description: "PolicyReportSummary provides a summary of results"
               properties:

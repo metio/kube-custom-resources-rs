@@ -88,6 +88,12 @@ pub struct IngressRouteRoutesServices {
     /// By default, NativeLB is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeLB")]
     pub native_lb: Option<bool>,
+    /// NodePortLB controls, when creating the load-balancer,
+    /// whether the LB's children are directly the nodes internal IPs using the nodePort when the service type is NodePort.
+    /// It allows services to be reachable when Traefik runs externally from the Kubernetes cluster but within the same network of the nodes.
+    /// By default, NodePortLB is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePortLB")]
+    pub node_port_lb: Option<bool>,
     /// PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service.
     /// By default, passHostHeader is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passHostHeader")]

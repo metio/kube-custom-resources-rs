@@ -356,6 +356,8 @@ spec:
                     - "Completed"
                     - "PartiallyFailed"
                     - "Failed"
+                    - "Finalizing"
+                    - "FinalizingPartiallyFailed"
                   type: "string"
                 progress:
                   description: "Progress contains information about the restore's execution progress. Note that this information is best-effort only -- if Velero fails to update it during a restore for any reason, it may be inaccurate/stale."

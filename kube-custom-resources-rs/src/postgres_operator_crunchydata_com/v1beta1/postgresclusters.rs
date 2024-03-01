@@ -70,6 +70,9 @@ pub struct PostgresClusterSpec {
     /// The specification of a proxy that connects to PostgreSQL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<PostgresClusterProxy>,
+    /// Specification of the service that exposes PostgreSQL replica instances
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaService")]
+    pub replica_service: Option<PostgresClusterReplicaService>,
     /// Specification of the service that exposes the PostgreSQL primary instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PostgresClusterService>,
@@ -1307,7 +1310,7 @@ pub struct PostgresClusterBackupsPgbackrestRepos {
     /// Represents a pgBackRest repository that is created using Google Cloud Storage
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gcs: Option<PostgresClusterBackupsPgbackrestReposGcs>,
-    /// The name of the the repository
+    /// The name of the repository
     pub name: String,
     /// RepoS3 represents a pgBackRest repository that is created using AWS S3 (or S3-compatible) storage
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2160,7 +2163,7 @@ pub struct PostgresClusterCustomTlsSecretItems {
 /// Specifies a data source for bootstrapping the PostgreSQL cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PostgresClusterDataSource {
-    /// Defines a pgBackRest cloud-based data source that can be used to pre-populate the the PostgreSQL data directory for a new PostgreSQL cluster using a pgBackRest restore. The PGBackRest field is incompatible with the PostgresCluster field: only one data source can be used for pre-populating a new PostgreSQL cluster
+    /// Defines a pgBackRest cloud-based data source that can be used to pre-populate the PostgreSQL data directory for a new PostgreSQL cluster using a pgBackRest restore. The PGBackRest field is incompatible with the PostgresCluster field: only one data source can be used for pre-populating a new PostgreSQL cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pgbackrest: Option<PostgresClusterDataSourcePgbackrest>,
     /// Defines a pgBackRest data source that can be used to pre-populate the PostgreSQL data directory for a new PostgreSQL cluster using a pgBackRest restore. The PGBackRest field is incompatible with the PostgresCluster field: only one data source can be used for pre-populating a new PostgreSQL cluster
@@ -2171,7 +2174,7 @@ pub struct PostgresClusterDataSource {
     pub volumes: Option<PostgresClusterDataSourceVolumes>,
 }
 
-/// Defines a pgBackRest cloud-based data source that can be used to pre-populate the the PostgreSQL data directory for a new PostgreSQL cluster using a pgBackRest restore. The PGBackRest field is incompatible with the PostgresCluster field: only one data source can be used for pre-populating a new PostgreSQL cluster
+/// Defines a pgBackRest cloud-based data source that can be used to pre-populate the PostgreSQL data directory for a new PostgreSQL cluster using a pgBackRest restore. The PGBackRest field is incompatible with the PostgresCluster field: only one data source can be used for pre-populating a new PostgreSQL cluster
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PostgresClusterDataSourcePgbackrest {
     /// Scheduling constraints of the pgBackRest restore Job. More info: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node
@@ -2746,7 +2749,7 @@ pub struct PostgresClusterDataSourcePgbackrestRepo {
     /// Represents a pgBackRest repository that is created using Google Cloud Storage
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gcs: Option<PostgresClusterDataSourcePgbackrestRepoGcs>,
-    /// The name of the the repository
+    /// The name of the repository
     pub name: String,
     /// RepoS3 represents a pgBackRest repository that is created using AWS S3 (or S3-compatible) storage
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6819,6 +6822,38 @@ pub struct PostgresClusterProxyPgBouncerTopologySpreadConstraintsLabelSelectorMa
     pub values: Option<Vec<String>>,
 }
 
+/// Specification of the service that exposes PostgreSQL replica instances
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PostgresClusterReplicaService {
+    /// Metadata contains metadata for custom resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<PostgresClusterReplicaServiceMetadata>,
+    /// The port on which this service is exposed when type is NodePort or LoadBalancer. Value must be in-range and not in use or the operation will fail. If unspecified, a port will be allocated if this Service requires one. - https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
+    pub node_port: Option<i32>,
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<PostgresClusterReplicaServiceType>,
+}
+
+/// Metadata contains metadata for custom resources
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PostgresClusterReplicaServiceMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// Specification of the service that exposes PostgreSQL replica instances
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PostgresClusterReplicaServiceType {
+    #[serde(rename = "ClusterIP")]
+    ClusterIp,
+    NodePort,
+    LoadBalancer,
+}
+
 /// Specification of the service that exposes the PostgreSQL primary instance.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PostgresClusterService {
@@ -7895,7 +7930,7 @@ pub struct PostgresClusterStatusPgbackrestRepos {
     /// ReplicaCreateBackupReady indicates whether a backup exists in the repository as needed to bootstrap replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaCreateBackupComplete")]
     pub replica_create_backup_complete: Option<bool>,
-    /// A hash of the required fields in the spec for defining an Azure, GCS or S3 repository, Utilizd to detect changes to these fields and then execute pgBackRest stanza-create commands accordingly.
+    /// A hash of the required fields in the spec for defining an Azure, GCS or S3 repository, Utilized to detect changes to these fields and then execute pgBackRest stanza-create commands accordingly.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repoOptionsHash")]
     pub repo_options_hash: Option<String>,
     /// Specifies whether or not a stanza has been successfully created for the repository

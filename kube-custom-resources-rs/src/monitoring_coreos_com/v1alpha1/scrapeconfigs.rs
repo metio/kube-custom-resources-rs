@@ -106,6 +106,9 @@ pub struct ScrapeConfigSpec {
     /// Configures the protocol scheme used for requests. If empty, Prometheus uses HTTP by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ScrapeConfigScheme>,
+    /// The scrape class to apply.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
+    pub scrape_class: Option<String>,
     /// ScrapeInterval is the interval between consecutive scrapes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,

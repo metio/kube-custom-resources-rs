@@ -37,11 +37,17 @@ spec:
             spec:
               description: "HyperParameterTuningJobSpec defines the desired state of HyperParameterTuningJob."
               properties:
+                autotune:
+                  description: "Configures SageMaker Automatic model tuning (AMT) to automatically find optimal\nparameters for the following fields:\n\n\n   * ParameterRanges (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges):\n   The names and ranges of parameters that a hyperparameter tuning job can\n   optimize.\n\n\n   * ResourceLimits (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html):\n   The maximum resources that can be used for a training job. These resources\n   include the maximum number of training jobs, the maximum runtime of a\n   tuning job, and the maximum number of training jobs to run at the same\n   time.\n\n\n   * TrainingJobEarlyStoppingType (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType):\n   A flag that specifies whether or not to use early stopping for training\n   jobs launched by a hyperparameter tuning job.\n\n\n   * RetryStrategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy):\n   The number of times to retry a training job.\n\n\n   * Strategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html):\n   Specifies how hyperparameter tuning chooses the combinations of hyperparameter\n   values to use for the training jobs that it launches.\n\n\n   * ConvergenceDetected (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html):\n   A flag to indicate that Automatic model tuning (AMT) has detected model\n   convergence."
+                  properties:
+                    mode:
+                      type: "string"
+                  type: "object"
                 hyperParameterTuningJobConfig:
-                  description: "The HyperParameterTuningJobConfig object that describes the tuning job, including\nthe search strategy, the objective metric used to evaluate training jobs,\nranges of parameters to search, and resource limits for the tuning job. For\nmore information, see How Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html)."
+                  description: "The HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html)\nobject that describes the tuning job, including the search strategy, the\nobjective metric used to evaluate training jobs, ranges of parameters to\nsearch, and resource limits for the tuning job. For more information, see\nHow Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html)."
                   properties:
                     hyperParameterTuningJobObjective:
-                      description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter."
+                      description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter.\nIf you want to define a custom objective metric, see Define metrics and environment\nvariables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html)."
                       properties:
                         metricName:
                           type: "string"
@@ -51,6 +57,16 @@ spec:
                     parameterRanges:
                       description: "Specifies ranges of integer, continuous, and categorical hyperparameters\nthat a hyperparameter tuning job searches. The hyperparameter tuning job\nlaunches training jobs with hyperparameter values within these ranges to\nfind the combination of values that result in the training job with the best\nperformance as measured by the objective metric of the hyperparameter tuning\njob.\n\n\nThe maximum number of items specified for Array Members refers to the maximum\nnumber of hyperparameters for each range and also the maximum for the hyperparameter\ntuning job itself. That is, the sum of the number of hyperparameters for\nall the ranges can't exceed the maximum number specified."
                       properties:
+                        autoParameters:
+                          items:
+                            description: "The name and an example value of the hyperparameter that you want to use\nin Autotune. If Automatic model tuning (AMT) determines that your hyperparameter\nis eligible for Autotune, an optimal hyperparameter range is selected for\nyou."
+                            properties:
+                              name:
+                                type: "string"
+                              valueHint:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                         categoricalParameterRanges:
                           items:
                             description: "A list of categorical hyperparameters to tune."
@@ -120,7 +136,7 @@ spec:
                 tags:
                   description: "An array of key-value pairs. You can use tags to categorize your Amazon Web\nServices resources in different ways, for example, by purpose, owner, or\nenvironment. For more information, see Tagging Amazon Web Services Resources\n(https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\n\n\nTags that you specify for the tuning job are also added to all training jobs\nthat the tuning job launches."
                   items:
-                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags.\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
+                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
                     properties:
                       key:
                         type: "string"
@@ -129,7 +145,7 @@ spec:
                     type: "object"
                   type: "array"
                 trainingJobDefinition:
-                  description: "The HyperParameterTrainingJobDefinition object that describes the training\njobs that this tuning job launches, including static hyperparameters, input\ndata configuration, output data configuration, resource configuration, and\nstopping condition."
+                  description: "The HyperParameterTrainingJobDefinition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html)\nobject that describes the training jobs that this tuning job launches, including\nstatic hyperparameters, input data configuration, output data configuration,\nresource configuration, and stopping condition."
                   properties:
                     algorithmSpecification:
                       description: "Specifies which training algorithm to use for training jobs that a hyperparameter\ntuning job launches and the metrics to monitor."
@@ -138,7 +154,7 @@ spec:
                           type: "string"
                         metricDefinitions:
                           items:
-                            description: "Specifies a metric that the training algorithm writes to stderr or stdout.\nSageMakerhyperparameter tuning captures all defined metrics. You specify\none metric that a hyperparameter tuning job uses as its objective metric\nto choose the best training job."
+                            description: "Specifies a metric that the training algorithm writes to stderr or stdout.\nYou can view these logs to understand how your training job performs and\ncheck for any errors encountered during training. SageMaker hyperparameter\ntuning captures all defined metrics. Specify one of the defined metrics to\nuse as an objective metric using the TuningObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-TuningObjective)\nparameter in the HyperParameterTrainingJobDefinition API to evaluate job\nperformance during hyperparameter tuning."
                             properties:
                               name:
                                 type: "string"
@@ -171,6 +187,16 @@ spec:
                     hyperParameterRanges:
                       description: "Specifies ranges of integer, continuous, and categorical hyperparameters\nthat a hyperparameter tuning job searches. The hyperparameter tuning job\nlaunches training jobs with hyperparameter values within these ranges to\nfind the combination of values that result in the training job with the best\nperformance as measured by the objective metric of the hyperparameter tuning\njob.\n\n\nThe maximum number of items specified for Array Members refers to the maximum\nnumber of hyperparameters for each range and also the maximum for the hyperparameter\ntuning job itself. That is, the sum of the number of hyperparameters for\nall the ranges can't exceed the maximum number specified."
                       properties:
+                        autoParameters:
+                          items:
+                            description: "The name and an example value of the hyperparameter that you want to use\nin Autotune. If Automatic model tuning (AMT) determines that your hyperparameter\nis eligible for Autotune, an optimal hyperparameter range is selected for\nyou."
+                            properties:
+                              name:
+                                type: "string"
+                              valueHint:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                         categoricalParameterRanges:
                           items:
                             description: "A list of categorical hyperparameters to tune."
@@ -238,7 +264,7 @@ spec:
                                     type: "string"
                                 type: "object"
                               s3DataSource:
-                                description: "Describes the S3 data source."
+                                description: "Describes the S3 data source.\n\n\nYour input bucket must be in the same Amazon Web Services region as your\ntraining job."
                                 properties:
                                   attributeNames:
                                     items:
@@ -273,6 +299,8 @@ spec:
                     outputDataConfig:
                       description: "Provides information about how to store model training results (model artifacts)."
                       properties:
+                        compressionType:
+                          type: "string"
                         kmsKeyID:
                           type: "string"
                         s3OutputPath:
@@ -300,6 +328,7 @@ spec:
                         instanceType:
                           type: "string"
                         keepAlivePeriodInSeconds:
+                          description: "Optional. Customer requested period in seconds for which the Training cluster\nis kept alive after the job is finished."
                           format: "int64"
                           type: "integer"
                         volumeKMSKeyID:
@@ -324,6 +353,10 @@ spec:
                     stoppingCondition:
                       description: "Specifies a limit to how long a model training job or model compilation job\ncan run. It also specifies how long a managed spot training job has to complete.\nWhen the job reaches the time limit, SageMaker ends the training or compilation\njob. Use this API to cap model training costs.\n\n\nTo stop a training job, SageMaker sends the algorithm the SIGTERM signal,\nwhich delays job termination for 120 seconds. Algorithms can use this 120-second\nwindow to save the model artifacts, so the results of training are not lost.\n\n\nThe training algorithms provided by SageMaker automatically save the intermediate\nresults of a model training job when possible. This attempt to save artifacts\nis only a best effort case as model might not be in a state from which it\ncan be saved. For example, if training has just started, the model might\nnot be ready to save. When saved, this intermediate data is a valid model\nartifact. You can use it to create a model with CreateModel.\n\n\nThe Neural Topic Model (NTM) currently does not support saving intermediate\nmodel artifacts. When training NTMs, make sure that the maximum runtime is\nsufficient for the training job to complete."
                       properties:
+                        maxPendingTimeInSeconds:
+                          description: "Maximum job scheduler pending time in seconds."
+                          format: "int64"
+                          type: "integer"
                         maxRuntimeInSeconds:
                           format: "int64"
                           type: "integer"
@@ -332,7 +365,7 @@ spec:
                           type: "integer"
                       type: "object"
                     tuningObjective:
-                      description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter."
+                      description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter.\nIf you want to define a custom objective metric, see Define metrics and environment\nvariables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html)."
                       properties:
                         metricName:
                           type: "string"
@@ -340,7 +373,7 @@ spec:
                           type: "string"
                       type: "object"
                     vpcConfig:
-                      description: "Specifies a VPC that your training jobs and hosted models have access to.\nControl access to and from your training and model containers by configuring\nthe VPC. For more information, see Protect Endpoints by Using an Amazon Virtual\nPrivate Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)\nand Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
+                      description: "Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,\nhosted models, and compute resources have access to. You can control access\nto and from your resources by configuring a VPC. For more information, see\nGive SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html)."
                       properties:
                         securityGroupIDs:
                           items:
@@ -353,7 +386,7 @@ spec:
                       type: "object"
                   type: "object"
                 trainingJobDefinitions:
-                  description: "A list of the HyperParameterTrainingJobDefinition objects launched for this\ntuning job."
+                  description: "A list of the HyperParameterTrainingJobDefinition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html)\nobjects launched for this tuning job."
                   items:
                     description: "Defines the training jobs launched by a hyperparameter tuning job."
                     properties:
@@ -364,7 +397,7 @@ spec:
                             type: "string"
                           metricDefinitions:
                             items:
-                              description: "Specifies a metric that the training algorithm writes to stderr or stdout.\nSageMakerhyperparameter tuning captures all defined metrics. You specify\none metric that a hyperparameter tuning job uses as its objective metric\nto choose the best training job."
+                              description: "Specifies a metric that the training algorithm writes to stderr or stdout.\nYou can view these logs to understand how your training job performs and\ncheck for any errors encountered during training. SageMaker hyperparameter\ntuning captures all defined metrics. Specify one of the defined metrics to\nuse as an objective metric using the TuningObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-TuningObjective)\nparameter in the HyperParameterTrainingJobDefinition API to evaluate job\nperformance during hyperparameter tuning."
                               properties:
                                 name:
                                   type: "string"
@@ -397,6 +430,16 @@ spec:
                       hyperParameterRanges:
                         description: "Specifies ranges of integer, continuous, and categorical hyperparameters\nthat a hyperparameter tuning job searches. The hyperparameter tuning job\nlaunches training jobs with hyperparameter values within these ranges to\nfind the combination of values that result in the training job with the best\nperformance as measured by the objective metric of the hyperparameter tuning\njob.\n\n\nThe maximum number of items specified for Array Members refers to the maximum\nnumber of hyperparameters for each range and also the maximum for the hyperparameter\ntuning job itself. That is, the sum of the number of hyperparameters for\nall the ranges can't exceed the maximum number specified."
                         properties:
+                          autoParameters:
+                            items:
+                              description: "The name and an example value of the hyperparameter that you want to use\nin Autotune. If Automatic model tuning (AMT) determines that your hyperparameter\nis eligible for Autotune, an optimal hyperparameter range is selected for\nyou."
+                              properties:
+                                name:
+                                  type: "string"
+                                valueHint:
+                                  type: "string"
+                              type: "object"
+                            type: "array"
                           categoricalParameterRanges:
                             items:
                               description: "A list of categorical hyperparameters to tune."
@@ -464,7 +507,7 @@ spec:
                                       type: "string"
                                   type: "object"
                                 s3DataSource:
-                                  description: "Describes the S3 data source."
+                                  description: "Describes the S3 data source.\n\n\nYour input bucket must be in the same Amazon Web Services region as your\ntraining job."
                                   properties:
                                     attributeNames:
                                       items:
@@ -499,6 +542,8 @@ spec:
                       outputDataConfig:
                         description: "Provides information about how to store model training results (model artifacts)."
                         properties:
+                          compressionType:
+                            type: "string"
                           kmsKeyID:
                             type: "string"
                           s3OutputPath:
@@ -526,6 +571,7 @@ spec:
                           instanceType:
                             type: "string"
                           keepAlivePeriodInSeconds:
+                            description: "Optional. Customer requested period in seconds for which the Training cluster\nis kept alive after the job is finished."
                             format: "int64"
                             type: "integer"
                           volumeKMSKeyID:
@@ -550,6 +596,10 @@ spec:
                       stoppingCondition:
                         description: "Specifies a limit to how long a model training job or model compilation job\ncan run. It also specifies how long a managed spot training job has to complete.\nWhen the job reaches the time limit, SageMaker ends the training or compilation\njob. Use this API to cap model training costs.\n\n\nTo stop a training job, SageMaker sends the algorithm the SIGTERM signal,\nwhich delays job termination for 120 seconds. Algorithms can use this 120-second\nwindow to save the model artifacts, so the results of training are not lost.\n\n\nThe training algorithms provided by SageMaker automatically save the intermediate\nresults of a model training job when possible. This attempt to save artifacts\nis only a best effort case as model might not be in a state from which it\ncan be saved. For example, if training has just started, the model might\nnot be ready to save. When saved, this intermediate data is a valid model\nartifact. You can use it to create a model with CreateModel.\n\n\nThe Neural Topic Model (NTM) currently does not support saving intermediate\nmodel artifacts. When training NTMs, make sure that the maximum runtime is\nsufficient for the training job to complete."
                         properties:
+                          maxPendingTimeInSeconds:
+                            description: "Maximum job scheduler pending time in seconds."
+                            format: "int64"
+                            type: "integer"
                           maxRuntimeInSeconds:
                             format: "int64"
                             type: "integer"
@@ -558,7 +608,7 @@ spec:
                             type: "integer"
                         type: "object"
                       tuningObjective:
-                        description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter."
+                        description: "Defines the objective metric for a hyperparameter tuning job. Hyperparameter\ntuning uses the value of this metric to evaluate the training jobs it launches,\nand returns the training job that results in either the highest or lowest\nvalue for this metric, depending on the value you specify for the Type parameter.\nIf you want to define a custom objective metric, see Define metrics and environment\nvariables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html)."
                         properties:
                           metricName:
                             type: "string"
@@ -566,7 +616,7 @@ spec:
                             type: "string"
                         type: "object"
                       vpcConfig:
-                        description: "Specifies a VPC that your training jobs and hosted models have access to.\nControl access to and from your training and model containers by configuring\nthe VPC. For more information, see Protect Endpoints by Using an Amazon Virtual\nPrivate Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)\nand Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."
+                        description: "Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,\nhosted models, and compute resources have access to. You can control access\nto and from your resources by configuring a VPC. For more information, see\nGive SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html)."
                         properties:
                           securityGroupIDs:
                             items:
@@ -617,7 +667,7 @@ spec:
                     - "region"
                   type: "object"
                 bestTrainingJob:
-                  description: "A TrainingJobSummary object that describes the training job that completed\nwith the best current HyperParameterTuningJobObjective."
+                  description: "A TrainingJobSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TrainingJobSummary.html)\nobject that describes the training job that completed with the best current\nHyperParameterTuningJobObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobObjective.html)."
                   properties:
                     creationTime:
                       format: "date-time"
@@ -625,7 +675,7 @@ spec:
                     failureReason:
                       type: "string"
                     finalHyperParameterTuningJobObjectiveMetric:
-                      description: "Shows the latest objective metric emitted by a training job that was launched\nby a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective\nparameter of HyperParameterTuningJobConfig."
+                      description: "Shows the latest objective metric emitted by a training job that was launched\nby a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective\nparameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html)."
                       properties:
                         metricName:
                           type: "string"
@@ -687,10 +737,10 @@ spec:
                   description: "If the tuning job failed, the reason it failed."
                   type: "string"
                 hyperParameterTuningJobStatus:
-                  description: "The status of the tuning job: InProgress, Completed, Failed, Stopping, or\nStopped."
+                  description: "The status of the tuning job."
                   type: "string"
                 overallBestTrainingJob:
-                  description: "If the hyperparameter tuning job is an warm start tuning job with a WarmStartType\nof IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary for the training\njob with the best objective metric value of all training jobs launched by\nthis tuning job and all parent jobs specified for the warm start tuning job."
+                  description: "If the hyperparameter tuning job is an warm start tuning job with a WarmStartType\nof IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TrainingJobSummary.html)\nfor the training job with the best objective metric value of all training\njobs launched by this tuning job and all parent jobs specified for the warm\nstart tuning job."
                   properties:
                     creationTime:
                       format: "date-time"
@@ -698,7 +748,7 @@ spec:
                     failureReason:
                       type: "string"
                     finalHyperParameterTuningJobObjectiveMetric:
-                      description: "Shows the latest objective metric emitted by a training job that was launched\nby a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective\nparameter of HyperParameterTuningJobConfig."
+                      description: "Shows the latest objective metric emitted by a training job that was launched\nby a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective\nparameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html)."
                       properties:
                         metricName:
                           type: "string"

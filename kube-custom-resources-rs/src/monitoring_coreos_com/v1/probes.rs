@@ -55,6 +55,9 @@ pub struct ProbeSpec {
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
+    /// The scrape class to apply.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
+    pub scrape_class: Option<String>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the protocols supported by Prometheus in order of preference (from most to least preferred). 
     ///  If unset, Prometheus uses its default value. 
     ///  It requires Prometheus >= v2.49.0.

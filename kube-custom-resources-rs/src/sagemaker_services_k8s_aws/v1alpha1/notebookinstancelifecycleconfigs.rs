@@ -36,8 +36,8 @@ pub struct NotebookInstanceLifecycleConfigSpec {
 /// is /sbin:bin:/usr/sbin:/usr/bin.
 /// 
 /// 
-/// View CloudWatch Logs for notebook instance lifecycle configurations in log
-/// group /aws/sagemaker/NotebookInstances in log stream [notebook-instance-name]/[LifecycleConfigHook].
+/// View Amazon CloudWatch Logs for notebook instance lifecycle configurations
+/// in log group /aws/sagemaker/NotebookInstances in log stream [notebook-instance-name]/[LifecycleConfigHook].
 /// 
 /// 
 /// Lifecycle configuration scripts cannot run for longer than 5 minutes. If
@@ -63,8 +63,8 @@ pub struct NotebookInstanceLifecycleConfigOnCreate {
 /// is /sbin:bin:/usr/sbin:/usr/bin.
 /// 
 /// 
-/// View CloudWatch Logs for notebook instance lifecycle configurations in log
-/// group /aws/sagemaker/NotebookInstances in log stream [notebook-instance-name]/[LifecycleConfigHook].
+/// View Amazon CloudWatch Logs for notebook instance lifecycle configurations
+/// in log group /aws/sagemaker/NotebookInstances in log stream [notebook-instance-name]/[LifecycleConfigHook].
 /// 
 /// 
 /// Lifecycle configuration scripts cannot run for longer than 5 minutes. If

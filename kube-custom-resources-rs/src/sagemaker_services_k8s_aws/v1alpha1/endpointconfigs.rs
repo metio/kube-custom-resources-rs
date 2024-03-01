@@ -20,10 +20,25 @@ pub struct EndpointConfigSpec {
     /// Configuration to control how SageMaker captures inference data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataCaptureConfig")]
     pub data_capture_config: Option<EndpointConfigDataCaptureConfig>,
+    /// Sets whether all model containers deployed to the endpoint are isolated.
+    /// If they are, no inbound or outbound network calls can be made to or from
+    /// the model containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
+    pub enable_network_isolation: Option<bool>,
     /// The name of the endpoint configuration. You specify this name in a CreateEndpoint
+    /// (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html)
     /// request.
     #[serde(rename = "endpointConfigName")]
     pub endpoint_config_name: String,
+    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
+    /// to perform actions on your behalf. For more information, see SageMaker Roles
+    /// (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).
+    /// 
+    /// 
+    /// To be able to pass this role to Amazon SageMaker, the caller of this action
+    /// must have the iam:PassRole permission.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRoleARN")]
+    pub execution_role_arn: Option<String>,
     /// The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service
     /// key that SageMaker uses to encrypt data on the storage volume attached to
     /// the ML compute instance that hosts the endpoint.
@@ -78,6 +93,12 @@ pub struct EndpointConfigSpec {
     /// (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<EndpointConfigTags>>,
+    /// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
+    /// hosted models, and compute resources have access to. You can control access
+    /// to and from your resources by configuring a VPC. For more information, see
+    /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConfig")]
+    pub vpc_config: Option<EndpointConfigVpcConfig>,
 }
 
 /// Specifies configuration for how an endpoint performs asynchronous inference.
@@ -111,6 +132,8 @@ pub struct EndpointConfigAsyncInferenceConfigOutputConfig {
     /// inference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationConfig")]
     pub notification_config: Option<EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3FailurePath")]
+    pub s3_failure_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
@@ -121,6 +144,8 @@ pub struct EndpointConfigAsyncInferenceConfigOutputConfig {
 pub struct EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorTopic")]
     pub error_topic: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeInferenceResponseIn")]
+    pub include_inference_response_in: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successTopic")]
     pub success_topic: Option<String>,
 }
@@ -129,7 +154,8 @@ pub struct EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigDataCaptureConfig {
     /// Configuration specifying how to treat different headers. If no headers are
-    /// specified SageMaker will by default base64 encode when capturing the data.
+    /// specified Amazon SageMaker will by default base64 encode when capturing the
+    /// data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureContentTypeHeader")]
     pub capture_content_type_header: Option<EndpointConfigDataCaptureConfigCaptureContentTypeHeader>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureOptions")]
@@ -145,7 +171,8 @@ pub struct EndpointConfigDataCaptureConfig {
 }
 
 /// Configuration specifying how to treat different headers. If no headers are
-/// specified SageMaker will by default base64 encode when capturing the data.
+/// specified Amazon SageMaker will by default base64 encode when capturing the
+/// data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigDataCaptureConfigCaptureContentTypeHeader {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csvContentTypes")]
@@ -183,10 +210,18 @@ pub struct EndpointConfigProductionVariants {
     pub initial_variant_weight: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
+    /// Settings that control the range in the number of instances that the endpoint
+    /// provisions as it scales up or down to accommodate traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedInstanceScaling")]
+    pub managed_instance_scaling: Option<EndpointConfigProductionVariantsManagedInstanceScaling>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataDownloadTimeoutInSeconds")]
     pub model_data_download_timeout_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelName")]
     pub model_name: Option<String>,
+    /// Settings that control how the endpoint routes incoming traffic to the instances
+    /// that the endpoint hosts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingConfig")]
+    pub routing_config: Option<EndpointConfigProductionVariantsRoutingConfig>,
     /// Specifies the serverless configuration for an endpoint variant.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverlessConfig")]
     pub serverless_config: Option<EndpointConfigProductionVariantsServerlessConfig>,
@@ -206,6 +241,26 @@ pub struct EndpointConfigProductionVariantsCoreDumpConfig {
     pub kms_key_id: Option<String>,
 }
 
+/// Settings that control the range in the number of instances that the endpoint
+/// provisions as it scales up or down to accommodate traffic.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EndpointConfigProductionVariantsManagedInstanceScaling {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInstanceCount")]
+    pub max_instance_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minInstanceCount")]
+    pub min_instance_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+}
+
+/// Settings that control how the endpoint routes incoming traffic to the instances
+/// that the endpoint hosts.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EndpointConfigProductionVariantsRoutingConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingStrategy")]
+    pub routing_strategy: Option<String>,
+}
+
 /// Specifies the serverless configuration for an endpoint variant.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigProductionVariantsServerlessConfig {
@@ -213,6 +268,8 @@ pub struct EndpointConfigProductionVariantsServerlessConfig {
     pub max_concurrency: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySizeInMB")]
     pub memory_size_in_mb: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedConcurrency")]
+    pub provisioned_concurrency: Option<i64>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
@@ -222,7 +279,7 @@ pub struct EndpointConfigProductionVariantsServerlessConfig {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
@@ -236,6 +293,18 @@ pub struct EndpointConfigTags {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
+/// hosted models, and compute resources have access to. You can control access
+/// to and from your resources by configuring a VPC. For more information, see
+/// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EndpointConfigVpcConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
+    pub security_group_i_ds: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub subnets: Option<Vec<String>>,
 }
 
 /// EndpointConfigStatus defines the observed state of EndpointConfig

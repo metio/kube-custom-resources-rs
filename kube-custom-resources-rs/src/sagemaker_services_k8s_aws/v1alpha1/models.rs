@@ -9,7 +9,8 @@ use std::collections::BTreeMap;
 /// ModelSpec defines the desired state of Model.
 /// 
 /// 
-/// The properties of a model as returned by the Search API.
+/// The properties of a model as returned by the Search (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html)
+/// API.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "Model", plural = "models")]
 #[kube(namespaced)]
@@ -31,8 +32,8 @@ pub struct ModelSpec {
     /// 
     /// To be able to pass this role to SageMaker, the caller of this API must have
     /// the iam:PassRole permission.
-    #[serde(rename = "executionRoleARN")]
-    pub execution_role_arn: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRoleARN")]
+    pub execution_role_arn: Option<String>,
     /// Specifies details of how containers in a multi-container endpoint are called.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferenceExecutionConfig")]
     pub inference_execution_config: Option<ModelInferenceExecutionConfig>,
@@ -50,9 +51,10 @@ pub struct ModelSpec {
     /// (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ModelTags>>,
-    /// A VpcConfig object that specifies the VPC that you want your model to connect
-    /// to. Control access to and from your model container by configuring the VPC.
-    /// VpcConfig is used in hosting services and in batch transform. For more information,
+    /// A VpcConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html)
+    /// object that specifies the VPC that you want your model to connect to. Control
+    /// access to and from your model container by configuring the VPC. VpcConfig
+    /// is used in hosting services and in batch transform. For more information,
     /// see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
     /// and Protect Data in Batch Transform Jobs by Using an Amazon Virtual Private
     /// Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/batch-vpc.html).
@@ -77,6 +79,10 @@ pub struct ModelContainers {
     pub inference_specification_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
+    /// Specifies the location of ML model data to deploy. If specified, you must
+    /// specify one and only one of the available data sources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataSource")]
+    pub model_data_source: Option<ModelContainersModelDataSource>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataURL")]
     pub model_data_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageName")]
@@ -112,6 +118,60 @@ pub struct ModelContainersImageConfigRepositoryAuthConfig {
     pub repository_credentials_provider_arn: Option<String>,
 }
 
+/// Specifies the location of ML model data to deploy. If specified, you must
+/// specify one and only one of the available data sources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ModelContainersModelDataSource {
+    /// Specifies the S3 location of ML model data to deploy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataSource")]
+    pub s3_data_source: Option<ModelContainersModelDataSourceS3DataSource>,
+}
+
+/// Specifies the S3 location of ML model data to deploy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ModelContainersModelDataSourceS3DataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
+    pub compression_type: Option<String>,
+    /// The access configuration file to control access to the ML model. You can
+    /// explicitly accept the model end-user license agreement (EULA) within the
+    /// ModelAccessConfig.
+    /// 
+    /// 
+    ///    * If you are a Jumpstart user, see the End-user license agreements (https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)
+    ///    section for more details on accepting the EULA.
+    /// 
+    /// 
+    ///    * If you are an AutoML user, see the Optional Parameters section of Create
+    ///    an AutoML job to fine-tune text generation models using the API for details
+    ///    on How to set the EULA acceptance when fine-tuning a model using the AutoML
+    ///    API (https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-create-experiment-finetune-llms.html#autopilot-llms-finetuning-api-optional-params).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelAccessConfig")]
+    pub model_access_config: Option<ModelContainersModelDataSourceS3DataSourceModelAccessConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
+    pub s3_data_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
+    pub s3_uri: Option<String>,
+}
+
+/// The access configuration file to control access to the ML model. You can
+/// explicitly accept the model end-user license agreement (EULA) within the
+/// ModelAccessConfig.
+/// 
+/// 
+///    * If you are a Jumpstart user, see the End-user license agreements (https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)
+///    section for more details on accepting the EULA.
+/// 
+/// 
+///    * If you are an AutoML user, see the Optional Parameters section of Create
+///    an AutoML job to fine-tune text generation models using the API for details
+///    on How to set the EULA acceptance when fine-tuning a model using the AutoML
+///    API (https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-create-experiment-finetune-llms.html#autopilot-llms-finetuning-api-optional-params).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ModelContainersModelDataSourceS3DataSourceModelAccessConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptEula")]
+    pub accept_eula: Option<bool>,
+}
+
 /// Specifies additional configuration for hosting multi-model endpoints.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelContainersMultiModelConfig {
@@ -145,6 +205,10 @@ pub struct ModelPrimaryContainer {
     pub inference_specification_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
+    /// Specifies the location of ML model data to deploy. If specified, you must
+    /// specify one and only one of the available data sources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataSource")]
+    pub model_data_source: Option<ModelPrimaryContainerModelDataSource>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataURL")]
     pub model_data_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageName")]
@@ -180,6 +244,60 @@ pub struct ModelPrimaryContainerImageConfigRepositoryAuthConfig {
     pub repository_credentials_provider_arn: Option<String>,
 }
 
+/// Specifies the location of ML model data to deploy. If specified, you must
+/// specify one and only one of the available data sources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ModelPrimaryContainerModelDataSource {
+    /// Specifies the S3 location of ML model data to deploy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataSource")]
+    pub s3_data_source: Option<ModelPrimaryContainerModelDataSourceS3DataSource>,
+}
+
+/// Specifies the S3 location of ML model data to deploy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ModelPrimaryContainerModelDataSourceS3DataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
+    pub compression_type: Option<String>,
+    /// The access configuration file to control access to the ML model. You can
+    /// explicitly accept the model end-user license agreement (EULA) within the
+    /// ModelAccessConfig.
+    /// 
+    /// 
+    ///    * If you are a Jumpstart user, see the End-user license agreements (https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)
+    ///    section for more details on accepting the EULA.
+    /// 
+    /// 
+    ///    * If you are an AutoML user, see the Optional Parameters section of Create
+    ///    an AutoML job to fine-tune text generation models using the API for details
+    ///    on How to set the EULA acceptance when fine-tuning a model using the AutoML
+    ///    API (https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-create-experiment-finetune-llms.html#autopilot-llms-finetuning-api-optional-params).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelAccessConfig")]
+    pub model_access_config: Option<ModelPrimaryContainerModelDataSourceS3DataSourceModelAccessConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
+    pub s3_data_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
+    pub s3_uri: Option<String>,
+}
+
+/// The access configuration file to control access to the ML model. You can
+/// explicitly accept the model end-user license agreement (EULA) within the
+/// ModelAccessConfig.
+/// 
+/// 
+///    * If you are a Jumpstart user, see the End-user license agreements (https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)
+///    section for more details on accepting the EULA.
+/// 
+/// 
+///    * If you are an AutoML user, see the Optional Parameters section of Create
+///    an AutoML job to fine-tune text generation models using the API for details
+///    on How to set the EULA acceptance when fine-tuning a model using the AutoML
+///    API (https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-create-experiment-finetune-llms.html#autopilot-llms-finetuning-api-optional-params).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ModelPrimaryContainerModelDataSourceS3DataSourceModelAccessConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptEula")]
+    pub accept_eula: Option<bool>,
+}
+
 /// Specifies additional configuration for hosting multi-model endpoints.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPrimaryContainerMultiModelConfig {
@@ -194,7 +312,7 @@ pub struct ModelPrimaryContainerMultiModelConfig {
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
-/// see AddTags.
+/// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
 /// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
@@ -210,9 +328,10 @@ pub struct ModelTags {
     pub value: Option<String>,
 }
 
-/// A VpcConfig object that specifies the VPC that you want your model to connect
-/// to. Control access to and from your model container by configuring the VPC.
-/// VpcConfig is used in hosting services and in batch transform. For more information,
+/// A VpcConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html)
+/// object that specifies the VPC that you want your model to connect to. Control
+/// access to and from your model container by configuring the VPC. VpcConfig
+/// is used in hosting services and in batch transform. For more information,
 /// see Protect Endpoints by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html)
 /// and Protect Data in Batch Transform Jobs by Using an Amazon Virtual Private
 /// Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/batch-vpc.html).

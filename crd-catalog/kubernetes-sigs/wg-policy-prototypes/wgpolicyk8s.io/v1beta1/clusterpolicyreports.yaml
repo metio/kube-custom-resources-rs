@@ -70,7 +70,6 @@ spec:
                           - "skip"
                         type: "string"
                       type: "array"
-                      uniqueItems: true
                   type: "object"
               required:
                 - "limits"
@@ -129,7 +128,6 @@ spec:
                         description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                         type: "object"
                     type: "object"
-                    x-kubernetes-map-type: "atomic"
                   resources:
                     description: "Subjects is an optional reference to the checked Kubernetes resources"
                     items:
@@ -157,7 +155,6 @@ spec:
                           description: "UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
                           type: "string"
                       type: "object"
-                      x-kubernetes-map-type: "atomic"
                     type: "array"
                   result:
                     description: "Result indicates the outcome of the policy rule execution"
@@ -230,7 +227,6 @@ spec:
                   description: "UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
                   type: "string"
               type: "object"
-              x-kubernetes-map-type: "atomic"
             scopeSelector:
               description: "ScopeSelector is an optional selector for multiple scopes (e.g. Pods). Either one of, or none of, but not both of, Scope or ScopeSelector should be specified."
               properties:
@@ -261,7 +257,6 @@ spec:
                   description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                   type: "object"
               type: "object"
-              x-kubernetes-map-type: "atomic"
             source:
               description: "Source is an identifier for the source e.g. a policy engine that manages this report. Use this field if all the results are produced by a single policy engine. If the results are produced by multiple sources e.g. different engines or scanners, then use the Source field at the PolicyReportResult level."
               type: "string"

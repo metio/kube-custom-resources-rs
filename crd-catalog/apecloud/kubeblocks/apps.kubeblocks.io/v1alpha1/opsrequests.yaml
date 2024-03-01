@@ -119,7 +119,7 @@ spec:
                         description: "Specifies the name of the cluster component."
                         type: "string"
                       services:
-                        description: "A list of services that are to be exposed or removed."
+                        description: "A list of services that are to be exposed or removed. If componentNamem is not specified, each `OpsService` in the list must specify ports and selectors."
                         items:
                           properties:
                             annotations:
