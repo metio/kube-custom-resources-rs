@@ -2038,6 +2038,7 @@ apiVersion `opensearchservice.services.k8s.aws/v1alpha1`:
 
 apiVersion `opentelemetry.io/v1alpha1`:
 - `Instrumentation`
+- `OpAMPBridge`
 - `OpenTelemetryCollector`
 
 ## operations_kubeedge_io

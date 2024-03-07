@@ -18,6 +18,6 @@ for feature in $(cargo read-manifest --manifest-path ./kube-custom-resources-rs/
     echo "${feature} succeeded"
   else
     echo "${feature} failed"
-#    exit 1
+    exit 1
   fi
 done
