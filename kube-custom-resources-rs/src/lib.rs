@@ -2707,6 +2707,12 @@ apiVersion `templates.gatekeeper.sh/v1alpha1`:
 apiVersion `templates.gatekeeper.sh/v1beta1`:
 - `ConstraintTemplate`
 
+## tempo_grafana_com
+
+apiVersion `tempo.grafana.com/v1alpha1`:
+- `TempoMonolithic`
+- `TempoStack`
+
 ## temporal_io
 
 apiVersion `temporal.io/v1beta1`:
@@ -3516,6 +3522,8 @@ pub mod stunner_l7mp_io;
 pub mod submariner_io;
 #[cfg(feature = "templates_gatekeeper_sh")]
 pub mod templates_gatekeeper_sh;
+#[cfg(feature = "tempo_grafana_com")]
+pub mod tempo_grafana_com;
 #[cfg(feature = "temporal_io")]
 pub mod temporal_io;
 #[cfg(feature = "tests_testkube_io")]

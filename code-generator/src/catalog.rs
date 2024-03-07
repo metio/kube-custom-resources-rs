@@ -1351,6 +1351,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "grafana/tempo-operator",
+        license: AGPL_V3_ONLY,
+        urls: &[
+            "https://github.com/grafana/tempo-operator/blob/main/config/crd/bases/tempo.grafana.com_tempomonolithics.yaml",
+            "https://github.com/grafana/tempo-operator/blob/main/config/crd/bases/tempo.grafana.com_tempostacks.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "gravitational/teleport",
         license: APACHE_V2,
         urls: &[
