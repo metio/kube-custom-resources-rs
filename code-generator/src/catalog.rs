@@ -2286,6 +2286,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/open-telemetry/opentelemetry-operator/blob/main/config/crd/bases/opentelemetry.io_instrumentations.yaml",
+            "https://github.com/open-telemetry/opentelemetry-operator/blob/main/config/crd/bases/opentelemetry.io_opampbridges.yaml",
             "https://github.com/open-telemetry/opentelemetry-operator/blob/main/config/crd/bases/opentelemetry.io_opentelemetrycollectors.yaml",
         ],
     },
