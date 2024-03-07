@@ -1,3 +1,16 @@
+pub mod amazoncloudintegrations;
 pub mod apiservers;
+pub mod applicationlayers;
+pub mod authentications;
+pub mod compliances;
+pub mod egressgateways;
 pub mod installations;
+pub mod intrusiondetections;
+pub mod logcollectors;
+pub mod logstorages;
+pub mod managementclusterconnections;
+pub mod managers;
+pub mod monitors;
+pub mod policyrecommendations;
+pub mod tenants;
 pub mod tigerastatuses;

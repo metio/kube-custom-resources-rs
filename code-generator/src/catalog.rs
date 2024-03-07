@@ -2475,10 +2475,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/projectcalico/calico/blob/master/manifests/crds.yaml",
-            "https://github.com/projectcalico/calico/blob/master/charts/tigera-operator/crds/operator.tigera.io_apiservers_crd.yaml",
-            "https://github.com/projectcalico/calico/blob/master/charts/tigera-operator/crds/operator.tigera.io_imagesets_crd.yaml",
-            "https://github.com/projectcalico/calico/blob/master/charts/tigera-operator/crds/operator.tigera.io_installations_crd.yaml",
-            "https://github.com/projectcalico/calico/blob/master/charts/tigera-operator/crds/operator.tigera.io_tigerastatuses_crd.yaml",
         ],
     },
     UpstreamSource {
@@ -2786,6 +2782,30 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/ThinkParQ/beegfs-csi-driver/blob/master/operator/config/crd/bases/beegfs.csi.netapp.com_beegfsdrivers.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "tigera/operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_amazoncloudintegrations.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_apiservers.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_applicationlayers.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_authentications.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_compliances.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_egressgateways.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_imagesets.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_installations.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_intrusiondetections.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_logcollectors.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_logstorages.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_managementclusterconnections.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_managementclusters.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_managers.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_monitors.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_policyrecommendations.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_tenants.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_tigerastatuses.yaml",
         ],
     },
     UpstreamSource {
