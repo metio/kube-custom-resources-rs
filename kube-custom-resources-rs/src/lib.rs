@@ -2120,9 +2120,25 @@ apiVersion `operator.shipwright.io/v1alpha1`:
 ## operator_tigera_io
 
 apiVersion `operator.tigera.io/v1`:
+- `AmazonCloudIntegration`
 - `APIServer`
+- `ApplicationLayer`
+- `Authentication`
+- `Compliance`
+- `EgressGateway`
 - `Installation`
+- `IntrusionDetection`
+- `LogCollector`
+- `LogStorage`
+- `ManagementClusterConnection`
+- `Manager`
+- `Monitor`
+- `PolicyRecommendation`
+- `Tenant`
 - `TigeraStatus`
+
+apiVersion `operator.tigera.io/v1beta1`:
+- `AmazonCloudIntegration`
 
 ## operator_victoriametrics_com
 
