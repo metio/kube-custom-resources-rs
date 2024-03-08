@@ -56,11 +56,17 @@ pub struct DevfileRegistryDevfileIndex {
     /// Sets the image pull policy for the container
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// Sets the memory limit for the container
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryLimit")]
+    pub memory_limit: Option<String>,
 }
 
 /// DevfileRegistrySpecK8sOnly defines the desired state of the kubernetes-only fields of the DevfileRegistry
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DevfileRegistryK8s {
+    /// Ingress class for a Kubernetes cluster. Defaults to nginx.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClass")]
+    pub ingress_class: Option<String>,
     /// Ingress domain for a Kubernetes cluster. This MUST be explicitly specified on Kubernetes. There are no defaults
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressDomain")]
     pub ingress_domain: Option<String>,
@@ -75,6 +81,9 @@ pub struct DevfileRegistryOciRegistry {
     /// Sets the image pull policy for the container
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// Sets the memory limit for the container
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryLimit")]
+    pub memory_limit: Option<String>,
 }
 
 /// Sets the registry viewer container spec to be deployed on the Devfile Registry
@@ -86,6 +95,9 @@ pub struct DevfileRegistryRegistryViewer {
     /// Sets the image pull policy for the container
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// Sets the memory limit for the container
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryLimit")]
+    pub memory_limit: Option<String>,
 }
 
 /// DevfileRegistrySpecStorage defines the desired state of the storage for the DevfileRegistry

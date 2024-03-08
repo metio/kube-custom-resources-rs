@@ -93,8 +93,8 @@ spec:
                                     - "operator"
                                   type: "object"
                                 type: "array"
-                              envOverrides:
-                                description: "EnvOverrides will override the env field of the container"
+                              envOverriders:
+                                description: "EnvOverriders will override the env field of the container"
                                 items:
                                   description: "EnvOverrider represents the rules dedicated to handling env overrides."
                                   properties:
@@ -232,8 +232,8 @@ spec:
                               replicas:
                                 description: "Replicas will override the replicas field of deployment"
                                 type: "integer"
-                              resourcesOverrides:
-                                description: "ResourcesOverrides will override the resources field of the container"
+                              resourcesOverriders:
+                                description: "ResourcesOverriders will override the resources field of the container"
                                 items:
                                   description: "ResourcesOverrider represents the rules dedicated to handling resources overrides."
                                   properties:

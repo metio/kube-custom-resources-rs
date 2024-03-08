@@ -70,6 +70,10 @@ pub struct OutputSpec {
     pub sumologic: Option<OutputSumologic>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syslog: Option<OutputSyslog>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmwareLogInsight")]
+    pub vmware_log_insight: Option<OutputVmwareLogInsight>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmwareLogIntelligence")]
+    pub vmware_log_intelligence: Option<OutputVmwareLogIntelligence>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7605,6 +7609,434 @@ pub struct OutputSyslogTrustedCaPathValueFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputSyslogTrustedCaPathValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsight {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub agent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<OutputVmwareLogInsightAuthentication>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub buffer: Option<OutputVmwareLogInsightBuffer>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca_file: Option<OutputVmwareLogInsightCaFile>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config_param: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flatten_hashes: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flatten_hashes_separator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http_conn_debug: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http_method: Option<OutputVmwareLogInsightHttpMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub log_text_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_batch_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<OutputVmwareLogInsightPassword>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub raise_on_error: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rate_limit_msec: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request_retries: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request_timeout: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<OutputVmwareLogInsightScheme>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub serializer: Option<OutputVmwareLogInsightSerializer>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shorten_keys: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssl_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<OutputVmwareLogInsightUsername>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputVmwareLogInsightAuthentication {
+    #[serde(rename = "nil")]
+    Nil,
+    #[serde(rename = "basic")]
+    Basic,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightBuffer {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_full_threshold: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_limit_records: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_limit_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compress: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delayed_commit_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disable_chunk_backup: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_at_shutdown: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_burst_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub overflow_action: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queue_limit_length: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queued_chunks_limit_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_exponential_backoff_base: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_forever: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_max_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_max_times: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_randomize: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_secondary_threshold: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_wait: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_use_utc: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_wait: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_zone: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub total_limit_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightCaFile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputVmwareLogInsightCaFileMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputVmwareLogInsightCaFileValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightCaFileMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputVmwareLogInsightCaFileMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightCaFileMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightCaFileValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputVmwareLogInsightCaFileValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightCaFileValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputVmwareLogInsightHttpMethod {
+    #[serde(rename = "post")]
+    Post,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightPassword {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputVmwareLogInsightPasswordMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputVmwareLogInsightPasswordValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightPasswordMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputVmwareLogInsightPasswordMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightPasswordMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightPasswordValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputVmwareLogInsightPasswordValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightPasswordValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputVmwareLogInsightScheme {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "https")]
+    Https,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputVmwareLogInsightSerializer {
+    #[serde(rename = "json")]
+    Json,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightUsername {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputVmwareLogInsightUsernameMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputVmwareLogInsightUsernameValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightUsernameMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputVmwareLogInsightUsernameMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightUsernameMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightUsernameValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputVmwareLogInsightUsernameValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogInsightUsernameValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligence {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub buffer: Option<OutputVmwareLogIntelligenceBuffer>,
+    pub endpoint_url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<OutputVmwareLogIntelligenceFormat>,
+    pub headers: OutputVmwareLogIntelligenceHeaders,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http_compress: Option<bool>,
+    pub verify_ssl: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligenceBuffer {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_full_threshold: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_limit_records: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_limit_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compress: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delayed_commit_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disable_chunk_backup: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_at_shutdown: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_burst_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub overflow_action: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queue_limit_length: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queued_chunks_limit_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_exponential_backoff_base: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_forever: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_max_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_max_times: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_randomize: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_secondary_threshold: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_wait: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_use_utc: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_wait: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_zone: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub total_limit_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligenceFormat {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add_newline: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message_key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<OutputVmwareLogIntelligenceFormatType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputVmwareLogIntelligenceFormatType {
+    #[serde(rename = "out_file")]
+    OutFile,
+    #[serde(rename = "json")]
+    Json,
+    #[serde(rename = "ltsv")]
+    Ltsv,
+    #[serde(rename = "csv")]
+    Csv,
+    #[serde(rename = "msgpack")]
+    Msgpack,
+    #[serde(rename = "hash")]
+    Hash,
+    #[serde(rename = "single_value")]
+    SingleValue,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligenceHeaders {
+    pub authorization: OutputVmwareLogIntelligenceHeadersAuthorization,
+    pub content_type: String,
+    pub structure: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligenceHeadersAuthorization {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputVmwareLogIntelligenceHeadersAuthorizationMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputVmwareLogIntelligenceHeadersAuthorizationValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligenceHeadersAuthorizationMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputVmwareLogIntelligenceHeadersAuthorizationMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligenceHeadersAuthorizationMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligenceHeadersAuthorizationValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputVmwareLogIntelligenceHeadersAuthorizationValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputVmwareLogIntelligenceHeadersAuthorizationValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

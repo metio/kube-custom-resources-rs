@@ -14,66 +14,71 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ConfigConstraintStatus")]
 #[kube(schema = "disabled")]
 pub struct ConfigConstraintSpec {
-    /// The cue type name, which generates the openapi schema.
+    /// Top level key used to get the cue rules to validate the config file. It must exist in 'ConfigSchema' TODO (refactored to ConfigSchemaTopLevelKey)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cfgSchemaTopLevelName")]
     pub cfg_schema_top_level_name: Option<String>,
-    /// Imposes restrictions on database parameter's rule.
+    /// List constraints rules for each config parameters. TODO (refactored to ConfigSchema)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationSchema")]
     pub configuration_schema: Option<ConfigConstraintConfigurationSchema>,
-    /// Used to monitor pod fields.
+    /// A set of actions for regenerating local configs. 
+    ///  It works when: - different engine roles have different config, such as redis primary & secondary - after a role switch, the local config will be regenerated with the help of DownwardActions TODO (refactored to DownwardActions)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPIOptions")]
     pub downward_api_options: Option<Vec<ConfigConstraintDownwardApiOptions>>,
-    /// A list of DynamicParameter. Modifications of these parameters trigger a config dynamic reload without process restart.
+    /// Indicates the dynamic reload action and restart action can be merged to a restart action. 
+    ///  When a batch of parameters updates incur both restart & dynamic reload, it works as: - set to true, the two actions merged to only one restart action - set to false, the two actions cannot be merged, the actions executed in order [dynamic reload, restart]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicActionCanBeMerged")]
+    pub dynamic_action_can_be_merged: Option<bool>,
+    /// Specifies the policy for selecting the parameters of dynamic reload actions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicParameterSelectedPolicy")]
+    pub dynamic_parameter_selected_policy: Option<ConfigConstraintDynamicParameterSelectedPolicy>,
+    /// A list of DynamicParameter. Modifications of dynamic parameters trigger a reload action without process restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicParameters")]
     pub dynamic_parameters: Option<Vec<String>>,
-    /// Indicates whether to execute hot update parameters when the pod needs to be restarted. If set to true, the controller performs the hot update and then restarts the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceHotUpdate")]
-    pub force_hot_update: Option<bool>,
-    /// Describes the format of the configuration file. The controller will: 1. Parse the configuration file 2. Analyze the modified parameters 3. Apply corresponding policies.
+    /// Describes the format of the config file. The controller works as follows: 1. Parse the config file 2. Get the modified parameters 3. Trigger the corresponding action
     #[serde(rename = "formatterConfig")]
     pub formatter_config: ConfigConstraintFormatterConfig,
-    /// Describes parameters that users are prohibited from modifying.
+    /// Describes parameters that are prohibited to do any modifications.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "immutableParameters")]
     pub immutable_parameters: Option<Vec<String>>,
-    /// Specifies whether the process supports reload. If set, the controller determines the behavior of the engine instance based on the configuration templates. It will either restart or reload depending on whether any parameters in the StaticParameters have been modified.
+    /// Specifies the dynamic reload actions supported by the engine. If set, the controller call the scripts defined in the actions for a dynamic parameter upgrade. The actions are called only when the modified parameter is defined in dynamicParameters part && DynamicReloadActions != nil TODO (refactored to DynamicReloadActions)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadOptions")]
     pub reload_options: Option<ConfigConstraintReloadOptions>,
-    /// A list of ScriptConfig. These scripts can be used by volume trigger, downward trigger, or tool image.
+    /// A list of ScriptConfig used by the actions defined in dynamic reload and downward actions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptConfigs")]
     pub script_configs: Option<Vec<ConfigConstraintScriptConfigs>>,
-    /// Used to match the label on the pod. For example, a pod of the primary matches on the patroni cluster.
+    /// Used to match labels on the pod to do a dynamic reload TODO (refactored to DynamicReloadSelector)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ConfigConstraintSelector>,
-    /// A list of StaticParameter. Modifications of these parameters trigger a process restart.
+    /// A list of StaticParameter. Modifications of static parameters trigger a process restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticParameters")]
     pub static_parameters: Option<Vec<String>>,
-    /// Used to configure the init container.
+    /// Tools used by the dynamic reload actions. Usually it is referenced by the 'init container' for 'cp' it to a binary volume. TODO (refactored to ReloadToolsImage)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toolsImageSpec")]
     pub tools_image_spec: Option<ConfigConstraintToolsImageSpec>,
 }
 
-/// Imposes restrictions on database parameter's rule.
+/// List constraints rules for each config parameters. TODO (refactored to ConfigSchema)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintConfigurationSchema {
     /// Enables providers to verify user configurations using the CUE language.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cue: Option<String>,
-    /// Provides a mechanism that allows providers to validate the modified parameters using JSON.
+    /// Transforms the schema from CUE to json for further OpenAPI validation TODO (refactored to SchemaInJson)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<HashMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintDownwardApiOptions {
-    /// The command used to execute for the downward API. This field is optional.
+    /// The command used to execute for the downward API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    /// Represents a list of downward API volume files. This is a required field.
+    /// Represents a list of downward API volume files.
     pub items: Vec<ConfigConstraintDownwardApiOptionsItems>,
-    /// Specifies the mount point of the scripts file. This is a required field and must be a string of maximum length 128.
+    /// Specifies the mount point of the scripts file.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
-    /// Specifies the name of the field. This is a required field and must be a string of maximum length 63. The name should match the regex pattern `^[a-z0-9]([a-z0-9\.\-]*[a-z0-9])?$`.
+    /// Specifies the name of the field. It must be a string of maximum length 63. The name should match the regex pattern `^[a-z0-9]([a-z0-9\.\-]*[a-z0-9])?$`.
     pub name: String,
 }
 
@@ -117,18 +122,27 @@ pub struct ConfigConstraintDownwardApiOptionsItemsResourceFieldRef {
     pub resource: String,
 }
 
-/// Describes the format of the configuration file. The controller will: 1. Parse the configuration file 2. Analyze the modified parameters 3. Apply corresponding policies.
+/// ConfigConstraintSpec defines the desired state of ConfigConstraint
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ConfigConstraintDynamicParameterSelectedPolicy {
+    #[serde(rename = "all")]
+    All,
+    #[serde(rename = "dynamic")]
+    Dynamic,
+}
+
+/// Describes the format of the config file. The controller works as follows: 1. Parse the config file 2. Get the modified parameters 3. Trigger the corresponding action
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintFormatterConfig {
-    /// The configuration file format. Valid values are `ini`, `xml`, `yaml`, `json`, `hcl`, `dotenv`, `properties` and `toml`. Each format has its own characteristics and use cases. 
-    ///  - ini: a configuration file that consists of a text-based content with a structure and syntax comprising key–value pairs for properties, reference wiki: https://en.wikipedia.org/wiki/INI_file - xml: reference wiki: https://en.wikipedia.org/wiki/XML - yaml: a configuration file support for complex data types and structures. - json: reference wiki: https://en.wikipedia.org/wiki/JSON - hcl: The HashiCorp Configuration Language (HCL) is a configuration language authored by HashiCorp, reference url: https://www.linode.com/docs/guides/introduction-to-hcl/ - dotenv: this was a plain text file with simple key–value pairs, reference wiki: https://en.wikipedia.org/wiki/Configuration_file#MS-DOS - properties: a file extension mainly used in Java, reference wiki: https://en.wikipedia.org/wiki/.properties - toml: reference wiki: https://en.wikipedia.org/wiki/TOML - props-plus: a file extension mainly used in Java, support CamelCase(e.g: brokerMaxConnectionsPerIp)
+    /// The config file format. Valid values are `ini`, `xml`, `yaml`, `json`, `hcl`, `dotenv`, `properties` and `toml`. Each format has its own characteristics and use cases. 
+    ///  - ini: is a text-based content with a structure and syntax comprising key–value pairs for properties, reference wiki: https://en.wikipedia.org/wiki/INI_file - xml: refers to wiki: https://en.wikipedia.org/wiki/XML - yaml: supports for complex data types and structures. - json: refers to wiki: https://en.wikipedia.org/wiki/JSON - hcl: The HashiCorp Configuration Language (HCL) is a configuration language authored by HashiCorp, reference url: https://www.linode.com/docs/guides/introduction-to-hcl/ - dotenv: is a plain text file with simple key–value pairs, reference wiki: https://en.wikipedia.org/wiki/Configuration_file#MS-DOS - properties: a file extension mainly used in Java, reference wiki: https://en.wikipedia.org/wiki/.properties - toml: refers to wiki: https://en.wikipedia.org/wiki/TOML - props-plus: a file extension mainly used in Java, supports CamelCase(e.g: brokerMaxConnectionsPerIp)
     pub format: ConfigConstraintFormatterConfigFormat,
     /// A pointer to an IniConfig struct that holds the ini options.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iniConfig")]
     pub ini_config: Option<ConfigConstraintFormatterConfigIniConfig>,
 }
 
-/// Describes the format of the configuration file. The controller will: 1. Parse the configuration file 2. Analyze the modified parameters 3. Apply corresponding policies.
+/// Describes the format of the config file. The controller works as follows: 1. Parse the config file 2. Get the modified parameters 3. Trigger the corresponding action
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ConfigConstraintFormatterConfigFormat {
     #[serde(rename = "xml")]
@@ -161,24 +175,24 @@ pub struct ConfigConstraintFormatterConfigIniConfig {
     pub section_name: Option<String>,
 }
 
-/// Specifies whether the process supports reload. If set, the controller determines the behavior of the engine instance based on the configuration templates. It will either restart or reload depending on whether any parameters in the StaticParameters have been modified.
+/// Specifies the dynamic reload actions supported by the engine. If set, the controller call the scripts defined in the actions for a dynamic parameter upgrade. The actions are called only when the modified parameter is defined in dynamicParameters part && DynamicReloadActions != nil TODO (refactored to DynamicReloadActions)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptions {
-    /// Used to automatically perform the reload command when certain conditions are met.
+    /// Used to automatically perform the reload command when conditions are met.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoTrigger")]
     pub auto_trigger: Option<ConfigConstraintReloadOptionsAutoTrigger>,
-    /// Used to perform the reload command via a shell script.
+    /// Used to perform the reload command in shell script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shellTrigger")]
     pub shell_trigger: Option<ConfigConstraintReloadOptionsShellTrigger>,
-    /// Used to perform the reload command via a Go template script.
+    /// Used to perform the reload command by Go template script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tplScriptTrigger")]
     pub tpl_script_trigger: Option<ConfigConstraintReloadOptionsTplScriptTrigger>,
-    /// Used to trigger a reload by sending a specific Unix signal to the process.
+    /// Used to trigger a reload by sending a Unix signal to the process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unixSignalTrigger")]
     pub unix_signal_trigger: Option<ConfigConstraintReloadOptionsUnixSignalTrigger>,
 }
 
-/// Used to automatically perform the reload command when certain conditions are met.
+/// Used to automatically perform the reload command when conditions are met.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsAutoTrigger {
     /// The name of the process.
@@ -186,41 +200,41 @@ pub struct ConfigConstraintReloadOptionsAutoTrigger {
     pub process_name: Option<String>,
 }
 
-/// Used to perform the reload command via a shell script.
+/// Used to perform the reload command in shell script.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsShellTrigger {
-    /// Specifies the list of strings used to execute for reload.
+    /// Specifies the list of commands for reload.
     pub command: Vec<String>,
-    /// Specifies whether to synchronize updates parameters to the config manager.
+    /// Specifies whether to synchronize updates parameters to the config manager. Specifies two ways of controller to reload the parameter: - set to 'True', execute the reload action in sync mode, wait for the completion of reload - set to 'False', execute the reload action in async mode, just update the 'Configmap', no need to wait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
 }
 
-/// Used to perform the reload command via a Go template script.
+/// Used to perform the reload command by Go template script.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsTplScriptTrigger {
-    /// Specifies the namespace where the referenced tpl script ConfigMap object resides. If left empty, it defaults to the "default" namespace.
+    /// Specifies the namespace where the referenced tpl script ConfigMap in. If left empty, by default in the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specifies the reference to the ConfigMap that contains the script to be executed for reload.
     #[serde(rename = "scriptConfigMapRef")]
     pub script_config_map_ref: String,
-    /// Specifies whether to synchronize updates parameters to the config manager.
+    /// Specifies whether to synchronize updates parameters to the config manager. Specifies two ways of controller to reload the parameter: - set to 'True', execute the reload action in sync mode, wait for the completion of reload - set to 'False', execute the reload action in async mode, just update the 'Configmap', no need to wait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
 }
 
-/// Used to trigger a reload by sending a specific Unix signal to the process.
+/// Used to trigger a reload by sending a Unix signal to the process.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsUnixSignalTrigger {
-    /// Represents the name of the process to which the Unix signal is sent.
+    /// Represents the name of the process that the Unix signal sent to.
     #[serde(rename = "processName")]
     pub process_name: String,
     /// Represents a valid Unix signal. Refer to the following URL for a list of all Unix signals: ../../pkg/configuration/configmap/handler.go:allUnixSignals
     pub signal: ConfigConstraintReloadOptionsUnixSignalTriggerSignal,
 }
 
-/// Used to trigger a reload by sending a specific Unix signal to the process.
+/// Used to trigger a reload by sending a Unix signal to the process.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ConfigConstraintReloadOptionsUnixSignalTriggerSignal {
     #[serde(rename = "SIGHUP")]
@@ -289,7 +303,7 @@ pub enum ConfigConstraintReloadOptionsUnixSignalTriggerSignal {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintScriptConfigs {
-    /// Specifies the namespace where the referenced tpl script ConfigMap object resides. If left empty, it defaults to the "default" namespace.
+    /// Specifies the namespace where the referenced tpl script ConfigMap in. If left empty, by default in the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specifies the reference to the ConfigMap that contains the script to be executed for reload.
@@ -297,7 +311,7 @@ pub struct ConfigConstraintScriptConfigs {
     pub script_config_map_ref: String,
 }
 
-/// Used to match the label on the pod. For example, a pod of the primary matches on the patroni cluster.
+/// Used to match labels on the pod to do a dynamic reload TODO (refactored to DynamicReloadSelector)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -320,10 +334,10 @@ pub struct ConfigConstraintSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// Used to configure the init container.
+/// Tools used by the dynamic reload actions. Usually it is referenced by the 'init container' for 'cp' it to a binary volume. TODO (refactored to ReloadToolsImage)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintToolsImageSpec {
-    /// Represents the location where the scripts file will be mounted.
+    /// Represents the point where the scripts file will be mounted.
     #[serde(rename = "mountPoint")]
     pub mount_point: String,
     /// Used to configure the initialization container.
@@ -333,19 +347,19 @@ pub struct ConfigConstraintToolsImageSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintToolsImageSpecToolConfigs {
-    /// Used to execute commands for init containers.
+    /// Commands to be executed when init containers.
     pub command: Vec<String>,
-    /// Represents the name of the container image for the tools.
+    /// Represents the url of the tool container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Specifies the name of the initContainer. This must be a DNS_LABEL name.
+    /// Specifies the name of the initContainer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintStatus {
-    /// Provides a description of any abnormal statuses that may be present.
+    /// Provides descriptions for abnormal states.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Refers to the most recent generation observed for this ConfigConstraint. This value is updated by the API Server.

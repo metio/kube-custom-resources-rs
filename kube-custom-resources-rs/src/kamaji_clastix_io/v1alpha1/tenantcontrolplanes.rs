@@ -66,7 +66,7 @@ pub struct TenantControlPlaneAddonsKonnectivity {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantControlPlaneAddonsKonnectivityAgent {
-    /// ExtraArgs allows adding additional arguments to said component.
+    /// ExtraArgs allows adding additional arguments to said component. WARNING - This option can override existing konnectivity parameters and cause konnectivity components to misbehave in unxpected ways. Only modify if you know what you are doing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraArgs")]
     pub extra_args: Option<Vec<String>>,
     /// AgentImage defines the container image for Konnectivity's agent.
@@ -79,7 +79,7 @@ pub struct TenantControlPlaneAddonsKonnectivityAgent {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantControlPlaneAddonsKonnectivityServer {
-    /// ExtraArgs allows adding additional arguments to said component.
+    /// ExtraArgs allows adding additional arguments to said component. WARNING - This option can override existing konnectivity parameters and cause konnectivity components to misbehave in unxpected ways. Only modify if you know what you are doing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraArgs")]
     pub extra_args: Option<Vec<String>>,
     /// Container image used by the Konnectivity server.
@@ -163,7 +163,7 @@ pub struct TenantControlPlaneControlPlaneDeployment {
     /// If specified, the Tenant Control Plane pod's scheduling constraints. More info: https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<TenantControlPlaneControlPlaneDeploymentAffinity>,
-    /// ExtraArgs allows adding additional arguments to the Control Plane components, such as kube-apiserver, controller-manager, and scheduler.
+    /// ExtraArgs allows adding additional arguments to the Control Plane components, such as kube-apiserver, controller-manager, and scheduler. WARNING - This option can override existing parameters and cause components to misbehave in unxpected ways. Only modify if you know what you are doing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraArgs")]
     pub extra_args: Option<TenantControlPlaneControlPlaneDeploymentExtraArgs>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -3323,7 +3323,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityRequir
     pub values: Option<Vec<String>>,
 }
 
-/// ExtraArgs allows adding additional arguments to the Control Plane components, such as kube-apiserver, controller-manager, and scheduler.
+/// ExtraArgs allows adding additional arguments to the Control Plane components, such as kube-apiserver, controller-manager, and scheduler. WARNING - This option can override existing parameters and cause components to misbehave in unxpected ways. Only modify if you know what you are doing.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentExtraArgs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServer")]

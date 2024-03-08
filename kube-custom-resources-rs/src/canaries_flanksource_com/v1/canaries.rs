@@ -100,7 +100,8 @@ pub struct CanarySpec {
     pub result_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<Vec<CanaryS3>>,
-    /// Schedule to run checks on. Supports all cron expression, example: '30 3-6,20-23 * * *'. For more info about cron expression syntax see https://en.wikipedia.org/wiki/Cron Also supports golang duration, can be set as '@every 1m30s' which runs the check every 1 minute and 30 seconds.
+    /// Schedule to run checks on. Supports all cron expression, example: '30 3-6,20-23 * * *'. For more info about cron expression syntax see https://en.wikipedia.org/wiki/Cron
+    ///  Also supports golang duration, can be set as '@every 1m30s' which runs the check every 1 minute and 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -145,7 +146,8 @@ pub struct CanaryAlertmanager {
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<CanaryAlertmanagerPassword>,
-    /// Relationships defines a way to link the check results to components and configs using lookup expressions.
+    /// Relationships defines a way to link the check results to components and configs
+    /// using lookup expressions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relationships: Option<CanaryAlertmanagerRelationships>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -240,7 +242,8 @@ pub struct CanaryAlertmanagerPasswordValueFromSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Relationships defines a way to link the check results to components and configs using lookup expressions.
+/// Relationships defines a way to link the check results to components and configs
+/// using lookup expressions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAlertmanagerRelationships {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2347,10 +2350,13 @@ pub struct CanaryEc2AccessKeyValueFromSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryEc2CanaryRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2664,7 +2670,8 @@ pub struct CanaryEnv {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CanaryEnvConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CanaryEnvFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -2679,7 +2686,9 @@ pub struct CanaryEnv {
 pub struct CanaryEnvConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2687,7 +2696,8 @@ pub struct CanaryEnvConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryEnvFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -2703,7 +2713,9 @@ pub struct CanaryEnvFieldRef {
 pub struct CanaryEnvSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2743,7 +2755,8 @@ pub struct CanaryExec {
     /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Script can be a inline script or a path to a script that needs to be executed On windows executed via powershell and in darwin and linux executed using bash
+    /// Script can be a inline script or a path to a script that needs to be executed
+    /// On windows executed via powershell and in darwin and linux executed using bash
     pub script: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub test: Option<CanaryExecTest>,
@@ -2756,7 +2769,8 @@ pub struct CanaryExec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryExecArtifacts {
-    /// Path to the artifact on the check runner. Special paths: /dev/stdout & /dev/stdin
+    /// Path to the artifact on the check runner.
+    /// Special paths: /dev/stdout & /dev/stdin
     pub path: String,
 }
 
@@ -2767,7 +2781,8 @@ pub struct CanaryExecCheckout {
     pub certificate: Option<CanaryExecCheckoutCertificate>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<String>,
-    /// Destination is the full path to where the contents of the URL should be downloaded to. If left empty, the sha256 hash of the URL will be used as the dir name.
+    /// Destination is the full path to where the contents of the URL should be downloaded to.
+    /// If left empty, the sha256 hash of the URL will be used as the dir name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3388,7 +3403,8 @@ pub struct CanaryFolder {
     pub namespace: Option<String>,
     /// Path  to folder or object storage, e.g. `s3://<bucket-name>`,  `gcs://<bucket-name>`, `/path/tp/folder`
     pub path: String,
-    /// Recursive when set to true will recursively scan the folder to list the files in it. However, symlinks are simply listed but not traversed.
+    /// Recursive when set to true will recursively scan the folder to list the files in it.
+    /// However, symlinks are simply listed but not traversed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recursive: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sftpConnection")]
@@ -4923,7 +4939,8 @@ pub struct CanaryJunit {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryJunitArtifacts {
-    /// Path to the artifact on the check runner. Special paths: /dev/stdout & /dev/stdin
+    /// Path to the artifact on the check runner.
+    /// Special paths: /dev/stdout & /dev/stdin
     pub path: String,
 }
 

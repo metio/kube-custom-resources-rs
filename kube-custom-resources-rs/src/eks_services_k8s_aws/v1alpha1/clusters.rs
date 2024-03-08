@@ -115,6 +115,26 @@ pub struct ClusterEncryptionConfig {
 pub struct ClusterEncryptionConfigProvider {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyARN")]
     pub key_arn: Option<String>,
+    /// Reference field for KeyARN
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyRef")]
+    pub key_ref: Option<ClusterEncryptionConfigProviderKeyRef>,
+}
+
+/// Reference field for KeyARN
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterEncryptionConfigProviderKeyRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<ClusterEncryptionConfigProviderKeyRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterEncryptionConfigProviderKeyRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The Kubernetes network configuration for the cluster.

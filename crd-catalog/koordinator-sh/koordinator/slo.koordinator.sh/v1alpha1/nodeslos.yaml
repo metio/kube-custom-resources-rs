@@ -121,6 +121,12 @@ spec:
                                         description: "Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds."
                                         format: "int64"
                                         type: "integer"
+                                      readLatencyPercent:
+                                        description: "the read latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
+                                        type: "integer"
                                       writeBPS:
                                         format: "int64"
                                         minimum: 0.0
@@ -132,6 +138,12 @@ spec:
                                       writeLatency:
                                         description: "the write latency threshold. Unit: microseconds."
                                         format: "int64"
+                                        type: "integer"
+                                      writeLatencyPercent:
+                                        description: "the write latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
                                         type: "integer"
                                     type: "object"
                                   name:
@@ -300,6 +312,12 @@ spec:
                                         description: "Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds."
                                         format: "int64"
                                         type: "integer"
+                                      readLatencyPercent:
+                                        description: "the read latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
+                                        type: "integer"
                                       writeBPS:
                                         format: "int64"
                                         minimum: 0.0
@@ -311,6 +329,12 @@ spec:
                                       writeLatency:
                                         description: "the write latency threshold. Unit: microseconds."
                                         format: "int64"
+                                        type: "integer"
+                                      writeLatencyPercent:
+                                        description: "the write latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
                                         type: "integer"
                                     type: "object"
                                   name:
@@ -479,6 +503,12 @@ spec:
                                         description: "Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds."
                                         format: "int64"
                                         type: "integer"
+                                      readLatencyPercent:
+                                        description: "the read latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
+                                        type: "integer"
                                       writeBPS:
                                         format: "int64"
                                         minimum: 0.0
@@ -490,6 +520,12 @@ spec:
                                       writeLatency:
                                         description: "the write latency threshold. Unit: microseconds."
                                         format: "int64"
+                                        type: "integer"
+                                      writeLatencyPercent:
+                                        description: "the write latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
                                         type: "integer"
                                     type: "object"
                                   name:
@@ -658,6 +694,12 @@ spec:
                                         description: "Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds."
                                         format: "int64"
                                         type: "integer"
+                                      readLatencyPercent:
+                                        description: "the read latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
+                                        type: "integer"
                                       writeBPS:
                                         format: "int64"
                                         minimum: 0.0
@@ -669,6 +711,12 @@ spec:
                                       writeLatency:
                                         description: "the write latency threshold. Unit: microseconds."
                                         format: "int64"
+                                        type: "integer"
+                                      writeLatencyPercent:
+                                        description: "the write latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
                                         type: "integer"
                                     type: "object"
                                   name:
@@ -813,6 +861,9 @@ spec:
                         cpuPolicy:
                           description: "applied policy for the CPU QoS, default = \"groupIdentity\""
                           type: "string"
+                        netQOSPolicy:
+                          description: "applied policy for the Net QoS, default = \"tc\""
+                          type: "string"
                       type: "object"
                     systemClass:
                       description: "ResourceQOS for system pods"
@@ -844,6 +895,12 @@ spec:
                                         description: "Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds."
                                         format: "int64"
                                         type: "integer"
+                                      readLatencyPercent:
+                                        description: "the read latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
+                                        type: "integer"
                                       writeBPS:
                                         format: "int64"
                                         minimum: 0.0
@@ -855,6 +912,12 @@ spec:
                                       writeLatency:
                                         description: "the write latency threshold. Unit: microseconds."
                                         format: "int64"
+                                        type: "integer"
+                                      writeLatencyPercent:
+                                        description: "the write latency percentile"
+                                        format: "int64"
+                                        maximum: 100.0
+                                        minimum: 0.0
                                         type: "integer"
                                     type: "object"
                                   name:

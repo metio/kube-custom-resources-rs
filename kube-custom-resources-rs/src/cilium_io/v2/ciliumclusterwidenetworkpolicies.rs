@@ -5,6 +5,7 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// Spec is the desired Cilium specific rule specification.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -122,9 +123,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressIcmpsFields {
     /// Family is a IP address version. Currently, we support `IPv4` and `IPv6`. `IPv4` is set as default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub family: Option<CiliumClusterwideNetworkPolicyEgressIcmpsFieldsFamily>,
-    /// Type is a ICMP-type. It should be 0-255 (8bit).
+    /// Type is a ICMP-type. It should be an 8bit code (0-255), or it's CamelCase name (for example, "EchoReply"). Allowed ICMP types are: Ipv4: EchoReply | DestinationUnreachable | Redirect | Echo | EchoRequest | RouterAdvertisement | RouterSelection | TimeExceeded | ParameterProblem | Timestamp | TimestampReply | Photuris | ExtendedEcho Request | ExtendedEcho Reply Ipv6: DestinationUnreachable | PacketTooBig | TimeExceeded | ParameterProblem | EchoRequest | EchoReply | MulticastListenerQuery| MulticastListenerReport | MulticastListenerDone | RouterSolicitation | RouterAdvertisement | NeighborSolicitation | NeighborAdvertisement | RedirectMessage | RouterRenumbering | ICMPNodeInformationQuery | ICMPNodeInformationResponse | InverseNeighborDiscoverySolicitation | InverseNeighborDiscoveryAdvertisement | HomeAgentAddressDiscoveryRequest | HomeAgentAddressDiscoveryReply | MobilePrefixSolicitation | MobilePrefixAdvertisement | DuplicateAddressRequestCodeSuffix | DuplicateAddressConfirmationCodeSuffix | ExtendedEchoRequest | ExtendedEchoReply
     #[serde(rename = "type")]
-    pub r#type: i64,
+    pub r#type: IntOrString,
 }
 
 /// ICMPField is a ICMP field.
@@ -661,9 +662,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyIcmpsFields {
     /// Family is a IP address version. Currently, we support `IPv4` and `IPv6`. `IPv4` is set as default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub family: Option<CiliumClusterwideNetworkPolicyEgressDenyIcmpsFieldsFamily>,
-    /// Type is a ICMP-type. It should be 0-255 (8bit).
+    /// Type is a ICMP-type. It should be an 8bit code (0-255), or it's CamelCase name (for example, "EchoReply"). Allowed ICMP types are: Ipv4: EchoReply | DestinationUnreachable | Redirect | Echo | EchoRequest | RouterAdvertisement | RouterSelection | TimeExceeded | ParameterProblem | Timestamp | TimestampReply | Photuris | ExtendedEcho Request | ExtendedEcho Reply Ipv6: DestinationUnreachable | PacketTooBig | TimeExceeded | ParameterProblem | EchoRequest | EchoReply | MulticastListenerQuery| MulticastListenerReport | MulticastListenerDone | RouterSolicitation | RouterAdvertisement | NeighborSolicitation | NeighborAdvertisement | RedirectMessage | RouterRenumbering | ICMPNodeInformationQuery | ICMPNodeInformationResponse | InverseNeighborDiscoverySolicitation | InverseNeighborDiscoveryAdvertisement | HomeAgentAddressDiscoveryRequest | HomeAgentAddressDiscoveryReply | MobilePrefixSolicitation | MobilePrefixAdvertisement | DuplicateAddressRequestCodeSuffix | DuplicateAddressConfirmationCodeSuffix | ExtendedEchoRequest | ExtendedEchoReply
     #[serde(rename = "type")]
-    pub r#type: i64,
+    pub r#type: IntOrString,
 }
 
 /// ICMPField is a ICMP field.
@@ -1113,9 +1114,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressIcmpsFields {
     /// Family is a IP address version. Currently, we support `IPv4` and `IPv6`. `IPv4` is set as default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub family: Option<CiliumClusterwideNetworkPolicyIngressIcmpsFieldsFamily>,
-    /// Type is a ICMP-type. It should be 0-255 (8bit).
+    /// Type is a ICMP-type. It should be an 8bit code (0-255), or it's CamelCase name (for example, "EchoReply"). Allowed ICMP types are: Ipv4: EchoReply | DestinationUnreachable | Redirect | Echo | EchoRequest | RouterAdvertisement | RouterSelection | TimeExceeded | ParameterProblem | Timestamp | TimestampReply | Photuris | ExtendedEcho Request | ExtendedEcho Reply Ipv6: DestinationUnreachable | PacketTooBig | TimeExceeded | ParameterProblem | EchoRequest | EchoReply | MulticastListenerQuery| MulticastListenerReport | MulticastListenerDone | RouterSolicitation | RouterAdvertisement | NeighborSolicitation | NeighborAdvertisement | RedirectMessage | RouterRenumbering | ICMPNodeInformationQuery | ICMPNodeInformationResponse | InverseNeighborDiscoverySolicitation | InverseNeighborDiscoveryAdvertisement | HomeAgentAddressDiscoveryRequest | HomeAgentAddressDiscoveryReply | MobilePrefixSolicitation | MobilePrefixAdvertisement | DuplicateAddressRequestCodeSuffix | DuplicateAddressConfirmationCodeSuffix | ExtendedEchoRequest | ExtendedEchoReply
     #[serde(rename = "type")]
-    pub r#type: i64,
+    pub r#type: IntOrString,
 }
 
 /// ICMPField is a ICMP field.
@@ -1551,9 +1552,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyIcmpsFields {
     /// Family is a IP address version. Currently, we support `IPv4` and `IPv6`. `IPv4` is set as default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub family: Option<CiliumClusterwideNetworkPolicyIngressDenyIcmpsFieldsFamily>,
-    /// Type is a ICMP-type. It should be 0-255 (8bit).
+    /// Type is a ICMP-type. It should be an 8bit code (0-255), or it's CamelCase name (for example, "EchoReply"). Allowed ICMP types are: Ipv4: EchoReply | DestinationUnreachable | Redirect | Echo | EchoRequest | RouterAdvertisement | RouterSelection | TimeExceeded | ParameterProblem | Timestamp | TimestampReply | Photuris | ExtendedEcho Request | ExtendedEcho Reply Ipv6: DestinationUnreachable | PacketTooBig | TimeExceeded | ParameterProblem | EchoRequest | EchoReply | MulticastListenerQuery| MulticastListenerReport | MulticastListenerDone | RouterSolicitation | RouterAdvertisement | NeighborSolicitation | NeighborAdvertisement | RedirectMessage | RouterRenumbering | ICMPNodeInformationQuery | ICMPNodeInformationResponse | InverseNeighborDiscoverySolicitation | InverseNeighborDiscoveryAdvertisement | HomeAgentAddressDiscoveryRequest | HomeAgentAddressDiscoveryReply | MobilePrefixSolicitation | MobilePrefixAdvertisement | DuplicateAddressRequestCodeSuffix | DuplicateAddressConfirmationCodeSuffix | ExtendedEchoRequest | ExtendedEchoReply
     #[serde(rename = "type")]
-    pub r#type: i64,
+    pub r#type: IntOrString,
 }
 
 /// ICMPField is a ICMP field.
@@ -1754,9 +1755,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressIcmpsFields {
     /// Family is a IP address version. Currently, we support `IPv4` and `IPv6`. `IPv4` is set as default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub family: Option<CiliumClusterwideNetworkPolicysEgressIcmpsFieldsFamily>,
-    /// Type is a ICMP-type. It should be 0-255 (8bit).
+    /// Type is a ICMP-type. It should be an 8bit code (0-255), or it's CamelCase name (for example, "EchoReply"). Allowed ICMP types are: Ipv4: EchoReply | DestinationUnreachable | Redirect | Echo | EchoRequest | RouterAdvertisement | RouterSelection | TimeExceeded | ParameterProblem | Timestamp | TimestampReply | Photuris | ExtendedEcho Request | ExtendedEcho Reply Ipv6: DestinationUnreachable | PacketTooBig | TimeExceeded | ParameterProblem | EchoRequest | EchoReply | MulticastListenerQuery| MulticastListenerReport | MulticastListenerDone | RouterSolicitation | RouterAdvertisement | NeighborSolicitation | NeighborAdvertisement | RedirectMessage | RouterRenumbering | ICMPNodeInformationQuery | ICMPNodeInformationResponse | InverseNeighborDiscoverySolicitation | InverseNeighborDiscoveryAdvertisement | HomeAgentAddressDiscoveryRequest | HomeAgentAddressDiscoveryReply | MobilePrefixSolicitation | MobilePrefixAdvertisement | DuplicateAddressRequestCodeSuffix | DuplicateAddressConfirmationCodeSuffix | ExtendedEchoRequest | ExtendedEchoReply
     #[serde(rename = "type")]
-    pub r#type: i64,
+    pub r#type: IntOrString,
 }
 
 /// ICMPField is a ICMP field.
@@ -2293,9 +2294,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyIcmpsFields {
     /// Family is a IP address version. Currently, we support `IPv4` and `IPv6`. `IPv4` is set as default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub family: Option<CiliumClusterwideNetworkPolicysEgressDenyIcmpsFieldsFamily>,
-    /// Type is a ICMP-type. It should be 0-255 (8bit).
+    /// Type is a ICMP-type. It should be an 8bit code (0-255), or it's CamelCase name (for example, "EchoReply"). Allowed ICMP types are: Ipv4: EchoReply | DestinationUnreachable | Redirect | Echo | EchoRequest | RouterAdvertisement | RouterSelection | TimeExceeded | ParameterProblem | Timestamp | TimestampReply | Photuris | ExtendedEcho Request | ExtendedEcho Reply Ipv6: DestinationUnreachable | PacketTooBig | TimeExceeded | ParameterProblem | EchoRequest | EchoReply | MulticastListenerQuery| MulticastListenerReport | MulticastListenerDone | RouterSolicitation | RouterAdvertisement | NeighborSolicitation | NeighborAdvertisement | RedirectMessage | RouterRenumbering | ICMPNodeInformationQuery | ICMPNodeInformationResponse | InverseNeighborDiscoverySolicitation | InverseNeighborDiscoveryAdvertisement | HomeAgentAddressDiscoveryRequest | HomeAgentAddressDiscoveryReply | MobilePrefixSolicitation | MobilePrefixAdvertisement | DuplicateAddressRequestCodeSuffix | DuplicateAddressConfirmationCodeSuffix | ExtendedEchoRequest | ExtendedEchoReply
     #[serde(rename = "type")]
-    pub r#type: i64,
+    pub r#type: IntOrString,
 }
 
 /// ICMPField is a ICMP field.
@@ -2745,9 +2746,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressIcmpsFields {
     /// Family is a IP address version. Currently, we support `IPv4` and `IPv6`. `IPv4` is set as default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub family: Option<CiliumClusterwideNetworkPolicysIngressIcmpsFieldsFamily>,
-    /// Type is a ICMP-type. It should be 0-255 (8bit).
+    /// Type is a ICMP-type. It should be an 8bit code (0-255), or it's CamelCase name (for example, "EchoReply"). Allowed ICMP types are: Ipv4: EchoReply | DestinationUnreachable | Redirect | Echo | EchoRequest | RouterAdvertisement | RouterSelection | TimeExceeded | ParameterProblem | Timestamp | TimestampReply | Photuris | ExtendedEcho Request | ExtendedEcho Reply Ipv6: DestinationUnreachable | PacketTooBig | TimeExceeded | ParameterProblem | EchoRequest | EchoReply | MulticastListenerQuery| MulticastListenerReport | MulticastListenerDone | RouterSolicitation | RouterAdvertisement | NeighborSolicitation | NeighborAdvertisement | RedirectMessage | RouterRenumbering | ICMPNodeInformationQuery | ICMPNodeInformationResponse | InverseNeighborDiscoverySolicitation | InverseNeighborDiscoveryAdvertisement | HomeAgentAddressDiscoveryRequest | HomeAgentAddressDiscoveryReply | MobilePrefixSolicitation | MobilePrefixAdvertisement | DuplicateAddressRequestCodeSuffix | DuplicateAddressConfirmationCodeSuffix | ExtendedEchoRequest | ExtendedEchoReply
     #[serde(rename = "type")]
-    pub r#type: i64,
+    pub r#type: IntOrString,
 }
 
 /// ICMPField is a ICMP field.
@@ -3183,9 +3184,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyIcmpsFields {
     /// Family is a IP address version. Currently, we support `IPv4` and `IPv6`. `IPv4` is set as default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub family: Option<CiliumClusterwideNetworkPolicysIngressDenyIcmpsFieldsFamily>,
-    /// Type is a ICMP-type. It should be 0-255 (8bit).
+    /// Type is a ICMP-type. It should be an 8bit code (0-255), or it's CamelCase name (for example, "EchoReply"). Allowed ICMP types are: Ipv4: EchoReply | DestinationUnreachable | Redirect | Echo | EchoRequest | RouterAdvertisement | RouterSelection | TimeExceeded | ParameterProblem | Timestamp | TimestampReply | Photuris | ExtendedEcho Request | ExtendedEcho Reply Ipv6: DestinationUnreachable | PacketTooBig | TimeExceeded | ParameterProblem | EchoRequest | EchoReply | MulticastListenerQuery| MulticastListenerReport | MulticastListenerDone | RouterSolicitation | RouterAdvertisement | NeighborSolicitation | NeighborAdvertisement | RedirectMessage | RouterRenumbering | ICMPNodeInformationQuery | ICMPNodeInformationResponse | InverseNeighborDiscoverySolicitation | InverseNeighborDiscoveryAdvertisement | HomeAgentAddressDiscoveryRequest | HomeAgentAddressDiscoveryReply | MobilePrefixSolicitation | MobilePrefixAdvertisement | DuplicateAddressRequestCodeSuffix | DuplicateAddressConfirmationCodeSuffix | ExtendedEchoRequest | ExtendedEchoReply
     #[serde(rename = "type")]
-    pub r#type: i64,
+    pub r#type: IntOrString,
 }
 
 /// ICMPField is a ICMP field.

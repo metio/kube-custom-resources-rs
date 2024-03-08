@@ -64,6 +64,10 @@ pub struct AlertmanagerSpec {
     /// Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to an Alertmanager pod. Containers described here modify an operator generated container if they share the same name and modifications are done via a strategic merge patch. The current container names are: `alertmanager` and `config-reloader`. Overriding containers is entirely outside the scope of what the maintainers will support and by doing so, you accept that this behaviour may break at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<AlertmanagerContainers>>,
+    /// Enable access to Alertmanager feature flags. By default, no features are enabled. Enabling features which are disabled by default is entirely outside the scope of what the maintainers will support and by doing so, you accept that this behaviour may break at any time without notice. 
+    ///  It requires Alertmanager >= 0.27.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
+    pub enable_features: Option<Vec<String>>,
     /// The external URL the Alertmanager instances will be available under. This is necessary to generate correct URLs. This is necessary if Alertmanager is not served from root of a DNS name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalUrl")]
     pub external_url: Option<String>,

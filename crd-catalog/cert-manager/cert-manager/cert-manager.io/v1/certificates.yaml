@@ -120,6 +120,9 @@ spec:
                     jks:
                       description: "JKS configures options for storing a JKS keystore in the\n`spec.secretName` Secret resource."
                       properties:
+                        alias:
+                          description: "Alias specifies the alias of the key in the keystore, required by the JKS format.\nIf not provided, the default alias `certificate` will be used."
+                          type: "string"
                         create:
                           description: "Create enables JKS keystore creation for the Certificate.\nIf true, a file named `keystore.jks` will be created in the target\nSecret resource, encrypted using the password stored in\n`passwordSecretRef`.\nThe keystore file will be updated immediately.\nIf the issuer provided a CA certificate, a file named `truststore.jks`\nwill also be created in the target Secret resource, encrypted using the\npassword stored in `passwordSecretRef`\ncontaining the issuing Certificate Authority"
                           type: "boolean"

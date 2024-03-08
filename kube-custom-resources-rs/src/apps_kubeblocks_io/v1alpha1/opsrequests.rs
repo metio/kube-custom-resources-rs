@@ -108,15 +108,33 @@ pub enum OpsRequestBackupSpecDeletionPolicy {
 /// Specifies a custom operation as defined by OpsDefinition.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestCustomSpec {
-    /// Refers to the name of the cluster component.
-    #[serde(rename = "componentName")]
-    pub component_name: String,
+    /// Defines which components need to perform the actions defined by this OpsDefinition. At least one component is required. The components are identified by their name and can be merged or retained.
+    pub components: Vec<OpsRequestCustomSpecComponents>,
     /// Is a reference to an OpsDefinition.
     #[serde(rename = "opsDefinitionRef")]
     pub ops_definition_ref: String,
-    /// Represents the input for this operation as declared in the opsDefinition.spec.parametersSchema. It will create corresponding jobs for each array element. If the param type is an array, the format must be "v1,v2,v3".
+    /// Defines the execution concurrency. By default, all incoming Components will be executed simultaneously. The value can be an absolute number (e.g., 5) or a percentage of desired components (e.g., 10%). The absolute number is calculated from the percentage by rounding up. For instance, if the percentage value is 10% and the components length is 1, the calculated number will be rounded up to 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub params: Option<Vec<BTreeMap<String, String>>>,
+    pub parallelism: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestCustomSpecComponents {
+    /// Specifies the unique identifier of the cluster component
+    pub name: String,
+    /// Represents the parameters for this operation as declared in the opsDefinition.spec.parametersSchema.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<Vec<OpsRequestCustomSpecComponentsParameters>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestCustomSpecComponentsParameters {
+    /// Specifies the identifier of the parameter as defined in the OpsDefinition.
+    pub name: String,
+    /// Holds the data associated with the parameter. If the parameter type is an array, the format should be "v1,v2,v3".
+    pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -253,6 +271,8 @@ pub enum OpsRequestReconfigureConfigurationsPolicy {
     AutoReload,
     #[serde(rename = "operatorSyncUpdate")]
     OperatorSyncUpdate,
+    #[serde(rename = "dynamicReloadBeginRestart")]
+    DynamicReloadBeginRestart,
 }
 
 /// Reconfigure represents the variables required for updating a configuration.
@@ -309,6 +329,8 @@ pub enum OpsRequestReconfiguresConfigurationsPolicy {
     AutoReload,
     #[serde(rename = "operatorSyncUpdate")]
     OperatorSyncUpdate,
+    #[serde(rename = "dynamicReloadBeginRestart")]
+    DynamicReloadBeginRestart,
 }
 
 /// ComponentOps represents the common variables required for operations within the scope of a component.
@@ -606,6 +628,9 @@ pub struct OpsRequestStatus {
     /// Describes the detailed status of the OpsRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<OpsRequestStatusConditions>>,
+    /// A collection of additional key-value pairs that provide supplementary information for the opsRequest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub extras: Option<Vec<BTreeMap<String, String>>>,
     /// Records the last configuration before this operation took effect.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastConfiguration")]
     pub last_configuration: Option<OpsRequestStatusLastConfiguration>,
@@ -637,6 +662,9 @@ pub struct OpsRequestStatusComponents {
     /// Describes the component phase, referencing Cluster.status.component.phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<OpsRequestStatusComponentsPhase>,
+    /// Specifies the outcome of the preConditions check for the opsRequest. This result is crucial for determining the next steps in the operation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCheck")]
+    pub pre_check: Option<OpsRequestStatusComponentsPreCheck>,
     /// Describes the progress details of the component for this operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressDetails")]
     pub progress_details: Option<Vec<OpsRequestStatusComponentsProgressDetails>>,
@@ -661,8 +689,24 @@ pub enum OpsRequestStatusComponentsPhase {
     Abnormal,
 }
 
+/// Specifies the outcome of the preConditions check for the opsRequest. This result is crucial for determining the next steps in the operation.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusComponentsPreCheck {
+    /// Provides additional details about the preCheck operation in a human-readable format.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Indicates whether the preCheck operation was successful or not.
+    pub pass: bool,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestStatusComponentsProgressDetails {
+    /// Refer to the action name of the OpsDefinition.spec.actions[*].name. either objectKey or actionName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionName")]
+    pub action_name: Option<String>,
+    /// Records the tasks associated with an action. such as Jobs/Pods that executes action.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionTasks")]
+    pub action_tasks: Option<Vec<OpsRequestStatusComponentsProgressDetailsActionTasks>>,
     /// Represents the completion time of object processing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
     pub end_time: Option<String>,
@@ -672,14 +716,38 @@ pub struct OpsRequestStatusComponentsProgressDetails {
     /// Provides a human-readable message detailing the condition of the object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Represents the unique key of the object.
-    #[serde(rename = "objectKey")]
-    pub object_key: String,
+    /// Represents the unique key of the object. either objectKey or actionName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectKey")]
+    pub object_key: Option<String>,
     /// Represents the start time of object processing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
     /// Indicates the state of processing the object.
     pub status: OpsRequestStatusComponentsProgressDetailsStatus,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusComponentsProgressDetailsActionTasks {
+    /// Defines the namespace where the task workload is deployed.
+    pub namespace: String,
+    /// Specifies the name of the task workload.
+    #[serde(rename = "objectKey")]
+    pub object_key: String,
+    /// The number of retry attempts for this task.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retries: Option<i32>,
+    /// Indicates the current status of the task.
+    pub status: OpsRequestStatusComponentsProgressDetailsActionTasksStatus,
+    /// The name of the target pod for the task.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodName")]
+    pub target_pod_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsRequestStatusComponentsProgressDetailsActionTasksStatus {
+    Processing,
+    Failed,
+    Succeed,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -917,6 +985,8 @@ pub enum OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatePolicy {
     AutoReload,
     #[serde(rename = "operatorSyncUpdate")]
     OperatorSyncUpdate,
+    #[serde(rename = "dynamicReloadBeginRestart")]
+    DynamicReloadBeginRestart,
 }
 
 /// Contains the updated parameters.
@@ -1018,6 +1088,8 @@ pub enum OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdate
     AutoReload,
     #[serde(rename = "operatorSyncUpdate")]
     OperatorSyncUpdate,
+    #[serde(rename = "dynamicReloadBeginRestart")]
+    DynamicReloadBeginRestart,
 }
 
 /// Contains the updated parameters.

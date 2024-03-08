@@ -56,6 +56,9 @@ pub struct TestExecutionExecutionRequest {
     /// test execution labels
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
+    /// namespace for test execution (Pro edition only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionNamespace")]
+    pub execution_namespace: Option<String>,
     /// http proxy for executor containers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
@@ -103,6 +106,9 @@ pub struct TestExecutionExecutionRequest {
     /// pod request body
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slavePodRequest")]
     pub slave_pod_request: Option<TestExecutionExecutionRequestSlavePodRequest>,
+    /// run scripts using source command (container executor only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceScripts")]
+    pub source_scripts: Option<bool>,
     /// whether to start execution sync or async
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
@@ -434,6 +440,9 @@ pub struct TestExecutionStatusLatestExecution {
     /// execute post run script before scraping (prebuilt executor only)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executePostRunScriptBeforeScraping")]
     pub execute_post_run_script_before_scraping: Option<bool>,
+    /// namespace for test execution (Pro edition only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionNamespace")]
+    pub execution_namespace: Option<String>,
     /// execution result returned from executor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionResult")]
     pub execution_result: Option<TestExecutionStatusLatestExecutionExecutionResult>,
@@ -464,6 +473,9 @@ pub struct TestExecutionStatusLatestExecution {
     /// pod request body
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slavePodRequest")]
     pub slave_pod_request: Option<TestExecutionStatusLatestExecutionSlavePodRequest>,
+    /// run scripts using source command (container executor only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceScripts")]
+    pub source_scripts: Option<bool>,
     /// test start time
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,

@@ -135,6 +135,8 @@ spec:
                       type: "object"
                     retries:
                       type: "integer"
+                    template:
+                      type: "string"
                     time_reopen:
                       type: "integer"
                     timeout:

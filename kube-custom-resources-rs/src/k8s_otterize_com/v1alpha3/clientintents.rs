@@ -22,8 +22,12 @@ pub struct ClientIntentsCalls {
     pub http_resources: Option<Vec<ClientIntentsCallsHttpResources>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsActions")]
     pub aws_actions: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureRoles")]
+    pub azure_roles: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseResources")]
     pub database_resources: Option<Vec<ClientIntentsCallsDatabaseResources>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcpPermissions")]
+    pub gcp_permissions: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub internet: Option<ClientIntentsCallsInternet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaTopics")]
@@ -76,6 +80,10 @@ pub enum ClientIntentsCallsType {
     Database,
     #[serde(rename = "aws")]
     Aws,
+    #[serde(rename = "gcp")]
+    Gcp,
+    #[serde(rename = "azure")]
+    Azure,
     #[serde(rename = "internet")]
     Internet,
 }

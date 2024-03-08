@@ -349,6 +349,9 @@ pub struct TestSuiteExecutionStatusLatestExecutionExecuteStepResultsExecuteExecu
     /// execute post run script before scraping (prebuilt executor only)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executePostRunScriptBeforeScraping")]
     pub execute_post_run_script_before_scraping: Option<bool>,
+    /// namespace for test execution (Pro edition only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionNamespace")]
+    pub execution_namespace: Option<String>,
     /// execution result returned from executor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionResult")]
     pub execution_result: Option<TestSuiteExecutionStatusLatestExecutionExecuteStepResultsExecuteExecutionExecutionResult>,
@@ -379,6 +382,9 @@ pub struct TestSuiteExecutionStatusLatestExecutionExecuteStepResultsExecuteExecu
     /// pod request body
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slavePodRequest")]
     pub slave_pod_request: Option<TestSuiteExecutionStatusLatestExecutionExecuteStepResultsExecuteExecutionSlavePodRequest>,
+    /// run scripts using source command (container executor only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceScripts")]
+    pub source_scripts: Option<bool>,
     /// test start time
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
@@ -909,6 +915,9 @@ pub struct TestSuiteExecutionStatusLatestExecutionStepResultsExecution {
     /// execute post run script before scraping (prebuilt executor only)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executePostRunScriptBeforeScraping")]
     pub execute_post_run_script_before_scraping: Option<bool>,
+    /// namespace for test execution (Pro edition only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionNamespace")]
+    pub execution_namespace: Option<String>,
     /// execution result returned from executor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionResult")]
     pub execution_result: Option<TestSuiteExecutionStatusLatestExecutionStepResultsExecutionExecutionResult>,
@@ -939,6 +948,9 @@ pub struct TestSuiteExecutionStatusLatestExecutionStepResultsExecution {
     /// pod request body
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slavePodRequest")]
     pub slave_pod_request: Option<TestSuiteExecutionStatusLatestExecutionStepResultsExecutionSlavePodRequest>,
+    /// run scripts using source command (container executor only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceScripts")]
+    pub source_scripts: Option<bool>,
     /// test start time
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,

@@ -159,7 +159,7 @@ pub struct VSphereVMNetworkDevices {
     /// Gateway4 is the IPv4 gateway used by this device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway6: Option<String>,
-    /// IPAddrs is a list of one or more IPv4 and/or IPv6 addresses to assign to this device.  IP addresses must also specify the segment length in CIDR notation. Required when DHCP4 and DHCP6 are both false.
+    /// IPAddrs is a list of one or more IPv4 and/or IPv6 addresses to assign to this device. IP addresses must also specify the segment length in CIDR notation. Required when DHCP4, DHCP6 and SkipIPAllocation are false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddrs")]
     pub ip_addrs: Option<Vec<String>>,
     /// MACAddr is the MAC address used by this device. It is generally a good idea to omit this field and allow a MAC address to be generated. Please note that this value must use the VMware OUI to work with the in-tree vSphere cloud provider.
@@ -180,6 +180,9 @@ pub struct VSphereVMNetworkDevices {
     /// SearchDomains is a list of search domains used when resolving IP addresses with DNS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchDomains")]
     pub search_domains: Option<Vec<String>>,
+    /// SkipIPAllocation allows the device to not have IP address or DHCP configured. This is suitable for devices for which IP allocation is handled externally, eg. using Multus CNI. If true, CAPV will not verify IP address allocation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipIPAllocation")]
+    pub skip_ip_allocation: Option<bool>,
 }
 
 /// TypedLocalObjectReference contains enough information to let you locate the typed referenced object inside the same namespace.

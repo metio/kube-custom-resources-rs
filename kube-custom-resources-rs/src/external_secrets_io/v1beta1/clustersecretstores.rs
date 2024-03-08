@@ -810,6 +810,10 @@ pub struct ClusterSecretStoreProviderConjurAuthApikeyUserRef {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterSecretStoreProviderConjurAuthJwt {
     pub account: String,
+    /// Optional HostID for JWT authentication. This may be used depending
+    /// on how the Conjur JWT authenticator policy is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostId")]
+    pub host_id: Option<String>,
     /// Optional SecretRef that refers to a key in a Secret resource containing JWT token to
     /// authenticate with Conjur using the JWT authentication method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]

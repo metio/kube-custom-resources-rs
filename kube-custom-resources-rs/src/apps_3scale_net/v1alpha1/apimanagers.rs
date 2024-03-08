@@ -26,8 +26,6 @@ pub struct APIManagerSpec {
     pub high_availability: Option<APIManagerHighAvailability>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<APIManagerImagePullSecrets>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageStreamTagImportInsecure")]
-    pub image_stream_tag_import_insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitoring: Option<APIManagerMonitoring>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
@@ -79,6 +77,9 @@ pub struct APIManagerApicastProductionSpec {
     /// CustomPolicies specifies an array of defined custome policies to be loaded
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPolicies")]
     pub custom_policies: Option<Vec<APIManagerApicastProductionSpecCustomPolicies>>,
+    /// Hpa specifies an array of defined HPA values
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hpa: Option<bool>,
     /// HTTPProxy specifies a HTTP(S) Proxy to be used for connecting to HTTP services. Authentication is not supported. Format is <scheme>://<host>:<port>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
@@ -1908,6 +1909,9 @@ pub struct APIManagerBackendListenerSpec {
     pub affinity: Option<APIManagerBackendListenerSpecAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// Hpa specifies an array of defined HPA values
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hpa: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
@@ -2900,6 +2904,9 @@ pub struct APIManagerBackendWorkerSpec {
     pub affinity: Option<APIManagerBackendWorkerSpecAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// Hpa specifies an array of defined HPA values
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hpa: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
@@ -9211,7 +9218,7 @@ pub struct APIManagerStatus {
     /// Current state of the APIManager resource. Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<APIManagerStatusConditions>>,
-    /// APIManager Deployment Configs
+    /// APIManager Deployments
     pub deployments: APIManagerStatusDeployments,
 }
 
@@ -9233,7 +9240,7 @@ pub struct APIManagerStatusConditions {
     pub r#type: String,
 }
 
-/// APIManager Deployment Configs
+/// APIManager Deployments
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIManagerStatusDeployments {
     /// Deployments are ready to serve requests

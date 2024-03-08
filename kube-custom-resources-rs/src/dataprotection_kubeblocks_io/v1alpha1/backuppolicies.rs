@@ -23,6 +23,9 @@ pub struct BackupPolicySpec {
     /// Specifies the name of BackupRepo where the backup data will be stored. If not set, data will be stored in the default backup repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRepoName")]
     pub backup_repo_name: Option<String>,
+    /// Specifies the parameters for encrypting backup data. Encryption will be disabled if the field is not set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionConfig")]
+    pub encryption_config: Option<BackupPolicyEncryptionConfig>,
     /// Specifies the directory inside the backup repository to store the backup. This path is relative to the path of the backup repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathPrefix")]
     pub path_prefix: Option<String>,
@@ -310,6 +313,41 @@ pub struct BackupPolicyBackupMethodsTargetVolumesVolumeMounts {
     /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// Specifies the parameters for encrypting backup data. Encryption will be disabled if the field is not set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupPolicyEncryptionConfig {
+    /// Specifies the encryption algorithm. Currently supported algorithms are: 
+    ///  - AES-128-CFB - AES-192-CFB - AES-256-CFB
+    pub algorithm: BackupPolicyEncryptionConfigAlgorithm,
+    /// Selects the key of a secret in the current namespace, the value of the secret is used as the encryption key.
+    #[serde(rename = "passPhraseSecretKeyRef")]
+    pub pass_phrase_secret_key_ref: BackupPolicyEncryptionConfigPassPhraseSecretKeyRef,
+}
+
+/// Specifies the parameters for encrypting backup data. Encryption will be disabled if the field is not set.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupPolicyEncryptionConfigAlgorithm {
+    #[serde(rename = "AES-128-CFB")]
+    Aes128Cfb,
+    #[serde(rename = "AES-192-CFB")]
+    Aes192Cfb,
+    #[serde(rename = "AES-256-CFB")]
+    Aes256Cfb,
+}
+
+/// Selects the key of a secret in the current namespace, the value of the secret is used as the encryption key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupPolicyEncryptionConfigPassPhraseSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Specifies the target information to back up, such as the target pod, the cluster connection credential.

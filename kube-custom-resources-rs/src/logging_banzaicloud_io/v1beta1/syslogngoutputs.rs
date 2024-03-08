@@ -89,6 +89,8 @@ pub struct SyslogNGOutputElasticsearch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time_reopen: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i64>,

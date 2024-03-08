@@ -53,6 +53,9 @@ pub struct BackupStatus {
     /// Records the duration of the backup operation. When converted to a string, the format is "1h2m0.5s".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
+    /// Records the encryption config for this backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionConfig")]
+    pub encryption_config: Option<BackupStatusEncryptionConfig>,
     /// Indicates when this backup becomes eligible for garbage collection. A 'null' value implies that the backup will not be cleaned up unless manually deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expiration: Option<String>,
@@ -462,6 +465,41 @@ pub struct BackupStatusBackupMethodTargetVolumesVolumeMounts {
     /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// Records the encryption config for this backup.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusEncryptionConfig {
+    /// Specifies the encryption algorithm. Currently supported algorithms are: 
+    ///  - AES-128-CFB - AES-192-CFB - AES-256-CFB
+    pub algorithm: BackupStatusEncryptionConfigAlgorithm,
+    /// Selects the key of a secret in the current namespace, the value of the secret is used as the encryption key.
+    #[serde(rename = "passPhraseSecretKeyRef")]
+    pub pass_phrase_secret_key_ref: BackupStatusEncryptionConfigPassPhraseSecretKeyRef,
+}
+
+/// Records the encryption config for this backup.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupStatusEncryptionConfigAlgorithm {
+    #[serde(rename = "AES-128-CFB")]
+    Aes128Cfb,
+    #[serde(rename = "AES-192-CFB")]
+    Aes192Cfb,
+    #[serde(rename = "AES-256-CFB")]
+    Aes256Cfb,
+}
+
+/// Selects the key of a secret in the current namespace, the value of the secret is used as the encryption key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStatusEncryptionConfigPassPhraseSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// BackupStatus defines the observed state of Backup.

@@ -12,26 +12,46 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "TinkerbellClusterStatus")]
 #[kube(schema = "disabled")]
 pub struct TinkerbellClusterSpec {
-    /// ControlPlaneEndpoint is a required field by ClusterAPI v1beta1. 
-    ///  See https://cluster-api.sigs.k8s.io/developer/architecture/controllers/cluster.html for more details.
+    /// ControlPlaneEndpoint is a required field by ClusterAPI v1beta1.
+    /// 
+    /// 
+    /// See https://cluster-api.sigs.k8s.io/developer/architecture/controllers/cluster.html
+    /// for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<TinkerbellClusterControlPlaneEndpoint>,
-    /// ImageLookupBaseRegistry is the base Registry URL that is used for pulling images, if not set, the default will be to use ghcr.io/tinkerbell/cluster-api-provider-tinkerbell.
+    /// ImageLookupBaseRegistry is the base Registry URL that is used for pulling images,
+    /// if not set, the default will be to use ghcr.io/tinkerbell/cluster-api-provider-tinkerbell.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageLookupBaseRegistry")]
     pub image_lookup_base_registry: Option<String>,
-    /// ImageLookupFormat is the URL naming format to use for machine images when a machine does not specify. When set, this will be used for all cluster machines unless a machine specifies a different ImageLookupFormat. Supports substitutions for {{.BaseRegistry}}, {{.OSDistro}}, {{.OSVersion}} and {{.KubernetesVersion}} with the basse URL, OS distribution, OS version, and kubernetes version, respectively. BaseRegistry will be the value in ImageLookupBaseRegistry or ghcr.io/tinkerbell/cluster-api-provider-tinkerbell (the default), OSDistro will be the value in ImageLookupOSDistro or ubuntu (the default), OSVersion will be the value in ImageLookupOSVersion or default based on the OSDistro (if known), and the kubernetes version as defined by the packages produced by kubernetes/release: v1.13.0, v1.12.5-mybuild.1, or v1.17.3. For example, the default image format of {{.BaseRegistry}}/{{.OSDistro}}-{{.OSVersion}}:{{.KubernetesVersion}}.gz will attempt to pull the image from that location. See also: https://golang.org/pkg/text/template/
+    /// ImageLookupFormat is the URL naming format to use for machine images when
+    /// a machine does not specify. When set, this will be used for all cluster machines
+    /// unless a machine specifies a different ImageLookupFormat. Supports substitutions
+    /// for {{.BaseRegistry}}, {{.OSDistro}}, {{.OSVersion}} and {{.KubernetesVersion}} with
+    /// the basse URL, OS distribution, OS version, and kubernetes version, respectively.
+    /// BaseRegistry will be the value in ImageLookupBaseRegistry or ghcr.io/tinkerbell/cluster-api-provider-tinkerbell
+    /// (the default), OSDistro will be the value in ImageLookupOSDistro or ubuntu (the default),
+    /// OSVersion will be the value in ImageLookupOSVersion or default based on the OSDistro
+    /// (if known), and the kubernetes version as defined by the packages produced by
+    /// kubernetes/release: v1.13.0, v1.12.5-mybuild.1, or v1.17.3. For example, the default
+    /// image format of {{.BaseRegistry}}/{{.OSDistro}}-{{.OSVersion}}:{{.KubernetesVersion}}.gz will
+    /// attempt to pull the image from that location. See also: https://golang.org/pkg/text/template/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageLookupFormat")]
     pub image_lookup_format: Option<String>,
-    /// ImageLookupOSDistro is the name of the OS distro to use when fetching machine images, if not set it will default to ubuntu.
+    /// ImageLookupOSDistro is the name of the OS distro to use when fetching machine images,
+    /// if not set it will default to ubuntu.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageLookupOSDistro")]
     pub image_lookup_os_distro: Option<String>,
-    /// ImageLookupOSVersion is the version of the OS distribution to use when fetching machine images. If not set it will default based on ImageLookupOSDistro.
+    /// ImageLookupOSVersion is the version of the OS distribution to use when fetching machine
+    /// images. If not set it will default based on ImageLookupOSDistro.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageLookupOSVersion")]
     pub image_lookup_os_version: Option<String>,
 }
 
-/// ControlPlaneEndpoint is a required field by ClusterAPI v1beta1. 
-///  See https://cluster-api.sigs.k8s.io/developer/architecture/controllers/cluster.html for more details.
+/// ControlPlaneEndpoint is a required field by ClusterAPI v1beta1.
+/// 
+/// 
+/// See https://cluster-api.sigs.k8s.io/developer/architecture/controllers/cluster.html
+/// for more details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TinkerbellClusterControlPlaneEndpoint {
     /// The hostname on which the API server is serving.
