@@ -46,6 +46,9 @@ spec:
                     imagePullPolicy:
                       description: "Sets the image pull policy for the container"
                       type: "string"
+                    memoryLimit:
+                      description: "Sets the memory limit for the container"
+                      type: "string"
                   type: "object"
                 devfileIndexImage:
                   description: "Sets the container image containing devfile stacks to be deployed on the Devfile Registry"
@@ -56,6 +59,9 @@ spec:
                 k8s:
                   description: "DevfileRegistrySpecK8sOnly defines the desired state of the kubernetes-only fields of the DevfileRegistry"
                   properties:
+                    ingressClass:
+                      description: "Ingress class for a Kubernetes cluster. Defaults to nginx."
+                      type: "string"
                     ingressDomain:
                       description: "Ingress domain for a Kubernetes cluster. This MUST be explicitly specified on Kubernetes. There are no defaults"
                       type: "string"
@@ -69,6 +75,9 @@ spec:
                     imagePullPolicy:
                       description: "Sets the image pull policy for the container"
                       type: "string"
+                    memoryLimit:
+                      description: "Sets the memory limit for the container"
+                      type: "string"
                   type: "object"
                 ociRegistryImage:
                   description: "Overrides the container image used for the OCI registry. Recommended to leave blank and default to the image specified by the operator."
@@ -81,6 +90,9 @@ spec:
                       type: "string"
                     imagePullPolicy:
                       description: "Sets the image pull policy for the container"
+                      type: "string"
+                    memoryLimit:
+                      description: "Sets the memory limit for the container"
                       type: "string"
                   type: "object"
                 registryViewerImage:

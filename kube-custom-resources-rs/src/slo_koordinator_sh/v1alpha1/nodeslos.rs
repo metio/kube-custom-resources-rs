@@ -163,6 +163,9 @@ pub struct NodeSLOResourceQosStrategyBeClassBlkioQosBlocksIoCfg {
     /// Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
+    /// the read latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
+    pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
@@ -170,6 +173,9 @@ pub struct NodeSLOResourceQosStrategyBeClassBlkioQosBlocksIoCfg {
     /// the write latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
+    /// the write latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
+    pub write_latency_percent: Option<i64>,
 }
 
 /// CPUQOSCfg stores node-level config of cpu qos
@@ -307,6 +313,9 @@ pub struct NodeSLOResourceQosStrategyCgroupRootBlkioQosBlocksIoCfg {
     /// Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
+    /// the read latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
+    pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
@@ -314,6 +323,9 @@ pub struct NodeSLOResourceQosStrategyCgroupRootBlkioQosBlocksIoCfg {
     /// the write latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
+    /// the write latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
+    pub write_latency_percent: Option<i64>,
 }
 
 /// CPUQOSCfg stores node-level config of cpu qos
@@ -451,6 +463,9 @@ pub struct NodeSLOResourceQosStrategyLsClassBlkioQosBlocksIoCfg {
     /// Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
+    /// the read latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
+    pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
@@ -458,6 +473,9 @@ pub struct NodeSLOResourceQosStrategyLsClassBlkioQosBlocksIoCfg {
     /// the write latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
+    /// the write latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
+    pub write_latency_percent: Option<i64>,
 }
 
 /// CPUQOSCfg stores node-level config of cpu qos
@@ -595,6 +613,9 @@ pub struct NodeSLOResourceQosStrategyLsrClassBlkioQosBlocksIoCfg {
     /// Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
+    /// the read latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
+    pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
@@ -602,6 +623,9 @@ pub struct NodeSLOResourceQosStrategyLsrClassBlkioQosBlocksIoCfg {
     /// the write latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
+    /// the write latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
+    pub write_latency_percent: Option<i64>,
 }
 
 /// CPUQOSCfg stores node-level config of cpu qos
@@ -695,6 +719,9 @@ pub struct NodeSLOResourceQosStrategyPolicies {
     /// applied policy for the CPU QoS, default = "groupIdentity"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuPolicy")]
     pub cpu_policy: Option<String>,
+    /// applied policy for the Net QoS, default = "tc"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "netQOSPolicy")]
+    pub net_qos_policy: Option<String>,
 }
 
 /// ResourceQOS for system pods
@@ -747,6 +774,9 @@ pub struct NodeSLOResourceQosStrategySystemClassBlkioQosBlocksIoCfg {
     /// Configure the weight-based throttling feature of blk-iocost Only used for RootClass After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk. the read latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
+    /// the read latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
+    pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
@@ -754,6 +784,9 @@ pub struct NodeSLOResourceQosStrategySystemClassBlkioQosBlocksIoCfg {
     /// the write latency threshold. Unit: microseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
+    /// the write latency percentile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
+    pub write_latency_percent: Option<i64>,
 }
 
 /// CPUQOSCfg stores node-level config of cpu qos

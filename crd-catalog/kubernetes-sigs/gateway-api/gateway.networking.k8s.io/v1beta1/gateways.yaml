@@ -261,7 +261,7 @@ spec:
                             type: "array"
                           mode:
                             default: "Terminate"
-                            description: "Mode defines the TLS behavior for the TLS session initiated by the client.\nThere are two possible modes:\n\n\n- Terminate: The TLS session between the downstream client\n  and the Gateway is terminated at the Gateway. This mode requires\n  certificateRefs to be set and contain at least one element.\n- Passthrough: The TLS session is NOT terminated by the Gateway. This\n  implies that the Gateway can't decipher the TLS stream except for\n  the ClientHello message of the TLS protocol.\n  CertificateRefs field is ignored in this mode.\n\n\nSupport: Core"
+                            description: "Mode defines the TLS behavior for the TLS session initiated by the client.\nThere are two possible modes:\n\n\n- Terminate: The TLS session between the downstream client and the\n  Gateway is terminated at the Gateway. This mode requires certificates\n  to be specified in some way, such as populating the certificateRefs\n  field.\n- Passthrough: The TLS session is NOT terminated by the Gateway. This\n  implies that the Gateway can't decipher the TLS stream except for\n  the ClientHello message of the TLS protocol. The certificateRefs field\n  is ignored in this mode.\n\n\nSupport: Core"
                             enum:
                               - "Terminate"
                               - "Passthrough"
@@ -277,8 +277,8 @@ spec:
                             type: "object"
                         type: "object"
                         x-kubernetes-validations:
-                          - message: "certificateRefs must be specified when TLSModeType is Terminate"
-                            rule: "self.mode == 'Terminate' ? size(self.certificateRefs) > 0 : true"
+                          - message: "certificateRefs or options must be specified when mode is Terminate"
+                            rule: "self.mode == 'Terminate' ? size(self.certificateRefs) > 0 || size(self.options) > 0 : true"
                     required:
                       - "name"
                       - "port"
@@ -291,8 +291,6 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                   x-kubernetes-validations:
-                    - message: "tls must be specified for protocols ['HTTPS', 'TLS']"
-                      rule: "self.all(l, l.protocol in ['HTTPS', 'TLS'] ? has(l.tls) : true)"
                     - message: "tls must not be specified for protocols ['HTTP', 'TCP', 'UDP']"
                       rule: "self.all(l, l.protocol in ['HTTP', 'TCP', 'UDP'] ? !has(l.tls) : true)"
                     - message: "tls mode must be Terminate for protocol HTTPS"

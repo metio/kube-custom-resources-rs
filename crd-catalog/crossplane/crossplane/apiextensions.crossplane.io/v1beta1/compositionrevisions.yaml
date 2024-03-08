@@ -1007,7 +1007,7 @@ spec:
                             type: "MatchCondition"
                         description: "ReadinessChecks allows users to define custom readiness checks. All checks\nhave to return true in order for resource to be considered ready. The\ndefault readiness check is to have the \"Ready\" condition to be \"True\"."
                         items:
-                          description: "ReadinessCheck is used to indicate how to tell whether a resource is ready\nfor consumption"
+                          description: "ReadinessCheck is used to indicate how to tell whether a resource is ready\nfor consumption."
                           properties:
                             fieldPath:
                               description: "FieldPath shows the path of the field whose value will be used."

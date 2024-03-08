@@ -548,13 +548,14 @@ pub struct GatewayListenersTls {
     /// There are two possible modes:
     /// 
     /// 
-    /// - Terminate: The TLS session between the downstream client
-    ///   and the Gateway is terminated at the Gateway. This mode requires
-    ///   certificateRefs to be set and contain at least one element.
+    /// - Terminate: The TLS session between the downstream client and the
+    ///   Gateway is terminated at the Gateway. This mode requires certificates
+    ///   to be specified in some way, such as populating the certificateRefs
+    ///   field.
     /// - Passthrough: The TLS session is NOT terminated by the Gateway. This
     ///   implies that the Gateway can't decipher the TLS stream except for
-    ///   the ClientHello message of the TLS protocol.
-    ///   CertificateRefs field is ignored in this mode.
+    ///   the ClientHello message of the TLS protocol. The certificateRefs field
+    ///   is ignored in this mode.
     /// 
     /// 
     /// Support: Core

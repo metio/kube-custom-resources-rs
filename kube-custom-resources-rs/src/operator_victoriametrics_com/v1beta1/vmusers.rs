@@ -16,28 +16,40 @@ pub struct VMUserSpec {
     /// BearerToken Authorization header value for accessing protected endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
-    /// DefaultURLs backend url for non-matching paths filter usually used for default backend with error message
+    /// DefaultURLs backend url for non-matching paths filter
+    /// usually used for default backend with error message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_url: Option<Vec<String>>,
     /// DisableSecretCreation skips related secret creation for vmuser
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_secret_creation: Option<bool>,
-    /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend. See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
+    /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
+    /// See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
-    /// GeneratePassword instructs operator to generate password for user if spec.password if empty.
+    /// GeneratePassword instructs operator to generate password for user
+    /// if spec.password if empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatePassword")]
     pub generate_password: Option<bool>,
-    /// Headers represent additional http headers, that vmauth uses in form of ["header_key: header_value"] multiple values for header key: ["header_key: value1,value2"] it's available since 1.68.0 version of vmauth
+    /// Headers represent additional http headers, that vmauth uses
+    /// in form of ["header_key: header_value"]
+    /// multiple values for header key:
+    /// ["header_key: value1,value2"]
+    /// it's available since 1.68.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    /// IPFilters defines per target src ip filters supported only with enterprise version of vmauth https://docs.victoriametrics.com/vmauth.html#ip-filters
+    /// IPFilters defines per target src ip filters
+    /// supported only with enterprise version of vmauth
+    /// https://docs.victoriametrics.com/vmauth.html#ip-filters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_filters: Option<VMUserIpFilters>,
-    /// LoadBalancingPolicy defines load balancing policy to use for backend urls. Supported policies: least_loaded, first_available. See https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default "least_loaded")
+    /// LoadBalancingPolicy defines load balancing policy to use for backend urls.
+    /// Supported policies: least_loaded, first_available.
+    /// See https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VMUserLoadBalancingPolicy>,
-    /// MaxConcurrentRequests defines max concurrent requests per user 300 is default value for vmauth
+    /// MaxConcurrentRequests defines max concurrent requests per user
+    /// 300 is default value for vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_concurrent_requests: Option<i64>,
     /// MetricLabels - additional labels for metrics exported by vmauth for given user.
@@ -52,27 +64,36 @@ pub struct VMUserSpec {
     /// PasswordRef allows fetching password from user-create secret by its name and key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordRef")]
     pub password_ref: Option<VMUserPasswordRef>,
-    /// ResponseHeaders represent additional http headers, that vmauth adds for request response in form of ["header_key: header_value"] multiple values for header key: ["header_key: value1,value2"] it's available since 1.93.0 version of vmauth
+    /// ResponseHeaders represent additional http headers, that vmauth adds for request response
+    /// in form of ["header_key: header_value"]
+    /// multiple values for header key:
+    /// ["header_key: value1,value2"]
+    /// it's available since 1.93.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub response_headers: Option<Vec<String>>,
-    /// RetryStatusCodes defines http status codes in numeric format for request retries e.g. [429,503]
+    /// RetryStatusCodes defines http status codes in numeric format for request retries
+    /// e.g. [429,503]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry_status_codes: Option<Vec<i64>>,
     /// TargetRefs - reference to endpoints, which user may access.
     #[serde(rename = "targetRefs")]
     pub target_refs: Vec<VMUserTargetRefs>,
-    /// TLSInsecureSkipVerify - whether to skip TLS verification when connecting to backend over HTTPS. See https://docs.victoriametrics.com/vmauth.html#backend-tls-setup
+    /// TLSInsecureSkipVerify - whether to skip TLS verification when connecting to backend over HTTPS.
+    /// See https://docs.victoriametrics.com/vmauth.html#backend-tls-setup
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_insecure_skip_verify: Option<bool>,
     /// TokenRef allows fetching token from user-created secrets by its name and key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenRef")]
     pub token_ref: Option<VMUserTokenRef>,
-    /// UserName basic auth user name for accessing protected endpoint, will be replaced with metadata.name of VMUser if omitted.
+    /// UserName basic auth user name for accessing protected endpoint,
+    /// will be replaced with metadata.name of VMUser if omitted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
-/// IPFilters defines per target src ip filters supported only with enterprise version of vmauth https://docs.victoriametrics.com/vmauth.html#ip-filters
+/// IPFilters defines per target src ip filters
+/// supported only with enterprise version of vmauth
+/// https://docs.victoriametrics.com/vmauth.html#ip-filters
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserIpFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -95,7 +116,9 @@ pub enum VMUserLoadBalancingPolicy {
 pub struct VMUserPasswordRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -103,44 +126,67 @@ pub struct VMUserPasswordRef {
     pub optional: Option<bool>,
 }
 
-/// TargetRef describes target for user traffic forwarding. one of target types can be chosen: crd or static per targetRef. user can define multiple targetRefs with different ref Types.
+/// TargetRef describes target for user traffic forwarding.
+/// one of target types can be chosen:
+/// crd or static per targetRef.
+/// user can define multiple targetRefs with different ref Types.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserTargetRefs {
-    /// CRD describes exist operator's CRD object, operator generates access url based on CRD params.
+    /// CRD describes exist operator's CRD object,
+    /// operator generates access url based on CRD params.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub crd: Option<VMUserTargetRefsCrd>,
-    /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend. See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
+    /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
+    /// See https://docs.victoriametrics.com/vmauth.html#dropping-request-path-prefix for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
-    /// Headers represent additional http headers, that vmauth uses in form of ["header_key: header_value"] multiple values for header key: ["header_key: value1,value2"] it's available since 1.68.0 version of vmauth
+    /// Headers represent additional http headers, that vmauth uses
+    /// in form of ["header_key: header_value"]
+    /// multiple values for header key:
+    /// ["header_key: value1,value2"]
+    /// it's available since 1.68.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// LoadBalancingPolicy defines load balancing policy to use for backend urls. Supported policies: least_loaded, first_available. See https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default "least_loaded")
+    /// LoadBalancingPolicy defines load balancing policy to use for backend urls.
+    /// Supported policies: least_loaded, first_available.
+    /// See https://docs.victoriametrics.com/vmauth.html#load-balancing for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VMUserTargetRefsLoadBalancingPolicy>,
     /// Paths - matched path to route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paths: Option<Vec<String>>,
-    /// ResponseHeaders represent additional http headers, that vmauth adds for request response in form of ["header_key: header_value"] multiple values for header key: ["header_key: value1,value2"] it's available since 1.93.0 version of vmauth
+    /// ResponseHeaders represent additional http headers, that vmauth adds for request response
+    /// in form of ["header_key: header_value"]
+    /// multiple values for header key:
+    /// ["header_key: value1,value2"]
+    /// it's available since 1.93.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub response_headers: Option<Vec<String>>,
-    /// RetryStatusCodes defines http status codes in numeric format for request retries Can be defined per target or at VMUser.spec level e.g. [429,503]
+    /// RetryStatusCodes defines http status codes in numeric format for request retries
+    /// Can be defined per target or at VMUser.spec level
+    /// e.g. [429,503]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry_status_codes: Option<Vec<i64>>,
-    /// Static - user defined url for traffic forward, for instance http://vmsingle:8429
+    /// Static - user defined url for traffic forward,
+    /// for instance http://vmsingle:8429
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "static")]
     pub r#static: Option<VMUserTargetRefsStatic>,
-    /// QueryParams []string `json:"queryParams,omitempty"` TargetPathSuffix allows to add some suffix to the target path It allows to hide tenant configuration from user with crd as ref. it also may contain any url encoded params.
+    /// QueryParams []string `json:"queryParams,omitempty"`
+    /// TargetPathSuffix allows to add some suffix to the target path
+    /// It allows to hide tenant configuration from user with crd as ref.
+    /// it also may contain any url encoded params.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_path_suffix: Option<String>,
 }
 
-/// CRD describes exist operator's CRD object, operator generates access url based on CRD params.
+/// CRD describes exist operator's CRD object,
+/// operator generates access url based on CRD params.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserTargetRefsCrd {
-    /// Kind one of: VMAgent VMAlert VMCluster VMSingle or VMAlertManager
+    /// Kind one of:
+    /// VMAgent VMAlert VMCluster VMSingle or VMAlertManager
     pub kind: String,
     /// Name target CRD object name
     pub name: String,
@@ -148,7 +194,10 @@ pub struct VMUserTargetRefsCrd {
     pub namespace: String,
 }
 
-/// TargetRef describes target for user traffic forwarding. one of target types can be chosen: crd or static per targetRef. user can define multiple targetRefs with different ref Types.
+/// TargetRef describes target for user traffic forwarding.
+/// one of target types can be chosen:
+/// crd or static per targetRef.
+/// user can define multiple targetRefs with different ref Types.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VMUserTargetRefsLoadBalancingPolicy {
     #[serde(rename = "least_loaded")]
@@ -157,7 +206,8 @@ pub enum VMUserTargetRefsLoadBalancingPolicy {
     FirstAvailable,
 }
 
-/// Static - user defined url for traffic forward, for instance http://vmsingle:8429
+/// Static - user defined url for traffic forward,
+/// for instance http://vmsingle:8429
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserTargetRefsStatic {
     /// URL http url for given staticRef.
@@ -173,7 +223,9 @@ pub struct VMUserTargetRefsStatic {
 pub struct VMUserTokenRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

@@ -42,7 +42,9 @@ pub struct RulerConfigAlertmanager {
     /// If enabled, then requests to Alertmanager use the v2 API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableV2")]
     pub enable_v2: Option<bool>,
-    /// List of AlertManager URLs to send notifications to. Each Alertmanager URL is treated as a separate group in the configuration. Multiple Alertmanagers in HA per group can be supported by using DNS resolution (See EnableDNSDiscovery).
+    /// List of AlertManager URLs to send notifications to. Each Alertmanager URL is treated as
+    /// a separate group in the configuration. Multiple Alertmanagers in HA per group can be
+    /// supported by using DNS resolution (See EnableDNSDiscovery).
     pub endpoints: Vec<String>,
     /// Additional labels to add to all alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalLabels")]
@@ -131,7 +133,8 @@ pub struct RulerConfigAlertmanagerNotificationQueue {
     /// Capacity of the queue for notifications to be sent to the Alertmanager.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<i32>,
-    /// Minimum duration between alert and restored "for" state. This is maintained only for alerts with configured "for" time greater than the grace period.
+    /// Minimum duration between alert and restored "for" state. This is maintained
+    /// only for alerts with configured "for" time greater than the grace period.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forGracePeriod")]
     pub for_grace_period: Option<String>,
     /// Max time to tolerate outage for restoring "for" state of alert.
@@ -145,7 +148,9 @@ pub struct RulerConfigAlertmanagerNotificationQueue {
     pub timeout: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion. It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
+/// It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RulerConfigAlertmanagerRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -157,21 +162,27 @@ pub struct RulerConfigAlertmanagerRelabelConfigs {
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a regex replace is performed if the regular expression matches. Regex capture groups are available. Default is '$1'
+    /// Replacement value against which a regex replace is performed if the
+    /// regular expression matches. Regex capture groups are available. Default is '$1'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
     /// Separator placed between concatenated source label values. default is ';'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated using the configured separator and matched against the configured regular expression for the replace, keep, and drop actions.
+    /// The source labels select values from existing labels. Their content is concatenated
+    /// using the configured separator and matched against the configured regular expression
+    /// for the replace, keep, and drop actions.
     #[serde(rename = "sourceLabels")]
     pub source_labels: Vec<String>,
-    /// Label to which the resulting value is written in a replace action. It is mandatory for replace actions. Regex capture groups are available.
+    /// Label to which the resulting value is written in a replace action.
+    /// It is mandatory for replace actions. Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion. It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
+/// It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RulerConfigAlertmanagerRelabelConfigsAction {
     #[serde(rename = "drop")]
@@ -210,7 +221,9 @@ pub struct RulerConfigOverridesAlertmanager {
     /// If enabled, then requests to Alertmanager use the v2 API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableV2")]
     pub enable_v2: Option<bool>,
-    /// List of AlertManager URLs to send notifications to. Each Alertmanager URL is treated as a separate group in the configuration. Multiple Alertmanagers in HA per group can be supported by using DNS resolution (See EnableDNSDiscovery).
+    /// List of AlertManager URLs to send notifications to. Each Alertmanager URL is treated as
+    /// a separate group in the configuration. Multiple Alertmanagers in HA per group can be
+    /// supported by using DNS resolution (See EnableDNSDiscovery).
     pub endpoints: Vec<String>,
     /// Additional labels to add to all alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalLabels")]
@@ -299,7 +312,8 @@ pub struct RulerConfigOverridesAlertmanagerNotificationQueue {
     /// Capacity of the queue for notifications to be sent to the Alertmanager.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<i32>,
-    /// Minimum duration between alert and restored "for" state. This is maintained only for alerts with configured "for" time greater than the grace period.
+    /// Minimum duration between alert and restored "for" state. This is maintained
+    /// only for alerts with configured "for" time greater than the grace period.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forGracePeriod")]
     pub for_grace_period: Option<String>,
     /// Max time to tolerate outage for restoring "for" state of alert.
@@ -313,7 +327,9 @@ pub struct RulerConfigOverridesAlertmanagerNotificationQueue {
     pub timeout: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion. It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
+/// It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RulerConfigOverridesAlertmanagerRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -325,21 +341,27 @@ pub struct RulerConfigOverridesAlertmanagerRelabelConfigs {
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a regex replace is performed if the regular expression matches. Regex capture groups are available. Default is '$1'
+    /// Replacement value against which a regex replace is performed if the
+    /// regular expression matches. Regex capture groups are available. Default is '$1'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
     /// Separator placed between concatenated source label values. default is ';'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated using the configured separator and matched against the configured regular expression for the replace, keep, and drop actions.
+    /// The source labels select values from existing labels. Their content is concatenated
+    /// using the configured separator and matched against the configured regular expression
+    /// for the replace, keep, and drop actions.
     #[serde(rename = "sourceLabels")]
     pub source_labels: Vec<String>,
-    /// Label to which the resulting value is written in a replace action. It is mandatory for replace actions. Regex capture groups are available.
+    /// Label to which the resulting value is written in a replace action.
+    /// It is mandatory for replace actions. Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion. It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
+/// It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RulerConfigOverridesAlertmanagerRelabelConfigsAction {
     #[serde(rename = "drop")]
@@ -413,7 +435,9 @@ pub enum RulerConfigRemoteWriteClientAuthorization {
     Header,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion. It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
+/// It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RulerConfigRemoteWriteClientRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -425,21 +449,27 @@ pub struct RulerConfigRemoteWriteClientRelabelConfigs {
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a regex replace is performed if the regular expression matches. Regex capture groups are available. Default is '$1'
+    /// Replacement value against which a regex replace is performed if the
+    /// regular expression matches. Regex capture groups are available. Default is '$1'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
     /// Separator placed between concatenated source label values. default is ';'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated using the configured separator and matched against the configured regular expression for the replace, keep, and drop actions.
+    /// The source labels select values from existing labels. Their content is concatenated
+    /// using the configured separator and matched against the configured regular expression
+    /// for the replace, keep, and drop actions.
     #[serde(rename = "sourceLabels")]
     pub source_labels: Vec<String>,
-    /// Label to which the resulting value is written in a replace action. It is mandatory for replace actions. Regex capture groups are available.
+    /// Label to which the resulting value is written in a replace action.
+    /// It is mandatory for replace actions. Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion. It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
+/// It defines `<metric_relabel_configs>` and `<alert_relabel_configs>` sections of Prometheus configuration.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RulerConfigRemoteWriteClientRelabelConfigsAction {
     #[serde(rename = "drop")]
@@ -492,31 +522,71 @@ pub struct RulerConfigStatus {
     pub conditions: Option<Vec<RulerConfigStatusConditions>>,
 }
 
-/// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 
-///  type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: "Available", "Progressing", and "Degraded" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"` 
-///  // other fields }
+/// Condition contains details for one aspect of the current state of this API Resource.
+/// ---
+/// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
+/// 
+/// 
+/// 	type FooStatus struct{
+/// 	    // Represents the observations of a foo's current state.
+/// 	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
+/// 	    // +patchMergeKey=type
+/// 	    // +patchStrategy=merge
+/// 	    // +listType=map
+/// 	    // +listMapKey=type
+/// 	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
+/// 
+/// 
+/// 	    // other fields
+/// 	}
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RulerConfigStatusConditions {
-    /// lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+    /// lastTransitionTime is the last time the condition transitioned from one status to another.
+    /// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
     #[serde(rename = "lastTransitionTime")]
     pub last_transition_time: String,
-    /// message is a human readable message indicating details about the transition. This may be an empty string.
+    /// message is a human readable message indicating details about the transition.
+    /// This may be an empty string.
     pub message: String,
-    /// observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+    /// observedGeneration represents the .metadata.generation that the condition was set based upon.
+    /// For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+    /// with respect to the current state of the instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+    /// reason contains a programmatic identifier indicating the reason for the condition's last transition.
+    /// Producers of specific condition types may define expected values and meanings for this field,
+    /// and whether the values are considered a guaranteed API.
+    /// The value should be a CamelCase string.
+    /// This field may not be empty.
     pub reason: String,
     /// status of the condition, one of True, False, Unknown.
     pub status: RulerConfigStatusConditionsStatus,
-    /// type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+    /// type of condition in CamelCase or in foo.example.com/CamelCase.
+    /// ---
+    /// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
+    /// useful (see .node.status.conditions), the ability to deconflict is important.
+    /// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, 
-///  type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: "Available", "Progressing", and "Degraded" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"` 
-///  // other fields }
+/// Condition contains details for one aspect of the current state of this API Resource.
+/// ---
+/// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
+/// 
+/// 
+/// 	type FooStatus struct{
+/// 	    // Represents the observations of a foo's current state.
+/// 	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
+/// 	    // +patchMergeKey=type
+/// 	    // +patchStrategy=merge
+/// 	    // +listType=map
+/// 	    // +listMapKey=type
+/// 	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
+/// 
+/// 
+/// 	    // other fields
+/// 	}
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RulerConfigStatusConditionsStatus {
     True,

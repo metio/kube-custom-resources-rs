@@ -173,6 +173,9 @@ pub struct TestExecutionRequest {
     /// test execution labels
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
+    /// namespace for test execution (Pro edition only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionNamespace")]
+    pub execution_namespace: Option<String>,
     /// http proxy for executor containers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
@@ -229,6 +232,9 @@ pub struct TestExecutionRequest {
     /// pod request body
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slavePodRequest")]
     pub slave_pod_request: Option<TestExecutionRequestSlavePodRequest>,
+    /// run scripts using source command (container executor only)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceScripts")]
+    pub source_scripts: Option<bool>,
     /// whether to start execution sync or async
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,

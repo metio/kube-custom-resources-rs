@@ -25,6 +25,12 @@ pub struct AerospikeClusterSpec {
     pub aerospike_network_policy: Option<AerospikeClusterAerospikeNetworkPolicy>,
     /// Aerospike server image
     pub image: String,
+    /// K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods. Pods are not scheduled on these nodes. Pods are migrated from these nodes if already present. This is useful for the maintenance of Kubernetes nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sNodeBlockList")]
+    pub k8s_node_block_list: Option<Vec<String>>,
+    /// MaxUnavailable is the percentage/number of pods that can be allowed to go down or unavailable before application disruption. This value is used to create PodDisruptionBudget. Defaults to 1. Refer Aerospike documentation for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
     /// Certificates to connect to Aerospike.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientCert")]
     pub operator_client_cert: Option<AerospikeClusterOperatorClientCert>,
@@ -3284,12 +3290,15 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicy>,
-    /// CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container.
+    /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicy>,
+    /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
+    pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<AerospikeClusterRackConfigRacksEffectiveStorageVolumes>>,
@@ -4222,12 +4231,15 @@ pub struct AerospikeClusterRackConfigRacksStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterRackConfigRacksStorageBlockVolumePolicy>,
-    /// CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container.
+    /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicy>,
+    /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
+    pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<AerospikeClusterRackConfigRacksStorageVolumes>>,
@@ -4732,12 +4744,15 @@ pub struct AerospikeClusterStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterStorageBlockVolumePolicy>,
-    /// CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container.
+    /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStorageFilesystemVolumePolicy>,
+    /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
+    pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<AerospikeClusterStorageVolumes>>,
@@ -5226,6 +5241,12 @@ pub struct AerospikeClusterStatus {
     /// Aerospike server image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sNodeBlockList")]
+    pub k8s_node_block_list: Option<Vec<String>>,
+    /// MaxUnavailable is the percentage/number of pods that can be allowed to go down or unavailable before application disruption. This value is used to create PodDisruptionBudget. Defaults to 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
     /// If set true then multiple pods can be created per Kubernetes Node. This will create a NodePort service for each Pod. NodePort, as the name implies, opens a specific port on all the Kubernetes Nodes , and any traffic that is sent to this port is forwarded to the service. Here service picks a random port in range (30000-32767), so these port should be open. 
     ///  If set false then only single pod can be created per Kubernetes Node. This will create Pods using hostPort setting. The container port will be exposed to the external network at <hostIP>:<hostPort>, where the hostIP is the IP address of the Kubernetes Node where the container is running and the hostPort is the port requested by the user. Deprecated: MultiPodPerHost is now part of podSpec
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiPodPerHost")]
@@ -5233,11 +5254,15 @@ pub struct AerospikeClusterStatus {
     /// Certificates to connect to Aerospike. If omitted then certs are taken from the secret 'aerospike-secret'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientCertSpec")]
     pub operator_client_cert_spec: Option<AerospikeClusterStatusOperatorClientCertSpec>,
+    /// Phase denotes the current phase of Aerospike cluster operation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub phase: Option<AerospikeClusterStatusPhase>,
     /// Additional configuration for create Aerospike pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSpec")]
     pub pod_spec: Option<AerospikeClusterStatusPodSpec>,
     /// Pods has Aerospike specific status of the pods. This is map instead of the conventional map as list convention to allow each pod to patch update its own status. The map key is the name of the pod.
-    pub pods: BTreeMap<String, AerospikeClusterStatusPods>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pods: Option<BTreeMap<String, AerospikeClusterStatusPods>>,
     /// RackConfig Configures the operator to deploy rack aware Aerospike cluster. Pods will be deployed in given racks based on given configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackConfig")]
     pub rack_config: Option<AerospikeClusterStatusRackConfig>,
@@ -5472,6 +5497,14 @@ pub struct AerospikeClusterStatusOperatorClientCertSpecSecretCertSourceCaCertsSo
     pub secret_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
+}
+
+/// AerospikeClusterStatus defines the observed state of AerospikeCluster
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AerospikeClusterStatusPhase {
+    InProgress,
+    Completed,
+    Error,
 }
 
 /// Additional configuration for create Aerospike pods.
@@ -8565,12 +8598,15 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicy>,
-    /// CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container.
+    /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePolicy>,
+    /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
+    pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumes>>,
@@ -9503,12 +9539,15 @@ pub struct AerospikeClusterStatusRackConfigRacksStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicy>,
-    /// CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container.
+    /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicy>,
+    /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
+    pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<AerospikeClusterStatusRackConfigRacksStorageVolumes>>,
@@ -10036,12 +10075,15 @@ pub struct AerospikeClusterStatusStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterStatusStorageBlockVolumePolicy>,
-    /// CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container.
+    /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStatusStorageFilesystemVolumePolicy>,
+    /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
+    pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<AerospikeClusterStatusStorageVolumes>>,

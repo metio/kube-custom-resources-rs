@@ -238,6 +238,10 @@ pub struct CertificateKeystores {
 /// `spec.secretName` Secret resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CertificateKeystoresJks {
+    /// Alias specifies the alias of the key in the keystore, required by the JKS format.
+    /// If not provided, the default alias `certificate` will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub alias: Option<String>,
     /// Create enables JKS keystore creation for the Certificate.
     /// If true, a file named `keystore.jks` will be created in the target
     /// Secret resource, encrypted using the password stored in

@@ -23,24 +23,41 @@ pub struct VMRuleGroups {
     /// Concurrency defines how many rules execute at once.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i64>,
-    /// ExtraFilterLabels optional list of label filters applied to every rule's request withing a group. Is compatible only with VM datasource. See more details at https://docs.victoriametrics.com#prometheus-querying-api-enhancements Deprecated, use params instead
+    /// ExtraFilterLabels optional list of label filters applied to every rule's
+    /// request withing a group. Is compatible only with VM datasource.
+    /// See more details at https://docs.victoriametrics.com#prometheus-querying-api-enhancements
+    /// Deprecated, use params instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra_filter_labels: Option<BTreeMap<String, String>>,
-    /// Headers contains optional HTTP headers added to each rule request Must be in form `header-name: value` For example: headers: - "CustomHeader: foo" - "CustomHeader2: bar"
+    /// Headers contains optional HTTP headers added to each rule request
+    /// Must be in form `header-name: value`
+    /// For example:
+    ///  headers:
+    ///    - "CustomHeader: foo"
+    ///    - "CustomHeader2: bar"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
     /// evaluation interval for group
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// Labels optional list of labels added to every rule within a group. It has priority over the external labels. Labels are commonly used for adding environment or tenant-specific tag.
+    /// Labels optional list of labels added to every rule within a group.
+    /// It has priority over the external labels.
+    /// Labels are commonly used for adding environment
+    /// or tenant-specific tag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Limit the number of alerts an alerting rule and series a recording rule can produce
+    /// Limit the number of alerts an alerting rule and series a recording
+    /// rule can produce
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
     /// Name of group
     pub name: String,
-    /// NotifierHeaders contains optional HTTP headers added to each alert request which will send to notifier Must be in form `header-name: value` For example: headers: - "CustomHeader: foo" - "CustomHeader2: bar"
+    /// NotifierHeaders contains optional HTTP headers added to each alert request which will send to notifier
+    /// Must be in form `header-name: value`
+    /// For example:
+    ///  headers:
+    ///    - "CustomHeader: foo"
+    ///    - "CustomHeader2: bar"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub notifier_headers: Option<Vec<String>>,
     /// Params optional HTTP URL parameters added to each rule request
@@ -48,10 +65,12 @@ pub struct VMRuleGroups {
     pub params: Option<BTreeMap<String, String>>,
     /// Rules list of alert rules
     pub rules: Vec<VMRuleGroupsRules>,
-    /// Tenant id for group, can be used only with enterprise version of vmalert See more details at https://docs.victoriametrics.com/vmalert.html#multitenancy
+    /// Tenant id for group, can be used only with enterprise version of vmalert
+    /// See more details at https://docs.victoriametrics.com/vmalert.html#multitenancy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
-    /// Type defines datasource type for enterprise version of vmalert possible values - prometheus,graphite
+    /// Type defines datasource type for enterprise version of vmalert
+    /// possible values - prometheus,graphite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -65,16 +84,20 @@ pub struct VMRuleGroupsRules {
     /// Annotations will be added to rule configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Debug enables logging for rule it useful for tracking
+    /// Debug enables logging for rule
+    /// it useful for tracking
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
     /// Expr is query, that will be evaluated at dataSource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expr: Option<String>,
-    /// For evaluation interval in time.Duration format 30s, 1m, 1h  or nanoseconds
+    /// For evaluation interval in time.Duration format
+    /// 30s, 1m, 1h  or nanoseconds
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "for")]
     pub r#for: Option<String>,
-    /// KeepFiringFor will make alert continue firing for this long even when the alerting expression no longer has results. Use time.Duration format, 30s, 1m, 1h  or nanoseconds
+    /// KeepFiringFor will make alert continue firing for this long
+    /// even when the alerting expression no longer has results.
+    /// Use time.Duration format, 30s, 1m, 1h  or nanoseconds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keep_firing_for: Option<String>,
     /// Labels will be added to rule configuration
@@ -83,7 +106,8 @@ pub struct VMRuleGroupsRules {
     /// Record represents a query, that will be recorded to dataSource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub record: Option<String>,
-    /// UpdateEntriesLimit defines max number of rule's state updates stored in memory. Overrides `-rule.updateEntriesLimit` in vmalert.
+    /// UpdateEntriesLimit defines max number of rule's state updates stored in memory.
+    /// Overrides `-rule.updateEntriesLimit` in vmalert.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub update_entries_limit: Option<i64>,
 }

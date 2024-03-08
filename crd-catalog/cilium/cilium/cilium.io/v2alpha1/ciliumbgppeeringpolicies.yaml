@@ -341,6 +341,17 @@ spec:
                             description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                             type: "object"
                         type: "object"
+                      serviceAdvertisements:
+                        default:
+                          - "LoadBalancerIP"
+                        description: "ServiceAdvertisements selects a group of BGP Advertisement(s) to advertise for the selected services."
+                        items:
+                          description: "BGPServiceAddressType defines type of service address to be advertised. \n Note list of supported service addresses is not exhaustive and can be extended in the future. Consumer of this API should be able to handle unknown values."
+                          enum:
+                            - "LoadBalancerIP"
+                            - "ClusterIP"
+                          type: "string"
+                        type: "array"
                       serviceSelector:
                         description: "ServiceSelector selects a group of load balancer services which this virtual router will announce. The loadBalancerClass for a service must be nil or specify a class supported by Cilium, e.g. \"io.cilium/bgp-control-plane\". Refer to the following document for additional details regarding load balancer classes: \n https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class \n If empty / nil no services will be announced."
                         properties:

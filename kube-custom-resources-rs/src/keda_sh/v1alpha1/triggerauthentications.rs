@@ -117,11 +117,17 @@ pub struct TriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFromS
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TriggerAuthenticationAwsSecretManagerPodIdentity {
+    /// Set identityAuthorityHost to override the default Azure authority host. If this is set, then the IdentityTenantID must also be set
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityAuthorityHost")]
+    pub identity_authority_host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
     pub identity_owner: Option<TriggerAuthenticationAwsSecretManagerPodIdentityIdentityOwner>,
+    /// Set identityTenantId to override the default Azure tenant id. If this is set, then the IdentityID must also be set
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityTenantId")]
+    pub identity_tenant_id: Option<String>,
     /// PodIdentityProvider contains the list of providers
     pub provider: TriggerAuthenticationAwsSecretManagerPodIdentityProvider,
     /// RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner
@@ -225,11 +231,17 @@ pub struct TriggerAuthenticationAzureKeyVaultCredentialsClientSecretValueFromSec
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TriggerAuthenticationAzureKeyVaultPodIdentity {
+    /// Set identityAuthorityHost to override the default Azure authority host. If this is set, then the IdentityTenantID must also be set
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityAuthorityHost")]
+    pub identity_authority_host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
     pub identity_owner: Option<TriggerAuthenticationAzureKeyVaultPodIdentityIdentityOwner>,
+    /// Set identityTenantId to override the default Azure tenant id. If this is set, then the IdentityID must also be set
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityTenantId")]
+    pub identity_tenant_id: Option<String>,
     /// PodIdentityProvider contains the list of providers
     pub provider: TriggerAuthenticationAzureKeyVaultPodIdentityProvider,
     /// RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner
@@ -330,11 +342,17 @@ pub struct TriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFrom
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TriggerAuthenticationGcpSecretManagerPodIdentity {
+    /// Set identityAuthorityHost to override the default Azure authority host. If this is set, then the IdentityTenantID must also be set
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityAuthorityHost")]
+    pub identity_authority_host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
     pub identity_owner: Option<TriggerAuthenticationGcpSecretManagerPodIdentityIdentityOwner>,
+    /// Set identityTenantId to override the default Azure tenant id. If this is set, then the IdentityID must also be set
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityTenantId")]
+    pub identity_tenant_id: Option<String>,
     /// PodIdentityProvider contains the list of providers
     pub provider: TriggerAuthenticationGcpSecretManagerPodIdentityProvider,
     /// RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner
@@ -440,11 +458,17 @@ pub struct TriggerAuthenticationHashiCorpVaultSecretsPkiData {
 /// mechanism
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TriggerAuthenticationPodIdentity {
+    /// Set identityAuthorityHost to override the default Azure authority host. If this is set, then the IdentityTenantID must also be set
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityAuthorityHost")]
+    pub identity_authority_host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
     pub identity_owner: Option<TriggerAuthenticationPodIdentityIdentityOwner>,
+    /// Set identityTenantId to override the default Azure tenant id. If this is set, then the IdentityID must also be set
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityTenantId")]
+    pub identity_tenant_id: Option<String>,
     /// PodIdentityProvider contains the list of providers
     pub provider: TriggerAuthenticationPodIdentityProvider,
     /// RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner

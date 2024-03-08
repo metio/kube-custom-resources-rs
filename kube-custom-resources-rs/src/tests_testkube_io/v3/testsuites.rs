@@ -107,12 +107,6 @@ pub struct TestSuiteAfterExecuteExecutionRequest {
     /// job template extensions reference
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplateReference")]
     pub job_template_reference: Option<String>,
-    /// test execution custom name
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// test kubernetes namespace (\"testkube\" when not set)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
     /// negative test will fail the execution if it is a success and it will succeed if it is a failure
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "negativeTest")]
     pub negative_test: Option<bool>,
@@ -315,12 +309,6 @@ pub struct TestSuiteBeforeExecuteExecutionRequest {
     /// job template extensions reference
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplateReference")]
     pub job_template_reference: Option<String>,
-    /// test execution custom name
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// test kubernetes namespace (\"testkube\" when not set)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
     /// negative test will fail the execution if it is a success and it will succeed if it is a failure
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "negativeTest")]
     pub negative_test: Option<bool>,
@@ -664,12 +652,6 @@ pub struct TestSuiteStepsExecuteExecutionRequest {
     /// job template extensions reference
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplateReference")]
     pub job_template_reference: Option<String>,
-    /// test execution custom name
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// test kubernetes namespace (\"testkube\" when not set)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
     /// negative test will fail the execution if it is a success and it will succeed if it is a failure
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "negativeTest")]
     pub negative_test: Option<bool>,

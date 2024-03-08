@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.11.1"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "canaries.canaries.flanksource.com"
 spec:
   group: "canaries.flanksource.com"
@@ -50,10 +50,10 @@ spec:
           description: "Canary is the Schema for the canaries API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -177,7 +177,7 @@ spec:
                             type: "object"
                         type: "object"
                       relationships:
-                        description: "Relationships defines a way to link the check results to components and configs using lookup expressions."
+                        description: "Relationships defines a way to link the check results to components and configs\nusing lookup expressions."
                         properties:
                           components:
                             items:
@@ -2152,10 +2152,10 @@ spec:
                         type: "string"
                       canaryRef:
                         items:
-                          description: "LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace."
+                          description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                           properties:
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
@@ -2501,7 +2501,7 @@ spec:
                             description: "The key to select."
                             type: "string"
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                             type: "string"
                           optional:
                             description: "Specify whether the ConfigMap or its key must be defined"
@@ -2511,7 +2511,7 @@ spec:
                         type: "object"
                         x-kubernetes-map-type: "atomic"
                       fieldRef:
-                        description: "Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+                        description: "Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations,\nspec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
                         properties:
                           apiVersion:
                             description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
@@ -2530,7 +2530,7 @@ spec:
                             description: "The key of the secret to select from.  Must be a valid secret key."
                             type: "string"
                           name:
-                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                             type: "string"
                           optional:
                             description: "Specify whether the Secret or its key must be defined"
@@ -2551,7 +2551,7 @@ spec:
                         items:
                           properties:
                             path:
-                              description: "Path to the artifact on the check runner. Special paths: /dev/stdout & /dev/stdin"
+                              description: "Path to the artifact on the check runner.\nSpecial paths: /dev/stdout & /dev/stdin"
                               type: "string"
                           required:
                             - "path"
@@ -2604,7 +2604,7 @@ spec:
                           connection:
                             type: "string"
                           destination:
-                            description: "Destination is the full path to where the contents of the URL should be downloaded to. If left empty, the sha256 hash of the URL will be used as the dir name."
+                            description: "Destination is the full path to where the contents of the URL should be downloaded to.\nIf left empty, the sha256 hash of the URL will be used as the dir name."
                             type: "string"
                           password:
                             properties:
@@ -3066,7 +3066,7 @@ spec:
                         description: "Namespace to insert the check into, if different to the namespace the canary is defined, e.g."
                         type: "string"
                       script:
-                        description: "Script can be a inline script or a path to a script that needs to be executed On windows executed via powershell and in darwin and linux executed using bash"
+                        description: "Script can be a inline script or a path to a script that needs to be executed\nOn windows executed via powershell and in darwin and linux executed using bash"
                         type: "string"
                       test:
                         properties:
@@ -3389,7 +3389,7 @@ spec:
                         description: "Path  to folder or object storage, e.g. `s3://<bucket-name>`,  `gcs://<bucket-name>`, `/path/tp/folder`"
                         type: "string"
                       recursive:
-                        description: "Recursive when set to true will recursively scan the folder to list the files in it. However, symlinks are simply listed but not traversed."
+                        description: "Recursive when set to true will recursively scan the folder to list the files in it.\nHowever, symlinks are simply listed but not traversed."
                         type: "boolean"
                       sftpConnection:
                         properties:
@@ -4571,7 +4571,7 @@ spec:
                         items:
                           properties:
                             path:
-                              description: "Path to the artifact on the check runner. Special paths: /dev/stdout & /dev/stdin"
+                              description: "Path to the artifact on the check runner.\nSpecial paths: /dev/stdout & /dev/stdin"
                               type: "string"
                           required:
                             - "path"
@@ -6712,7 +6712,7 @@ spec:
                     type: "object"
                   type: "array"
                 schedule:
-                  description: "Schedule to run checks on. Supports all cron expression, example: '30 3-6,20-23 * * *'. For more info about cron expression syntax see https://en.wikipedia.org/wiki/Cron Also supports golang duration, can be set as '@every 1m30s' which runs the check every 1 minute and 30 seconds."
+                  description: "Schedule to run checks on. Supports all cron expression, example: '30 3-6,20-23 * * *'. For more info about cron expression syntax see https://en.wikipedia.org/wiki/Cron\n Also supports golang duration, can be set as '@every 1m30s' which runs the check every 1 minute and 30 seconds."
                   type: "string"
                 severity:
                   type: "string"

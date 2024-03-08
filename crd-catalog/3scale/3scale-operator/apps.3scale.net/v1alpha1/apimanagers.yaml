@@ -560,6 +560,9 @@ spec:
                               - "version"
                             type: "object"
                           type: "array"
+                        hpa:
+                          description: "Hpa specifies an array of defined HPA values"
+                          type: "boolean"
                         httpProxy:
                           description: "HTTPProxy specifies a HTTP(S) Proxy to be used for connecting to HTTP services. Authentication is not supported. Format is <scheme>://<host>:<port>"
                           type: "string"
@@ -2535,6 +2538,9 @@ spec:
                           additionalProperties:
                             type: "string"
                           type: "object"
+                        hpa:
+                          description: "Hpa specifies an array of defined HPA values"
+                          type: "boolean"
                         labels:
                           additionalProperties:
                             type: "string"
@@ -3710,6 +3716,9 @@ spec:
                           additionalProperties:
                             type: "string"
                           type: "object"
+                        hpa:
+                          description: "Hpa specifies an array of defined HPA values"
+                          type: "boolean"
                         labels:
                           additionalProperties:
                             type: "string"
@@ -3857,8 +3866,6 @@ spec:
                     type: "object"
                     x-kubernetes-map-type: "atomic"
                   type: "array"
-                imageStreamTagImportInsecure:
-                  type: "boolean"
                 monitoring:
                   properties:
                     enablePrometheusRules:
@@ -10537,7 +10544,7 @@ spec:
                     type: "object"
                   type: "array"
                 deployments:
-                  description: "APIManager Deployment Configs"
+                  description: "APIManager Deployments"
                   properties:
                     ready:
                       description: "Deployments are ready to serve requests"

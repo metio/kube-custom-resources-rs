@@ -12,60 +12,156 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "CertificateStatus")]
 #[kube(schema = "disabled")]
 pub struct CertificateSpec {
-    /// Specifies X.509 certificate information to be included in the issued certificate. An APIPassthrough or APICSRPassthrough template variant must be selected, or else this parameter is ignored. For more information about using these templates, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html). 
-    ///  If conflicting or duplicate certificate information is supplied during certificate issuance, Amazon Web Services Private CA applies order of operation rules (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations) to determine what information is used.
+    /// Specifies X.509 certificate information to be included in the issued certificate.
+    /// An APIPassthrough or APICSRPassthrough template variant must be selected,
+    /// or else this parameter is ignored. For more information about using these
+    /// templates, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).
+    /// 
+    /// 
+    /// If conflicting or duplicate certificate information is supplied during certificate
+    /// issuance, Amazon Web Services Private CA applies order of operation rules
+    /// (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations)
+    /// to determine what information is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiPassthrough")]
     pub api_passthrough: Option<CertificateApiPassthrough>,
-    /// The Amazon Resource Name (ARN) that was returned when you called CreateCertificateAuthority (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html). This must be of the form: 
-    ///  arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
+    /// The Amazon Resource Name (ARN) that was returned when you called CreateCertificateAuthority
+    /// (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).
+    /// This must be of the form:
+    /// 
+    /// 
+    /// arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityARN")]
     pub certificate_authority_arn: Option<String>,
-    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-    ///  from: name: my-api
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 
+    /// 	from:
+    /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityRef")]
     pub certificate_authority_ref: Option<CertificateCertificateAuthorityRef>,
-    /// The certificate signing request (CSR) for the certificate you want to issue. As an example, you can use the following OpenSSL command to create the CSR and a 2048 bit RSA private key. 
-    ///  openssl req -new -newkey rsa:2048 -days 365 -keyout private/test_cert_priv_key.pem -out csr/test_cert_.csr 
-    ///  If you have a configuration file, you can then use the following OpenSSL command. The usr_cert block in the configuration file contains your X509 version 3 extensions. 
-    ///  openssl req -new -config openssl_rsa.cnf -extensions usr_cert -newkey rsa:2048 -days 365 -keyout private/test_cert_priv_key.pem -out csr/test_cert_.csr 
-    ///  Note: A CSR must provide either a subject name or a subject alternative name or the request will be rejected.
+    /// The certificate signing request (CSR) for the certificate you want to issue.
+    /// As an example, you can use the following OpenSSL command to create the CSR
+    /// and a 2048 bit RSA private key.
+    /// 
+    /// 
+    /// openssl req -new -newkey rsa:2048 -days 365 -keyout private/test_cert_priv_key.pem
+    /// -out csr/test_cert_.csr
+    /// 
+    /// 
+    /// If you have a configuration file, you can then use the following OpenSSL
+    /// command. The usr_cert block in the configuration file contains your X509
+    /// version 3 extensions.
+    /// 
+    /// 
+    /// openssl req -new -config openssl_rsa.cnf -extensions usr_cert -newkey rsa:2048
+    /// -days 365 -keyout private/test_cert_priv_key.pem -out csr/test_cert_.csr
+    /// 
+    /// 
+    /// Note: A CSR must provide either a subject name or a subject alternative name
+    /// or the request will be rejected.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csr: Option<String>,
-    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-    ///  from: name: my-api
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 
+    /// 	from:
+    /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csrRef")]
     pub csr_ref: Option<CertificateCsrRef>,
-    /// The name of the algorithm that will be used to sign the certificate to be issued. 
-    ///  This parameter should not be confused with the SigningAlgorithm parameter used to sign a CSR in the CreateCertificateAuthority action. 
-    ///  The specified signing algorithm family (RSA or ECDSA) must match the algorithm family of the CA's secret key.
+    /// The name of the algorithm that will be used to sign the certificate to be
+    /// issued.
+    /// 
+    /// 
+    /// This parameter should not be confused with the SigningAlgorithm parameter
+    /// used to sign a CSR in the CreateCertificateAuthority action.
+    /// 
+    /// 
+    /// The specified signing algorithm family (RSA or ECDSA) must match the algorithm
+    /// family of the CA's secret key.
     #[serde(rename = "signingAlgorithm")]
     pub signing_algorithm: String,
-    /// Specifies a custom configuration template to use when issuing a certificate. If this parameter is not provided, Amazon Web Services Private CA defaults to the EndEntityCertificate/V1 template. For CA certificates, you should choose the shortest path length that meets your needs. The path length is indicated by the PathLenN portion of the ARN, where N is the CA depth (https://docs.aws.amazon.com/privateca/latest/userguide/PcaTerms.html#terms-cadepth). 
-    ///  Note: The CA depth configured on a subordinate CA certificate must not exceed the limit set by its parents in the CA hierarchy. 
-    ///  For a list of TemplateArn values supported by Amazon Web Services Private CA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).
+    /// Specifies a custom configuration template to use when issuing a certificate.
+    /// If this parameter is not provided, Amazon Web Services Private CA defaults
+    /// to the EndEntityCertificate/V1 template. For CA certificates, you should
+    /// choose the shortest path length that meets your needs. The path length is
+    /// indicated by the PathLenN portion of the ARN, where N is the CA depth (https://docs.aws.amazon.com/privateca/latest/userguide/PcaTerms.html#terms-cadepth).
+    /// 
+    /// 
+    /// Note: The CA depth configured on a subordinate CA certificate must not exceed
+    /// the limit set by its parents in the CA hierarchy.
+    /// 
+    /// 
+    /// For a list of TemplateArn values supported by Amazon Web Services Private
+    /// CA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateARN")]
     pub template_arn: Option<String>,
-    /// Information describing the end of the validity period of the certificate. This parameter sets the “Not After” date for the certificate. 
-    ///  Certificate validity is the period of time during which a certificate is valid. Validity can be expressed as an explicit date and time when the certificate expires, or as a span of time after issuance, stated in days, months, or years. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5) in RFC 5280. 
-    ///  This value is unaffected when ValidityNotBefore is also specified. For example, if Validity is set to 20 days in the future, the certificate will expire 20 days from issuance time regardless of the ValidityNotBefore value. 
-    ///  The end of the validity period configured on a certificate must not exceed the limit set on its parents in the CA hierarchy.
+    /// Information describing the end of the validity period of the certificate.
+    /// This parameter sets the “Not After” date for the certificate.
+    /// 
+    /// 
+    /// Certificate validity is the period of time during which a certificate is
+    /// valid. Validity can be expressed as an explicit date and time when the certificate
+    /// expires, or as a span of time after issuance, stated in days, months, or
+    /// years. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)
+    /// in RFC 5280.
+    /// 
+    /// 
+    /// This value is unaffected when ValidityNotBefore is also specified. For example,
+    /// if Validity is set to 20 days in the future, the certificate will expire
+    /// 20 days from issuance time regardless of the ValidityNotBefore value.
+    /// 
+    /// 
+    /// The end of the validity period configured on a certificate must not exceed
+    /// the limit set on its parents in the CA hierarchy.
     pub validity: CertificateValidity,
-    /// Information describing the start of the validity period of the certificate. This parameter sets the “Not Before" date for the certificate. 
-    ///  By default, when issuing a certificate, Amazon Web Services Private CA sets the "Not Before" date to the issuance time minus 60 minutes. This compensates for clock inconsistencies across computer systems. The ValidityNotBefore parameter can be used to customize the “Not Before” value. 
-    ///  Unlike the Validity parameter, the ValidityNotBefore parameter is optional. 
-    ///  The ValidityNotBefore value is expressed as an explicit date and time, using the Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html) in this API reference and Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5) in RFC 5280.
+    /// Information describing the start of the validity period of the certificate.
+    /// This parameter sets the “Not Before" date for the certificate.
+    /// 
+    /// 
+    /// By default, when issuing a certificate, Amazon Web Services Private CA sets
+    /// the "Not Before" date to the issuance time minus 60 minutes. This compensates
+    /// for clock inconsistencies across computer systems. The ValidityNotBefore
+    /// parameter can be used to customize the “Not Before” value.
+    /// 
+    /// 
+    /// Unlike the Validity parameter, the ValidityNotBefore parameter is optional.
+    /// 
+    /// 
+    /// The ValidityNotBefore value is expressed as an explicit date and time, using
+    /// the Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html)
+    /// in this API reference and Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)
+    /// in RFC 5280.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validityNotBefore")]
     pub validity_not_before: Option<CertificateValidityNotBefore>,
 }
 
-/// Specifies X.509 certificate information to be included in the issued certificate. An APIPassthrough or APICSRPassthrough template variant must be selected, or else this parameter is ignored. For more information about using these templates, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html). 
-///  If conflicting or duplicate certificate information is supplied during certificate issuance, Amazon Web Services Private CA applies order of operation rules (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations) to determine what information is used.
+/// Specifies X.509 certificate information to be included in the issued certificate.
+/// An APIPassthrough or APICSRPassthrough template variant must be selected,
+/// or else this parameter is ignored. For more information about using these
+/// templates, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).
+/// 
+/// 
+/// If conflicting or duplicate certificate information is supplied during certificate
+/// issuance, Amazon Web Services Private CA applies order of operation rules
+/// (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations)
+/// to determine what information is used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthrough {
     /// Contains X.509 extension information for a certificate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extensions: Option<CertificateApiPassthroughExtensions>,
-    /// Contains information about the certificate subject. The Subject field in the certificate identifies the entity that owns or controls the public key in the certificate. The entity can be a user, computer, device, or service. The Subject must contain an X.500 distinguished name (DN). A DN is a sequence of relative distinguished names (RDNs). The RDNs are separated by commas in the certificate.
+    /// Contains information about the certificate subject. The Subject field in
+    /// the certificate identifies the entity that owns or controls the public key
+    /// in the certificate. The entity can be a user, computer, device, or service.
+    /// The Subject must contain an X.500 distinguished name (DN). A DN is a sequence
+    /// of relative distinguished names (RDNs). The RDNs are separated by commas
+    /// in the certificate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<CertificateApiPassthroughSubject>,
 }
@@ -79,7 +175,8 @@ pub struct CertificateApiPassthroughExtensions {
     pub custom_extensions: Option<Vec<CertificateApiPassthroughExtensionsCustomExtensions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extendedKeyUsage")]
     pub extended_key_usage: Option<Vec<CertificateApiPassthroughExtensionsExtendedKeyUsage>>,
-    /// Defines one or more purposes for which the key contained in the certificate can be used. Default value for each option is false.
+    /// Defines one or more purposes for which the key contained in the certificate
+    /// can be used. Default value for each option is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyUsage")]
     pub key_usage: Option<CertificateApiPassthroughExtensionsKeyUsage>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAlternativeNames")]
@@ -95,25 +192,34 @@ pub struct CertificateApiPassthroughExtensionsCertificatePolicies {
     pub policy_qualifiers: Option<Vec<CertificateApiPassthroughExtensionsCertificatePoliciesPolicyQualifiers>>,
 }
 
-/// Modifies the CertPolicyId of a PolicyInformation object with a qualifier. Amazon Web Services Private CA supports the certification practice statement (CPS) qualifier.
+/// Modifies the CertPolicyId of a PolicyInformation object with a qualifier.
+/// Amazon Web Services Private CA supports the certification practice statement
+/// (CPS) qualifier.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsCertificatePoliciesPolicyQualifiers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyQualifierID")]
     pub policy_qualifier_id: Option<String>,
-    /// Defines a PolicyInformation qualifier. Amazon Web Services Private CA supports the certification practice statement (CPS) qualifier (https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.4) defined in RFC 5280.
+    /// Defines a PolicyInformation qualifier. Amazon Web Services Private CA supports
+    /// the certification practice statement (CPS) qualifier (https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.4)
+    /// defined in RFC 5280.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub qualifier: Option<CertificateApiPassthroughExtensionsCertificatePoliciesPolicyQualifiersQualifier>,
 }
 
-/// Defines a PolicyInformation qualifier. Amazon Web Services Private CA supports the certification practice statement (CPS) qualifier (https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.4) defined in RFC 5280.
+/// Defines a PolicyInformation qualifier. Amazon Web Services Private CA supports
+/// the certification practice statement (CPS) qualifier (https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.4)
+/// defined in RFC 5280.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsCertificatePoliciesPolicyQualifiersQualifier {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpsURI")]
     pub cps_uri: Option<String>,
 }
 
-/// Specifies the X.509 extension information for a certificate. 
-///  Extensions present in CustomExtensions follow the ApiPassthrough template rules (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations).
+/// Specifies the X.509 extension information for a certificate.
+/// 
+/// 
+/// Extensions present in CustomExtensions follow the ApiPassthrough template
+/// rules (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html#template-order-of-operations).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsCustomExtensions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -124,7 +230,8 @@ pub struct CertificateApiPassthroughExtensionsCustomExtensions {
     pub value: Option<String>,
 }
 
-/// Specifies additional purposes for which the certified public key may be used other than basic purposes indicated in the KeyUsage extension.
+/// Specifies additional purposes for which the certified public key may be used
+/// other than basic purposes indicated in the KeyUsage extension.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsExtendedKeyUsage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extendedKeyUsageObjectIdentifier")]
@@ -133,7 +240,8 @@ pub struct CertificateApiPassthroughExtensionsExtendedKeyUsage {
     pub extended_key_usage_type: Option<String>,
 }
 
-/// Defines one or more purposes for which the key contained in the certificate can be used. Default value for each option is false.
+/// Defines one or more purposes for which the key contained in the certificate
+/// can be used. Default value for each option is false.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsKeyUsage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crlSign")]
@@ -156,20 +264,31 @@ pub struct CertificateApiPassthroughExtensionsKeyUsage {
     pub non_repudiation: Option<bool>,
 }
 
-/// Describes an ASN.1 X.400 GeneralName as defined in RFC 5280 (https://datatracker.ietf.org/doc/html/rfc5280). Only one of the following naming options should be provided. Providing more than one option results in an InvalidArgsException error.
+/// Describes an ASN.1 X.400 GeneralName as defined in RFC 5280 (https://datatracker.ietf.org/doc/html/rfc5280).
+/// Only one of the following naming options should be provided. Providing more
+/// than one option results in an InvalidArgsException error.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsSubjectAlternativeNames {
-    /// Contains information about the certificate subject. The Subject field in the certificate identifies the entity that owns or controls the public key in the certificate. The entity can be a user, computer, device, or service. The Subject must contain an X.500 distinguished name (DN). A DN is a sequence of relative distinguished names (RDNs). The RDNs are separated by commas in the certificate.
+    /// Contains information about the certificate subject. The Subject field in
+    /// the certificate identifies the entity that owns or controls the public key
+    /// in the certificate. The entity can be a user, computer, device, or service.
+    /// The Subject must contain an X.500 distinguished name (DN). A DN is a sequence
+    /// of relative distinguished names (RDNs). The RDNs are separated by commas
+    /// in the certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "directoryName")]
     pub directory_name: Option<CertificateApiPassthroughExtensionsSubjectAlternativeNamesDirectoryName>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsName")]
     pub dns_name: Option<String>,
-    /// Describes an Electronic Data Interchange (EDI) entity as described in as defined in Subject Alternative Name (https://datatracker.ietf.org/doc/html/rfc5280) in RFC 5280.
+    /// Describes an Electronic Data Interchange (EDI) entity as described in as
+    /// defined in Subject Alternative Name (https://datatracker.ietf.org/doc/html/rfc5280)
+    /// in RFC 5280.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ediPartyName")]
     pub edi_party_name: Option<CertificateApiPassthroughExtensionsSubjectAlternativeNamesEdiPartyName>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddress")]
     pub ip_address: Option<String>,
-    /// Defines a custom ASN.1 X.400 GeneralName using an object identifier (OID) and value. The OID must satisfy the regular expression shown below. For more information, see NIST's definition of Object Identifier (OID) (https://csrc.nist.gov/glossary/term/Object_Identifier).
+    /// Defines a custom ASN.1 X.400 GeneralName using an object identifier (OID)
+    /// and value. The OID must satisfy the regular expression shown below. For more
+    /// information, see NIST's definition of Object Identifier (OID) (https://csrc.nist.gov/glossary/term/Object_Identifier).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherName")]
     pub other_name: Option<CertificateApiPassthroughExtensionsSubjectAlternativeNamesOtherName>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registeredID")]
@@ -180,7 +299,12 @@ pub struct CertificateApiPassthroughExtensionsSubjectAlternativeNames {
     pub uniform_resource_identifier: Option<String>,
 }
 
-/// Contains information about the certificate subject. The Subject field in the certificate identifies the entity that owns or controls the public key in the certificate. The entity can be a user, computer, device, or service. The Subject must contain an X.500 distinguished name (DN). A DN is a sequence of relative distinguished names (RDNs). The RDNs are separated by commas in the certificate.
+/// Contains information about the certificate subject. The Subject field in
+/// the certificate identifies the entity that owns or controls the public key
+/// in the certificate. The entity can be a user, computer, device, or service.
+/// The Subject must contain an X.500 distinguished name (DN). A DN is a sequence
+/// of relative distinguished names (RDNs). The RDNs are separated by commas
+/// in the certificate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsSubjectAlternativeNamesDirectoryName {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonName")]
@@ -224,7 +348,9 @@ pub struct CertificateApiPassthroughExtensionsSubjectAlternativeNamesDirectoryNa
     pub value: Option<String>,
 }
 
-/// Describes an Electronic Data Interchange (EDI) entity as described in as defined in Subject Alternative Name (https://datatracker.ietf.org/doc/html/rfc5280) in RFC 5280.
+/// Describes an Electronic Data Interchange (EDI) entity as described in as
+/// defined in Subject Alternative Name (https://datatracker.ietf.org/doc/html/rfc5280)
+/// in RFC 5280.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsSubjectAlternativeNamesEdiPartyName {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameAssigner")]
@@ -233,7 +359,9 @@ pub struct CertificateApiPassthroughExtensionsSubjectAlternativeNamesEdiPartyNam
     pub party_name: Option<String>,
 }
 
-/// Defines a custom ASN.1 X.400 GeneralName using an object identifier (OID) and value. The OID must satisfy the regular expression shown below. For more information, see NIST's definition of Object Identifier (OID) (https://csrc.nist.gov/glossary/term/Object_Identifier).
+/// Defines a custom ASN.1 X.400 GeneralName using an object identifier (OID)
+/// and value. The OID must satisfy the regular expression shown below. For more
+/// information, see NIST's definition of Object Identifier (OID) (https://csrc.nist.gov/glossary/term/Object_Identifier).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughExtensionsSubjectAlternativeNamesOtherName {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "typeID")]
@@ -242,7 +370,12 @@ pub struct CertificateApiPassthroughExtensionsSubjectAlternativeNamesOtherName {
     pub value: Option<String>,
 }
 
-/// Contains information about the certificate subject. The Subject field in the certificate identifies the entity that owns or controls the public key in the certificate. The entity can be a user, computer, device, or service. The Subject must contain an X.500 distinguished name (DN). A DN is a sequence of relative distinguished names (RDNs). The RDNs are separated by commas in the certificate.
+/// Contains information about the certificate subject. The Subject field in
+/// the certificate identifies the entity that owns or controls the public key
+/// in the certificate. The entity can be a user, computer, device, or service.
+/// The Subject must contain an X.500 distinguished name (DN). A DN is a sequence
+/// of relative distinguished names (RDNs). The RDNs are separated by commas
+/// in the certificate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateApiPassthroughSubject {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonName")]
@@ -286,42 +419,72 @@ pub struct CertificateApiPassthroughSubjectCustomAttributes {
     pub value: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateCertificateAuthorityRef {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<CertificateCertificateAuthorityRefFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateCertificateAuthorityRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference type to provide more user friendly syntax for references using 'from' field Ex: APIIDRef: 
-///  from: name: my-api
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 
+/// 	from:
+/// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateCsrRef {
-    /// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<CertificateCsrRefFrom>,
 }
 
-/// AWSResourceReference provides all the values necessary to reference another k8s resource for finding the identifier(Id/ARN/Name)
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateCsrRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Information describing the end of the validity period of the certificate. This parameter sets the “Not After” date for the certificate. 
-///  Certificate validity is the period of time during which a certificate is valid. Validity can be expressed as an explicit date and time when the certificate expires, or as a span of time after issuance, stated in days, months, or years. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5) in RFC 5280. 
-///  This value is unaffected when ValidityNotBefore is also specified. For example, if Validity is set to 20 days in the future, the certificate will expire 20 days from issuance time regardless of the ValidityNotBefore value. 
-///  The end of the validity period configured on a certificate must not exceed the limit set on its parents in the CA hierarchy.
+/// Information describing the end of the validity period of the certificate.
+/// This parameter sets the “Not After” date for the certificate.
+/// 
+/// 
+/// Certificate validity is the period of time during which a certificate is
+/// valid. Validity can be expressed as an explicit date and time when the certificate
+/// expires, or as a span of time after issuance, stated in days, months, or
+/// years. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)
+/// in RFC 5280.
+/// 
+/// 
+/// This value is unaffected when ValidityNotBefore is also specified. For example,
+/// if Validity is set to 20 days in the future, the certificate will expire
+/// 20 days from issuance time regardless of the ValidityNotBefore value.
+/// 
+/// 
+/// The end of the validity period configured on a certificate must not exceed
+/// the limit set on its parents in the CA hierarchy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateValidity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
@@ -330,10 +493,23 @@ pub struct CertificateValidity {
     pub value: Option<i64>,
 }
 
-/// Information describing the start of the validity period of the certificate. This parameter sets the “Not Before" date for the certificate. 
-///  By default, when issuing a certificate, Amazon Web Services Private CA sets the "Not Before" date to the issuance time minus 60 minutes. This compensates for clock inconsistencies across computer systems. The ValidityNotBefore parameter can be used to customize the “Not Before” value. 
-///  Unlike the Validity parameter, the ValidityNotBefore parameter is optional. 
-///  The ValidityNotBefore value is expressed as an explicit date and time, using the Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html) in this API reference and Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5) in RFC 5280.
+/// Information describing the start of the validity period of the certificate.
+/// This parameter sets the “Not Before" date for the certificate.
+/// 
+/// 
+/// By default, when issuing a certificate, Amazon Web Services Private CA sets
+/// the "Not Before" date to the issuance time minus 60 minutes. This compensates
+/// for clock inconsistencies across computer systems. The ValidityNotBefore
+/// parameter can be used to customize the “Not Before” value.
+/// 
+/// 
+/// Unlike the Validity parameter, the ValidityNotBefore parameter is optional.
+/// 
+/// 
+/// The ValidityNotBefore value is expressed as an explicit date and time, using
+/// the Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html)
+/// in this API reference and Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)
+/// in RFC 5280.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateValidityNotBefore {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
@@ -345,28 +521,45 @@ pub struct CertificateValidityNotBefore {
 /// CertificateStatus defines the observed state of Certificate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateStatus {
-    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+    /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+    /// that is used to contain resource sync state, account ownership,
+    /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CertificateStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that contains a collection of `ackv1alpha1.Condition` objects that describe the various terminal states of the CR and its backend AWS service API resource
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// contains a collection of `ackv1alpha1.Condition` objects that describe
+    /// the various terminal states of the CR and its backend AWS service API
+    /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<CertificateStatusConditions>>,
 }
 
-/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member that is used to contain resource sync state, account ownership, constructed ARN for the resource
+/// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+/// that is used to contain resource sync state, account ownership,
+/// constructed ARN for the resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateStatusAckResourceMetadata {
-    /// ARN is the Amazon Resource Name for the resource. This is a globally-unique identifier and is set only by the ACK service controller once the controller has orchestrated the creation of the resource OR when it has verified that an "adopted" resource (a resource where the ARN annotation was set by the Kubernetes user on the CR) exists and matches the supplied CR's Spec field values. TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse https://github.com/aws/aws-controllers-k8s/issues/270
+    /// ARN is the Amazon Resource Name for the resource. This is a
+    /// globally-unique identifier and is set only by the ACK service controller
+    /// once the controller has orchestrated the creation of the resource OR
+    /// when it has verified that an "adopted" resource (a resource where the
+    /// ARN annotation was set by the Kubernetes user on the CR) exists and
+    /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
+    /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    /// OwnerAccountID is the AWS Account ID of the account that owns the backend AWS service API resource.
+    /// OwnerAccountID is the AWS Account ID of the account that owns the
+    /// backend AWS service API resource.
     #[serde(rename = "ownerAccountID")]
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
 
-/// Condition is the common struct used by all CRDs managed by ACK service controllers to indicate terminal states  of the CR and its backend AWS service API resource
+/// Condition is the common struct used by all CRDs managed by ACK service
+/// controllers to indicate terminal states  of the CR and its backend AWS
+/// service API resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateStatusConditions {
     /// Last time the condition transitioned from one status to another.

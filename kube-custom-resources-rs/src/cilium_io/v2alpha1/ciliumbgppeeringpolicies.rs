@@ -68,6 +68,9 @@ pub struct CiliumBGPPeeringPolicyVirtualRouters {
     ///  If empty / nil no CiliumPodIPPools will be announced.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIPPoolSelector")]
     pub pod_ip_pool_selector: Option<CiliumBGPPeeringPolicyVirtualRoutersPodIpPoolSelector>,
+    /// ServiceAdvertisements selects a group of BGP Advertisement(s) to advertise for the selected services.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAdvertisements")]
+    pub service_advertisements: Option<Vec<String>>,
     /// ServiceSelector selects a group of load balancer services which this virtual router will announce. The loadBalancerClass for a service must be nil or specify a class supported by Cilium, e.g. "io.cilium/bgp-control-plane". Refer to the following document for additional details regarding load balancer classes: 
     ///  https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class 
     ///  If empty / nil no services will be announced.

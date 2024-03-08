@@ -21,7 +21,7 @@ spec:
         - jsonPath: ".spec.image"
           name: "Image"
           type: "string"
-        - jsonPath: ".spec.podSpec.MultiPodPerHost"
+        - jsonPath: ".spec.podSpec.multiPodPerHost"
           name: "MultiPodPerHost"
           type: "boolean"
         - jsonPath: ".spec.podSpec.hostNetwork"
@@ -30,6 +30,9 @@ spec:
         - jsonPath: ".metadata.creationTimestamp"
           name: "Age"
           type: "date"
+        - jsonPath: ".status.phase"
+          name: "Phase"
+          type: "string"
       name: "v1"
       schema:
         openAPIV3Schema:
@@ -216,6 +219,18 @@ spec:
                 image:
                   description: "Aerospike server image"
                   type: "string"
+                k8sNodeBlockList:
+                  description: "K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods. Pods are not scheduled on these nodes. Pods are migrated from these nodes if already present. This is useful for the maintenance of Kubernetes nodes."
+                  items:
+                    type: "string"
+                  minItems: 1
+                  type: "array"
+                maxUnavailable:
+                  anyOf:
+                    - type: "integer"
+                    - type: "string"
+                  description: "MaxUnavailable is the percentage/number of pods that can be allowed to go down or unavailable before application disruption. This value is used to create PodDisruptionBudget. Defaults to 1. Refer Aerospike documentation for more details."
+                  x-kubernetes-int-or-string: true
                 operatorClientCert:
                   description: "Certificates to connect to Aerospike."
                   properties:
@@ -3526,7 +3541,7 @@ spec:
                                     type: "string"
                                 type: "object"
                               cleanupThreads:
-                                description: "CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container."
+                                description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
                                 type: "integer"
                               filesystemVolumePolicy:
                                 description: "FileSystemVolumePolicy contains default policies for filesystem volumes."
@@ -3570,6 +3585,11 @@ spec:
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
+                              localStorageClasses:
+                                description: "LocalStorageClasses contains a list of storage classes which provisions local volumes."
+                                items:
+                                  type: "string"
+                                type: "array"
                               volumes:
                                 description: "Volumes list to attach to created pods."
                                 items:
@@ -4476,7 +4496,7 @@ spec:
                                     type: "string"
                                 type: "object"
                               cleanupThreads:
-                                description: "CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container."
+                                description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
                                 type: "integer"
                               filesystemVolumePolicy:
                                 description: "FileSystemVolumePolicy contains default policies for filesystem volumes."
@@ -4520,6 +4540,11 @@ spec:
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
+                              localStorageClasses:
+                                description: "LocalStorageClasses contains a list of storage classes which provisions local volumes."
+                                items:
+                                  type: "string"
+                                type: "array"
                               volumes:
                                 description: "Volumes list to attach to created pods."
                                 items:
@@ -4923,7 +4948,7 @@ spec:
                           type: "string"
                       type: "object"
                     cleanupThreads:
-                      description: "CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container."
+                      description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
                       type: "integer"
                     filesystemVolumePolicy:
                       description: "FileSystemVolumePolicy contains default policies for filesystem volumes."
@@ -4967,6 +4992,11 @@ spec:
                             - "deleteFiles"
                           type: "string"
                       type: "object"
+                    localStorageClasses:
+                      description: "LocalStorageClasses contains a list of storage classes which provisions local volumes."
+                      items:
+                        type: "string"
+                      type: "array"
                     volumes:
                       description: "Volumes list to attach to created pods."
                       items:
@@ -5456,6 +5486,17 @@ spec:
                 image:
                   description: "Aerospike server image"
                   type: "string"
+                k8sNodeBlockList:
+                  description: "K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods."
+                  items:
+                    type: "string"
+                  type: "array"
+                maxUnavailable:
+                  anyOf:
+                    - type: "integer"
+                    - type: "string"
+                  description: "MaxUnavailable is the percentage/number of pods that can be allowed to go down or unavailable before application disruption. This value is used to create PodDisruptionBudget. Defaults to 1."
+                  x-kubernetes-int-or-string: true
                 multiPodPerHost:
                   description: "If set true then multiple pods can be created per Kubernetes Node. This will create a NodePort service for each Pod. NodePort, as the name implies, opens a specific port on all the Kubernetes Nodes , and any traffic that is sent to this port is forwarded to the service. Here service picks a random port in range (30000-32767), so these port should be open. \n If set false then only single pod can be created per Kubernetes Node. This will create Pods using hostPort setting. The container port will be exposed to the external network at <hostIP>:<hostPort>, where the hostIP is the IP address of the Kubernetes Node where the container is running and the hostPort is the port requested by the user. Deprecated: MultiPodPerHost is now part of podSpec"
                   type: "boolean"
@@ -5500,6 +5541,13 @@ spec:
                       description: "If specified, this name will be added to tls-authenticate-client list by the operator"
                       type: "string"
                   type: "object"
+                phase:
+                  description: "Phase denotes the current phase of Aerospike cluster operation."
+                  enum:
+                    - "InProgress"
+                    - "Completed"
+                    - "Error"
+                  type: "string"
                 podSpec:
                   description: "Additional configuration for create Aerospike pods."
                   properties:
@@ -8861,7 +8909,7 @@ spec:
                                     type: "string"
                                 type: "object"
                               cleanupThreads:
-                                description: "CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container."
+                                description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
                                 type: "integer"
                               filesystemVolumePolicy:
                                 description: "FileSystemVolumePolicy contains default policies for filesystem volumes."
@@ -8905,6 +8953,11 @@ spec:
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
+                              localStorageClasses:
+                                description: "LocalStorageClasses contains a list of storage classes which provisions local volumes."
+                                items:
+                                  type: "string"
+                                type: "array"
                               volumes:
                                 description: "Volumes list to attach to created pods."
                                 items:
@@ -9811,7 +9864,7 @@ spec:
                                     type: "string"
                                 type: "object"
                               cleanupThreads:
-                                description: "CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container."
+                                description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
                                 type: "integer"
                               filesystemVolumePolicy:
                                 description: "FileSystemVolumePolicy contains default policies for filesystem volumes."
@@ -9855,6 +9908,11 @@ spec:
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
+                              localStorageClasses:
+                                description: "LocalStorageClasses contains a list of storage classes which provisions local volumes."
+                                items:
+                                  type: "string"
+                                type: "array"
                               volumes:
                                 description: "Volumes list to attach to created pods."
                                 items:
@@ -10295,7 +10353,7 @@ spec:
                           type: "string"
                       type: "object"
                     cleanupThreads:
-                      description: "CleanupThreads contains maximum number of cleanup threads(dd or blkdiscard) per init container."
+                      description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
                       type: "integer"
                     filesystemVolumePolicy:
                       description: "FileSystemVolumePolicy contains default policies for filesystem volumes."
@@ -10339,6 +10397,11 @@ spec:
                             - "deleteFiles"
                           type: "string"
                       type: "object"
+                    localStorageClasses:
+                      description: "LocalStorageClasses contains a list of storage classes which provisions local volumes."
+                      items:
+                        type: "string"
+                      type: "array"
                     volumes:
                       description: "Volumes list to attach to created pods."
                       items:
@@ -10648,8 +10711,6 @@ spec:
                     - "skipWorkDirValidate"
                     - "skipXdrDlogFileValidate"
                   type: "object"
-              required:
-                - "pods"
               type: "object"
           type: "object"
       served: true
