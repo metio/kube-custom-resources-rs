@@ -2,6 +2,6 @@
 // kopium command: kopium --docs --filename=./crd-catalog/SparebankenVest/azure-key-vault-to-kubernetes/spv.no/v1alpha1/azurekeyvaultidentities.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.17.1
 
-use kube::CustomResource;
-use serde::{Serialize, Deserialize};
+
+
 

@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/kubernetes-csi/external-snapshotter/snapshot.storage.k8s.io/v1/volumesnapshotclasses.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.17.1
 
-use kube::CustomResource;
-use serde::{Serialize, Deserialize};
-use std::collections::BTreeMap;
+
+
+
 

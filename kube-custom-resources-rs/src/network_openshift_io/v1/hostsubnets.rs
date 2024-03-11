@@ -2,6 +2,6 @@
 // kopium command: kopium --docs --filename=./crd-catalog/openshift/api/network.openshift.io/v1/hostsubnets.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.17.1
 
-use kube::CustomResource;
-use serde::{Serialize, Deserialize};
+
+
 
