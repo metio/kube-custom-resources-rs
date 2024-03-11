@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/openshift/api/security.openshift.io/v1/securitycontextconstraints.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.17.1
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 
 /// AllowedFlexVolume represents a single Flexvolume that is allowed to be used.

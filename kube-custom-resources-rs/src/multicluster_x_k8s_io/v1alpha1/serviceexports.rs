@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/kubernetes-sigs/mcs-api/multicluster.x-k8s.io/v1alpha1/serviceexports.yaml --derive=PartialEq
 // kopium version: 0.17.1
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 

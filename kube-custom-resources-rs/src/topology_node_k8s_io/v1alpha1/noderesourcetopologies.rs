@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/kubernetes-sigs/node-feature-discovery-operator/topology.node.k8s.io/v1alpha1/noderesourcetopologies.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.17.1
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 

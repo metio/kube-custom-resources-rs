@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/kubev2v/forklift/forklift.konveyor.io/v1beta1/forkliftcontrollers.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.17.1
 
-use kube::CustomResource;
-use serde::{Serialize, Deserialize};
-use std::collections::BTreeMap;
+
+
+
 
