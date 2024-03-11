@@ -451,6 +451,10 @@ Files: crd-catalog/flanksource/canary-checker/*
 Copyright: The flanksource/canary-checker Authors
 License: Apache-2.0
 
+Files: crd-catalog/fluent/fluent-operator/*
+Copyright: The fluent/fluent-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/fluid-cloudnative/fluid/*
 Copyright: The fluid-cloudnative/fluid Authors
 License: Apache-2.0

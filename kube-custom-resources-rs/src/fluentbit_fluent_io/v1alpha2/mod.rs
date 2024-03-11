@@ -1,0 +1,11 @@
+pub mod clusterfilters;
+pub mod clusterfluentbitconfigs;
+pub mod clusterinputs;
+pub mod clusteroutputs;
+pub mod clusterparsers;
+pub mod collectors;
+pub mod filters;
+pub mod fluentbitconfigs;
+pub mod fluentbits;
+pub mod outputs;
+pub mod parsers;
