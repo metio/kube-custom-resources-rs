@@ -1105,6 +1105,34 @@ apiVersion `flows.netobserv.io/v1beta1`:
 apiVersion `flows.netobserv.io/v1beta2`:
 - `FlowCollector`
 
+## fluentbit_fluent_io
+
+apiVersion `fluentbit.fluent.io/v1alpha2`:
+- `ClusterFilter`
+- `ClusterFluentBitConfig`
+- `ClusterInput`
+- `ClusterOutput`
+- `ClusterParser`
+- `Collector`
+- `Filter`
+- `FluentBitConfig`
+- `FluentBit`
+- `Output`
+- `Parser`
+
+## fluentd_fluent_io
+
+apiVersion `fluentd.fluent.io/v1alpha1`:
+- `ClusterFilter`
+- `ClusterFluentdConfig`
+- `ClusterInput`
+- `ClusterOutput`
+- `Filter`
+- `FluentdConfig`
+- `Fluentd`
+- `Input`
+- `Output`
+
 ## flux_framework_org
 
 apiVersion `flux-framework.org/v1alpha1`:
@@ -3153,6 +3181,10 @@ pub mod flink_apache_org;
 pub mod flow_volcano_sh;
 #[cfg(feature = "flows_netobserv_io")]
 pub mod flows_netobserv_io;
+#[cfg(feature = "fluentbit_fluent_io")]
+pub mod fluentbit_fluent_io;
+#[cfg(feature = "fluentd_fluent_io")]
+pub mod fluentd_fluent_io;
 #[cfg(feature = "flux_framework_org")]
 pub mod flux_framework_org;
 #[cfg(feature = "forklift_konveyor_io")]
