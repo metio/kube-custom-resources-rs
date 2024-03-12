@@ -1628,6 +1628,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "krestomatio/moodle-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/krestomatio/moodle-operator/blob/master/config/crd/bases/m4e.krestomat.io_moodles.yaml",
+            "https://github.com/krestomatio/moodle-operator/blob/master/config/crd/bases/m4e.krestomat.io_nginxes.yaml",
+            "https://github.com/krestomatio/moodle-operator/blob/master/config/crd/bases/m4e.krestomat.io_phpfpms.yaml",
+            "https://github.com/krestomatio/moodle-operator/blob/master/config/crd/bases/m4e.krestomat.io_routines.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "ktsstudio/mirrors",
         license: APACHE_V2,
         urls: &[
