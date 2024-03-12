@@ -2965,6 +2965,11 @@ apiVersion `workloads.kubeblocks.io/v1alpha1`:
 apiVersion `zonecontrol.k8s.aws/v1`:
 - `ZoneAwareUpdate`
 - `ZoneDisruptionBudget`
+
+## zookeeper_pravega_io
+
+apiVersion `zookeeper.pravega.io/v1beta1`:
+- `ZookeeperCluster`
  */
 
 #[cfg(feature = "about_k8s_io")]
@@ -3649,3 +3654,5 @@ pub mod workload_codeflare_dev;
 pub mod workloads_kubeblocks_io;
 #[cfg(feature = "zonecontrol_k8s_aws")]
 pub mod zonecontrol_k8s_aws;
+#[cfg(feature = "zookeeper_pravega_io")]
+pub mod zookeeper_pravega_io;

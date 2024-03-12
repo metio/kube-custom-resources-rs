@@ -959,6 +959,10 @@ Files: crd-catalog/percona/percona-xtradb-cluster-operator/*
 Copyright: The percona/percona-xtradb-cluster-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/pravega/zookeeper-operator/*
+Copyright: The pravega/zookeeper-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/project-codeflare/codeflare-operator/*
 Copyright: The project-codeflare/codeflare-operator Authors
 License: Apache-2.0

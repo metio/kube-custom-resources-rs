@@ -2529,6 +2529,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "pravega/zookeeper-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/pravega/zookeeper-operator/blob/master/config/crd/bases/zookeeper.pravega.io_zookeeperclusters.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "project-codeflare/codeflare-operator",
         license: APACHE_V2,
         urls: &[
