@@ -1495,6 +1495,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "isindir/sops-secrets-operator",
+        license: MPL_V2,
+        urls: &[
+            "https://github.com/isindir/sops-secrets-operator/blob/master/config/crd/bases/isindir.github.com_sopssecrets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "istio/istio",
         license: APACHE_V2,
         urls: &[

@@ -595,6 +595,10 @@ Files: crd-catalog/ipfs-cluster/ipfs-operator/*
 Copyright: The ipfs-cluster/ipfs-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/isindir/sops-secrets-operator/*
+Copyright: The isindir/sops-secrets-operator Authors
+License: MPL-2.0
+
 Files: crd-catalog/istio/istio/*
 Copyright: The istio/istio Authors
 License: Apache-2.0
