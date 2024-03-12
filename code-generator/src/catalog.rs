@@ -2813,6 +2813,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "teseraio/ensemble",
+        license: MPL_V2,
+        urls: &[
+            "https://github.com/teseraio/ensemble/blob/main/charts/operator/crds/cluster.yaml",
+            "https://github.com/teseraio/ensemble/blob/main/charts/operator/crds/resource.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "theketchio/ketch",
         license: APACHE_V2,
         urls: &[

@@ -999,6 +999,12 @@ apiVersion `emrcontainers.services.k8s.aws/v1alpha1`:
 - `JobRun`
 - `VirtualCluster`
 
+## ensembleoss_io
+
+apiVersion `ensembleoss.io/v1`:
+- `Cluster`
+- `Resource`
+
 ## enterprisesearch_k8s_elastic_co
 
 apiVersion `enterprisesearch.k8s.elastic.co/v1`:
@@ -3161,6 +3167,8 @@ pub mod elasticsearch_k8s_elastic_co;
 pub mod elbv2_k8s_aws;
 #[cfg(feature = "emrcontainers_services_k8s_aws")]
 pub mod emrcontainers_services_k8s_aws;
+#[cfg(feature = "ensembleoss_io")]
+pub mod ensembleoss_io;
 #[cfg(feature = "enterprisesearch_k8s_elastic_co")]
 pub mod enterprisesearch_k8s_elastic_co;
 #[cfg(feature = "everest_percona_com")]
