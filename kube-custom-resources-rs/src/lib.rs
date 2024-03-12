@@ -2332,6 +2332,16 @@ apiVersion `ray.io/v1alpha1`:
 apiVersion `rbacmanager.reactiveops.io/v1beta1`:
 - `RBACDefinition`
 
+## rc_app_stacks
+
+apiVersion `rc.app.stacks/v1`:
+- `RuntimeComponent`
+- `RuntimeOperation`
+
+apiVersion `rc.app.stacks/v1beta2`:
+- `RuntimeComponent`
+- `RuntimeOperation`
+
 ## rds_services_k8s_aws
 
 apiVersion `rds.services.k8s.aws/v1alpha1`:
@@ -3449,6 +3459,8 @@ pub mod quota_openshift_io;
 pub mod ray_io;
 #[cfg(feature = "rbacmanager_reactiveops_io")]
 pub mod rbacmanager_reactiveops_io;
+#[cfg(feature = "rc_app_stacks")]
+pub mod rc_app_stacks;
 #[cfg(feature = "rds_services_k8s_aws")]
 pub mod rds_services_k8s_aws;
 #[cfg(feature = "redhatcop_redhat_io")]

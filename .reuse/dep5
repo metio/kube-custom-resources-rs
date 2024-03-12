@@ -75,6 +75,10 @@ Files: crd-catalog/apimatic/apimatic-kubernetes-operator/*
 Copyright: The apimatic/apimatic-kubernetes-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/application-stacks/runtime-component-operator/*
+Copyright: The application-stacks/runtime-component-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/aquasecurity/aqua-operator/*
 Copyright: The aquasecurity/aqua-operator Authors
 License: LicenseRef-Aqua
