@@ -1450,6 +1450,17 @@ apiVersion `ipam.cluster.x-k8s.io/v1beta1`:
 - `IPAddressClaim`
 - `IPAddress`
 
+## isindir_github_com
+
+apiVersion `isindir.github.com/v1alpha1`:
+- `SopsSecret`
+
+apiVersion `isindir.github.com/v1alpha2`:
+- `SopsSecret`
+
+apiVersion `isindir.github.com/v1alpha3`:
+- `SopsSecret`
+
 ## jaegertracing_io
 
 apiVersion `jaegertracing.io/v1`:
@@ -3278,6 +3289,8 @@ pub mod integration_rock8s_com;
 pub mod iot_eclipse_org;
 #[cfg(feature = "ipam_cluster_x_k8s_io")]
 pub mod ipam_cluster_x_k8s_io;
+#[cfg(feature = "isindir_github_com")]
+pub mod isindir_github_com;
 #[cfg(feature = "jaegertracing_io")]
 pub mod jaegertracing_io;
 #[cfg(feature = "jobset_x_k8s_io")]
