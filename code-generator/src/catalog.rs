@@ -197,6 +197,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "application-stacks/runtime-component-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/application-stacks/runtime-component-operator/blob/main/config/crd/bases/rc.app.stacks_runtimecomponents.yaml",
+            "https://github.com/application-stacks/runtime-component-operator/blob/main/config/crd/bases/rc.app.stacks_runtimeoperations.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "aquasecurity/aqua-operator",
         license: AQUA,
         urls: &[
