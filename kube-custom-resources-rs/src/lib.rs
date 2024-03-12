@@ -1804,6 +1804,14 @@ apiVersion `longhorn.io/v1beta2`:
 - `VolumeAttachment`
 - `Volume`
 
+## m4e_krestomat_io
+
+apiVersion `m4e.krestomat.io/v1alpha1`:
+- `Moodle`
+- `Nginx`
+- `Phpfpm`
+- `Routine`
+
 ## machine_openshift_io
 
 apiVersion `machine.openshift.io/v1`:
@@ -3337,6 +3345,8 @@ pub mod logging_banzaicloud_io;
 pub mod loki_grafana_com;
 #[cfg(feature = "longhorn_io")]
 pub mod longhorn_io;
+#[cfg(feature = "m4e_krestomat_io")]
+pub mod m4e_krestomat_io;
 #[cfg(feature = "machine_openshift_io")]
 pub mod machine_openshift_io;
 #[cfg(feature = "machineconfiguration_openshift_io")]

@@ -647,6 +647,10 @@ Files: crd-catalog/koordinator-sh/koordinator/*
 Copyright: The koordinator-sh/koordinator Authors
 License: Apache-2.0
 
+Files: crd-catalog/krestomatio/moodle-operator/*
+Copyright: The krestomatio/moodle-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/ktsstudio/mirrors/*
 Copyright: The ktsstudio/mirrors Authors
 License: Apache-2.0
