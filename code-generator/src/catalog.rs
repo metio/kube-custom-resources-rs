@@ -982,6 +982,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "craftypath/sops-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/craftypath/sops-operator/blob/main/config/crd/craftypath.github.io_sopssecrets.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "crossplane/crossplane",
         license: APACHE_V2,
         urls: &[

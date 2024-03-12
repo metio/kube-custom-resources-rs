@@ -817,6 +817,11 @@ apiVersion `couchbase.com/v2`:
 - `CouchbaseScope`
 - `CouchbaseUser`
 
+## craftypath_github_io
+
+apiVersion `craftypath.github.io/v1alpha1`:
+- `SopsSecret`
+
 ## crane_konveyor_io
 
 apiVersion `crane.konveyor.io/v1alpha1`:
@@ -3131,6 +3136,8 @@ pub mod core_linuxsuren_github_com;
 pub mod core_openfeature_dev;
 #[cfg(feature = "couchbase_com")]
 pub mod couchbase_com;
+#[cfg(feature = "craftypath_github_io")]
+pub mod craftypath_github_io;
 #[cfg(feature = "crane_konveyor_io")]
 pub mod crane_konveyor_io;
 #[cfg(feature = "crd_projectcalico_org")]

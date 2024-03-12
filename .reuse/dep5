@@ -375,6 +375,10 @@ Files: crd-catalog/couchbase-partners/helm-charts/*
 Copyright: The couchbase-partners/helm-charts Authors
 License: Apache-2.0
 
+Files: crd-catalog/craftypath/sops-operator/*
+Copyright: The craftypath/sops-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/crossplane/crossplane/*
 Copyright: The crossplane/crossplane Authors
 License: Apache-2.0
