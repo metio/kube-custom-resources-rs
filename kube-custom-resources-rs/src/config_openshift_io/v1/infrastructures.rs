@@ -674,12 +674,30 @@ pub struct InfrastructureStatusPlatformStatusBaremetal {
     /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IPs otherwise only one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
     pub ingress_i_ps: Option<Vec<String>>,
+    /// loadBalancer defines how the load balancer used by the cluster is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<InfrastructureStatusPlatformStatusBaremetalLoadBalancer>,
     /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
     pub machine_networks: Option<Vec<String>>,
     /// nodeDNSIP is the IP address for the internal DNS used by the nodes. Unlike the one managed by the DNS operator, `NodeDNSIP` provides name resolution for the nodes themselves. There is no DNS-as-a-service for BareMetal deployments. In order to minimize necessary changes to the datacenter DNS, a DNS service is hosted as a static pod to serve those hostnames to the nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,
+}
+
+/// loadBalancer defines how the load balancer used by the cluster is configured.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct InfrastructureStatusPlatformStatusBaremetalLoadBalancer {
+    /// type defines the type of load balancer used by the cluster on BareMetal platform which can be a user-managed or openshift-managed load balancer that is to be used for the OpenShift API and Ingress endpoints. When set to OpenShiftManagedDefault the static pods in charge of API and Ingress traffic load-balancing defined in the machine config operator will be deployed. When set to UserManaged these static pods will not be deployed and it is expected that the load balancer is configured out of band by the deployer. When omitted, this means no opinion and the platform is left to choose a reasonable default. The default value is OpenShiftManagedDefault.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<InfrastructureStatusPlatformStatusBaremetalLoadBalancerType>,
+}
+
+/// loadBalancer defines how the load balancer used by the cluster is configured.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InfrastructureStatusPlatformStatusBaremetalLoadBalancerType {
+    OpenShiftManagedDefault,
+    UserManaged,
 }
 
 /// EquinixMetal contains settings specific to the Equinix Metal infrastructure provider.
@@ -811,6 +829,24 @@ pub struct InfrastructureStatusPlatformStatusNutanix {
     /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IPs otherwise only one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
     pub ingress_i_ps: Option<Vec<String>>,
+    /// loadBalancer defines how the load balancer used by the cluster is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<InfrastructureStatusPlatformStatusNutanixLoadBalancer>,
+}
+
+/// loadBalancer defines how the load balancer used by the cluster is configured.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct InfrastructureStatusPlatformStatusNutanixLoadBalancer {
+    /// type defines the type of load balancer used by the cluster on Nutanix platform which can be a user-managed or openshift-managed load balancer that is to be used for the OpenShift API and Ingress endpoints. When set to OpenShiftManagedDefault the static pods in charge of API and Ingress traffic load-balancing defined in the machine config operator will be deployed. When set to UserManaged these static pods will not be deployed and it is expected that the load balancer is configured out of band by the deployer. When omitted, this means no opinion and the platform is left to choose a reasonable default. The default value is OpenShiftManagedDefault.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<InfrastructureStatusPlatformStatusNutanixLoadBalancerType>,
+}
+
+/// loadBalancer defines how the load balancer used by the cluster is configured.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InfrastructureStatusPlatformStatusNutanixLoadBalancerType {
+    OpenShiftManagedDefault,
+    UserManaged,
 }
 
 /// OpenStack contains settings specific to the OpenStack infrastructure provider.
@@ -876,9 +912,27 @@ pub struct InfrastructureStatusPlatformStatusOvirt {
     /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IPs otherwise only one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
     pub ingress_i_ps: Option<Vec<String>>,
+    /// loadBalancer defines how the load balancer used by the cluster is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<InfrastructureStatusPlatformStatusOvirtLoadBalancer>,
     /// deprecated: as of 4.6, this field is no longer set or honored.  It will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,
+}
+
+/// loadBalancer defines how the load balancer used by the cluster is configured.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct InfrastructureStatusPlatformStatusOvirtLoadBalancer {
+    /// type defines the type of load balancer used by the cluster on Ovirt platform which can be a user-managed or openshift-managed load balancer that is to be used for the OpenShift API and Ingress endpoints. When set to OpenShiftManagedDefault the static pods in charge of API and Ingress traffic load-balancing defined in the machine config operator will be deployed. When set to UserManaged these static pods will not be deployed and it is expected that the load balancer is configured out of band by the deployer. When omitted, this means no opinion and the platform is left to choose a reasonable default. The default value is OpenShiftManagedDefault.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<InfrastructureStatusPlatformStatusOvirtLoadBalancerType>,
+}
+
+/// loadBalancer defines how the load balancer used by the cluster is configured.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InfrastructureStatusPlatformStatusOvirtLoadBalancerType {
+    OpenShiftManagedDefault,
+    UserManaged,
 }
 
 /// PowerVS contains settings specific to the Power Systems Virtual Servers infrastructure provider.
@@ -958,11 +1012,29 @@ pub struct InfrastructureStatusPlatformStatusVsphere {
     /// ingressIPs are the external IPs which route to the default ingress controller. The IPs are suitable targets of a wildcard DNS record used to resolve default route host names. In dual stack clusters this list contains two IPs otherwise only one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressIPs")]
     pub ingress_i_ps: Option<Vec<String>>,
+    /// loadBalancer defines how the load balancer used by the cluster is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<InfrastructureStatusPlatformStatusVsphereLoadBalancer>,
     /// machineNetworks are IP networks used to connect all the OpenShift cluster nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNetworks")]
     pub machine_networks: Option<Vec<String>>,
     /// nodeDNSIP is the IP address for the internal DNS used by the nodes. Unlike the one managed by the DNS operator, `NodeDNSIP` provides name resolution for the nodes themselves. There is no DNS-as-a-service for vSphere deployments. In order to minimize necessary changes to the datacenter DNS, a DNS service is hosted as a static pod to serve those hostnames to the nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDNSIP")]
     pub node_dnsip: Option<String>,
+}
+
+/// loadBalancer defines how the load balancer used by the cluster is configured.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct InfrastructureStatusPlatformStatusVsphereLoadBalancer {
+    /// type defines the type of load balancer used by the cluster on VSphere platform which can be a user-managed or openshift-managed load balancer that is to be used for the OpenShift API and Ingress endpoints. When set to OpenShiftManagedDefault the static pods in charge of API and Ingress traffic load-balancing defined in the machine config operator will be deployed. When set to UserManaged these static pods will not be deployed and it is expected that the load balancer is configured out of band by the deployer. When omitted, this means no opinion and the platform is left to choose a reasonable default. The default value is OpenShiftManagedDefault.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<InfrastructureStatusPlatformStatusVsphereLoadBalancerType>,
+}
+
+/// loadBalancer defines how the load balancer used by the cluster is configured.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InfrastructureStatusPlatformStatusVsphereLoadBalancerType {
+    OpenShiftManagedDefault,
+    UserManaged,
 }
 

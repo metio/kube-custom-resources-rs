@@ -143,6 +143,9 @@ spec:
                 extendedMetrics:
                   description: "ExtendedMetrics enables additional information on Prometheus metrics; some labels will be used with specific information that will provide more in-depth details about APIcast."
                   type: "boolean"
+                hpa:
+                  description: "Enables/disables HPA"
+                  type: "boolean"
                 httpProxy:
                   description: "HTTPProxy specifies a HTTP(S) Proxy to be used for connecting to HTTP services. Authentication is not supported. Format is <scheme>://<host>:<port>"
                   type: "string"

@@ -31,7 +31,10 @@ pub struct DatabaseClusterSpec {
     /// Paused is a flag to stop the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// Proxy is the proxy specification. If not set, an appropriate proxy specification will be applied for the given engine. A common use case for setting this field is to control the external access to the database cluster.
+    /// Proxy is the proxy specification. If not set, an appropriate
+    /// proxy specification will be applied for the given engine. A
+    /// common use case for setting this field is to control the
+    /// external access to the database cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<DatabaseClusterProxy>,
 }
@@ -65,7 +68,8 @@ pub struct DatabaseClusterBackupPitr {
 /// BackupSchedule is the backup schedule configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseClusterBackupSchedules {
-    /// BackupStorageName is the name of the BackupStorage CR that defines the storage location
+    /// BackupStorageName is the name of the BackupStorage CR that defines the
+    /// storage location
     #[serde(rename = "backupStorageName")]
     pub backup_storage_name: String,
     /// Enabled is a flag to enable the schedule
@@ -132,7 +136,8 @@ pub struct DatabaseClusterEngine {
     /// Replicas is the number of engine replicas
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources are the resource limits for each engine replica. If not set, resource limits are not imposed
+    /// Resources are the resource limits for each engine replica.
+    /// If not set, resource limits are not imposed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DatabaseClusterEngineResources>,
     /// Storage is the engine storage configuration
@@ -148,7 +153,8 @@ pub struct DatabaseClusterEngine {
     pub version: Option<String>,
 }
 
-/// Resources are the resource limits for each engine replica. If not set, resource limits are not imposed
+/// Resources are the resource limits for each engine replica.
+/// If not set, resource limits are not imposed
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseClusterEngineResources {
     /// CPU is the CPU resource requirements
@@ -194,15 +200,25 @@ pub struct DatabaseClusterMonitoring {
 /// Resources defines resource limitations for the monitoring.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseClusterMonitoringResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<DatabaseClusterMonitoringResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -210,11 +226,16 @@ pub struct DatabaseClusterMonitoringResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseClusterMonitoringResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// Proxy is the proxy specification. If not set, an appropriate proxy specification will be applied for the given engine. A common use case for setting this field is to control the external access to the database cluster.
+/// Proxy is the proxy specification. If not set, an appropriate
+/// proxy specification will be applied for the given engine. A
+/// common use case for setting this field is to control the
+/// external access to the database cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseClusterProxy {
     /// Config is the proxy configuration
@@ -226,7 +247,8 @@ pub struct DatabaseClusterProxy {
     /// Replicas is the number of proxy replicas
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources are the resource limits for each proxy replica. If not set, resource limits are not imposed
+    /// Resources are the resource limits for each proxy replica.
+    /// If not set, resource limits are not imposed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DatabaseClusterProxyResources>,
     /// Type is the proxy type
@@ -237,7 +259,8 @@ pub struct DatabaseClusterProxy {
 /// Expose is the proxy expose configuration
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseClusterProxyExpose {
-    /// IPSourceRanges is the list of IP source ranges (CIDR notation) to allow access from. If not set, there is no limitations
+    /// IPSourceRanges is the list of IP source ranges (CIDR notation)
+    /// to allow access from. If not set, there is no limitations
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipSourceRanges")]
     pub ip_source_ranges: Option<Vec<String>>,
     /// Type is the expose type, can be internal or external
@@ -254,7 +277,8 @@ pub enum DatabaseClusterProxyExposeType {
     External,
 }
 
-/// Resources are the resource limits for each proxy replica. If not set, resource limits are not imposed
+/// Resources are the resource limits for each proxy replica.
+/// If not set, resource limits are not imposed
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DatabaseClusterProxyResources {
     /// CPU is the CPU resource requirements
@@ -265,7 +289,10 @@ pub struct DatabaseClusterProxyResources {
     pub memory: Option<IntOrString>,
 }
 
-/// Proxy is the proxy specification. If not set, an appropriate proxy specification will be applied for the given engine. A common use case for setting this field is to control the external access to the database cluster.
+/// Proxy is the proxy specification. If not set, an appropriate
+/// proxy specification will be applied for the given engine. A
+/// common use case for setting this field is to control the
+/// external access to the database cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum DatabaseClusterProxyType {
     #[serde(rename = "mongos")]

@@ -166,6 +166,9 @@ pub struct ThanosRulerSpec {
     /// Volumes allows configuration of additional volumes on the output StatefulSet definition. Volumes specified will be appended to other volumes that are generated as a result of StorageSpec objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ThanosRulerVolumes>>,
+    /// Defines the configuration of the ThanosRuler web server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub web: Option<ThanosRulerWeb>,
 }
 
 /// Argument as part of the AdditionalArgs list.
@@ -4101,6 +4104,183 @@ pub struct ThanosRulerVolumesVsphereVolume {
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+/// Defines the configuration of the ThanosRuler web server.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWeb {
+    /// Defines HTTP parameters for web server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
+    pub http_config: Option<ThanosRulerWebHttpConfig>,
+    /// Defines the TLS parameters for HTTPS.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ThanosRulerWebTlsConfig>,
+}
+
+/// Defines HTTP parameters for web server.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebHttpConfig {
+    /// List of headers that can be added to HTTP responses.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headers: Option<ThanosRulerWebHttpConfigHeaders>,
+    /// Enable HTTP/2 support. Note that HTTP/2 is only supported with TLS. When TLSConfig is not configured, HTTP/2 will be disabled. Whenever the value of the field changes, a rolling update will be triggered.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http2: Option<bool>,
+}
+
+/// List of headers that can be added to HTTP responses.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebHttpConfigHeaders {
+    /// Set the Content-Security-Policy header to HTTP responses. Unset if blank.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentSecurityPolicy")]
+    pub content_security_policy: Option<String>,
+    /// Set the Strict-Transport-Security header to HTTP responses. Unset if blank. Please make sure that you use this with care as this header might force browsers to load Prometheus and the other applications hosted on the same domain and subdomains over HTTPS. https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "strictTransportSecurity")]
+    pub strict_transport_security: Option<String>,
+    /// Set the X-Content-Type-Options header to HTTP responses. Unset if blank. Accepted value is nosniff. https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xContentTypeOptions")]
+    pub x_content_type_options: Option<ThanosRulerWebHttpConfigHeadersXContentTypeOptions>,
+    /// Set the X-Frame-Options header to HTTP responses. Unset if blank. Accepted values are deny and sameorigin. https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xFrameOptions")]
+    pub x_frame_options: Option<ThanosRulerWebHttpConfigHeadersXFrameOptions>,
+    /// Set the X-XSS-Protection header to all responses. Unset if blank. https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xXSSProtection")]
+    pub x_xss_protection: Option<String>,
+}
+
+/// List of headers that can be added to HTTP responses.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerWebHttpConfigHeadersXContentTypeOptions {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    NoSniff,
+}
+
+/// List of headers that can be added to HTTP responses.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerWebHttpConfigHeadersXFrameOptions {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Deny,
+    SameOrigin,
+}
+
+/// Defines the TLS parameters for HTTPS.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebTlsConfig {
+    /// Contains the TLS certificate for the server.
+    pub cert: ThanosRulerWebTlsConfigCert,
+    /// List of supported cipher suites for TLS versions up to TLS 1.2. If empty, Go default cipher suites are used. Available cipher suites are documented in the go documentation: https://golang.org/pkg/crypto/tls/#pkg-constants
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
+    pub cipher_suites: Option<Vec<String>>,
+    /// Server policy for client authentication. Maps to ClientAuth Policies. For more detail on clientAuth options: https://golang.org/pkg/crypto/tls/#ClientAuthType
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuthType")]
+    pub client_auth_type: Option<String>,
+    /// Contains the CA certificate for client certificate authentication to the server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_ca: Option<ThanosRulerWebTlsConfigClientCa>,
+    /// Elliptic curves that will be used in an ECDHE handshake, in preference order. Available curves are documented in the go documentation: https://golang.org/pkg/crypto/tls/#CurveID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "curvePreferences")]
+    pub curve_preferences: Option<Vec<String>>,
+    /// Secret containing the TLS key for the server.
+    #[serde(rename = "keySecret")]
+    pub key_secret: ThanosRulerWebTlsConfigKeySecret,
+    /// Maximum TLS version that is acceptable. Defaults to TLS13.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<String>,
+    /// Minimum TLS version that is acceptable. Defaults to TLS12.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<String>,
+    /// Controls whether the server selects the client's most preferred cipher suite, or the server's most preferred cipher suite. If true then the server's preference, as expressed in the order of elements in cipherSuites, is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferServerCipherSuites")]
+    pub prefer_server_cipher_suites: Option<bool>,
+}
+
+/// Contains the TLS certificate for the server.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ThanosRulerWebTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ThanosRulerWebTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Contains the CA certificate for client certificate authentication to the server.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebTlsConfigClientCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ThanosRulerWebTlsConfigClientCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ThanosRulerWebTlsConfigClientCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebTlsConfigClientCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebTlsConfigClientCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the TLS key for the server.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerWebTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Most recent observed status of the ThanosRuler cluster. Read-only. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status

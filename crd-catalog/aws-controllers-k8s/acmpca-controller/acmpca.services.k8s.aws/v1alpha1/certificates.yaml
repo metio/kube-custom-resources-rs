@@ -255,7 +255,7 @@ spec:
                 validity:
                   description: "Information describing the end of the validity period of the certificate.\nThis parameter sets the “Not After” date for the certificate.\n\n\nCertificate validity is the period of time during which a certificate is\nvalid. Validity can be expressed as an explicit date and time when the certificate\nexpires, or as a span of time after issuance, stated in days, months, or\nyears. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)\nin RFC 5280.\n\n\nThis value is unaffected when ValidityNotBefore is also specified. For example,\nif Validity is set to 20 days in the future, the certificate will expire\n20 days from issuance time regardless of the ValidityNotBefore value.\n\n\nThe end of the validity period configured on a certificate must not exceed\nthe limit set on its parents in the CA hierarchy."
                   properties:
-                    type_:
+                    type:
                       type: "string"
                     value:
                       format: "int64"
@@ -264,7 +264,7 @@ spec:
                 validityNotBefore:
                   description: "Information describing the start of the validity period of the certificate.\nThis parameter sets the “Not Before\" date for the certificate.\n\n\nBy default, when issuing a certificate, Amazon Web Services Private CA sets\nthe \"Not Before\" date to the issuance time minus 60 minutes. This compensates\nfor clock inconsistencies across computer systems. The ValidityNotBefore\nparameter can be used to customize the “Not Before” value.\n\n\nUnlike the Validity parameter, the ValidityNotBefore parameter is optional.\n\n\nThe ValidityNotBefore value is expressed as an explicit date and time, using\nthe Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html)\nin this API reference and Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)\nin RFC 5280."
                   properties:
-                    type_:
+                    type:
                       type: "string"
                     value:
                       format: "int64"

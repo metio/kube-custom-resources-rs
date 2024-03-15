@@ -19,10 +19,20 @@ pub struct HelmRepositorySpec {
     pub access_from: Option<HelmRepositoryAccessFrom>,
     /// The interval at which to check the upstream for updates.
     pub interval: String,
-    /// PassCredentials allows the credentials from the SecretRef to be passed on to a host that does not match the host as defined in URL. This may be required if the host of the advertised chart URLs in the index differ from the defined URL. Enabling this should be done with caution, as it can potentially result in credentials getting stolen in a MITM-attack.
+    /// PassCredentials allows the credentials from the SecretRef to be passed on to
+    /// a host that does not match the host as defined in URL.
+    /// This may be required if the host of the advertised chart URLs in the index
+    /// differ from the defined URL.
+    /// Enabling this should be done with caution, as it can potentially result in
+    /// credentials getting stolen in a MITM-attack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passCredentials")]
     pub pass_credentials: Option<bool>,
-    /// The name of the secret containing authentication credentials for the Helm repository. For HTTP/S basic auth the secret must contain username and password fields. For TLS the secret must contain a certFile and keyFile, and/or caFile fields.
+    /// The name of the secret containing authentication credentials for the Helm
+    /// repository.
+    /// For HTTP/S basic auth the secret must contain username and
+    /// password fields.
+    /// For TLS the secret must contain a certFile and keyFile, and/or
+    /// caFile fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<HelmRepositorySecretRef>,
     /// This flag tells the controller to suspend the reconciliation of this source.
@@ -38,20 +48,29 @@ pub struct HelmRepositorySpec {
 /// AccessFrom defines an Access Control List for allowing cross-namespace references to this object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmRepositoryAccessFrom {
-    /// NamespaceSelectors is the list of namespace selectors to which this ACL applies. Items in this list are evaluated using a logical OR operation.
+    /// NamespaceSelectors is the list of namespace selectors to which this ACL applies.
+    /// Items in this list are evaluated using a logical OR operation.
     #[serde(rename = "namespaceSelectors")]
     pub namespace_selectors: Vec<HelmRepositoryAccessFromNamespaceSelectors>,
 }
 
-/// NamespaceSelector selects the namespaces to which this ACL applies. An empty map of MatchLabels matches all namespaces in a cluster.
+/// NamespaceSelector selects the namespaces to which this ACL applies.
+/// An empty map of MatchLabels matches all namespaces in a cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmRepositoryAccessFromNamespaceSelectors {
-    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// The name of the secret containing authentication credentials for the Helm repository. For HTTP/S basic auth the secret must contain username and password fields. For TLS the secret must contain a certFile and keyFile, and/or caFile fields.
+/// The name of the secret containing authentication credentials for the Helm
+/// repository.
+/// For HTTP/S basic auth the secret must contain username and
+/// password fields.
+/// For TLS the secret must contain a certFile and keyFile, and/or
+/// caFile fields.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmRepositorySecretRef {
     /// Name of the referent.
@@ -67,7 +86,9 @@ pub struct HelmRepositoryStatus {
     /// Conditions holds the conditions for the HelmRepository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
+    /// LastHandledReconcileAt holds the value of the most recent
+    /// reconcile request value, so a change of the annotation value
+    /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation.
@@ -84,12 +105,15 @@ pub struct HelmRepositoryStatusArtifact {
     /// Checksum is the SHA256 checksum of the artifact.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    /// LastUpdateTime is the timestamp corresponding to the last update of this artifact.
+    /// LastUpdateTime is the timestamp corresponding to the last update of this
+    /// artifact.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// Path is the relative file path of this artifact.
     pub path: String,
-    /// Revision is a human readable identifier traceable in the origin source system. It can be a Git commit SHA, Git tag, a Helm index timestamp, a Helm chart version, etc.
+    /// Revision is a human readable identifier traceable in the origin source
+    /// system. It can be a Git commit SHA, Git tag, a Helm index timestamp, a Helm
+    /// chart version, etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
     /// URL is the HTTP address of this artifact.

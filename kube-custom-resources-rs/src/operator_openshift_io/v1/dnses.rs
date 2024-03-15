@@ -291,7 +291,7 @@ pub enum DNSUpstreamResolversTransportConfigTransport {
 }
 
 /// Upstream can either be of type SystemResolvConf, or of type Network. 
-///  * For an Upstream of type SystemResolvConf, no further fields are necessary: The upstream will be configured to use /etc/resolv.conf. * For an Upstream of type Network, a NetworkResolver field needs to be defined with an IP address or IP:port if the upstream listens on a port other than 53.
+///  - For an Upstream of type SystemResolvConf, no further fields are necessary: The upstream will be configured to use /etc/resolv.conf. - For an Upstream of type Network, a NetworkResolver field needs to be defined with an IP address or IP:port if the upstream listens on a port other than 53.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DNSUpstreamResolversUpstreams {
     /// Address must be defined when Type is set to Network. It will be ignored otherwise. It must be a valid ipv4 or ipv6 address.
@@ -307,7 +307,7 @@ pub struct DNSUpstreamResolversUpstreams {
 }
 
 /// Upstream can either be of type SystemResolvConf, or of type Network. 
-///  * For an Upstream of type SystemResolvConf, no further fields are necessary: The upstream will be configured to use /etc/resolv.conf. * For an Upstream of type Network, a NetworkResolver field needs to be defined with an IP address or IP:port if the upstream listens on a port other than 53.
+///  - For an Upstream of type SystemResolvConf, no further fields are necessary: The upstream will be configured to use /etc/resolv.conf. - For an Upstream of type Network, a NetworkResolver field needs to be defined with an IP address or IP:port if the upstream listens on a port other than 53.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum DNSUpstreamResolversUpstreamsType {
     SystemResolvConf,

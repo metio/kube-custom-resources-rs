@@ -49,7 +49,7 @@ pub struct FlowCollectorAgent {
     /// `ipfix` [deprecated (*)] - describes the settings related to the IPFIX-based flow reporter when `spec.agent.type` is set to `IPFIX`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipfix: Option<FlowCollectorAgentIpfix>,
-    /// `type` selects the flows tracing agent. Possible values are:<br> - `EBPF` (default) to use NetObserv eBPF agent.<br> - `IPFIX` [deprecated (*)] - to use the legacy IPFIX collector.<br> `EBPF` is recommended as it offers better performances and should work regardless of the CNI installed on the cluster. `IPFIX` works with OVN-Kubernetes CNI (other CNIs could work if they support exporting IPFIX, but they would require manual configuration).
+    /// `type` [deprecated (*)] selects the flows tracing agent. The only possible value is `EBPF` (default), to use NetObserv eBPF agent.<br> Previously, using an IPFIX collector was allowed, but was deprecated and it is now removed.<br> Setting `IPFIX` is ignored and still use the eBPF Agent. Since there is only a single option here, this field will be remove in a future API version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorAgentType>,
 }
@@ -1342,7 +1342,7 @@ pub struct FlowCollectorProcessor {
     /// `debug` allows setting some aspects of the internal configuration of the flow processor. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<FlowCollectorProcessorDebug>,
-    /// `dropUnusedFields` allows, when set to `true`, to drop fields that are known to be unused by OVS, to save storage space.
+    /// `dropUnusedFields` [deprecated (*)] this setting is not used anymore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dropUnusedFields")]
     pub drop_unused_fields: Option<bool>,
     /// `enableKubeProbes` is a flag to enable or disable Kubernetes liveness and readiness probes

@@ -14,7 +14,8 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "AlertStatus")]
 #[kube(schema = "disabled")]
 pub struct AlertSpec {
-    /// Filter events based on severity, defaults to ('info'). If set to 'info' no events will be filtered.
+    /// Filter events based on severity, defaults to ('info').
+    /// If set to 'info' no events will be filtered.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSeverity")]
     pub event_severity: Option<AlertEventSeverity>,
     /// Filter events based on the involved objects.
@@ -29,7 +30,8 @@ pub struct AlertSpec {
     /// Short description of the impact and affected cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub summary: Option<String>,
-    /// This flag tells the controller to suspend subsequent events dispatching. Defaults to false.
+    /// This flag tells the controller to suspend subsequent events dispatching.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
 }
@@ -43,7 +45,8 @@ pub enum AlertEventSeverity {
     Error,
 }
 
-/// CrossNamespaceObjectReference contains enough information to let you locate the typed referenced object at cluster level
+/// CrossNamespaceObjectReference contains enough information to let you locate the
+/// typed referenced object at cluster level
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertEventSources {
     /// API version of the referent
@@ -52,7 +55,9 @@ pub struct AlertEventSources {
     /// Kind of the referent
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<AlertEventSourcesKind>,
-    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
     /// Name of the referent
@@ -62,7 +67,8 @@ pub struct AlertEventSources {
     pub namespace: Option<String>,
 }
 
-/// CrossNamespaceObjectReference contains enough information to let you locate the typed referenced object at cluster level
+/// CrossNamespaceObjectReference contains enough information to let you locate the
+/// typed referenced object at cluster level
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlertEventSourcesKind {
     Bucket,

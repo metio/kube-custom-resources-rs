@@ -84,6 +84,9 @@ pub struct ConfigurationConfigItemDetailsConfigSpec {
     /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// An optional field defines which resources change trigger re-render config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
+    pub re_render_resource_types: Option<Vec<String>>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
     #[serde(rename = "templateRef")]
     pub template_ref: String,

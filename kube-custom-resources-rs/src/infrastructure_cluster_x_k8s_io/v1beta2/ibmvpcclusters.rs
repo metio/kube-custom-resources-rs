@@ -44,7 +44,7 @@ pub struct IBMVPCClusterControlPlaneEndpoint {
 /// ControlPlaneLoadBalancer is optional configuration for customizing control plane behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterControlPlaneLoadBalancer {
-    /// AdditionalListeners sets the additional listeners for the control plane load balancer. .
+    /// AdditionalListeners sets the additional listeners for the control plane load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
     pub additional_listeners: Option<Vec<IBMVPCClusterControlPlaneLoadBalancerAdditionalListeners>>,
     /// id of the loadbalancer

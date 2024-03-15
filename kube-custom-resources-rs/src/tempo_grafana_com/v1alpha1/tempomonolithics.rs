@@ -31,6 +31,9 @@ pub struct TempoMonolithicSpec {
     /// ManagementState defines whether this instance is managed by the operator or self-managed. Default: Managed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub management: Option<TempoMonolithicManagement>,
+    /// Multitenancy defines the multi-tenancy configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub multitenancy: Option<TempoMonolithicMultitenancy>,
     /// NodeSelector defines which labels are required by a node to schedule the pod onto it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -40,6 +43,9 @@ pub struct TempoMonolithicSpec {
     /// Resources defines the compute resource requirements of the Tempo container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TempoMonolithicResources>,
+    /// ServiceAccount defines the Service Account to use for all Tempo components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
     /// Storage defines the storage configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<TempoMonolithicStorage>,
@@ -601,7 +607,7 @@ pub struct TempoMonolithicJaegeruiRoute {
     /// Host defines the hostname of the Route object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Termination specifies the termination type. Default: edge.
+    /// Termination specifies the termination type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub termination: Option<TempoMonolithicJaegeruiRouteTermination>,
 }
@@ -624,6 +630,143 @@ pub enum TempoMonolithicJaegeruiRouteTermination {
 pub enum TempoMonolithicManagement {
     Managed,
     Unmanaged,
+}
+
+/// Multitenancy defines the multi-tenancy configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancy {
+    /// Authentication defines the tempo-gateway component authentication configuration spec per tenant.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<Vec<TempoMonolithicMultitenancyAuthentication>>,
+    /// Authorization defines the tempo-gateway component authorization configuration spec per tenant.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<TempoMonolithicMultitenancyAuthorization>,
+    /// Enabled defines if multi-tenancy is enabled.
+    pub enabled: bool,
+    /// Mode defines the multitenancy mode.
+    pub mode: TempoMonolithicMultitenancyMode,
+    /// Resources defines the compute resource requirements of the gateway container. The gateway performs authentication and authorization of incoming requests when multi-tenancy is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<TempoMonolithicMultitenancyResources>,
+}
+
+/// AuthenticationSpec defines the oidc configuration per tenant for tempo Gateway component.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyAuthentication {
+    /// OIDC defines the spec for the OIDC tenant's authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oidc: Option<TempoMonolithicMultitenancyAuthenticationOidc>,
+    /// TenantID defines a universally unique identifier of the tenant. Unlike the tenantName, which must be unique at a given time, the tenantId must be unique over the entire lifetime of the Tempo deployment. Tempo uses this ID to prefix objects in the object storage.
+    #[serde(rename = "tenantId")]
+    pub tenant_id: String,
+    /// TenantName defines a human readable, unique name of the tenant. The value of this field must be specified in the X-Scope-OrgID header and in the resources field of a ClusterRole to identify the tenant.
+    #[serde(rename = "tenantName")]
+    pub tenant_name: String,
+}
+
+/// OIDC defines the spec for the OIDC tenant's authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyAuthenticationOidc {
+    /// Group claim field from ID Token
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupClaim")]
+    pub group_claim: Option<String>,
+    /// IssuerURL defines the URL for issuer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerURL")]
+    pub issuer_url: Option<String>,
+    /// RedirectURL defines the URL for redirect.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURL")]
+    pub redirect_url: Option<String>,
+    /// Secret defines the spec for the clientID, clientSecret and issuerCAPath for tenant's authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<TempoMonolithicMultitenancyAuthenticationOidcSecret>,
+    /// User claim field from ID Token
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameClaim")]
+    pub username_claim: Option<String>,
+}
+
+/// Secret defines the spec for the clientID, clientSecret and issuerCAPath for tenant's authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyAuthenticationOidcSecret {
+    /// Name of a secret in the namespace configured for tenant secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Authorization defines the tempo-gateway component authorization configuration spec per tenant.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyAuthorization {
+    /// RoleBindings defines configuration to bind a set of roles to a set of subjects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleBindings")]
+    pub role_bindings: Option<Vec<TempoMonolithicMultitenancyAuthorizationRoleBindings>>,
+    /// Roles defines a set of permissions to interact with a tenant.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub roles: Option<Vec<TempoMonolithicMultitenancyAuthorizationRoles>>,
+}
+
+/// RoleBindingsSpec binds a set of roles to a set of subjects.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyAuthorizationRoleBindings {
+    pub name: String,
+    pub roles: Vec<String>,
+    pub subjects: Vec<TempoMonolithicMultitenancyAuthorizationRoleBindingsSubjects>,
+}
+
+/// Subject represents a subject that has been bound to a role.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyAuthorizationRoleBindingsSubjects {
+    /// SubjectKind is a kind of Tempo Gateway RBAC subject.
+    pub kind: TempoMonolithicMultitenancyAuthorizationRoleBindingsSubjectsKind,
+    pub name: String,
+}
+
+/// Subject represents a subject that has been bound to a role.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TempoMonolithicMultitenancyAuthorizationRoleBindingsSubjectsKind {
+    #[serde(rename = "user")]
+    User,
+    #[serde(rename = "group")]
+    Group,
+}
+
+/// RoleSpec describes a set of permissions to interact with a tenant.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyAuthorizationRoles {
+    pub name: String,
+    pub permissions: Vec<String>,
+    pub resources: Vec<String>,
+    pub tenants: Vec<String>,
+}
+
+/// Multitenancy defines the multi-tenancy configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TempoMonolithicMultitenancyMode {
+    #[serde(rename = "static")]
+    Static,
+    #[serde(rename = "openshift")]
+    Openshift,
+}
+
+/// Resources defines the compute resource requirements of the gateway container. The gateway performs authentication and authorization of incoming requests when multi-tenancy is enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<TempoMonolithicMultitenancyResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TempoMonolithicMultitenancyResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// Observability defines the observability configuration of the Tempo deployment.
@@ -747,7 +890,7 @@ pub struct TempoMonolithicStorageTraces {
     /// S3 defines the configuration for Amazon S3.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<TempoMonolithicStorageTracesS3>,
-    /// Size defines the size of the volume where traces are stored. For in-memory storage, this defines the size of the tmpfs volume. For persistent volume storage, this defines the size of the persistent volume. For object storage, this defines the size of the persistent volume containing the Write-Ahead Log (WAL) of Tempo. Default: 10Gi.
+    /// Size defines the size of the volume where traces are stored. For in-memory storage, this defines the size of the tmpfs volume. For persistent volume storage, this defines the size of the persistent volume. For object storage, this defines the size of the persistent volume containing the Write-Ahead Log (WAL) of Tempo. Default: 2Gi for memory, 10Gi for all other backends.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<IntOrString>,
 }

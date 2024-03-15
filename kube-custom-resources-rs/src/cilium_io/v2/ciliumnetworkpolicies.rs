@@ -23,6 +23,12 @@ pub struct CiliumNetworkPolicySpec {
     /// EgressDeny is a list of EgressDenyRule which are enforced at egress. Any rule inserted here will be denied regardless of the allowed egress rules in the 'egress' field. If omitted or empty, this rule does not apply at egress.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressDeny")]
     pub egress_deny: Option<Vec<CiliumNetworkPolicyEgressDeny>>,
+    /// EnableDefaultDeny determines whether this policy configures the subject endpoint(s) to have a default deny mode. If enabled, this causes all traffic not explicitly allowed by a network policy to be dropped. 
+    ///  If not specified, the default is true for each traffic direction that has rules, and false otherwise. For example, if a policy only has Ingress or IngressDeny rules, then the default for ingress is true and egress is false. 
+    ///  If multiple policies apply to an endpoint, that endpoint's default deny will be enabled if any policy requests it. 
+    ///  This is useful for creating broad-based network policies that will not cause endpoints to enter default-deny mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDefaultDeny")]
+    pub enable_default_deny: Option<CiliumNetworkPolicyEnableDefaultDeny>,
     /// EndpointSelector selects all endpoints which should be subject to this rule. EndpointSelector and NodeSelector cannot be both empty and are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSelector")]
     pub endpoint_selector: Option<CiliumNetworkPolicyEndpointSelector>,
@@ -193,7 +199,7 @@ pub struct CiliumNetworkPolicyEgressToFqdNs {
     pub match_pattern: Option<String>,
 }
 
-/// ToGroups structure to store all kinds of new integrations that needs a new derivative policy.
+/// Groups structure to store all kinds of new integrations that needs a new derivative policy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumNetworkPolicyEgressToGroups {
     /// AWSGroup is an structure that can be used to whitelisting information from AWS integration
@@ -721,7 +727,7 @@ pub enum CiliumNetworkPolicyEgressDenyToEndpointsMatchExpressionsOperator {
     DoesNotExist,
 }
 
-/// ToGroups structure to store all kinds of new integrations that needs a new derivative policy.
+/// Groups structure to store all kinds of new integrations that needs a new derivative policy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumNetworkPolicyEgressDenyToGroups {
     /// AWSGroup is an structure that can be used to whitelisting information from AWS integration
@@ -900,6 +906,20 @@ pub enum CiliumNetworkPolicyEgressDenyToServicesK8sServiceSelectorSelectorMatchE
     DoesNotExist,
 }
 
+/// EnableDefaultDeny determines whether this policy configures the subject endpoint(s) to have a default deny mode. If enabled, this causes all traffic not explicitly allowed by a network policy to be dropped. 
+///  If not specified, the default is true for each traffic direction that has rules, and false otherwise. For example, if a policy only has Ingress or IngressDeny rules, then the default for ingress is true and egress is false. 
+///  If multiple policies apply to an endpoint, that endpoint's default deny will be enabled if any policy requests it. 
+///  This is useful for creating broad-based network policies that will not cause endpoints to enter default-deny mode.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicyEnableDefaultDeny {
+    /// Whether or not the endpoint should have a default-deny rule applied to egress traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub egress: Option<bool>,
+    /// Whether or not the endpoint should have a default-deny rule applied to ingress traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ingress: Option<bool>,
+}
+
 /// EndpointSelector selects all endpoints which should be subject to this rule. EndpointSelector and NodeSelector cannot be both empty and are mutually exclusive.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumNetworkPolicyEndpointSelector {
@@ -956,6 +976,10 @@ pub struct CiliumNetworkPolicyIngress {
     /// FromEntities is a list of special entities which the endpoint subject to the rule is allowed to receive connections from. Supported entities are `world`, `cluster` and `host`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
+    /// FromGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: 
+    ///  Example: FromGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromGroups")]
+    pub from_groups: Option<Vec<CiliumNetworkPolicyIngressFromGroups>>,
     /// FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
     pub from_nodes: Option<Vec<CiliumNetworkPolicyIngressFromNodes>>,
@@ -1035,6 +1059,27 @@ pub enum CiliumNetworkPolicyIngressFromEndpointsMatchExpressionsOperator {
     NotIn,
     Exists,
     DoesNotExist,
+}
+
+/// Groups structure to store all kinds of new integrations that needs a new derivative policy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicyIngressFromGroups {
+    /// AWSGroup is an structure that can be used to whitelisting information from AWS integration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub aws: Option<CiliumNetworkPolicyIngressFromGroupsAws>,
+}
+
+/// AWSGroup is an structure that can be used to whitelisting information from AWS integration
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicyIngressFromGroupsAws {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
+    pub security_groups_ids: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
+    pub security_groups_names: Option<Vec<String>>,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -1394,7 +1439,7 @@ pub struct CiliumNetworkPolicyIngressToPortsTerminatingTlsSecret {
 /// IngressDenyRule contains all rule types which can be applied at ingress, i.e. network traffic that originates outside of the endpoint and is entering the endpoint selected by the endpointSelector. 
 ///  - All members of this structure are optional. If omitted or empty, the member will have no effect on the rule. 
 ///  - If multiple members are set, all of them need to match in order for the rule to take effect. The exception to this rule is FromRequires field; the effects of any Requires field in any rule will apply to all other rules as well. 
-///  - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually exclusive. Only one of these members may be present within an individual rule.
+///  - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually exclusive. Only one of these members may be present within an individual rule.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumNetworkPolicyIngressDeny {
     /// FromCIDR is a list of IP blocks which the endpoint subject to the rule is allowed to receive connections from. Only connections which do *not* originate from the cluster or from the local host are subject to CIDR rules. In order to allow in-cluster connectivity, use the FromEndpoints field.  This will match on the source IP address of incoming connections. Adding  a prefix into FromCIDR or into FromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are allowed between FromCIDR and FromCIDRSet. 
@@ -1412,6 +1457,10 @@ pub struct CiliumNetworkPolicyIngressDeny {
     /// FromEntities is a list of special entities which the endpoint subject to the rule is allowed to receive connections from. Supported entities are `world`, `cluster` and `host`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
+    /// FromGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: 
+    ///  Example: FromGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromGroups")]
+    pub from_groups: Option<Vec<CiliumNetworkPolicyIngressDenyFromGroups>>,
     /// FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
     pub from_nodes: Option<Vec<CiliumNetworkPolicyIngressDenyFromNodes>>,
@@ -1473,6 +1522,27 @@ pub enum CiliumNetworkPolicyIngressDenyFromEndpointsMatchExpressionsOperator {
     NotIn,
     Exists,
     DoesNotExist,
+}
+
+/// Groups structure to store all kinds of new integrations that needs a new derivative policy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicyIngressDenyFromGroups {
+    /// AWSGroup is an structure that can be used to whitelisting information from AWS integration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub aws: Option<CiliumNetworkPolicyIngressDenyFromGroupsAws>,
+}
+
+/// AWSGroup is an structure that can be used to whitelisting information from AWS integration
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicyIngressDenyFromGroupsAws {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
+    pub security_groups_ids: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
+    pub security_groups_names: Option<Vec<String>>,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -1655,6 +1725,12 @@ pub struct CiliumNetworkPolicys {
     /// EgressDeny is a list of EgressDenyRule which are enforced at egress. Any rule inserted here will be denied regardless of the allowed egress rules in the 'egress' field. If omitted or empty, this rule does not apply at egress.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressDeny")]
     pub egress_deny: Option<Vec<CiliumNetworkPolicysEgressDeny>>,
+    /// EnableDefaultDeny determines whether this policy configures the subject endpoint(s) to have a default deny mode. If enabled, this causes all traffic not explicitly allowed by a network policy to be dropped. 
+    ///  If not specified, the default is true for each traffic direction that has rules, and false otherwise. For example, if a policy only has Ingress or IngressDeny rules, then the default for ingress is true and egress is false. 
+    ///  If multiple policies apply to an endpoint, that endpoint's default deny will be enabled if any policy requests it. 
+    ///  This is useful for creating broad-based network policies that will not cause endpoints to enter default-deny mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDefaultDeny")]
+    pub enable_default_deny: Option<CiliumNetworkPolicysEnableDefaultDeny>,
     /// EndpointSelector selects all endpoints which should be subject to this rule. EndpointSelector and NodeSelector cannot be both empty and are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSelector")]
     pub endpoint_selector: Option<CiliumNetworkPolicysEndpointSelector>,
@@ -1825,7 +1901,7 @@ pub struct CiliumNetworkPolicysEgressToFqdNs {
     pub match_pattern: Option<String>,
 }
 
-/// ToGroups structure to store all kinds of new integrations that needs a new derivative policy.
+/// Groups structure to store all kinds of new integrations that needs a new derivative policy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumNetworkPolicysEgressToGroups {
     /// AWSGroup is an structure that can be used to whitelisting information from AWS integration
@@ -2353,7 +2429,7 @@ pub enum CiliumNetworkPolicysEgressDenyToEndpointsMatchExpressionsOperator {
     DoesNotExist,
 }
 
-/// ToGroups structure to store all kinds of new integrations that needs a new derivative policy.
+/// Groups structure to store all kinds of new integrations that needs a new derivative policy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumNetworkPolicysEgressDenyToGroups {
     /// AWSGroup is an structure that can be used to whitelisting information from AWS integration
@@ -2532,6 +2608,20 @@ pub enum CiliumNetworkPolicysEgressDenyToServicesK8sServiceSelectorSelectorMatch
     DoesNotExist,
 }
 
+/// EnableDefaultDeny determines whether this policy configures the subject endpoint(s) to have a default deny mode. If enabled, this causes all traffic not explicitly allowed by a network policy to be dropped. 
+///  If not specified, the default is true for each traffic direction that has rules, and false otherwise. For example, if a policy only has Ingress or IngressDeny rules, then the default for ingress is true and egress is false. 
+///  If multiple policies apply to an endpoint, that endpoint's default deny will be enabled if any policy requests it. 
+///  This is useful for creating broad-based network policies that will not cause endpoints to enter default-deny mode.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicysEnableDefaultDeny {
+    /// Whether or not the endpoint should have a default-deny rule applied to egress traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub egress: Option<bool>,
+    /// Whether or not the endpoint should have a default-deny rule applied to ingress traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ingress: Option<bool>,
+}
+
 /// EndpointSelector selects all endpoints which should be subject to this rule. EndpointSelector and NodeSelector cannot be both empty and are mutually exclusive.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumNetworkPolicysEndpointSelector {
@@ -2588,6 +2678,10 @@ pub struct CiliumNetworkPolicysIngress {
     /// FromEntities is a list of special entities which the endpoint subject to the rule is allowed to receive connections from. Supported entities are `world`, `cluster` and `host`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
+    /// FromGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: 
+    ///  Example: FromGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromGroups")]
+    pub from_groups: Option<Vec<CiliumNetworkPolicysIngressFromGroups>>,
     /// FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
     pub from_nodes: Option<Vec<CiliumNetworkPolicysIngressFromNodes>>,
@@ -2667,6 +2761,27 @@ pub enum CiliumNetworkPolicysIngressFromEndpointsMatchExpressionsOperator {
     NotIn,
     Exists,
     DoesNotExist,
+}
+
+/// Groups structure to store all kinds of new integrations that needs a new derivative policy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicysIngressFromGroups {
+    /// AWSGroup is an structure that can be used to whitelisting information from AWS integration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub aws: Option<CiliumNetworkPolicysIngressFromGroupsAws>,
+}
+
+/// AWSGroup is an structure that can be used to whitelisting information from AWS integration
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicysIngressFromGroupsAws {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
+    pub security_groups_ids: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
+    pub security_groups_names: Option<Vec<String>>,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -3026,7 +3141,7 @@ pub struct CiliumNetworkPolicysIngressToPortsTerminatingTlsSecret {
 /// IngressDenyRule contains all rule types which can be applied at ingress, i.e. network traffic that originates outside of the endpoint and is entering the endpoint selected by the endpointSelector. 
 ///  - All members of this structure are optional. If omitted or empty, the member will have no effect on the rule. 
 ///  - If multiple members are set, all of them need to match in order for the rule to take effect. The exception to this rule is FromRequires field; the effects of any Requires field in any rule will apply to all other rules as well. 
-///  - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually exclusive. Only one of these members may be present within an individual rule.
+///  - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually exclusive. Only one of these members may be present within an individual rule.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumNetworkPolicysIngressDeny {
     /// FromCIDR is a list of IP blocks which the endpoint subject to the rule is allowed to receive connections from. Only connections which do *not* originate from the cluster or from the local host are subject to CIDR rules. In order to allow in-cluster connectivity, use the FromEndpoints field.  This will match on the source IP address of incoming connections. Adding  a prefix into FromCIDR or into FromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are allowed between FromCIDR and FromCIDRSet. 
@@ -3044,6 +3159,10 @@ pub struct CiliumNetworkPolicysIngressDeny {
     /// FromEntities is a list of special entities which the endpoint subject to the rule is allowed to receive connections from. Supported entities are `world`, `cluster` and `host`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
+    /// FromGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: 
+    ///  Example: FromGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromGroups")]
+    pub from_groups: Option<Vec<CiliumNetworkPolicysIngressDenyFromGroups>>,
     /// FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
     pub from_nodes: Option<Vec<CiliumNetworkPolicysIngressDenyFromNodes>>,
@@ -3105,6 +3224,27 @@ pub enum CiliumNetworkPolicysIngressDenyFromEndpointsMatchExpressionsOperator {
     NotIn,
     Exists,
     DoesNotExist,
+}
+
+/// Groups structure to store all kinds of new integrations that needs a new derivative policy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicysIngressDenyFromGroups {
+    /// AWSGroup is an structure that can be used to whitelisting information from AWS integration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub aws: Option<CiliumNetworkPolicysIngressDenyFromGroupsAws>,
+}
+
+/// AWSGroup is an structure that can be used to whitelisting information from AWS integration
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumNetworkPolicysIngressDenyFromGroupsAws {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
+    pub security_groups_ids: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
+    pub security_groups_names: Option<Vec<String>>,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.

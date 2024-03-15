@@ -70,6 +70,9 @@ pub struct UpgradeConfigStatusHistory {
     pub conditions: Option<Vec<Condition>>,
     /// This describe the status of the upgrade process
     pub phase: UpgradeConfigStatusHistoryPhase,
+    /// Version preceding this upgrade
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "precedingVersion")]
+    pub preceding_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
     /// Desired version of this upgrade

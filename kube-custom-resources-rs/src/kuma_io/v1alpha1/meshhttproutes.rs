@@ -113,6 +113,9 @@ pub struct MeshHTTPRouteToRulesDefaultBackendRefs {
     /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Port is only supported when this ref refers to a real MeshService object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
@@ -186,7 +189,7 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestHeaderModifierSet {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirror {
-    /// TargetRef defines structure that allows attaching policy to various objects
+    /// TODO forbid weight
     #[serde(rename = "backendRef")]
     pub backend_ref: MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef,
     /// Percentage of requests to mirror. If not specified, all requests
@@ -195,7 +198,7 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirror {
     pub percentage: Option<IntOrString>,
 }
 
-/// TargetRef defines structure that allows attaching policy to various objects
+/// TODO forbid weight
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// Kind of the referenced resource
@@ -208,6 +211,9 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Port is only supported when this ref refers to a real MeshService object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
@@ -216,9 +222,11 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// `MeshSubset` and `MeshServiceSubset`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub weight: Option<i64>,
 }
 
-/// TargetRef defines structure that allows attaching policy to various objects
+/// TODO forbid weight
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRefKind {
     Mesh,

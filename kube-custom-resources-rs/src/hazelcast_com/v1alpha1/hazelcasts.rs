@@ -29,6 +29,9 @@ pub struct HazelcastSpec {
     /// Number of Hazelcast members in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSize")]
     pub cluster_size: Option<i32>,
+    /// CPSubsystem is the configuration of the Hazelcast CP Subsystem.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpSubsystem")]
+    pub cp_subsystem: Option<HazelcastCpSubsystem>,
     /// Name of the ConfigMap with the Hazelcast custom configuration. This configuration from the ConfigMap might be overridden by the Hazelcast CR configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customConfigCmName")]
     pub custom_config_cm_name: Option<String>,
@@ -65,6 +68,9 @@ pub struct HazelcastSpec {
     /// Name of the secret with Hazelcast Enterprise License Key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "licenseKeySecretName")]
     pub license_key_secret_name: Option<String>,
+    /// Hazelcast LocalDevice configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localDevices")]
+    pub local_devices: Option<Vec<HazelcastLocalDevices>>,
     /// Logging level for Hazelcast members
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingLevel")]
     pub logging_level: Option<HazelcastLoggingLevel>,
@@ -167,13 +173,13 @@ pub struct HazelcastAgent {
 pub struct HazelcastAgentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
     ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable.
+    ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<HazelcastAgentResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -183,6 +189,49 @@ pub struct HazelcastAgentResources {
 pub struct HazelcastAgentResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
+}
+
+/// CPSubsystem is the configuration of the Hazelcast CP Subsystem.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HazelcastCpSubsystem {
+    /// DataLoadTimeoutSeconds is the timeout duration in seconds for CP members to restore their persisted data from disk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLoadTimeoutSeconds")]
+    pub data_load_timeout_seconds: Option<i32>,
+    /// FailOnIndeterminateOperationState indicated whether CP Subsystem operations use at-least-once and at-most-once execution guarantees.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnIndeterminateOperationState")]
+    pub fail_on_indeterminate_operation_state: Option<bool>,
+    /// GroupSize is the number of CP members to participate in each CP group. Allowed values are 3, 5, and 7.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupSize")]
+    pub group_size: Option<i32>,
+    /// MemberCount is the number of CP members to initialize the CP Subsystem.
+    #[serde(rename = "memberCount")]
+    pub member_count: i32,
+    /// MissingCpMemberAutoRemovalSeconds is the duration in seconds to wait before automatically removing a missing CP member from the CP Subsystem.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "missingCpMemberAutoRemovalSeconds")]
+    pub missing_cp_member_auto_removal_seconds: Option<i32>,
+    /// PVC is the configuration of PersistenceVolumeClaim.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pvc: Option<HazelcastCpSubsystemPvc>,
+    /// SessionHeartbeatIntervalSeconds Interval in seconds for the periodically committed CP session heartbeats. Must be greater than or equal to SessionTTLSeconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionHeartbeatIntervalSeconds")]
+    pub session_heartbeat_interval_seconds: Option<i32>,
+    /// SessionTTLSeconds is the duration for a CP session to be kept alive after the last received heartbeat. Must be greater than or equal to SessionTTLSeconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTTLSeconds")]
+    pub session_ttl_seconds: Option<i32>,
+}
+
+/// PVC is the configuration of PersistenceVolumeClaim.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HazelcastCpSubsystemPvc {
+    /// AccessModes contains the actual access modes of the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// A description of the PVC request capacity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestStorage")]
+    pub request_storage: Option<IntOrString>,
+    /// Name of StorageClass which this persistent volume belongs to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -385,6 +434,38 @@ pub struct HazelcastJvmMemory {
     pub min_ram_percentage: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HazelcastLocalDevices {
+    /// BlockSize defines Device block/sector size in bytes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockSize")]
+    pub block_size: Option<i32>,
+    /// Name represents the name of the local device
+    pub name: String,
+    /// Configuration of PersistenceVolumeClaim.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pvc: Option<HazelcastLocalDevicesPvc>,
+    /// ReadIOThreadCount is Read IO thread count.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readIOThreadCount")]
+    pub read_io_thread_count: Option<i32>,
+    /// WriteIOThreadCount is Write IO thread count.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOThreadCount")]
+    pub write_io_thread_count: Option<i32>,
+}
+
+/// Configuration of PersistenceVolumeClaim.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HazelcastLocalDevicesPvc {
+    /// AccessModes contains the actual access modes of the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// A description of the PVC request capacity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestStorage")]
+    pub request_storage: Option<IntOrString>,
+    /// Name of StorageClass which this persistent volume belongs to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+}
+
 /// Initial values will be filled with its fields' default values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HazelcastLoggingLevel {
@@ -528,13 +609,13 @@ pub enum HazelcastPersistenceStartupAction {
 pub struct HazelcastResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
     ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable.
+    ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<HazelcastResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1014,7 +1095,8 @@ pub struct HazelcastSchedulingTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<HazelcastSchedulingTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector.
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. 
+    ///  This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. The global minimum is the minimum number of matching pods in an eligible domain or zero if the number of eligible domains is less than MinDomains. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 2/2/1: In this case, the global minimum is 1. | zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.

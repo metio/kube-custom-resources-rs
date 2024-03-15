@@ -148,6 +148,7 @@ spec:
                             - "aws"
                             - "aws-eks"
                             - "aws-kiam"
+                            - "none"
                           type: "string"
                         roleArn:
                           description: "RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner"
@@ -247,6 +248,7 @@ spec:
                             - "aws"
                             - "aws-eks"
                             - "aws-kiam"
+                            - "none"
                           type: "string"
                         roleArn:
                           description: "RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner"
@@ -358,6 +360,7 @@ spec:
                             - "aws"
                             - "aws-eks"
                             - "aws-kiam"
+                            - "none"
                           type: "string"
                         roleArn:
                           description: "RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner"
@@ -471,6 +474,7 @@ spec:
                         - "aws"
                         - "aws-eks"
                         - "aws-kiam"
+                        - "none"
                       type: "string"
                     roleArn:
                       description: "RoleArn sets the AWS RoleArn to be used. Mutually exclusive with IdentityOwner"

@@ -37,6 +37,9 @@ pub struct KafkaTopicStatus {
     /// The generation of the CRD that was last reconciled by the operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// The topic's id. For a KafkaTopic with the ready condition, this will change only if the topic gets deleted and recreated with the same name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicId")]
+    pub topic_id: Option<String>,
     /// Topic name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicName")]
     pub topic_name: Option<String>,

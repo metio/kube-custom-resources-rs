@@ -4,6 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// spec holds user settable values for configuration. As a general rule, this SHOULD NOT be read directly. Instead, you should consume the NetworkStatus, as it indicates the currently deployed configuration. Currently, most spec fields are immutable after installation. Please view the individual ones for further details on each.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -69,6 +70,9 @@ pub struct NetworkStatus {
     /// ClusterNetworkMTU is the MTU for inter-pod networking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetworkMTU")]
     pub cluster_network_mtu: Option<i64>,
+    /// conditions represents the observations of a network.config current state. Known .status.conditions.type are: "NetworkTypeMigrationInProgress", "NetworkTypeMigrationMTUReady", "NetworkTypeMigrationTargetCNIAvailable", "NetworkTypeMigrationTargetCNIInUse" and "NetworkTypeMigrationOriginalCNIPurged"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Migration contains the cluster network migration configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub migration: Option<NetworkStatusMigration>,

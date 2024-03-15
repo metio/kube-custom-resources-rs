@@ -2099,6 +2099,9 @@ apiVersion `opentelemetry.io/v1alpha1`:
 - `OpAMPBridge`
 - `OpenTelemetryCollector`
 
+apiVersion `opentelemetry.io/v1beta1`:
+- `OpenTelemetryCollector`
+
 ## operations_kubeedge_io
 
 apiVersion `operations.kubeedge.io/v1alpha1`:
@@ -2598,6 +2601,11 @@ apiVersion `security-profiles-operator.x-k8s.io/v1beta1`:
 
 apiVersion `security.internal.openshift.io/v1`:
 - `RangeAllocation`
+
+## security_istio_io
+
+apiVersion `security.istio.io/v1`:
+- `PeerAuthentication`
 
 ## security_openshift_io
 
@@ -3564,6 +3572,8 @@ pub mod secscan_quay_redhat_com;
 pub mod security_profiles_operator_x_k8s_io;
 #[cfg(feature = "security_internal_openshift_io")]
 pub mod security_internal_openshift_io;
+#[cfg(feature = "security_istio_io")]
+pub mod security_istio_io;
 #[cfg(feature = "security_openshift_io")]
 pub mod security_openshift_io;
 #[cfg(feature = "servicebinding_io")]

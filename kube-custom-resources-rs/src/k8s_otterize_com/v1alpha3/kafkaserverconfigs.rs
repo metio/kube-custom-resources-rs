@@ -14,7 +14,8 @@ use serde::{Serialize, Deserialize};
 pub struct KafkaServerConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addr: Option<String>,
-    /// If Intents for network policies are enabled, and there are other Intents to this Kafka server, will automatically create an Intent so that the Intents Operator can connect. Set to true to disable.
+    /// If Intents for network policies are enabled, and there are other Intents to this Kafka server,
+    /// will automatically create an Intent so that the Intents Operator can connect. Set to true to disable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noAutoCreateIntentsForOperator")]
     pub no_auto_create_intents_for_operator: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

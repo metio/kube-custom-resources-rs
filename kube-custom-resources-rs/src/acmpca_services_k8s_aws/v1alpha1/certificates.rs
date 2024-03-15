@@ -488,7 +488,7 @@ pub struct CertificateCsrRefFrom {
 /// the limit set on its parents in the CA hierarchy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateValidity {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<i64>,
@@ -513,7 +513,7 @@ pub struct CertificateValidity {
 /// in RFC 5280.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateValidityNotBefore {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<i64>,

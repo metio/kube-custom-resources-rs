@@ -102,6 +102,9 @@ pub struct MeshTCPRouteToRulesDefaultBackendRefs {
     /// `MeshServiceSubset` and `MeshGatewayRoute`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Port is only supported when this ref refers to a real MeshService object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]

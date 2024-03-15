@@ -22,6 +22,8 @@ pub struct CanarySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDevops")]
     pub azure_devops: Option<Vec<CanaryAzureDevops>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub catalog: Option<Vec<CanaryCatalog>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cloudwatch: Option<Vec<CanaryCloudwatch>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configDB")]
     pub config_db: Option<Vec<CanaryConfigDb>>,
@@ -1055,6 +1057,122 @@ pub struct CanaryAzureDevopsTest {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAzureDevopsTransform {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCatalog {
+    /// Description for the check
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub display: Option<CanaryCatalogDisplay>,
+    /// Icon for overwriting default icon on the dashboard
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub icon: Option<String>,
+    /// Labels for the check
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Metrics to expose from check results
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<Vec<CanaryCatalogMetrics>>,
+    /// Name of the check
+    pub name: String,
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    pub selector: Vec<CanaryCatalogSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub test: Option<CanaryCatalogTest>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub transform: Option<CanaryCatalogTransform>,
+    /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformDeleteStrategy")]
+    pub transform_delete_strategy: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCatalogDisplay {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCatalogMetrics {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<CanaryCatalogMetricsLabels>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCatalogMetricsLabels {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueExpr")]
+    pub value_expr: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCatalogSelector {
+    /// Agent can be the agent id or the name of the agent.
+    ///  Additionally, the special "self" value can be used to select resources without an agent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub agent: Option<String>,
+    /// Cache directives
+    ///  'no-cache' (should not fetch from cache but can be cached)
+    ///  'no-store' (should not cache)
+    ///  'max-age=X' (cache for X duration)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cache: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
+    pub field_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub statuses: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub types: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCatalogTest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryCatalogTransform {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expr: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5015,6 +5133,9 @@ pub struct CanaryKubernetes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<Vec<String>>,
     pub kind: String,
+    /// KubeConfig is the kubeconfig or the path to the kubeconfig file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<CanaryKubernetesKubeconfig>,
     /// Labels for the check
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -5051,6 +5172,52 @@ pub struct CanaryKubernetesDisplay {
     pub json_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+
+/// KubeConfig is the kubeconfig or the path to the kubeconfig file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesKubeconfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<CanaryKubernetesKubeconfigValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesKubeconfigValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<CanaryKubernetesKubeconfigValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryKubernetesKubeconfigValueFromHelmRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<CanaryKubernetesKubeconfigValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesKubeconfigValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesKubeconfigValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesKubeconfigValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

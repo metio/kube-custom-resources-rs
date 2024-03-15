@@ -34,16 +34,10 @@ pub struct CertificateAuthorityActivationSpec {
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityRef")]
     pub certificate_authority_ref: Option<CertificateAuthorityActivationCertificateAuthorityRef>,
-    /// A PEM-encoded file that contains all of your certificates, other than the
-    /// certificate you're importing, chaining up to your root CA. Your Amazon Web
-    /// Services Private CA-hosted or on-premises root certificate is the last in
-    /// the chain, and each certificate in the chain signs the one preceding.
-    /// 
-    /// 
-    /// This parameter must be supplied when you import a subordinate CA. When you
-    /// import a root CA, there is no chain.
+    /// SecretKeyReference combines a k8s corev1.SecretReference with a
+    /// specific key within the referred-to Secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChain")]
-    pub certificate_chain: Option<String>,
+    pub certificate_chain: Option<CertificateAuthorityActivationCertificateChain>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
@@ -84,6 +78,20 @@ pub struct CertificateAuthorityActivationCertificateAuthorityRef {
 pub struct CertificateAuthorityActivationCertificateAuthorityRefFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// SecretKeyReference combines a k8s corev1.SecretReference with a
+/// specific key within the referred-to Secret
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CertificateAuthorityActivationCertificateChain {
+    /// Key is the key within the secret
+    pub key: String,
+    /// name is unique within a namespace to reference a secret resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace defines the space within which the secret name must be unique.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// CertificateAuthorityActivationStatus defines the observed state of CertificateAuthorityActivation

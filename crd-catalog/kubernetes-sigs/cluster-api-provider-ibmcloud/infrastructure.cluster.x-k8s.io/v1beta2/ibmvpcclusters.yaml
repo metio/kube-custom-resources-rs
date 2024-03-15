@@ -58,7 +58,7 @@ spec:
                   description: "ControlPlaneLoadBalancer is optional configuration for customizing control plane behavior."
                   properties:
                     additionalListeners:
-                      description: "AdditionalListeners sets the additional listeners for the control plane load balancer. ."
+                      description: "AdditionalListeners sets the additional listeners for the control plane load balancer."
                       items:
                         description: "AdditionalListenerSpec defines the desired state of an additional listener on an VPC load balancer."
                         properties:

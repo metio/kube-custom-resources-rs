@@ -4,6 +4,8 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// AuthenticationSpec defines the desired state of Authentication
@@ -12,6 +14,9 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "AuthenticationStatus")]
 #[kube(schema = "disabled")]
 pub struct AuthenticationSpec {
+    /// DexDeployment configures the Dex Deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dexDeployment")]
+    pub dex_deployment: Option<AuthenticationDexDeployment>,
     /// If specified, GroupsPrefix is prepended to each group obtained from the identity provider. Note that Kibana does not support a groups prefix, so this prefix is removed from Kubernetes Groups when translating log access ClusterRoleBindings into Elastic.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupsPrefix")]
     pub groups_prefix: Option<String>,
@@ -30,6 +35,121 @@ pub struct AuthenticationSpec {
     /// If specified, UsernamePrefix is prepended to each user obtained from the identity provider. Note that Kibana does not support a user prefix, so this prefix is removed from Kubernetes User when translating log access ClusterRoleBindings into Elastic.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernamePrefix")]
     pub username_prefix: Option<String>,
+}
+
+/// DexDeployment configures the Dex Deployment.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeployment {
+    /// Spec is the specification of the Dex Deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<AuthenticationDexDeploymentSpec>,
+}
+
+/// Spec is the specification of the Dex Deployment.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpec {
+    /// Template describes the Dex Deployment pod that will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<AuthenticationDexDeploymentSpecTemplate>,
+}
+
+/// Template describes the Dex Deployment pod that will be created.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpecTemplate {
+    /// Spec is the Dex Deployment's PodSpec.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<AuthenticationDexDeploymentSpecTemplateSpec>,
+}
+
+/// Spec is the Dex Deployment's PodSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpecTemplateSpec {
+    /// Containers is a list of Dex containers. If specified, this overrides the specified Dex Deployment containers. If omitted, the Dex Deployment will use its default values for its containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecContainers>>,
+    /// InitContainers is a list of Dex init containers. If specified, this overrides the specified Dex Deployment init containers. If omitted, the Dex Deployment will use its default values for its init containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecInitContainers>>,
+}
+
+/// DexDeploymentContainer is a Dex Deployment container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpecTemplateSpecContainers {
+    /// Name is an enum which identifies the Dex Deployment container by name.
+    pub name: AuthenticationDexDeploymentSpecTemplateSpecContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment container's resources. If omitted, the Dex Deployment will use its default value for this container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<AuthenticationDexDeploymentSpecTemplateSpecContainersResources>,
+}
+
+/// DexDeploymentContainer is a Dex Deployment container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AuthenticationDexDeploymentSpecTemplateSpecContainersName {
+    #[serde(rename = "tigera-dex")]
+    TigeraDex,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment container's resources. If omitted, the Dex Deployment will use its default value for this container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpecTemplateSpecContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpecTemplateSpecContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
+}
+
+/// DexDeploymentInitContainer is a Dex Deployment init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainers {
+    /// Name is an enum which identifies the Dex Deployment init container by name.
+    pub name: AuthenticationDexDeploymentSpecTemplateSpecInitContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment init container's resources. If omitted, the Dex Deployment will use its default value for this init container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<AuthenticationDexDeploymentSpecTemplateSpecInitContainersResources>,
+}
+
+/// DexDeploymentInitContainer is a Dex Deployment init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AuthenticationDexDeploymentSpecTemplateSpecInitContainersName {
+    #[serde(rename = "tigera-dex-tls-key-cert-provisioner")]
+    TigeraDexTlsKeyCertProvisioner,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment init container's resources. If omitted, the Dex Deployment will use its default value for this init container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// LDAP contains the configuration needed to setup LDAP authentication.

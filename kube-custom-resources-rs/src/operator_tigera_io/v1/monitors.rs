@@ -5,6 +5,7 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// MonitorSpec defines the desired state of Tigera monitor.
@@ -13,9 +14,54 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "MonitorStatus")]
 #[kube(schema = "disabled")]
 pub struct MonitorSpec {
+    /// AlertManager is the configuration for the AlertManager.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertManager")]
+    pub alert_manager: Option<MonitorAlertManager>,
     /// ExternalPrometheus optionally configures integration with an external Prometheus for scraping Calico metrics. When specified, the operator will render resources in the defined namespace. This option can be useful for configuring scraping from git-ops tools without the need of post-installation steps.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalPrometheus")]
     pub external_prometheus: Option<MonitorExternalPrometheus>,
+    /// Prometheus is the configuration for the Prometheus.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prometheus: Option<MonitorPrometheus>,
+}
+
+/// AlertManager is the configuration for the AlertManager.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorAlertManager {
+    /// Spec is the specification of the Alertmanager.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<MonitorAlertManagerSpec>,
+}
+
+/// Spec is the specification of the Alertmanager.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorAlertManagerSpec {
+    /// Define resources requests and limits for single Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<MonitorAlertManagerSpecResources>,
+}
+
+/// Define resources requests and limits for single Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorAlertManagerSpecResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<MonitorAlertManagerSpecResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorAlertManagerSpecResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// ExternalPrometheus optionally configures integration with an external Prometheus for scraping Calico metrics. When specified, the operator will render resources in the defined namespace. This option can be useful for configuring scraping from git-ops tools without the need of post-installation steps.
@@ -205,6 +251,96 @@ pub enum MonitorExternalPrometheusServiceMonitorEndpointsRelabelingsAction {
     Uppercase,
     #[serde(rename = "Uppercase")]
     UppercaseX,
+}
+
+/// Prometheus is the configuration for the Prometheus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorPrometheus {
+    /// Spec is the specification of the Prometheus.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<MonitorPrometheusSpec>,
+}
+
+/// Spec is the specification of the Prometheus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorPrometheusSpec {
+    /// CommonPrometheusFields are the options available to both the Prometheus server and agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonPrometheusFields")]
+    pub common_prometheus_fields: Option<MonitorPrometheusSpecCommonPrometheusFields>,
+}
+
+/// CommonPrometheusFields are the options available to both the Prometheus server and agent.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorPrometheusSpecCommonPrometheusFields {
+    /// Containers is a list of Prometheus containers. If specified, this overrides the specified Prometheus Deployment containers. If omitted, the Prometheus Deployment will use its default values for its containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<Vec<MonitorPrometheusSpecCommonPrometheusFieldsContainers>>,
+    /// Define resources requests and limits for single Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<MonitorPrometheusSpecCommonPrometheusFieldsResources>,
+}
+
+/// PrometheusContainer is a Prometheus container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorPrometheusSpecCommonPrometheusFieldsContainers {
+    /// Name is an enum which identifies the Prometheus Deployment container by name.
+    pub name: MonitorPrometheusSpecCommonPrometheusFieldsContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Prometheus container's resources. If omitted, the Prometheus will use its default value for this container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<MonitorPrometheusSpecCommonPrometheusFieldsContainersResources>,
+}
+
+/// PrometheusContainer is a Prometheus container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MonitorPrometheusSpecCommonPrometheusFieldsContainersName {
+    #[serde(rename = "authn-proxy")]
+    AuthnProxy,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Prometheus container's resources. If omitted, the Prometheus will use its default value for this container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorPrometheusSpecCommonPrometheusFieldsContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<MonitorPrometheusSpecCommonPrometheusFieldsContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorPrometheusSpecCommonPrometheusFieldsContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
+}
+
+/// Define resources requests and limits for single Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorPrometheusSpecCommonPrometheusFieldsResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<MonitorPrometheusSpecCommonPrometheusFieldsResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MonitorPrometheusSpecCommonPrometheusFieldsResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// MonitorStatus defines the observed state of Tigera monitor.

@@ -202,10 +202,10 @@ spec:
                   description: "The PgBouncer configuration"
                   properties:
                     authQuery:
-                      description: "The query that will be used to download the hash of the password\nof a certain user. Default: \"SELECT usename, passwd FROM user_search($1)\".\nIn case it is specified, also an AuthQuerySecret has to be specified and\nno automatic CNPG Cluster integration will be triggered."
+                      description: "The query that will be used to download the hash of the password\nof a certain user. Default: \"SELECT usename, passwd FROM public.user_search($1)\".\nIn case it is specified, also an AuthQuerySecret has to be specified and\nno automatic CNPG Cluster integration will be triggered."
                       type: "string"
                     authQuerySecret:
-                      description: "The credentials of the user that need to be used for the authentication\nquery. In case it is specified, also an AuthQuery\n(e.g. \"SELECT usename, passwd FROM pg_shadow WHERE usename=$1\")\nhas to be specified and no automatic CNPG Cluster integration will be triggered."
+                      description: "The credentials of the user that need to be used for the authentication\nquery. In case it is specified, also an AuthQuery\n(e.g. \"SELECT usename, passwd FROM pg_catalog.pg_shadow WHERE usename=$1\")\nhas to be specified and no automatic CNPG Cluster integration will be triggered."
                       properties:
                         name:
                           description: "Name of the referent."

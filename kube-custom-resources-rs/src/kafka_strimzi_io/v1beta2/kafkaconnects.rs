@@ -466,7 +466,7 @@ pub enum KafkaConnectJmxOptionsAuthenticationType {
 pub struct KafkaConnectJvmOptions {
     /// A map of -XX options to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-XX")]
-    pub xx: Option<BTreeMap<String, serde_json::Value>>,
+    pub xx: Option<BTreeMap<String, String>>,
     /// -Xms option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xms")]
     pub xms: Option<String>,
@@ -516,7 +516,7 @@ pub struct KafkaConnectLivenessProbe {
 pub struct KafkaConnectLogging {
     /// A Map from logger name to logger level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub loggers: Option<BTreeMap<String, serde_json::Value>>,
+    pub loggers: Option<BTreeMap<String, String>>,
     /// Logging type, must be either 'inline' or 'external'.
     #[serde(rename = "type")]
     pub r#type: KafkaConnectLoggingType,
@@ -712,10 +712,10 @@ pub enum KafkaConnectTemplateApiServiceIpFamilyPolicy {
 pub struct KafkaConnectTemplateApiServiceMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for the Kafka Connect BuildConfig used to build new container images. The BuildConfig is used only on OpenShift.
@@ -734,10 +734,10 @@ pub struct KafkaConnectTemplateBuildConfig {
 pub struct KafkaConnectTemplateBuildConfigMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for the Kafka Connect Build container. The build container is used only on Kubernetes.
@@ -978,6 +978,10 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedul
 pub struct KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -991,7 +995,7 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedul
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1009,7 +1013,7 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedul
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1026,6 +1030,10 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAffinityPreferredDuringSchedul
 pub struct KafkaConnectTemplateBuildPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaConnectTemplateBuildPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<KafkaConnectTemplateBuildPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1039,7 +1047,7 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAffinityRequiredDuringScheduli
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1057,7 +1065,7 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAffinityRequiredDuringScheduli
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1090,6 +1098,10 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSch
 pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1103,7 +1115,7 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSch
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1121,7 +1133,7 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSch
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1138,6 +1150,10 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityPreferredDuringSch
 pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaConnectTemplateBuildPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<KafkaConnectTemplateBuildPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1151,7 +1167,7 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityRequiredDuringSche
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1169,7 +1185,7 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityRequiredDuringSche
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1201,10 +1217,10 @@ pub struct KafkaConnectTemplateBuildPodImagePullSecrets {
 pub struct KafkaConnectTemplateBuildPodMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Configures pod-level security attributes and common container settings.
@@ -1311,7 +1327,7 @@ pub struct KafkaConnectTemplateBuildPodTopologySpreadConstraintsLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplateBuildPodTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1337,10 +1353,10 @@ pub struct KafkaConnectTemplateBuildServiceAccount {
 pub struct KafkaConnectTemplateBuildServiceAccountMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for the Kafka Connect ClusterRoleBinding.
@@ -1356,10 +1372,10 @@ pub struct KafkaConnectTemplateClusterRoleBinding {
 pub struct KafkaConnectTemplateClusterRoleBindingMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for the Kafka Connect container.
@@ -1473,10 +1489,10 @@ pub enum KafkaConnectTemplateDeploymentDeploymentStrategy {
 pub struct KafkaConnectTemplateDeploymentMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for Kafka Connect headless `Service`.
@@ -1506,10 +1522,10 @@ pub enum KafkaConnectTemplateHeadlessServiceIpFamilyPolicy {
 pub struct KafkaConnectTemplateHeadlessServiceMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for the Kafka init container.
@@ -1613,10 +1629,10 @@ pub struct KafkaConnectTemplateJmxSecret {
 pub struct KafkaConnectTemplateJmxSecretMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for Kafka Connect `Pods`.
@@ -1769,6 +1785,10 @@ pub struct KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIg
 pub struct KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1782,7 +1802,7 @@ pub struct KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIg
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1800,7 +1820,7 @@ pub struct KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIg
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1817,6 +1837,10 @@ pub struct KafkaConnectTemplatePodAffinityPodAffinityPreferredDuringSchedulingIg
 pub struct KafkaConnectTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaConnectTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<KafkaConnectTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1830,7 +1854,7 @@ pub struct KafkaConnectTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgn
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1848,7 +1872,7 @@ pub struct KafkaConnectTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgn
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1881,6 +1905,10 @@ pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringScheduli
 pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1894,7 +1922,7 @@ pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringScheduli
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1912,7 +1940,7 @@ pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringScheduli
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1929,6 +1957,10 @@ pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityPreferredDuringScheduli
 pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaConnectTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<KafkaConnectTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1942,7 +1974,7 @@ pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulin
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1960,7 +1992,7 @@ pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulin
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1992,10 +2024,10 @@ pub struct KafkaConnectTemplatePodImagePullSecrets {
 pub struct KafkaConnectTemplatePodMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Configures pod-level security attributes and common container settings.
@@ -2102,7 +2134,7 @@ pub struct KafkaConnectTemplatePodTopologySpreadConstraintsLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KafkaConnectTemplatePodTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2131,10 +2163,10 @@ pub struct KafkaConnectTemplatePodDisruptionBudget {
 pub struct KafkaConnectTemplatePodDisruptionBudgetMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for Kafka Connect `StrimziPodSet` resource.
@@ -2150,10 +2182,10 @@ pub struct KafkaConnectTemplatePodSet {
 pub struct KafkaConnectTemplatePodSetMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for the Kafka Connect service account.
@@ -2169,10 +2201,10 @@ pub struct KafkaConnectTemplateServiceAccount {
 pub struct KafkaConnectTemplateServiceAccountMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// TLS configuration.

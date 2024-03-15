@@ -151,9 +151,30 @@ pub struct NodeSLOResourceQosStrategyBeClassBlkioQosBlocks {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyBeClassBlkioQosBlocksIoCfg {
+    /// configure the cost model of blkio-cost manually whether the user model is enabled. Default value: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
+    pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
+    /// the read BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
+    pub model_read_bps: Option<i64>,
+    /// the random read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
+    pub model_read_rand_iops: Option<i64>,
+    /// the sequential read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
+    pub model_read_seq_iops: Option<i64>,
+    /// the write BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
+    pub model_write_bps: Option<i64>,
+    /// the random write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
+    pub model_write_rand_iops: Option<i64>,
+    /// the sequential write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
+    pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput The value is set to 0, which indicates that the feature is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readBPS")]
     pub read_bps: Option<i64>,
@@ -301,9 +322,30 @@ pub struct NodeSLOResourceQosStrategyCgroupRootBlkioQosBlocks {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyCgroupRootBlkioQosBlocksIoCfg {
+    /// configure the cost model of blkio-cost manually whether the user model is enabled. Default value: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
+    pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
+    /// the read BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
+    pub model_read_bps: Option<i64>,
+    /// the random read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
+    pub model_read_rand_iops: Option<i64>,
+    /// the sequential read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
+    pub model_read_seq_iops: Option<i64>,
+    /// the write BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
+    pub model_write_bps: Option<i64>,
+    /// the random write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
+    pub model_write_rand_iops: Option<i64>,
+    /// the sequential write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
+    pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput The value is set to 0, which indicates that the feature is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readBPS")]
     pub read_bps: Option<i64>,
@@ -451,9 +493,30 @@ pub struct NodeSLOResourceQosStrategyLsClassBlkioQosBlocks {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyLsClassBlkioQosBlocksIoCfg {
+    /// configure the cost model of blkio-cost manually whether the user model is enabled. Default value: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
+    pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
+    /// the read BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
+    pub model_read_bps: Option<i64>,
+    /// the random read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
+    pub model_read_rand_iops: Option<i64>,
+    /// the sequential read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
+    pub model_read_seq_iops: Option<i64>,
+    /// the write BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
+    pub model_write_bps: Option<i64>,
+    /// the random write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
+    pub model_write_rand_iops: Option<i64>,
+    /// the sequential write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
+    pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput The value is set to 0, which indicates that the feature is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readBPS")]
     pub read_bps: Option<i64>,
@@ -601,9 +664,30 @@ pub struct NodeSLOResourceQosStrategyLsrClassBlkioQosBlocks {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyLsrClassBlkioQosBlocksIoCfg {
+    /// configure the cost model of blkio-cost manually whether the user model is enabled. Default value: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
+    pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
+    /// the read BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
+    pub model_read_bps: Option<i64>,
+    /// the random read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
+    pub model_read_rand_iops: Option<i64>,
+    /// the sequential read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
+    pub model_read_seq_iops: Option<i64>,
+    /// the write BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
+    pub model_write_bps: Option<i64>,
+    /// the random write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
+    pub model_write_rand_iops: Option<i64>,
+    /// the sequential write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
+    pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput The value is set to 0, which indicates that the feature is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readBPS")]
     pub read_bps: Option<i64>,
@@ -762,9 +846,30 @@ pub struct NodeSLOResourceQosStrategySystemClassBlkioQosBlocks {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategySystemClassBlkioQosBlocksIoCfg {
+    /// configure the cost model of blkio-cost manually whether the user model is enabled. Default value: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
+    pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
+    /// the read BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
+    pub model_read_bps: Option<i64>,
+    /// the random read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
+    pub model_read_rand_iops: Option<i64>,
+    /// the sequential read iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
+    pub model_read_seq_iops: Option<i64>,
+    /// the write BPS of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
+    pub model_write_bps: Option<i64>,
+    /// the random write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
+    pub model_write_rand_iops: Option<i64>,
+    /// the sequential write iops of user model
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
+    pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput The value is set to 0, which indicates that the feature is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readBPS")]
     pub read_bps: Option<i64>,

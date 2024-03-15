@@ -14,7 +14,8 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "ReceiverStatus")]
 #[kube(schema = "disabled")]
 pub struct ReceiverSpec {
-    /// Events specifies the list of event types to handle, e.g. 'push' for GitHub or 'Push Hook' for GitLab.
+    /// Events specifies the list of event types to handle,
+    /// e.g. 'push' for GitHub or 'Push Hook' for GitLab.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<String>>,
     /// Interval at which to reconcile the Receiver with its Secret references.
@@ -22,18 +23,22 @@ pub struct ReceiverSpec {
     pub interval: Option<String>,
     /// A list of resources to be notified about changes.
     pub resources: Vec<ReceiverResources>,
-    /// SecretRef specifies the Secret containing the token used to validate the payload authenticity.
+    /// SecretRef specifies the Secret containing the token used
+    /// to validate the payload authenticity.
     #[serde(rename = "secretRef")]
     pub secret_ref: ReceiverSecretRef,
-    /// Suspend tells the controller to suspend subsequent events handling for this receiver.
+    /// Suspend tells the controller to suspend subsequent
+    /// events handling for this receiver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
-    /// Type of webhook sender, used to determine the validation procedure and payload deserialization.
+    /// Type of webhook sender, used to determine
+    /// the validation procedure and payload deserialization.
     #[serde(rename = "type")]
     pub r#type: ReceiverType,
 }
 
-/// CrossNamespaceObjectReference contains enough information to let you locate the typed referenced object at cluster level
+/// CrossNamespaceObjectReference contains enough information to let you locate the
+/// typed referenced object at cluster level
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReceiverResources {
     /// API version of the referent
@@ -41,17 +46,22 @@ pub struct ReceiverResources {
     pub api_version: Option<String>,
     /// Kind of the referent
     pub kind: ReceiverResourcesKind,
-    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed. MatchLabels requires the name to be set to `*`.
+    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// MatchLabels requires the name to be set to `*`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
-    /// Name of the referent If multiple resources are targeted `*` may be set.
+    /// Name of the referent
+    /// If multiple resources are targeted `*` may be set.
     pub name: String,
     /// Namespace of the referent
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// CrossNamespaceObjectReference contains enough information to let you locate the typed referenced object at cluster level
+/// CrossNamespaceObjectReference contains enough information to let you locate the
+/// typed referenced object at cluster level
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ReceiverResourcesKind {
     Bucket,
@@ -67,7 +77,8 @@ pub enum ReceiverResourcesKind {
     OciRepository,
 }
 
-/// SecretRef specifies the Secret containing the token used to validate the payload authenticity.
+/// SecretRef specifies the Secret containing the token used
+/// to validate the payload authenticity.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReceiverSecretRef {
     /// Name of the referent.
@@ -107,13 +118,16 @@ pub struct ReceiverStatus {
     /// Conditions holds the conditions for the Receiver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
+    /// LastHandledReconcileAt holds the value of the most recent
+    /// reconcile request value, so a change of the annotation value
+    /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation of the Receiver object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// WebhookPath is the generated incoming webhook address in the format of '/hook/sha256sum(token+name+namespace)'.
+    /// WebhookPath is the generated incoming webhook address in the format
+    /// of '/hook/sha256sum(token+name+namespace)'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookPath")]
     pub webhook_path: Option<String>,
 }

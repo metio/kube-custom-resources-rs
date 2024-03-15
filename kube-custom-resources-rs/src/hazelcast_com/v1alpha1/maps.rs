@@ -5,6 +5,7 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// MapSpec defines the desired state of Hazelcast Map Config
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -58,6 +59,9 @@ pub struct MapSpec {
     /// When enabled, map data will be persisted. It cannot be updated after map config is created successfully.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistenceEnabled")]
     pub persistence_enabled: Option<bool>,
+    /// TieredStore enables the Hazelcast's Tiered-Store feature for the Map
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tieredStore")]
+    pub tiered_store: Option<MapTieredStore>,
     /// Maximum time in seconds for each entry to stay in the map. If it is not 0, entries that are older than this time and not updated for this time are evicted automatically. It can be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeToLiveSeconds")]
     pub time_to_live_seconds: Option<i32>,
@@ -335,6 +339,17 @@ pub enum MapNearCacheInMemoryFormat {
     Object,
     #[serde(rename = "NATIVE")]
     Native,
+}
+
+/// TieredStore enables the Hazelcast's Tiered-Store feature for the Map
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MapTieredStore {
+    /// diskDeviceName defines the name of the device for a given disk tier.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskDeviceName")]
+    pub disk_device_name: Option<String>,
+    /// MemoryCapacity sets Memory tier capacity, i.e., how much main memory should this tier consume at most.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryCapacity")]
+    pub memory_capacity: Option<IntOrString>,
 }
 
 /// MapStatus defines the observed state of Map

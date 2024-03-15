@@ -16,7 +16,8 @@ pub struct ProviderSpec {
     /// HTTP/S webhook address of this provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    /// CertSecretRef can be given the name of a secret containing a PEM-encoded CA certificate (`caFile`)
+    /// CertSecretRef can be given the name of a secret containing
+    /// a PEM-encoded CA certificate (`caFile`)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ProviderCertSecretRef>,
     /// Alert channel for this provider
@@ -25,10 +26,12 @@ pub struct ProviderSpec {
     /// HTTP/S address of the proxy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,
-    /// Secret reference containing the provider webhook URL using "address" as data key
+    /// Secret reference containing the provider webhook URL
+    /// using "address" as data key
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ProviderSecretRef>,
-    /// This flag tells the controller to suspend subsequent events handling. Defaults to false.
+    /// This flag tells the controller to suspend subsequent events handling.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
     /// Timeout for sending alerts to the provider.
@@ -42,14 +45,16 @@ pub struct ProviderSpec {
     pub username: Option<String>,
 }
 
-/// CertSecretRef can be given the name of a secret containing a PEM-encoded CA certificate (`caFile`)
+/// CertSecretRef can be given the name of a secret containing
+/// a PEM-encoded CA certificate (`caFile`)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProviderCertSecretRef {
     /// Name of the referent.
     pub name: String,
 }
 
-/// Secret reference containing the provider webhook URL using "address" as data key
+/// Secret reference containing the provider webhook URL
+/// using "address" as data key
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProviderSecretRef {
     /// Name of the referent.

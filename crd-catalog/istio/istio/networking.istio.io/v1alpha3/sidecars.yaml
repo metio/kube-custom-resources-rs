@@ -36,7 +36,7 @@ spec:
                         description: "The IP(IPv4 or IPv6) or the Unix domain socket to which the listener should be bound to."
                         type: "string"
                       captureMode:
-                        description: "When the bind address is an IP, the captureMode option dictates how traffic to the listener is expected to be captured (or not)."
+                        description: "When the bind address is an IP, the captureMode option dictates how traffic to the listener is expected to be captured (or not).\n\nValid Options: DEFAULT, IPTABLES, NONE"
                         enum:
                           - "DEFAULT"
                           - "IPTABLES"
@@ -73,7 +73,7 @@ spec:
                       description: "HTTP connection pool settings."
                       properties:
                         h2UpgradePolicy:
-                          description: "Specify if http1.1 connection should be upgraded to http2 for the associated destination."
+                          description: "Specify if http1.1 connection should be upgraded to http2 for the associated destination.\n\nValid Options: DEFAULT, DO_NOT_UPGRADE, UPGRADE"
                           enum:
                             - "DEFAULT"
                             - "DO_NOT_UPGRADE"
@@ -145,7 +145,7 @@ spec:
                         description: "The IP(IPv4 or IPv6) to which the listener should be bound."
                         type: "string"
                       captureMode:
-                        description: "The captureMode option dictates how traffic to the listener is expected to be captured (or not)."
+                        description: "The captureMode option dictates how traffic to the listener is expected to be captured (or not).\n\nValid Options: DEFAULT, IPTABLES, NONE"
                         enum:
                           - "DEFAULT"
                           - "IPTABLES"
@@ -158,7 +158,7 @@ spec:
                             description: "HTTP connection pool settings."
                             properties:
                               h2UpgradePolicy:
-                                description: "Specify if http1.1 connection should be upgraded to http2 for the associated destination."
+                                description: "Specify if http1.1 connection should be upgraded to http2 for the associated destination.\n\nValid Options: DEFAULT, DO_NOT_UPGRADE, UPGRADE"
                                 enum:
                                   - "DEFAULT"
                                   - "DO_NOT_UPGRADE"
@@ -261,7 +261,7 @@ spec:
                             description: "If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS."
                             type: "boolean"
                           maxProtocolVersion:
-                            description: "Optional: Maximum TLS protocol version."
+                            description: "Optional: Maximum TLS protocol version.\n\nValid Options: TLS_AUTO, TLSV1_0, TLSV1_1, TLSV1_2, TLSV1_3"
                             enum:
                               - "TLS_AUTO"
                               - "TLSV1_0"
@@ -270,7 +270,7 @@ spec:
                               - "TLSV1_3"
                             type: "string"
                           minProtocolVersion:
-                            description: "Optional: Minimum TLS protocol version."
+                            description: "Optional: Minimum TLS protocol version.\n\nValid Options: TLS_AUTO, TLSV1_0, TLSV1_1, TLSV1_2, TLSV1_3"
                             enum:
                               - "TLS_AUTO"
                               - "TLSV1_0"
@@ -279,7 +279,7 @@ spec:
                               - "TLSV1_3"
                             type: "string"
                           mode:
-                            description: "Optional: Indicates whether connections to this port should be secured using TLS."
+                            description: "Optional: Indicates whether connections to this port should be secured using TLS.\n\nValid Options: PASSTHROUGH, SIMPLE, MUTUAL, AUTO_PASSTHROUGH, ISTIO_MUTUAL, OPTIONAL_MUTUAL"
                             enum:
                               - "PASSTHROUGH"
                               - "SIMPLE"
@@ -335,6 +335,7 @@ spec:
                         - "host"
                       type: "object"
                     mode:
+                      description: "\n\nValid Options: REGISTRY_ONLY, ALLOW_ANY"
                       enum:
                         - "REGISTRY_ONLY"
                         - "ALLOW_ANY"

@@ -48,7 +48,7 @@ spec:
                     - "provider"
               properties:
                 action:
-                  description: "Optional."
+                  description: "Optional.\n\nValid Options: ALLOW, DENY, AUDIT, CUSTOM"
                   enum:
                     - "ALLOW"
                     - "DENY"

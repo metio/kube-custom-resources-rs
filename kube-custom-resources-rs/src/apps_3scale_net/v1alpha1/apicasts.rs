@@ -57,6 +57,9 @@ pub struct APIcastSpec {
     /// ExtendedMetrics enables additional information on Prometheus metrics; some labels will be used with specific information that will provide more in-depth details about APIcast.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extendedMetrics")]
     pub extended_metrics: Option<bool>,
+    /// Enables/disables HPA
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hpa: Option<bool>,
     /// HTTPProxy specifies a HTTP(S) Proxy to be used for connecting to HTTP services. Authentication is not supported. Format is <scheme>://<host>:<port>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,

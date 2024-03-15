@@ -15,56 +15,90 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "HelmReleaseStatus")]
 #[kube(schema = "disabled")]
 pub struct HelmReleaseSpec {
-    /// Chart defines the template of the v1beta2.HelmChart that should be created for this HelmRelease.
+    /// Chart defines the template of the v1beta2.HelmChart that should be created
+    /// for this HelmRelease.
     pub chart: HelmReleaseChart,
-    /// DependsOn may contain a meta.NamespacedObjectReference slice with references to HelmRelease resources that must be ready before this HelmRelease can be reconciled.
+    /// DependsOn may contain a meta.NamespacedObjectReference slice with
+    /// references to HelmRelease resources that must be ready before this HelmRelease
+    /// can be reconciled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
     pub depends_on: Option<Vec<HelmReleaseDependsOn>>,
-    /// DriftDetection holds the configuration for detecting and handling differences between the manifest in the Helm storage and the resources currently existing in the cluster. 
-    ///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+    /// DriftDetection holds the configuration for detecting and handling
+    /// differences between the manifest in the Helm storage and the resources
+    /// currently existing in the cluster.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2beta2 API, and not actively used
+    /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "driftDetection")]
     pub drift_detection: Option<HelmReleaseDriftDetection>,
     /// Install holds the configuration for Helm install actions for this HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub install: Option<HelmReleaseInstall>,
-    /// Interval at which to reconcile the Helm release. This interval is approximate and may be subject to jitter to ensure efficient use of resources.
+    /// Interval at which to reconcile the Helm release.
+    /// This interval is approximate and may be subject to jitter to ensure
+    /// efficient use of resources.
     pub interval: String,
-    /// KubeConfig for reconciling the HelmRelease on a remote cluster. When used in combination with HelmReleaseSpec.ServiceAccountName, forces the controller to act on behalf of that Service Account at the target cluster. If the --default-service-account flag is set, its value will be used as a controller level fallback for when HelmReleaseSpec.ServiceAccountName is empty.
+    /// KubeConfig for reconciling the HelmRelease on a remote cluster.
+    /// When used in combination with HelmReleaseSpec.ServiceAccountName,
+    /// forces the controller to act on behalf of that Service Account at the
+    /// target cluster.
+    /// If the --default-service-account flag is set, its value will be used as
+    /// a controller level fallback for when HelmReleaseSpec.ServiceAccountName
+    /// is empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeConfig")]
     pub kube_config: Option<HelmReleaseKubeConfig>,
-    /// MaxHistory is the number of revisions saved by Helm for this HelmRelease. Use '0' for an unlimited number of revisions; defaults to '10'.
+    /// MaxHistory is the number of revisions saved by Helm for this HelmRelease.
+    /// Use '0' for an unlimited number of revisions; defaults to '10'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxHistory")]
     pub max_history: Option<i64>,
-    /// PersistentClient tells the controller to use a persistent Kubernetes client for this release. When enabled, the client will be reused for the duration of the reconciliation, instead of being created and destroyed for each (step of a) Helm action. 
-    ///  This can improve performance, but may cause issues with some Helm charts that for example do create Custom Resource Definitions during installation outside Helm's CRD lifecycle hooks, which are then not observed to be available by e.g. post-install hooks. 
-    ///  If not set, it defaults to true.
+    /// PersistentClient tells the controller to use a persistent Kubernetes
+    /// client for this release. When enabled, the client will be reused for the
+    /// duration of the reconciliation, instead of being created and destroyed
+    /// for each (step of a) Helm action.
+    /// 
+    /// 
+    /// This can improve performance, but may cause issues with some Helm charts
+    /// that for example do create Custom Resource Definitions during installation
+    /// outside Helm's CRD lifecycle hooks, which are then not observed to be
+    /// available by e.g. post-install hooks.
+    /// 
+    /// 
+    /// If not set, it defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentClient")]
     pub persistent_client: Option<bool>,
-    /// PostRenderers holds an array of Helm PostRenderers, which will be applied in order of their definition.
+    /// PostRenderers holds an array of Helm PostRenderers, which will be applied in order
+    /// of their definition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postRenderers")]
     pub post_renderers: Option<Vec<HelmReleasePostRenderers>>,
-    /// ReleaseName used for the Helm release. Defaults to a composition of '[TargetNamespace-]Name'.
+    /// ReleaseName used for the Helm release. Defaults to a composition of
+    /// '[TargetNamespace-]Name'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "releaseName")]
     pub release_name: Option<String>,
     /// Rollback holds the configuration for Helm rollback actions for this HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rollback: Option<HelmReleaseRollback>,
-    /// The name of the Kubernetes service account to impersonate when reconciling this HelmRelease.
+    /// The name of the Kubernetes service account to impersonate
+    /// when reconciling this HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    /// StorageNamespace used for the Helm storage. Defaults to the namespace of the HelmRelease.
+    /// StorageNamespace used for the Helm storage.
+    /// Defaults to the namespace of the HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageNamespace")]
     pub storage_namespace: Option<String>,
-    /// Suspend tells the controller to suspend reconciliation for this HelmRelease, it does not apply to already started reconciliations. Defaults to false.
+    /// Suspend tells the controller to suspend reconciliation for this HelmRelease,
+    /// it does not apply to already started reconciliations. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
-    /// TargetNamespace to target when performing operations for the HelmRelease. Defaults to the namespace of the HelmRelease.
+    /// TargetNamespace to target when performing operations for the HelmRelease.
+    /// Defaults to the namespace of the HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespace")]
     pub target_namespace: Option<String>,
     /// Test holds the configuration for Helm test actions for this HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub test: Option<HelmReleaseTest>,
-    /// Timeout is the time to wait for any individual Kubernetes operation (like Jobs for hooks) during the performance of a Helm action. Defaults to '5m0s'.
+    /// Timeout is the time to wait for any individual Kubernetes operation (like Jobs
+    /// for hooks) during the performance of a Helm action. Defaults to '5m0s'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
     /// Uninstall holds the configuration for Helm uninstall actions for this HelmRelease.
@@ -76,12 +110,14 @@ pub struct HelmReleaseSpec {
     /// Values holds the values for this Helm release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<HashMap<String, serde_json::Value>>,
-    /// ValuesFrom holds references to resources containing Helm values for this HelmRelease, and information about how they should be merged.
+    /// ValuesFrom holds references to resources containing Helm values for this HelmRelease,
+    /// and information about how they should be merged.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFrom")]
     pub values_from: Option<Vec<HelmReleaseValuesFrom>>,
 }
 
-/// Chart defines the template of the v1beta2.HelmChart that should be created for this HelmRelease.
+/// Chart defines the template of the v1beta2.HelmChart that should be created
+/// for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChart {
     /// ObjectMeta holds the template for metadata like labels and annotations.
@@ -94,10 +130,15 @@ pub struct HelmReleaseChart {
 /// ObjectMeta holds the template for metadata like labels and annotations.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize (scope and select) objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
@@ -107,25 +148,40 @@ pub struct HelmReleaseChartMetadata {
 pub struct HelmReleaseChartSpec {
     /// The name or path the Helm chart is available at in the SourceRef.
     pub chart: String,
-    /// Interval at which to check the v1beta2.Source for updates. Defaults to 'HelmReleaseSpec.Interval'.
+    /// Interval at which to check the v1beta2.Source for updates. Defaults to
+    /// 'HelmReleaseSpec.Interval'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// Determines what enables the creation of a new artifact. Valid values are ('ChartVersion', 'Revision'). See the documentation of the values for an explanation on their behavior. Defaults to ChartVersion when omitted.
+    /// Determines what enables the creation of a new artifact. Valid values are
+    /// ('ChartVersion', 'Revision').
+    /// See the documentation of the values for an explanation on their behavior.
+    /// Defaults to ChartVersion when omitted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileStrategy")]
     pub reconcile_strategy: Option<HelmReleaseChartSpecReconcileStrategy>,
     /// The name and namespace of the v1beta2.Source the chart is available at.
     #[serde(rename = "sourceRef")]
     pub source_ref: HelmReleaseChartSpecSourceRef,
-    /// Alternative values file to use as the default chart values, expected to be a relative path in the SourceRef. Deprecated in favor of ValuesFiles, for backwards compatibility the file defined here is merged before the ValuesFiles items. Ignored when omitted.
+    /// Alternative values file to use as the default chart values, expected to
+    /// be a relative path in the SourceRef. Deprecated in favor of ValuesFiles,
+    /// for backwards compatibility the file defined here is merged before the
+    /// ValuesFiles items. Ignored when omitted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFile")]
     pub values_file: Option<String>,
-    /// Alternative list of values files to use as the chart values (values.yaml is not included by default), expected to be a relative path in the SourceRef. Values files are merged in the order of this list with the last file overriding the first. Ignored when omitted.
+    /// Alternative list of values files to use as the chart values (values.yaml
+    /// is not included by default), expected to be a relative path in the SourceRef.
+    /// Values files are merged in the order of this list with the last file overriding
+    /// the first. Ignored when omitted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFiles")]
     pub values_files: Option<Vec<String>>,
-    /// Verify contains the secret name containing the trusted public keys used to verify the signature and specifies which provider to use to check whether OCI image is authentic. This field is only supported for OCI sources. Chart dependencies, which are not bundled in the umbrella chart artifact, are not verified.
+    /// Verify contains the secret name containing the trusted public keys
+    /// used to verify the signature and specifies which provider to use to check
+    /// whether OCI image is authentic.
+    /// This field is only supported for OCI sources.
+    /// Chart dependencies, which are not bundled in the umbrella chart artifact, are not verified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verify: Option<HelmReleaseChartSpecVerify>,
-    /// Version semver expression, ignored for charts from v1beta2.GitRepository and v1beta2.Bucket sources. Defaults to latest when omitted.
+    /// Version semver expression, ignored for charts from v1beta2.GitRepository and
+    /// v1beta2.Bucket sources. Defaults to latest when omitted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -161,31 +217,42 @@ pub enum HelmReleaseChartSpecSourceRefKind {
     Bucket,
 }
 
-/// Verify contains the secret name containing the trusted public keys used to verify the signature and specifies which provider to use to check whether OCI image is authentic. This field is only supported for OCI sources. Chart dependencies, which are not bundled in the umbrella chart artifact, are not verified.
+/// Verify contains the secret name containing the trusted public keys
+/// used to verify the signature and specifies which provider to use to check
+/// whether OCI image is authentic.
+/// This field is only supported for OCI sources.
+/// Chart dependencies, which are not bundled in the umbrella chart artifact, are not verified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartSpecVerify {
     /// Provider specifies the technology used to sign the OCI Helm chart.
     pub provider: HelmReleaseChartSpecVerifyProvider,
-    /// SecretRef specifies the Kubernetes Secret containing the trusted public keys.
+    /// SecretRef specifies the Kubernetes Secret containing the
+    /// trusted public keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<HelmReleaseChartSpecVerifySecretRef>,
 }
 
-/// Verify contains the secret name containing the trusted public keys used to verify the signature and specifies which provider to use to check whether OCI image is authentic. This field is only supported for OCI sources. Chart dependencies, which are not bundled in the umbrella chart artifact, are not verified.
+/// Verify contains the secret name containing the trusted public keys
+/// used to verify the signature and specifies which provider to use to check
+/// whether OCI image is authentic.
+/// This field is only supported for OCI sources.
+/// Chart dependencies, which are not bundled in the umbrella chart artifact, are not verified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HelmReleaseChartSpecVerifyProvider {
     #[serde(rename = "cosign")]
     Cosign,
 }
 
-/// SecretRef specifies the Kubernetes Secret containing the trusted public keys.
+/// SecretRef specifies the Kubernetes Secret containing the
+/// trusted public keys.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseChartSpecVerifySecretRef {
     /// Name of the referent.
     pub name: String,
 }
 
-/// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any namespace.
+/// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any
+/// namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseDependsOn {
     /// Name of the referent.
@@ -195,41 +262,66 @@ pub struct HelmReleaseDependsOn {
     pub namespace: Option<String>,
 }
 
-/// DriftDetection holds the configuration for detecting and handling differences between the manifest in the Helm storage and the resources currently existing in the cluster. 
-///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+/// DriftDetection holds the configuration for detecting and handling
+/// differences between the manifest in the Helm storage and the resources
+/// currently existing in the cluster.
+/// 
+/// 
+/// Note: this field is provisional to the v2beta2 API, and not actively used
+/// by v2beta1 HelmReleases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseDriftDetection {
-    /// Ignore contains a list of rules for specifying which changes to ignore during diffing.
+    /// Ignore contains a list of rules for specifying which changes to ignore
+    /// during diffing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<Vec<HelmReleaseDriftDetectionIgnore>>,
-    /// Mode defines how differences should be handled between the Helm manifest and the manifest currently applied to the cluster. If not explicitly set, it defaults to DiffModeDisabled.
+    /// Mode defines how differences should be handled between the Helm manifest
+    /// and the manifest currently applied to the cluster.
+    /// If not explicitly set, it defaults to DiffModeDisabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<HelmReleaseDriftDetectionMode>,
 }
 
-/// IgnoreRule defines a rule to selectively disregard specific changes during the drift detection process.
+/// IgnoreRule defines a rule to selectively disregard specific changes during
+/// the drift detection process.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseDriftDetectionIgnore {
-    /// Paths is a list of JSON Pointer (RFC 6901) paths to be excluded from consideration in a Kubernetes object.
+    /// Paths is a list of JSON Pointer (RFC 6901) paths to be excluded from
+    /// consideration in a Kubernetes object.
     pub paths: Vec<String>,
-    /// Target is a selector for specifying Kubernetes objects to which this rule applies. If Target is not set, the Paths will be ignored for all Kubernetes objects within the manifest of the Helm release.
+    /// Target is a selector for specifying Kubernetes objects to which this
+    /// rule applies.
+    /// If Target is not set, the Paths will be ignored for all Kubernetes
+    /// objects within the manifest of the Helm release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<HelmReleaseDriftDetectionIgnoreTarget>,
 }
 
-/// Target is a selector for specifying Kubernetes objects to which this rule applies. If Target is not set, the Paths will be ignored for all Kubernetes objects within the manifest of the Helm release.
+/// Target is a selector for specifying Kubernetes objects to which this
+/// rule applies.
+/// If Target is not set, the Paths will be ignored for all Kubernetes
+/// objects within the manifest of the Helm release.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseDriftDetectionIgnoreTarget {
-    /// AnnotationSelector is a string that follows the label selection expression https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api It matches with the resource annotations.
+    /// AnnotationSelector is a string that follows the label selection expression
+    /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+    /// It matches with the resource annotations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
     pub annotation_selector: Option<String>,
-    /// Group is the API group to select resources from. Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Group is the API group to select resources from.
+    /// Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// Kind of the API Group to select resources from. Together with Group and Version it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Kind of the API Group to select resources from.
+    /// Together with Group and Version it is capable of unambiguously
+    /// identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// LabelSelector is a string that follows the label selection expression https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api It matches with the resource labels.
+    /// LabelSelector is a string that follows the label selection expression
+    /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+    /// It matches with the resource labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<String>,
     /// Name to match resources with.
@@ -238,13 +330,20 @@ pub struct HelmReleaseDriftDetectionIgnoreTarget {
     /// Namespace to select resources from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Version of the API Group to select resources from. Together with Group and Kind it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Version of the API Group to select resources from.
+    /// Together with Group and Kind it is capable of unambiguously identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// DriftDetection holds the configuration for detecting and handling differences between the manifest in the Helm storage and the resources currently existing in the cluster. 
-///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+/// DriftDetection holds the configuration for detecting and handling
+/// differences between the manifest in the Helm storage and the resources
+/// currently existing in the cluster.
+/// 
+/// 
+/// Note: this field is provisional to the v2beta2 API, and not actively used
+/// by v2beta1 HelmReleases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HelmReleaseDriftDetectionMode {
     #[serde(rename = "enabled")]
@@ -258,39 +357,66 @@ pub enum HelmReleaseDriftDetectionMode {
 /// Install holds the configuration for Helm install actions for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseInstall {
-    /// CRDs upgrade CRDs from the Helm Chart's crds directory according to the CRD upgrade policy provided here. Valid values are `Skip`, `Create` or `CreateReplace`. Default is `Create` and if omitted CRDs are installed but not updated. 
-    ///  Skip: do neither install nor replace (update) any CRDs. 
-    ///  Create: new CRDs are created, existing CRDs are neither updated nor deleted. 
-    ///  CreateReplace: new CRDs are created, existing CRDs are updated (replaced) but not deleted. 
-    ///  By default, CRDs are applied (installed) during Helm install action. With this option users can opt-in to CRD replace existing CRDs on Helm install actions, which is not (yet) natively supported by Helm. https://helm.sh/docs/chart_best_practices/custom_resource_definitions.
+    /// CRDs upgrade CRDs from the Helm Chart's crds directory according
+    /// to the CRD upgrade policy provided here. Valid values are `Skip`,
+    /// `Create` or `CreateReplace`. Default is `Create` and if omitted
+    /// CRDs are installed but not updated.
+    /// 
+    /// 
+    /// Skip: do neither install nor replace (update) any CRDs.
+    /// 
+    /// 
+    /// Create: new CRDs are created, existing CRDs are neither updated nor deleted.
+    /// 
+    /// 
+    /// CreateReplace: new CRDs are created, existing CRDs are updated (replaced)
+    /// but not deleted.
+    /// 
+    /// 
+    /// By default, CRDs are applied (installed) during Helm install action.
+    /// With this option users can opt-in to CRD replace existing CRDs on Helm
+    /// install actions, which is not (yet) natively supported by Helm.
+    /// https://helm.sh/docs/chart_best_practices/custom_resource_definitions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub crds: Option<HelmReleaseInstallCrds>,
-    /// CreateNamespace tells the Helm install action to create the HelmReleaseSpec.TargetNamespace if it does not exist yet. On uninstall, the namespace will not be garbage collected.
+    /// CreateNamespace tells the Helm install action to create the
+    /// HelmReleaseSpec.TargetNamespace if it does not exist yet.
+    /// On uninstall, the namespace will not be garbage collected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createNamespace")]
     pub create_namespace: Option<bool>,
     /// DisableHooks prevents hooks from running during the Helm install action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHooks")]
     pub disable_hooks: Option<bool>,
-    /// DisableOpenAPIValidation prevents the Helm install action from validating rendered templates against the Kubernetes OpenAPI Schema.
+    /// DisableOpenAPIValidation prevents the Helm install action from validating
+    /// rendered templates against the Kubernetes OpenAPI Schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableOpenAPIValidation")]
     pub disable_open_api_validation: Option<bool>,
-    /// DisableWait disables the waiting for resources to be ready after a Helm install has been performed.
+    /// DisableWait disables the waiting for resources to be ready after a Helm
+    /// install has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWait")]
     pub disable_wait: Option<bool>,
-    /// DisableWaitForJobs disables waiting for jobs to complete after a Helm install has been performed.
+    /// DisableWaitForJobs disables waiting for jobs to complete after a Helm
+    /// install has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWaitForJobs")]
     pub disable_wait_for_jobs: Option<bool>,
-    /// Remediation holds the remediation configuration for when the Helm install action for the HelmRelease fails. The default is to not perform any action.
+    /// Remediation holds the remediation configuration for when the Helm install
+    /// action for the HelmRelease fails. The default is to not perform any action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remediation: Option<HelmReleaseInstallRemediation>,
-    /// Replace tells the Helm install action to re-use the 'ReleaseName', but only if that name is a deleted release which remains in the history.
+    /// Replace tells the Helm install action to re-use the 'ReleaseName', but only
+    /// if that name is a deleted release which remains in the history.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replace: Option<bool>,
-    /// SkipCRDs tells the Helm install action to not install any CRDs. By default, CRDs are installed if not already present. 
-    ///  Deprecated use CRD policy (`crds`) attribute with value `Skip` instead.
+    /// SkipCRDs tells the Helm install action to not install any CRDs. By default,
+    /// CRDs are installed if not already present.
+    /// 
+    /// 
+    /// Deprecated use CRD policy (`crds`) attribute with value `Skip` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCRDs")]
     pub skip_cr_ds: Option<bool>,
-    /// Timeout is the time to wait for any individual Kubernetes operation (like Jobs for hooks) during the performance of a Helm install action. Defaults to 'HelmReleaseSpec.Timeout'.
+    /// Timeout is the time to wait for any individual Kubernetes operation (like
+    /// Jobs for hooks) during the performance of a Helm install action. Defaults to
+    /// 'HelmReleaseSpec.Timeout'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -303,29 +429,55 @@ pub enum HelmReleaseInstallCrds {
     CreateReplace,
 }
 
-/// Remediation holds the remediation configuration for when the Helm install action for the HelmRelease fails. The default is to not perform any action.
+/// Remediation holds the remediation configuration for when the Helm install
+/// action for the HelmRelease fails. The default is to not perform any action.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseInstallRemediation {
-    /// IgnoreTestFailures tells the controller to skip remediation when the Helm tests are run after an install action but fail. Defaults to 'Test.IgnoreFailures'.
+    /// IgnoreTestFailures tells the controller to skip remediation when the Helm
+    /// tests are run after an install action but fail. Defaults to
+    /// 'Test.IgnoreFailures'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTestFailures")]
     pub ignore_test_failures: Option<bool>,
-    /// RemediateLastFailure tells the controller to remediate the last failure, when no retries remain. Defaults to 'false'.
+    /// RemediateLastFailure tells the controller to remediate the last failure, when
+    /// no retries remain. Defaults to 'false'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediateLastFailure")]
     pub remediate_last_failure: Option<bool>,
-    /// Retries is the number of retries that should be attempted on failures before bailing. Remediation, using an uninstall, is performed between each attempt. Defaults to '0', a negative integer equals to unlimited retries.
+    /// Retries is the number of retries that should be attempted on failures before
+    /// bailing. Remediation, using an uninstall, is performed between each attempt.
+    /// Defaults to '0', a negative integer equals to unlimited retries.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
 }
 
-/// KubeConfig for reconciling the HelmRelease on a remote cluster. When used in combination with HelmReleaseSpec.ServiceAccountName, forces the controller to act on behalf of that Service Account at the target cluster. If the --default-service-account flag is set, its value will be used as a controller level fallback for when HelmReleaseSpec.ServiceAccountName is empty.
+/// KubeConfig for reconciling the HelmRelease on a remote cluster.
+/// When used in combination with HelmReleaseSpec.ServiceAccountName,
+/// forces the controller to act on behalf of that Service Account at the
+/// target cluster.
+/// If the --default-service-account flag is set, its value will be used as
+/// a controller level fallback for when HelmReleaseSpec.ServiceAccountName
+/// is empty.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseKubeConfig {
-    /// SecretRef holds the name of a secret that contains a key with the kubeconfig file as the value. If no key is set, the key will default to 'value'. It is recommended that the kubeconfig is self-contained, and the secret is regularly updated if credentials such as a cloud-access-token expire. Cloud specific `cmd-path` auth helpers will not function without adding binaries and credentials to the Pod that is responsible for reconciling Kubernetes resources.
+    /// SecretRef holds the name of a secret that contains a key with
+    /// the kubeconfig file as the value. If no key is set, the key will default
+    /// to 'value'.
+    /// It is recommended that the kubeconfig is self-contained, and the secret
+    /// is regularly updated if credentials such as a cloud-access-token expire.
+    /// Cloud specific `cmd-path` auth helpers will not function without adding
+    /// binaries and credentials to the Pod that is responsible for reconciling
+    /// Kubernetes resources.
     #[serde(rename = "secretRef")]
     pub secret_ref: HelmReleaseKubeConfigSecretRef,
 }
 
-/// SecretRef holds the name of a secret that contains a key with the kubeconfig file as the value. If no key is set, the key will default to 'value'. It is recommended that the kubeconfig is self-contained, and the secret is regularly updated if credentials such as a cloud-access-token expire. Cloud specific `cmd-path` auth helpers will not function without adding binaries and credentials to the Pod that is responsible for reconciling Kubernetes resources.
+/// SecretRef holds the name of a secret that contains a key with
+/// the kubeconfig file as the value. If no key is set, the key will default
+/// to 'value'.
+/// It is recommended that the kubeconfig is self-contained, and the secret
+/// is regularly updated if credentials such as a cloud-access-token expire.
+/// Cloud specific `cmd-path` auth helpers will not function without adding
+/// binaries and credentials to the Pod that is responsible for reconciling
+/// Kubernetes resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseKubeConfigSecretRef {
     /// Key in the Secret, when not specified an implementation-specific default key is used.
@@ -346,10 +498,13 @@ pub struct HelmReleasePostRenderers {
 /// Kustomization to apply as PostRenderer.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleasePostRenderersKustomize {
-    /// Images is a list of (image name, new name, new tag or digest) for changing image names, tags or digests. This can also be achieved with a patch, but this operator is simpler to specify.
+    /// Images is a list of (image name, new name, new tag or digest)
+    /// for changing image names, tags or digests. This can also be achieved with a
+    /// patch, but this operator is simpler to specify.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<HelmReleasePostRenderersKustomizeImages>>,
-    /// Strategic merge and JSON patches, defined as inline YAML objects, capable of targeting objects based on kind, label and annotation selectors.
+    /// Strategic merge and JSON patches, defined as inline YAML objects,
+    /// capable of targeting objects based on kind, label and annotation selectors.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patches: Option<Vec<HelmReleasePostRenderersKustomizePatches>>,
     /// JSON 6902 patches, defined as inline YAML objects.
@@ -363,7 +518,8 @@ pub struct HelmReleasePostRenderersKustomize {
 /// Image contains an image name, a new name, a new tag or digest, which will replace the original name and tag.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleasePostRenderersKustomizeImages {
-    /// Digest is the value used to replace the original image tag. If digest is present NewTag value is ignored.
+    /// Digest is the value used to replace the original image tag.
+    /// If digest is present NewTag value is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub digest: Option<String>,
     /// Name is a tag-less image name.
@@ -376,10 +532,12 @@ pub struct HelmReleasePostRenderersKustomizeImages {
     pub new_tag: Option<String>,
 }
 
-/// Patch contains an inline StrategicMerge or JSON6902 patch, and the target the patch should be applied to.
+/// Patch contains an inline StrategicMerge or JSON6902 patch, and the target the patch should
+/// be applied to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleasePostRenderersKustomizePatches {
-    /// Patch contains an inline StrategicMerge patch or an inline JSON6902 patch with an array of operation objects.
+    /// Patch contains an inline StrategicMerge patch or an inline JSON6902 patch with
+    /// an array of operation objects.
     pub patch: String,
     /// Target points to the resources that the patch document should be applied to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -389,16 +547,25 @@ pub struct HelmReleasePostRenderersKustomizePatches {
 /// Target points to the resources that the patch document should be applied to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleasePostRenderersKustomizePatchesTarget {
-    /// AnnotationSelector is a string that follows the label selection expression https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api It matches with the resource annotations.
+    /// AnnotationSelector is a string that follows the label selection expression
+    /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+    /// It matches with the resource annotations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
     pub annotation_selector: Option<String>,
-    /// Group is the API group to select resources from. Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Group is the API group to select resources from.
+    /// Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// Kind of the API Group to select resources from. Together with Group and Version it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Kind of the API Group to select resources from.
+    /// Together with Group and Version it is capable of unambiguously
+    /// identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// LabelSelector is a string that follows the label selection expression https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api It matches with the resource labels.
+    /// LabelSelector is a string that follows the label selection expression
+    /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+    /// It matches with the resource labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<String>,
     /// Name to match resources with.
@@ -407,7 +574,9 @@ pub struct HelmReleasePostRenderersKustomizePatchesTarget {
     /// Namespace to select resources from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Version of the API Group to select resources from. Together with Group and Kind it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Version of the API Group to select resources from.
+    /// Together with Group and Kind it is capable of unambiguously identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -421,22 +590,29 @@ pub struct HelmReleasePostRenderersKustomizePatchesJson6902 {
     pub target: HelmReleasePostRenderersKustomizePatchesJson6902Target,
 }
 
-/// JSON6902 is a JSON6902 operation object. https://datatracker.ietf.org/doc/html/rfc6902#section-4
+/// JSON6902 is a JSON6902 operation object.
+/// https://datatracker.ietf.org/doc/html/rfc6902#section-4
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleasePostRenderersKustomizePatchesJson6902Patch {
-    /// From contains a JSON-pointer value that references a location within the target document where the operation is performed. The meaning of the value depends on the value of Op, and is NOT taken into account by all operations.
+    /// From contains a JSON-pointer value that references a location within the target document where the operation is
+    /// performed. The meaning of the value depends on the value of Op, and is NOT taken into account by all operations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<String>,
-    /// Op indicates the operation to perform. Its value MUST be one of "add", "remove", "replace", "move", "copy", or "test". https://datatracker.ietf.org/doc/html/rfc6902#section-4
+    /// Op indicates the operation to perform. Its value MUST be one of "add", "remove", "replace", "move", "copy", or
+    /// "test".
+    /// https://datatracker.ietf.org/doc/html/rfc6902#section-4
     pub op: HelmReleasePostRenderersKustomizePatchesJson6902PatchOp,
-    /// Path contains the JSON-pointer value that references a location within the target document where the operation is performed. The meaning of the value depends on the value of Op.
+    /// Path contains the JSON-pointer value that references a location within the target document where the operation
+    /// is performed. The meaning of the value depends on the value of Op.
     pub path: String,
-    /// Value contains a valid JSON structure. The meaning of the value depends on the value of Op, and is NOT taken into account by all operations.
+    /// Value contains a valid JSON structure. The meaning of the value depends on the value of Op, and is NOT taken into
+    /// account by all operations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<HashMap<String, serde_json::Value>>,
 }
 
-/// JSON6902 is a JSON6902 operation object. https://datatracker.ietf.org/doc/html/rfc6902#section-4
+/// JSON6902 is a JSON6902 operation object.
+/// https://datatracker.ietf.org/doc/html/rfc6902#section-4
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HelmReleasePostRenderersKustomizePatchesJson6902PatchOp {
     #[serde(rename = "test")]
@@ -456,16 +632,25 @@ pub enum HelmReleasePostRenderersKustomizePatchesJson6902PatchOp {
 /// Target points to the resources that the patch document should be applied to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleasePostRenderersKustomizePatchesJson6902Target {
-    /// AnnotationSelector is a string that follows the label selection expression https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api It matches with the resource annotations.
+    /// AnnotationSelector is a string that follows the label selection expression
+    /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+    /// It matches with the resource annotations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
     pub annotation_selector: Option<String>,
-    /// Group is the API group to select resources from. Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Group is the API group to select resources from.
+    /// Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// Kind of the API Group to select resources from. Together with Group and Version it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Kind of the API Group to select resources from.
+    /// Together with Group and Version it is capable of unambiguously
+    /// identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// LabelSelector is a string that follows the label selection expression https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api It matches with the resource labels.
+    /// LabelSelector is a string that follows the label selection expression
+    /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
+    /// It matches with the resource labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<String>,
     /// Name to match resources with.
@@ -474,7 +659,9 @@ pub struct HelmReleasePostRenderersKustomizePatchesJson6902Target {
     /// Namespace to select resources from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Version of the API Group to select resources from. Together with Group and Kind it is capable of unambiguously identifying and/or selecting resources. https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
+    /// Version of the API Group to select resources from.
+    /// Together with Group and Kind it is capable of unambiguously identifying and/or selecting resources.
+    /// https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -482,16 +669,19 @@ pub struct HelmReleasePostRenderersKustomizePatchesJson6902Target {
 /// Rollback holds the configuration for Helm rollback actions for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseRollback {
-    /// CleanupOnFail allows deletion of new resources created during the Helm rollback action when it fails.
+    /// CleanupOnFail allows deletion of new resources created during the Helm
+    /// rollback action when it fails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupOnFail")]
     pub cleanup_on_fail: Option<bool>,
     /// DisableHooks prevents hooks from running during the Helm rollback action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHooks")]
     pub disable_hooks: Option<bool>,
-    /// DisableWait disables the waiting for resources to be ready after a Helm rollback has been performed.
+    /// DisableWait disables the waiting for resources to be ready after a Helm
+    /// rollback has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWait")]
     pub disable_wait: Option<bool>,
-    /// DisableWaitForJobs disables waiting for jobs to complete after a Helm rollback has been performed.
+    /// DisableWaitForJobs disables waiting for jobs to complete after a Helm
+    /// rollback has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWaitForJobs")]
     pub disable_wait_for_jobs: Option<bool>,
     /// Force forces resource updates through a replacement strategy.
@@ -500,7 +690,9 @@ pub struct HelmReleaseRollback {
     /// Recreate performs pod restarts for the resource if applicable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recreate: Option<bool>,
-    /// Timeout is the time to wait for any individual Kubernetes operation (like Jobs for hooks) during the performance of a Helm rollback action. Defaults to 'HelmReleaseSpec.Timeout'.
+    /// Timeout is the time to wait for any individual Kubernetes operation (like
+    /// Jobs for hooks) during the performance of a Helm rollback action. Defaults to
+    /// 'HelmReleaseSpec.Timeout'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -508,13 +700,17 @@ pub struct HelmReleaseRollback {
 /// Test holds the configuration for Helm test actions for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseTest {
-    /// Enable enables Helm test actions for this HelmRelease after an Helm install or upgrade action has been performed.
+    /// Enable enables Helm test actions for this HelmRelease after an Helm install
+    /// or upgrade action has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// IgnoreFailures tells the controller to skip remediation when the Helm tests are run but fail. Can be overwritten for tests run after install or upgrade actions in 'Install.IgnoreTestFailures' and 'Upgrade.IgnoreTestFailures'.
+    /// IgnoreFailures tells the controller to skip remediation when the Helm tests
+    /// are run but fail. Can be overwritten for tests run after install or upgrade
+    /// actions in 'Install.IgnoreTestFailures' and 'Upgrade.IgnoreTestFailures'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreFailures")]
     pub ignore_failures: Option<bool>,
-    /// Timeout is the time to wait for any individual Kubernetes operation during the performance of a Helm test action. Defaults to 'HelmReleaseSpec.Timeout'.
+    /// Timeout is the time to wait for any individual Kubernetes operation during
+    /// the performance of a Helm test action. Defaults to 'HelmReleaseSpec.Timeout'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -522,19 +718,24 @@ pub struct HelmReleaseTest {
 /// Uninstall holds the configuration for Helm uninstall actions for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseUninstall {
-    /// DeletionPropagation specifies the deletion propagation policy when a Helm uninstall is performed.
+    /// DeletionPropagation specifies the deletion propagation policy when
+    /// a Helm uninstall is performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagation")]
     pub deletion_propagation: Option<HelmReleaseUninstallDeletionPropagation>,
     /// DisableHooks prevents hooks from running during the Helm rollback action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHooks")]
     pub disable_hooks: Option<bool>,
-    /// DisableWait disables waiting for all the resources to be deleted after a Helm uninstall is performed.
+    /// DisableWait disables waiting for all the resources to be deleted after
+    /// a Helm uninstall is performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWait")]
     pub disable_wait: Option<bool>,
-    /// KeepHistory tells Helm to remove all associated resources and mark the release as deleted, but retain the release history.
+    /// KeepHistory tells Helm to remove all associated resources and mark the
+    /// release as deleted, but retain the release history.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepHistory")]
     pub keep_history: Option<bool>,
-    /// Timeout is the time to wait for any individual Kubernetes operation (like Jobs for hooks) during the performance of a Helm uninstall action. Defaults to 'HelmReleaseSpec.Timeout'.
+    /// Timeout is the time to wait for any individual Kubernetes operation (like
+    /// Jobs for hooks) during the performance of a Helm uninstall action. Defaults
+    /// to 'HelmReleaseSpec.Timeout'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -553,38 +754,61 @@ pub enum HelmReleaseUninstallDeletionPropagation {
 /// Upgrade holds the configuration for Helm upgrade actions for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseUpgrade {
-    /// CleanupOnFail allows deletion of new resources created during the Helm upgrade action when it fails.
+    /// CleanupOnFail allows deletion of new resources created during the Helm
+    /// upgrade action when it fails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupOnFail")]
     pub cleanup_on_fail: Option<bool>,
-    /// CRDs upgrade CRDs from the Helm Chart's crds directory according to the CRD upgrade policy provided here. Valid values are `Skip`, `Create` or `CreateReplace`. Default is `Skip` and if omitted CRDs are neither installed nor upgraded. 
-    ///  Skip: do neither install nor replace (update) any CRDs. 
-    ///  Create: new CRDs are created, existing CRDs are neither updated nor deleted. 
-    ///  CreateReplace: new CRDs are created, existing CRDs are updated (replaced) but not deleted. 
-    ///  By default, CRDs are not applied during Helm upgrade action. With this option users can opt-in to CRD upgrade, which is not (yet) natively supported by Helm. https://helm.sh/docs/chart_best_practices/custom_resource_definitions.
+    /// CRDs upgrade CRDs from the Helm Chart's crds directory according
+    /// to the CRD upgrade policy provided here. Valid values are `Skip`,
+    /// `Create` or `CreateReplace`. Default is `Skip` and if omitted
+    /// CRDs are neither installed nor upgraded.
+    /// 
+    /// 
+    /// Skip: do neither install nor replace (update) any CRDs.
+    /// 
+    /// 
+    /// Create: new CRDs are created, existing CRDs are neither updated nor deleted.
+    /// 
+    /// 
+    /// CreateReplace: new CRDs are created, existing CRDs are updated (replaced)
+    /// but not deleted.
+    /// 
+    /// 
+    /// By default, CRDs are not applied during Helm upgrade action. With this
+    /// option users can opt-in to CRD upgrade, which is not (yet) natively supported by Helm.
+    /// https://helm.sh/docs/chart_best_practices/custom_resource_definitions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub crds: Option<HelmReleaseUpgradeCrds>,
     /// DisableHooks prevents hooks from running during the Helm upgrade action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHooks")]
     pub disable_hooks: Option<bool>,
-    /// DisableOpenAPIValidation prevents the Helm upgrade action from validating rendered templates against the Kubernetes OpenAPI Schema.
+    /// DisableOpenAPIValidation prevents the Helm upgrade action from validating
+    /// rendered templates against the Kubernetes OpenAPI Schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableOpenAPIValidation")]
     pub disable_open_api_validation: Option<bool>,
-    /// DisableWait disables the waiting for resources to be ready after a Helm upgrade has been performed.
+    /// DisableWait disables the waiting for resources to be ready after a Helm
+    /// upgrade has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWait")]
     pub disable_wait: Option<bool>,
-    /// DisableWaitForJobs disables waiting for jobs to complete after a Helm upgrade has been performed.
+    /// DisableWaitForJobs disables waiting for jobs to complete after a Helm
+    /// upgrade has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWaitForJobs")]
     pub disable_wait_for_jobs: Option<bool>,
     /// Force forces resource updates through a replacement strategy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
-    /// PreserveValues will make Helm reuse the last release's values and merge in overrides from 'Values'. Setting this flag makes the HelmRelease non-declarative.
+    /// PreserveValues will make Helm reuse the last release's values and merge in
+    /// overrides from 'Values'. Setting this flag makes the HelmRelease
+    /// non-declarative.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveValues")]
     pub preserve_values: Option<bool>,
-    /// Remediation holds the remediation configuration for when the Helm upgrade action for the HelmRelease fails. The default is to not perform any action.
+    /// Remediation holds the remediation configuration for when the Helm upgrade
+    /// action for the HelmRelease fails. The default is to not perform any action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remediation: Option<HelmReleaseUpgradeRemediation>,
-    /// Timeout is the time to wait for any individual Kubernetes operation (like Jobs for hooks) during the performance of a Helm upgrade action. Defaults to 'HelmReleaseSpec.Timeout'.
+    /// Timeout is the time to wait for any individual Kubernetes operation (like
+    /// Jobs for hooks) during the performance of a Helm upgrade action. Defaults to
+    /// 'HelmReleaseSpec.Timeout'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
@@ -597,16 +821,22 @@ pub enum HelmReleaseUpgradeCrds {
     CreateReplace,
 }
 
-/// Remediation holds the remediation configuration for when the Helm upgrade action for the HelmRelease fails. The default is to not perform any action.
+/// Remediation holds the remediation configuration for when the Helm upgrade
+/// action for the HelmRelease fails. The default is to not perform any action.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseUpgradeRemediation {
-    /// IgnoreTestFailures tells the controller to skip remediation when the Helm tests are run after an upgrade action but fail. Defaults to 'Test.IgnoreFailures'.
+    /// IgnoreTestFailures tells the controller to skip remediation when the Helm
+    /// tests are run after an upgrade action but fail.
+    /// Defaults to 'Test.IgnoreFailures'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTestFailures")]
     pub ignore_test_failures: Option<bool>,
-    /// RemediateLastFailure tells the controller to remediate the last failure, when no retries remain. Defaults to 'false' unless 'Retries' is greater than 0.
+    /// RemediateLastFailure tells the controller to remediate the last failure, when
+    /// no retries remain. Defaults to 'false' unless 'Retries' is greater than 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediateLastFailure")]
     pub remediate_last_failure: Option<bool>,
-    /// Retries is the number of retries that should be attempted on failures before bailing. Remediation, using 'Strategy', is performed between each attempt. Defaults to '0', a negative integer equals to unlimited retries.
+    /// Retries is the number of retries that should be attempted on failures before
+    /// bailing. Remediation, using 'Strategy', is performed between each attempt.
+    /// Defaults to '0', a negative integer equals to unlimited retries.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
     /// Strategy to use for failure remediation. Defaults to 'rollback'.
@@ -614,7 +844,8 @@ pub struct HelmReleaseUpgradeRemediation {
     pub strategy: Option<HelmReleaseUpgradeRemediationStrategy>,
 }
 
-/// Remediation holds the remediation configuration for when the Helm upgrade action for the HelmRelease fails. The default is to not perform any action.
+/// Remediation holds the remediation configuration for when the Helm upgrade
+/// action for the HelmRelease fails. The default is to not perform any action.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HelmReleaseUpgradeRemediationStrategy {
     #[serde(rename = "rollback")]
@@ -623,25 +854,35 @@ pub enum HelmReleaseUpgradeRemediationStrategy {
     Uninstall,
 }
 
-/// ValuesReference contains a reference to a resource containing Helm values, and optionally the key they can be found at.
+/// ValuesReference contains a reference to a resource containing Helm values,
+/// and optionally the key they can be found at.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseValuesFrom {
     /// Kind of the values referent, valid values are ('Secret', 'ConfigMap').
     pub kind: HelmReleaseValuesFromKind,
-    /// Name of the values referent. Should reside in the same namespace as the referring resource.
+    /// Name of the values referent. Should reside in the same namespace as the
+    /// referring resource.
     pub name: String,
-    /// Optional marks this ValuesReference as optional. When set, a not found error for the values reference is ignored, but any ValuesKey, TargetPath or transient error will still result in a reconciliation failure.
+    /// Optional marks this ValuesReference as optional. When set, a not found error
+    /// for the values reference is ignored, but any ValuesKey, TargetPath or
+    /// transient error will still result in a reconciliation failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// TargetPath is the YAML dot notation path the value should be merged at. When set, the ValuesKey is expected to be a single flat value. Defaults to 'None', which results in the values getting merged at the root.
+    /// TargetPath is the YAML dot notation path the value should be merged at. When
+    /// set, the ValuesKey is expected to be a single flat value. Defaults to 'None',
+    /// which results in the values getting merged at the root.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPath")]
     pub target_path: Option<String>,
-    /// ValuesKey is the data key where the values.yaml or a specific value can be found at. Defaults to 'values.yaml'. When set, must be a valid Data Key, consisting of alphanumeric characters, '-', '_' or '.'.
+    /// ValuesKey is the data key where the values.yaml or a specific value can be
+    /// found at. Defaults to 'values.yaml'.
+    /// When set, must be a valid Data Key, consisting of alphanumeric characters,
+    /// '-', '_' or '.'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesKey")]
     pub values_key: Option<String>,
 }
 
-/// ValuesReference contains a reference to a resource containing Helm values, and optionally the key they can be found at.
+/// ValuesReference contains a reference to a resource containing Helm values,
+/// and optionally the key they can be found at.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HelmReleaseValuesFromKind {
     Secret,
@@ -654,49 +895,79 @@ pub struct HelmReleaseStatus {
     /// Conditions holds the conditions for the HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Failures is the reconciliation failure count against the latest desired state. It is reset after a successful reconciliation.
+    /// Failures is the reconciliation failure count against the latest desired
+    /// state. It is reset after a successful reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failures: Option<i64>,
-    /// HelmChart is the namespaced name of the HelmChart resource created by the controller for the HelmRelease.
+    /// HelmChart is the namespaced name of the HelmChart resource created by
+    /// the controller for the HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmChart")]
     pub helm_chart: Option<String>,
-    /// History holds the history of Helm releases performed for this HelmRelease up to the last successfully completed release. 
-    ///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+    /// History holds the history of Helm releases performed for this HelmRelease
+    /// up to the last successfully completed release.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2beta2 API, and not actively used
+    /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub history: Option<Vec<HelmReleaseStatusHistory>>,
-    /// InstallFailures is the install failure count against the latest desired state. It is reset after a successful reconciliation.
+    /// InstallFailures is the install failure count against the latest desired
+    /// state. It is reset after a successful reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installFailures")]
     pub install_failures: Option<i64>,
     /// LastAppliedRevision is the revision of the last successfully applied source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedRevision")]
     pub last_applied_revision: Option<String>,
-    /// LastAttemptedConfigDigest is the digest for the config (better known as "values") of the last reconciliation attempt. 
-    ///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+    /// LastAttemptedConfigDigest is the digest for the config (better known as
+    /// "values") of the last reconciliation attempt.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2beta2 API, and not actively used
+    /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedConfigDigest")]
     pub last_attempted_config_digest: Option<String>,
-    /// LastAttemptedGeneration is the last generation the controller attempted to reconcile. 
-    ///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+    /// LastAttemptedGeneration is the last generation the controller attempted
+    /// to reconcile.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2beta2 API, and not actively used
+    /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedGeneration")]
     pub last_attempted_generation: Option<i64>,
-    /// LastAttemptedReleaseAction is the last release action performed for this HelmRelease. It is used to determine the active remediation strategy. 
-    ///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+    /// LastAttemptedReleaseAction is the last release action performed for this
+    /// HelmRelease. It is used to determine the active remediation strategy.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2beta2 API, and not actively used
+    /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedReleaseAction")]
     pub last_attempted_release_action: Option<String>,
     /// LastAttemptedRevision is the revision of the last reconciliation attempt.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedRevision")]
     pub last_attempted_revision: Option<String>,
-    /// LastAttemptedValuesChecksum is the SHA1 checksum of the values of the last reconciliation attempt.
+    /// LastAttemptedValuesChecksum is the SHA1 checksum of the values of the last
+    /// reconciliation attempt.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedValuesChecksum")]
     pub last_attempted_values_checksum: Option<String>,
-    /// LastHandledForceAt holds the value of the most recent force request value, so a change of the annotation value can be detected. 
-    ///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+    /// LastHandledForceAt holds the value of the most recent force request
+    /// value, so a change of the annotation value can be detected.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2beta2 API, and not actively used
+    /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledForceAt")]
     pub last_handled_force_at: Option<String>,
-    /// LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
+    /// LastHandledReconcileAt holds the value of the most recent
+    /// reconcile request value, so a change of the annotation value
+    /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
-    /// LastHandledResetAt holds the value of the most recent reset request value, so a change of the annotation value can be detected. 
-    ///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+    /// LastHandledResetAt holds the value of the most recent reset request
+    /// value, so a change of the annotation value can be detected.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2beta2 API, and not actively used
+    /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledResetAt")]
     pub last_handled_reset_at: Option<String>,
     /// LastReleaseRevision is the revision of the last successful Helm release.
@@ -705,34 +976,46 @@ pub struct HelmReleaseStatus {
     /// ObservedGeneration is the last observed generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// StorageNamespace is the namespace of the Helm release storage for the current release. 
-    ///  Note: this field is provisional to the v2beta2 API, and not actively used by v2beta1 HelmReleases.
+    /// StorageNamespace is the namespace of the Helm release storage for the
+    /// current release.
+    /// 
+    /// 
+    /// Note: this field is provisional to the v2beta2 API, and not actively used
+    /// by v2beta1 HelmReleases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageNamespace")]
     pub storage_namespace: Option<String>,
-    /// UpgradeFailures is the upgrade failure count against the latest desired state. It is reset after a successful reconciliation.
+    /// UpgradeFailures is the upgrade failure count against the latest desired
+    /// state. It is reset after a successful reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeFailures")]
     pub upgrade_failures: Option<i64>,
 }
 
-/// Snapshot captures a point-in-time copy of the status information for a Helm release, as managed by the controller.
+/// Snapshot captures a point-in-time copy of the status information for a Helm release,
+/// as managed by the controller.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseStatusHistory {
-    /// APIVersion is the API version of the Snapshot. Provisional: when the calculation method of the Digest field is changed, this field will be used to distinguish between the old and new methods.
+    /// APIVersion is the API version of the Snapshot.
+    /// Provisional: when the calculation method of the Digest field is changed,
+    /// this field will be used to distinguish between the old and new methods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// ChartName is the chart name of the release object in storage.
     #[serde(rename = "chartName")]
     pub chart_name: String,
-    /// ChartVersion is the chart version of the release object in storage.
+    /// ChartVersion is the chart version of the release object in
+    /// storage.
     #[serde(rename = "chartVersion")]
     pub chart_version: String,
-    /// ConfigDigest is the checksum of the config (better known as "values") of the release object in storage. It has the format of `<algo>:<checksum>`.
+    /// ConfigDigest is the checksum of the config (better known as
+    /// "values") of the release object in storage.
+    /// It has the format of `<algo>:<checksum>`.
     #[serde(rename = "configDigest")]
     pub config_digest: String,
     /// Deleted is when the release was deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deleted: Option<String>,
-    /// Digest is the checksum of the release object in storage. It has the format of `<algo>:<checksum>`.
+    /// Digest is the checksum of the release object in storage.
+    /// It has the format of `<algo>:<checksum>`.
     pub digest: String,
     /// FirstDeployed is when the release was first deployed.
     #[serde(rename = "firstDeployed")]
@@ -746,14 +1029,16 @@ pub struct HelmReleaseStatusHistory {
     pub namespace: String,
     /// Status is the current state of the release.
     pub status: String,
-    /// TestHooks is the list of test hooks for the release as observed to be run by the controller.
+    /// TestHooks is the list of test hooks for the release as observed to be
+    /// run by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "testHooks")]
     pub test_hooks: Option<BTreeMap<String, HelmReleaseStatusHistoryTestHooks>>,
     /// Version is the version of the release object in storage.
     pub version: i64,
 }
 
-/// TestHooks is the list of test hooks for the release as observed to be run by the controller.
+/// TestHooks is the list of test hooks for the release as observed to be
+/// run by the controller.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmReleaseStatusHistoryTestHooks {
     /// LastCompleted is the time the test hook last completed.

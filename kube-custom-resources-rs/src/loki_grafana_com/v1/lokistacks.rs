@@ -527,8 +527,8 @@ pub enum LokiStackStorageSecretCredentialMode {
     Static,
     #[serde(rename = "token")]
     Token,
-    #[serde(rename = "managed")]
-    Managed,
+    #[serde(rename = "token-cco")]
+    TokenCco,
 }
 
 /// Secret for object storage authentication.
@@ -3045,8 +3045,8 @@ pub enum LokiStackStatusStorageCredentialMode {
     Static,
     #[serde(rename = "token")]
     Token,
-    #[serde(rename = "managed")]
-    Managed,
+    #[serde(rename = "token-cco")]
+    TokenCco,
 }
 
 /// ObjectStorageSchema defines the requirements needed to configure a new

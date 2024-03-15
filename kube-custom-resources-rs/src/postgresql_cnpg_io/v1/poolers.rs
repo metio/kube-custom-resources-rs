@@ -312,14 +312,14 @@ pub enum PoolerMonitoringPodMonitorRelabelingsAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PoolerPgbouncer {
     /// The query that will be used to download the hash of the password
-    /// of a certain user. Default: "SELECT usename, passwd FROM user_search($1)".
+    /// of a certain user. Default: "SELECT usename, passwd FROM public.user_search($1)".
     /// In case it is specified, also an AuthQuerySecret has to be specified and
     /// no automatic CNPG Cluster integration will be triggered.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authQuery")]
     pub auth_query: Option<String>,
     /// The credentials of the user that need to be used for the authentication
     /// query. In case it is specified, also an AuthQuery
-    /// (e.g. "SELECT usename, passwd FROM pg_shadow WHERE usename=$1")
+    /// (e.g. "SELECT usename, passwd FROM pg_catalog.pg_shadow WHERE usename=$1")
     /// has to be specified and no automatic CNPG Cluster integration will be triggered.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authQuerySecret")]
     pub auth_query_secret: Option<PoolerPgbouncerAuthQuerySecret>,
@@ -344,7 +344,7 @@ pub struct PoolerPgbouncer {
 
 /// The credentials of the user that need to be used for the authentication
 /// query. In case it is specified, also an AuthQuery
-/// (e.g. "SELECT usename, passwd FROM pg_shadow WHERE usename=$1")
+/// (e.g. "SELECT usename, passwd FROM pg_catalog.pg_shadow WHERE usename=$1")
 /// has to be specified and no automatic CNPG Cluster integration will be triggered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PoolerPgbouncerAuthQuerySecret {

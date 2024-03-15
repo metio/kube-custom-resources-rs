@@ -5,7 +5,8 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// SnapshotSpec contains all information needed about a restic snapshot so it can be restored.
+/// SnapshotSpec contains all information needed about a restic snapshot so it
+/// can be restored.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "k8up.io", version = "v1", kind = "Snapshot", plural = "snapshots")]
 #[kube(namespaced)]

@@ -287,8 +287,40 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                createdAt:
+                  description: "Date and time at which your private CA was created."
+                  format: "date-time"
+                  type: "string"
                 csr:
                   format: "byte"
+                  type: "string"
+                failureReason:
+                  description: "Reason the request to create your private CA failed."
+                  type: "string"
+                lastStateChangeAt:
+                  description: "Date and time at which your private CA was last updated."
+                  format: "date-time"
+                  type: "string"
+                notAfter:
+                  description: "Date and time after which your private CA certificate is not valid."
+                  format: "date-time"
+                  type: "string"
+                notBefore:
+                  description: "Date and time before which your private CA certificate is not valid."
+                  format: "date-time"
+                  type: "string"
+                ownerAccount:
+                  description: "The Amazon Web Services account ID that owns the certificate authority."
+                  type: "string"
+                restorableUntil:
+                  description: "The period during which a deleted CA can be restored. For more information,\nsee the PermanentDeletionTimeInDays parameter of the DeleteCertificateAuthorityRequest\n(https://docs.aws.amazon.com/privateca/latest/APIReference/API_DeleteCertificateAuthorityRequest.html)\naction."
+                  format: "date-time"
+                  type: "string"
+                serial:
+                  description: "Serial number of your private CA."
+                  type: "string"
+                status:
+                  description: "Status of your private CA."
                   type: "string"
               type: "object"
           type: "object"

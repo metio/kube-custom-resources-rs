@@ -3860,6 +3860,9 @@ pub struct PrometheusRemoteWriteQueueConfig {
     /// Retry upon receiving a 429 status code from the remote-write storage. This is experimental feature and might change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOnRateLimit")]
     pub retry_on_rate_limit: Option<bool>,
+    /// SampleAgeLimit drops samples older than the limit. It requires Prometheus >= v2.50.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleAgeLimit")]
+    pub sample_age_limit: Option<String>,
 }
 
 /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL. 

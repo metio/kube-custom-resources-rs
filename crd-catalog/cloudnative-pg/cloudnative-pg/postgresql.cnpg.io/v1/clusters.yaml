@@ -1218,6 +1218,10 @@ spec:
                 description:
                   description: "Description of this PostgreSQL cluster"
                   type: "string"
+                enablePDB:
+                  default: true
+                  description: "Manage the `PodDisruptionBudget` resources within the cluster. When\nconfigured as `true` (default setting), the pod disruption budgets\nwill safeguard the primary node from being terminated. Conversely,\nsetting it to `false` will result in the absence of any\n`PodDisruptionBudget` resource, permitting the shutdown of all nodes\nhosting the PostgreSQL cluster. This latter configuration is\nadvisable for any PostgreSQL cluster employed for\ndevelopment/staging purposes."
+                  type: "boolean"
                 enableSuperuserAccess:
                   default: false
                   description: "When this option is enabled, the operator will use the `SuperuserSecret`\nto update the `postgres` user password (if the secret is\nnot present, the operator will automatically create one). When this\noption is disabled, the operator will ignore the `SuperuserSecret` content, delete\nit when automatically created, and then blank the password of the `postgres`\nuser by setting it to `NULL`. Disabled by default."
@@ -2121,6 +2125,23 @@ spec:
                       description: "Reuse the existing PVC (wait for the node to come\nup again) or not (recreate it elsewhere - when `instances` >1)"
                       type: "boolean"
                   type: "object"
+                plugins:
+                  description: "The plugins configuration, containing\nany plugin to be loaded with the corresponding configuration"
+                  items:
+                    description: "PluginConfiguration specifies a plugin that need to be loaded for this\ncluster to be reconciled"
+                    properties:
+                      name:
+                        description: "Name is the plugin name"
+                        type: "string"
+                      parameters:
+                        additionalProperties:
+                          type: "string"
+                        description: "Parameters is the configuration of the plugin"
+                        type: "object"
+                    required:
+                      - "name"
+                    type: "object"
+                  type: "array"
                 postgresGID:
                   default: 26
                   description: "The GID of the `postgres` user inside the image, defaults to `26`"
@@ -3308,6 +3329,42 @@ spec:
                 phaseReason:
                   description: "Reason for the current phase"
                   type: "string"
+                pluginStatus:
+                  description: "PluginStatus is the status of the loaded plugins"
+                  items:
+                    description: "PluginStatus is the status of a loaded plugin"
+                    properties:
+                      backupCapabilities:
+                        description: "BackupCapabilities are the list of capabilities of the\nplugin regarding the Backup management"
+                        items:
+                          type: "string"
+                        type: "array"
+                      capabilities:
+                        description: "Capabilities are the list of capabilities of the\nplugin"
+                        items:
+                          type: "string"
+                        type: "array"
+                      name:
+                        description: "Name is the name of the plugin"
+                        type: "string"
+                      operatorCapabilities:
+                        description: "OperatorCapabilities are the list of capabilities of the\nplugin regarding the reconciler"
+                        items:
+                          type: "string"
+                        type: "array"
+                      version:
+                        description: "Version is the version of the plugin loaded by the\nlatest reconciliation loop"
+                        type: "string"
+                      walCapabilities:
+                        description: "WALCapabilities are the list of capabilities of the\nplugin regarding the WAL management"
+                        items:
+                          type: "string"
+                        type: "array"
+                    required:
+                      - "name"
+                      - "version"
+                    type: "object"
+                  type: "array"
                 poolerIntegrations:
                   description: "The integration needed by poolers referencing the cluster"
                   properties:

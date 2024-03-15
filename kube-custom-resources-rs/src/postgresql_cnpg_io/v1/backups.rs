@@ -4,6 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
 
 /// Specification of the desired behavior of the backup.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
@@ -15,8 +16,8 @@ use serde::{Serialize, Deserialize};
 pub struct BackupSpec {
     /// The cluster to backup
     pub cluster: BackupCluster,
-    /// The backup method to be used, possible options are `barmanObjectStore`
-    /// and `volumeSnapshot`. Defaults to: `barmanObjectStore`.
+    /// The backup method to be used, possible options are `barmanObjectStore`,
+    /// `volumeSnapshot` or `plugin`. Defaults to: `barmanObjectStore`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<BackupMethod>,
     /// Whether the default type of backup with volume snapshots is
@@ -28,6 +29,9 @@ pub struct BackupSpec {
     /// Overrides the default settings specified in the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineConfiguration")]
     pub online_configuration: Option<BackupOnlineConfiguration>,
+    /// Configuration parameters passed to the plugin managing this backup
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginConfiguration")]
+    pub plugin_configuration: Option<BackupPluginConfiguration>,
     /// The policy to decide which instance should perform this backup. If empty,
     /// it defaults to `cluster.spec.backup.target`.
     /// Available options are empty string, `primary` and `prefer-standby`.
@@ -53,6 +57,8 @@ pub enum BackupMethod {
     BarmanObjectStore,
     #[serde(rename = "volumeSnapshot")]
     VolumeSnapshot,
+    #[serde(rename = "plugin")]
+    Plugin,
 }
 
 /// Configuration parameters to control the online/hot backup with volume snapshots
@@ -77,6 +83,17 @@ pub struct BackupOnlineConfiguration {
     /// an immediate segment switch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForArchive")]
     pub wait_for_archive: Option<bool>,
+}
+
+/// Configuration parameters passed to the plugin managing this backup
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupPluginConfiguration {
+    /// Name is the name of the plugin managing this backup
+    pub name: String,
+    /// Parameters are the configuration parameters passed to the backup
+    /// plugin for this backup
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<BTreeMap<String, String>>,
 }
 
 /// Specification of the desired behavior of the backup.

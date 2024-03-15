@@ -230,10 +230,10 @@ pub struct KafkaUserTemplateSecret {
 pub struct KafkaUserTemplateSecretMetadata {
     /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, serde_json::Value>>,
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, serde_json::Value>>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// The status of the Kafka User.

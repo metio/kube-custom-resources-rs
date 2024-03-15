@@ -26,7 +26,7 @@ pub struct IBMPowerVSClusterSpec {
     /// Ignition defined options related to the bootstrapping systems where Ignition is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignition: Option<IBMPowerVSClusterIgnition>,
-    /// loadBalancers is optional configuration for configuring loadbalancers to control plane or data plane nodes. when omitted system will create a public loadbalancer with name CLUSTER_NAME-loadbalancer. when specified a vpc loadbalancer will be created and controlPlaneEndpoint will be set with associated hostname of loadbalancer. ControlPlaneEndpoint will be set with associated hostname of public loadbalancer. when LoadBalancers[].ID is set, its expected that there exist a loadbalancer with ID or else system will give error. when LoadBalancers[].Name is set, system will first check for loadbalancer with Name, if not exist system will create new loadbalancer.
+    /// loadBalancers is optional configuration for configuring loadbalancers to control plane or data plane nodes. when omitted system will create a default public loadbalancer with name CLUSTER_NAME-loadbalancer. when specified a vpc loadbalancer will be created and controlPlaneEndpoint will be set with associated hostname of loadbalancer. ControlPlaneEndpoint will be set with associated hostname of public loadbalancer. when LoadBalancers[].ID is set, its expected that there exist a loadbalancer with ID or else system will give error. when LoadBalancers[].Name is set, system will first check for loadbalancer with Name, if not exist system will create new loadbalancer. For each loadbalancer a default backed pool and front listener will be configured with port 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<Vec<IBMPowerVSClusterLoadBalancers>>,
     /// Network is the reference to the Network to use for this cluster. when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used. the DHCP service created network will have the following name format 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private. 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private. when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error. when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist network will be created by DHCP service. Network.RegEx is not yet supported and system will ignore the value.
@@ -127,7 +127,7 @@ pub enum IBMPowerVSClusterIgnitionVersion {
 /// VPCLoadBalancerSpec defines the desired state of an VPC load balancer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterLoadBalancers {
-    /// AdditionalListeners sets the additional listeners for the control plane load balancer. .
+    /// AdditionalListeners sets the additional listeners for the control plane load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
     pub additional_listeners: Option<Vec<IBMPowerVSClusterLoadBalancersAdditionalListeners>>,
     /// id of the loadbalancer

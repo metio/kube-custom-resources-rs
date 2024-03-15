@@ -446,13 +446,19 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulin
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
+    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
@@ -460,7 +466,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulin
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
+/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -483,7 +489,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulin
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -509,13 +515,19 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulin
 /// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
+    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
@@ -523,7 +535,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringScheduling
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
+/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -546,7 +558,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringScheduling
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -593,13 +605,19 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSched
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
+    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
@@ -607,7 +625,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSched
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
+/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -630,7 +648,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSched
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -656,13 +674,19 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSched
 /// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
+    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
+    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
@@ -670,7 +694,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedu
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
+/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -693,7 +717,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedu
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -1007,6 +1031,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffini
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1051,6 +1079,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffini
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1110,6 +1142,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAf
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1154,6 +1190,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAf
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1217,8 +1257,12 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainers {
     pub ports: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1337,6 +1381,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
     pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartTcpSocket>,
 }
@@ -1367,6 +1413,11 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -1379,6 +1430,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
     pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopTcpSocket>,
 }
@@ -1406,6 +1459,11 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1556,11 +1614,26 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1755,8 +1828,12 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
     pub ports: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1877,6 +1954,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
     pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartTcpSocket>,
 }
@@ -1907,6 +1986,11 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -1919,6 +2003,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
     pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopTcpSocket>,
 }
@@ -1946,6 +2032,11 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2096,11 +2187,26 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2291,8 +2397,12 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainers {
     pub ports: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -2411,6 +2521,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
     pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartTcpSocket>,
 }
@@ -2441,6 +2553,11 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -2453,6 +2570,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
     pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopTcpSocket>,
 }
@@ -2480,6 +2599,11 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2630,11 +2754,26 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersRea
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2879,8 +3018,16 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTolerations {
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraints {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
     #[serde(rename = "whenUnsatisfiable")]
@@ -3157,6 +3304,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralV
     pub selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -3177,6 +3326,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralV
     pub api_group: Option<String>,
     pub kind: String,
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -3354,6 +3505,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjected 
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -3362,6 +3515,35 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedS
     pub secret: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

@@ -7,14 +7,17 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
-/// BucketSpec specifies the required configuration to produce an Artifact for an object storage bucket.
+/// BucketSpec specifies the required configuration to produce an Artifact for
+/// an object storage bucket.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "source.toolkit.fluxcd.io", version = "v1beta2", kind = "Bucket", plural = "buckets")]
 #[kube(namespaced)]
 #[kube(status = "BucketStatus")]
 #[kube(schema = "disabled")]
 pub struct BucketSpec {
-    /// AccessFrom specifies an Access Control List for allowing cross-namespace references to this object. NOTE: Not implemented, provisional as of https://github.com/fluxcd/flux2/pull/2092
+    /// AccessFrom specifies an Access Control List for allowing cross-namespace
+    /// references to this object.
+    /// NOTE: Not implemented, provisional as of https://github.com/fluxcd/flux2/pull/2092
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessFrom")]
     pub access_from: Option<BucketAccessFrom>,
     /// BucketName is the name of the object storage bucket.
@@ -22,27 +25,35 @@ pub struct BucketSpec {
     pub bucket_name: String,
     /// Endpoint is the object storage address the BucketName is located at.
     pub endpoint: String,
-    /// Ignore overrides the set of excluded patterns in the .sourceignore format (which is the same as .gitignore). If not provided, a default will be used, consult the documentation for your version to find out what those are.
+    /// Ignore overrides the set of excluded patterns in the .sourceignore format
+    /// (which is the same as .gitignore). If not provided, a default will be used,
+    /// consult the documentation for your version to find out what those are.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<String>,
     /// Insecure allows connecting to a non-TLS HTTP Endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
-    /// Interval at which the Bucket Endpoint is checked for updates. This interval is approximate and may be subject to jitter to ensure efficient use of resources.
+    /// Interval at which the Bucket Endpoint is checked for updates.
+    /// This interval is approximate and may be subject to jitter to ensure
+    /// efficient use of resources.
     pub interval: String,
     /// Prefix to use for server-side filtering of files in the Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// Provider of the object storage bucket. Defaults to 'generic', which expects an S3 (API) compatible object storage.
+    /// Provider of the object storage bucket.
+    /// Defaults to 'generic', which expects an S3 (API) compatible object
+    /// storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<BucketProvider>,
     /// Region of the Endpoint where the BucketName is located in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    /// SecretRef specifies the Secret containing authentication credentials for the Bucket.
+    /// SecretRef specifies the Secret containing authentication credentials
+    /// for the Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<BucketSecretRef>,
-    /// Suspend tells the controller to suspend the reconciliation of this Bucket.
+    /// Suspend tells the controller to suspend the reconciliation of this
+    /// Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
     /// Timeout for fetch operations, defaults to 60s.
@@ -50,23 +61,30 @@ pub struct BucketSpec {
     pub timeout: Option<String>,
 }
 
-/// AccessFrom specifies an Access Control List for allowing cross-namespace references to this object. NOTE: Not implemented, provisional as of https://github.com/fluxcd/flux2/pull/2092
+/// AccessFrom specifies an Access Control List for allowing cross-namespace
+/// references to this object.
+/// NOTE: Not implemented, provisional as of https://github.com/fluxcd/flux2/pull/2092
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketAccessFrom {
-    /// NamespaceSelectors is the list of namespace selectors to which this ACL applies. Items in this list are evaluated using a logical OR operation.
+    /// NamespaceSelectors is the list of namespace selectors to which this ACL applies.
+    /// Items in this list are evaluated using a logical OR operation.
     #[serde(rename = "namespaceSelectors")]
     pub namespace_selectors: Vec<BucketAccessFromNamespaceSelectors>,
 }
 
-/// NamespaceSelector selects the namespaces to which this ACL applies. An empty map of MatchLabels matches all namespaces in a cluster.
+/// NamespaceSelector selects the namespaces to which this ACL applies.
+/// An empty map of MatchLabels matches all namespaces in a cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketAccessFromNamespaceSelectors {
-    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// BucketSpec specifies the required configuration to produce an Artifact for an object storage bucket.
+/// BucketSpec specifies the required configuration to produce an Artifact for
+/// an object storage bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BucketProvider {
     #[serde(rename = "generic")]
@@ -79,7 +97,8 @@ pub enum BucketProvider {
     Azure,
 }
 
-/// SecretRef specifies the Secret containing authentication credentials for the Bucket.
+/// SecretRef specifies the Secret containing authentication credentials
+/// for the Bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketSecretRef {
     /// Name of the referent.
@@ -95,16 +114,21 @@ pub struct BucketStatus {
     /// Conditions holds the conditions for the Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
+    /// LastHandledReconcileAt holds the value of the most recent
+    /// reconcile request value, so a change of the annotation value
+    /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation of the Bucket object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// ObservedIgnore is the observed exclusion patterns used for constructing the source artifact.
+    /// ObservedIgnore is the observed exclusion patterns used for constructing
+    /// the source artifact.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedIgnore")]
     pub observed_ignore: Option<String>,
-    /// URL is the dynamic fetch link for the latest Artifact. It is provided on a "best effort" basis, and using the precise BucketStatus.Artifact data is recommended.
+    /// URL is the dynamic fetch link for the latest Artifact.
+    /// It is provided on a "best effort" basis, and using the precise
+    /// BucketStatus.Artifact data is recommended.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -115,20 +139,26 @@ pub struct BucketStatusArtifact {
     /// Digest is the digest of the file in the form of '<algorithm>:<checksum>'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub digest: Option<String>,
-    /// LastUpdateTime is the timestamp corresponding to the last update of the Artifact.
+    /// LastUpdateTime is the timestamp corresponding to the last update of the
+    /// Artifact.
     #[serde(rename = "lastUpdateTime")]
     pub last_update_time: String,
     /// Metadata holds upstream information such as OCI annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BTreeMap<String, String>>,
-    /// Path is the relative file path of the Artifact. It can be used to locate the file in the root of the Artifact storage on the local file system of the controller managing the Source.
+    /// Path is the relative file path of the Artifact. It can be used to locate
+    /// the file in the root of the Artifact storage on the local file system of
+    /// the controller managing the Source.
     pub path: String,
-    /// Revision is a human-readable identifier traceable in the origin source system. It can be a Git commit SHA, Git tag, a Helm chart version, etc.
+    /// Revision is a human-readable identifier traceable in the origin source
+    /// system. It can be a Git commit SHA, Git tag, a Helm chart version, etc.
     pub revision: String,
     /// Size is the number of bytes in the file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
-    /// URL is the HTTP address of the Artifact as exposed by the controller managing the Source. It can be used to retrieve the Artifact for consumption, e.g. by another controller applying the Artifact contents.
+    /// URL is the HTTP address of the Artifact as exposed by the controller
+    /// managing the Source. It can be used to retrieve the Artifact for
+    /// consumption, e.g. by another controller applying the Artifact contents.
     pub url: String,
 }
 

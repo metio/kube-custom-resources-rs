@@ -161,6 +161,8 @@ pub enum TriggerAuthenticationAwsSecretManagerPodIdentityProvider {
     AwsEks,
     #[serde(rename = "aws-kiam")]
     AwsKiam,
+    #[serde(rename = "none")]
+    None,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -275,6 +277,8 @@ pub enum TriggerAuthenticationAzureKeyVaultPodIdentityProvider {
     AwsEks,
     #[serde(rename = "aws-kiam")]
     AwsKiam,
+    #[serde(rename = "none")]
+    None,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -386,6 +390,8 @@ pub enum TriggerAuthenticationGcpSecretManagerPodIdentityProvider {
     AwsEks,
     #[serde(rename = "aws-kiam")]
     AwsKiam,
+    #[serde(rename = "none")]
+    None,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -502,6 +508,8 @@ pub enum TriggerAuthenticationPodIdentityProvider {
     AwsEks,
     #[serde(rename = "aws-kiam")]
     AwsKiam,
+    #[serde(rename = "none")]
+    None,
 }
 
 /// AuthSecretTargetRef is used to authenticate using a reference to a secret
