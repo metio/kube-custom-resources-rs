@@ -174,9 +174,6 @@ pub struct NetworkClusterNetwork {
 /// defaultNetwork is the "default" network that all pods will receive
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NetworkDefaultNetwork {
-    /// KuryrConfig configures the kuryr plugin
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kuryrConfig")]
-    pub kuryr_config: Option<NetworkDefaultNetworkKuryrConfig>,
     /// openShiftSDNConfig configures the openshift-sdn plugin
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openshiftSDNConfig")]
     pub openshift_sdn_config: Option<NetworkDefaultNetworkOpenshiftSdnConfig>,
@@ -186,35 +183,6 @@ pub struct NetworkDefaultNetwork {
     /// type is the type of network All NetworkTypes are supported except for NetworkTypeRaw
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-}
-
-/// KuryrConfig configures the kuryr plugin
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NetworkDefaultNetworkKuryrConfig {
-    /// The port kuryr-controller will listen for readiness and liveness requests.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerProbesPort")]
-    pub controller_probes_port: Option<i32>,
-    /// The port kuryr-daemon will listen for readiness and liveness requests.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daemonProbesPort")]
-    pub daemon_probes_port: Option<i32>,
-    /// enablePortPoolsPrepopulation when true will make Kuryr prepopulate each newly created port pool with a minimum number of ports. Kuryr uses Neutron port pooling to fight the fact that it takes a significant amount of time to create one. It creates a number of ports when the first pod that is configured to use the dedicated network for pods is created in a namespace, and keeps them ready to be attached to pods. Port prepopulation is disabled by default.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePortPoolsPrepopulation")]
-    pub enable_port_pools_prepopulation: Option<bool>,
-    /// mtu is the MTU that Kuryr should use when creating pod networks in Neutron. The value has to be lower or equal to the MTU of the nodes network and Neutron has to allow creation of tenant networks with such MTU. If unset Pod networks will be created with the same MTU as the nodes network has. This also affects the services network created by cluster-network-operator.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mtu: Option<i32>,
-    /// openStackServiceNetwork contains the CIDR of network from which to allocate IPs for OpenStack Octavia's Amphora VMs. Please note that with Amphora driver Octavia uses two IPs from that network for each loadbalancer - one given by OpenShift and second for VRRP connections. As the first one is managed by OpenShift's and second by Neutron's IPAMs, those need to come from different pools. Therefore `openStackServiceNetwork` needs to be at least twice the size of `serviceNetwork`, and whole `serviceNetwork` must be overlapping with `openStackServiceNetwork`. cluster-network-operator will then make sure VRRP IPs are taken from the ranges inside `openStackServiceNetwork` that are not overlapping with `serviceNetwork`, effectivly preventing conflicts. If not set cluster-network-operator will use `serviceNetwork` expanded by decrementing the prefix size by 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openStackServiceNetwork")]
-    pub open_stack_service_network: Option<String>,
-    /// poolBatchPorts sets a number of ports that should be created in a single batch request to extend the port pool. The default is 3. For more information about port pools see enablePortPoolsPrepopulation setting.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolBatchPorts")]
-    pub pool_batch_ports: Option<i64>,
-    /// poolMaxPorts sets a maximum number of free ports that are being kept in a port pool. If the number of ports exceeds this setting, free ports will get deleted. Setting 0 will disable this upper bound, effectively preventing pools from shrinking and this is the default value. For more information about port pools see enablePortPoolsPrepopulation setting.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolMaxPorts")]
-    pub pool_max_ports: Option<i64>,
-    /// poolMinPorts sets a minimum number of free ports that should be kept in a port pool. If the number of ports is lower than this setting, new ports will get created and added to pool. The default is 1. For more information about port pools see enablePortPoolsPrepopulation setting.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolMinPorts")]
-    pub pool_min_ports: Option<i64>,
 }
 
 /// openShiftSDNConfig configures the openshift-sdn plugin
@@ -333,6 +301,17 @@ pub struct NetworkDefaultNetworkOvnKubernetesConfigHybridOverlayConfigHybridClus
 /// ipsecConfig enables and configures IPsec for pods on the pod network within the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NetworkDefaultNetworkOvnKubernetesConfigIpsecConfig {
+    /// mode defines the behaviour of the ipsec configuration within the platform. Valid values are `Disabled`, `External` and `Full`. When 'Disabled', ipsec will not be enabled at the node level. When 'External', ipsec is enabled on the node level but requires the user to configure the secure communication parameters. This mode is for external secure communications and the configuration can be done using the k8s-nmstate operator. When 'Full', ipsec is configured on the node level and inter-pod secure communication within the cluster is configured. Note with `Full`, if ipsec is desired for communication with external (to the cluster) entities (such as storage arrays), this is left to the user to configure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<NetworkDefaultNetworkOvnKubernetesConfigIpsecConfigMode>,
+}
+
+/// ipsecConfig enables and configures IPsec for pods on the pod network within the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NetworkDefaultNetworkOvnKubernetesConfigIpsecConfigMode {
+    Disabled,
+    External,
+    Full,
 }
 
 /// policyAuditConfig is the configuration for network policy audit events. If unset, reported defaults are used.
@@ -424,6 +403,9 @@ pub struct NetworkMigration {
     /// features contains the features migration configuration. Set this to migrate feature configuration when changing the cluster default network provider. if unset, the default operation is to migrate all the configuration of supported features.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<NetworkMigrationFeatures>,
+    /// mode indicates the mode of network migration. The supported values are "Live", "Offline" and omitted. A "Live" migration operation will not cause service interruption by migrating the CNI of each node one by one. The cluster network will work as normal during the network migration. An "Offline" migration operation will cause service interruption. During an "Offline" migration, two rounds of node reboots are required. The cluster network will be malfunctioning during the network migration. When omitted, this means no opinion and the platform is left to choose a reasonable default which is subject to change over time. The current default value is "Offline".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<NetworkMigrationMode>,
     /// mtu contains the MTU migration configuration. Set this to allow changing the MTU values for the default network. If unset, the operation of changing the MTU for the default network will be rejected.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mtu: Option<NetworkMigrationMtu>,
@@ -444,6 +426,15 @@ pub struct NetworkMigrationFeatures {
     /// multicast specifies whether or not the multicast configuration is migrated automatically when changing the cluster default network provider. If unset, this property defaults to 'true' and multicast configure is migrated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub multicast: Option<bool>,
+}
+
+/// migration enables and configures the cluster network migration. The migration procedure allows to change the network type and the MTU.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NetworkMigrationMode {
+    Live,
+    Offline,
+    #[serde(rename = "")]
+    KopiumEmpty,
 }
 
 /// mtu contains the MTU migration configuration. Set this to allow changing the MTU values for the default network. If unset, the operation of changing the MTU for the default network will be rejected.

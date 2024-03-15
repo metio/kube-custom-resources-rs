@@ -15,22 +15,39 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "CoreProviderStatus")]
 #[kube(schema = "disabled")]
 pub struct CoreProviderSpec {
-    /// AdditionalManifests is reference to configmap that contains additional manifests that will be applied together with the provider components. The key for storing these manifests has to be `manifests`. The manifests are applied only once when a certain release is installed/upgraded. If namespace is not specified, the namespace of the provider will be used. There is no validation of the yaml content inside the configmap.
+    /// AdditionalManifests is reference to configmap that contains additional manifests that will be applied
+    /// together with the provider components. The key for storing these manifests has to be `manifests`.
+    /// The manifests are applied only once when a certain release is installed/upgraded. If namespace is not specified, the
+    /// namespace of the provider will be used. There is no validation of the yaml content inside the configmap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalManifests")]
     pub additional_manifests: Option<CoreProviderAdditionalManifests>,
-    /// ConfigSecret is the object with name and namespace of the Secret providing the configuration variables for the current provider instance, like e.g. credentials. Such configurations will be used when creating or upgrading provider components. The contents of the secret will be treated as immutable. If changes need to be made, a new object can be created and the name should be updated. The contents should be in the form of key:value. This secret must be in the same namespace as the provider.
+    /// ConfigSecret is the object with name and namespace of the Secret providing
+    /// the configuration variables for the current provider instance, like e.g. credentials.
+    /// Such configurations will be used when creating or upgrading provider components.
+    /// The contents of the secret will be treated as immutable. If changes need
+    /// to be made, a new object can be created and the name should be updated.
+    /// The contents should be in the form of key:value. This secret must be in
+    /// the same namespace as the provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSecret")]
     pub config_secret: Option<CoreProviderConfigSecret>,
     /// Deployment defines the properties that can be enabled on the deployment for the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<CoreProviderDeployment>,
-    /// FetchConfig determines how the operator will fetch the components and metadata for the provider. If nil, the operator will try to fetch components according to default embedded fetch configuration for the given kind and `ObjectMeta.Name`. For example, the infrastructure name `aws` will fetch artifacts from https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases.
+    /// FetchConfig determines how the operator will fetch the components and metadata for the provider.
+    /// If nil, the operator will try to fetch components according to default
+    /// embedded fetch configuration for the given kind and `ObjectMeta.Name`.
+    /// For example, the infrastructure name `aws` will fetch artifacts from
+    /// https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fetchConfig")]
     pub fetch_config: Option<CoreProviderFetchConfig>,
     /// Manager defines the properties that can be enabled on the controller manager for the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manager: Option<CoreProviderManager>,
-    /// ManifestPatches are applied to rendered provider manifests to customize the provider manifests. Patches are applied in the order they are specified. The `kind` field must match the target object, and if `apiVersion` is specified it will only be applied to matching objects. This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
+    /// ManifestPatches are applied to rendered provider manifests to customize the
+    /// provider manifests. Patches are applied in the order they are specified.
+    /// The `kind` field must match the target object, and
+    /// if `apiVersion` is specified it will only be applied to matching objects.
+    /// This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "manifestPatches")]
     pub manifest_patches: Option<Vec<String>>,
     /// Version indicates the provider version.
@@ -38,7 +55,10 @@ pub struct CoreProviderSpec {
     pub version: Option<String>,
 }
 
-/// AdditionalManifests is reference to configmap that contains additional manifests that will be applied together with the provider components. The key for storing these manifests has to be `manifests`. The manifests are applied only once when a certain release is installed/upgraded. If namespace is not specified, the namespace of the provider will be used. There is no validation of the yaml content inside the configmap.
+/// AdditionalManifests is reference to configmap that contains additional manifests that will be applied
+/// together with the provider components. The key for storing these manifests has to be `manifests`.
+/// The manifests are applied only once when a certain release is installed/upgraded. If namespace is not specified, the
+/// namespace of the provider will be used. There is no validation of the yaml content inside the configmap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderAdditionalManifests {
     /// Name defines the name of the configmap.
@@ -48,7 +68,13 @@ pub struct CoreProviderAdditionalManifests {
     pub namespace: Option<String>,
 }
 
-/// ConfigSecret is the object with name and namespace of the Secret providing the configuration variables for the current provider instance, like e.g. credentials. Such configurations will be used when creating or upgrading provider components. The contents of the secret will be treated as immutable. If changes need to be made, a new object can be created and the name should be updated. The contents should be in the form of key:value. This secret must be in the same namespace as the provider.
+/// ConfigSecret is the object with name and namespace of the Secret providing
+/// the configuration variables for the current provider instance, like e.g. credentials.
+/// Such configurations will be used when creating or upgrading provider components.
+/// The contents of the secret will be treated as immutable. If changes need
+/// to be made, a new object can be created and the name should be updated.
+/// The contents should be in the form of key:value. This secret must be in
+/// the same namespace as the provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderConfigSecret {
     /// Name defines the name of the secret.
@@ -70,7 +96,9 @@ pub struct CoreProviderDeployment {
     /// List of image pull secrets specified in the Deployment
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<CoreProviderDeploymentImagePullSecrets>>,
-    /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    /// NodeSelector is a selector which must be true for the pod to fit on a node.
+    /// Selector which must match a node's labels for the pod to be scheduled on that node.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Number of desired pods. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
@@ -101,15 +129,28 @@ pub struct CoreProviderDeploymentAffinity {
 /// Describes node affinity scheduling rules for the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityNodeAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CoreProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
@@ -129,31 +170,47 @@ pub struct CoreProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIg
     pub match_fields: Option<Vec<CoreProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
@@ -161,7 +218,9 @@ pub struct CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgn
     pub node_selector_terms: Vec<CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
@@ -172,26 +231,38 @@ pub struct CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgn
     pub match_fields: Option<Vec<CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -199,10 +270,24 @@ pub struct CoreProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgn
 /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
@@ -213,7 +298,8 @@ pub struct CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgn
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
     pub weight: i32,
 }
 
@@ -223,13 +309,24 @@ pub struct CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgn
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -240,59 +337,93 @@ pub struct CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgn
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -303,42 +434,60 @@ pub struct CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgno
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -346,10 +495,24 @@ pub struct CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgno
 /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAntiAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the anti-affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    /// If the anti-affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the anti-affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
@@ -360,7 +523,8 @@ pub struct CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulin
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
     pub weight: i32,
 }
 
@@ -370,13 +534,24 @@ pub struct CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulin
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -387,59 +562,93 @@ pub struct CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulin
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -450,50 +659,75 @@ pub struct CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringScheduling
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// ContainerSpec defines the properties available to override for each container in a provider deployment such as Image and Args to the container’s entrypoint.
+/// ContainerSpec defines the properties available to override for each
+/// container in a provider deployment such as Image and Args to the container’s
+/// entrypoint.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentContainers {
-    /// Args represents extra provider specific flags that are not encoded as fields in this API. Explicit controller manager properties defined in the `Provider.ManagerSpec` will have higher precedence than those defined in `ContainerSpec.Args`. For example, `ManagerSpec.SyncPeriod` will be used instead of the container arg `--sync-period` if both are defined. The same holds for `ManagerSpec.FeatureGates` and `--feature-gates`.
+    /// Args represents extra provider specific flags that are not encoded as fields in this API.
+    /// Explicit controller manager properties defined in the `Provider.ManagerSpec`
+    /// will have higher precedence than those defined in `ContainerSpec.Args`.
+    /// For example, `ManagerSpec.SyncPeriod` will be used instead of the
+    /// container arg `--sync-period` if both are defined.
+    /// The same holds for `ManagerSpec.FeatureGates` and `--feature-gates`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<BTreeMap<String, String>>,
     /// Command allows override container's entrypoint array.
@@ -517,7 +751,15 @@ pub struct CoreProviderDeploymentContainers {
 pub struct CoreProviderDeploymentContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -531,10 +773,12 @@ pub struct CoreProviderDeploymentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CoreProviderDeploymentContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CoreProviderDeploymentContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CoreProviderDeploymentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
@@ -547,7 +791,9 @@ pub struct CoreProviderDeploymentContainersEnvValueFrom {
 pub struct CoreProviderDeploymentContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -555,7 +801,8 @@ pub struct CoreProviderDeploymentContainersEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -566,7 +813,8 @@ pub struct CoreProviderDeploymentContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
@@ -584,7 +832,9 @@ pub struct CoreProviderDeploymentContainersEnvValueFromResourceFieldRef {
 pub struct CoreProviderDeploymentContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -595,15 +845,25 @@ pub struct CoreProviderDeploymentContainersEnvValueFromSecretKeyRef {
 /// Compute resources required by this container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CoreProviderDeploymentContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -611,68 +871,105 @@ pub struct CoreProviderDeploymentContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentImagePullSecrets {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// FetchConfig determines how the operator will fetch the components and metadata for the provider. If nil, the operator will try to fetch components according to default embedded fetch configuration for the given kind and `ObjectMeta.Name`. For example, the infrastructure name `aws` will fetch artifacts from https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases.
+/// FetchConfig determines how the operator will fetch the components and metadata for the provider.
+/// If nil, the operator will try to fetch components according to default
+/// embedded fetch configuration for the given kind and `ObjectMeta.Name`.
+/// For example, the infrastructure name `aws` will fetch artifacts from
+/// https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderFetchConfig {
-    /// Selector to be used for fetching provider’s components and metadata from ConfigMaps stored inside the cluster. Each ConfigMap is expected to contain components and metadata for a specific version only. Note: the name of the ConfigMap should be set to the version or to override this add a label like the following: provider.cluster.x-k8s.io/version=v1.4.3
+    /// Selector to be used for fetching provider’s components and metadata from
+    /// ConfigMaps stored inside the cluster. Each ConfigMap is expected to contain
+    /// components and metadata for a specific version only.
+    /// Note: the name of the ConfigMap should be set to the version or to override this
+    /// add a label like the following: provider.cluster.x-k8s.io/version=v1.4.3
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CoreProviderFetchConfigSelector>,
-    /// URL to be used for fetching the provider’s components and metadata from a remote Github repository. For example, https://github.com/{owner}/{repository}/releases You must set `providerSpec.Version` field for operator to pick up desired version of the release from GitHub.
+    /// URL to be used for fetching the provider’s components and metadata from a remote Github repository.
+    /// For example, https://github.com/{owner}/{repository}/releases
+    /// You must set `providerSpec.Version` field for operator to pick up
+    /// desired version of the release from GitHub.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// Selector to be used for fetching provider’s components and metadata from ConfigMaps stored inside the cluster. Each ConfigMap is expected to contain components and metadata for a specific version only. Note: the name of the ConfigMap should be set to the version or to override this add a label like the following: provider.cluster.x-k8s.io/version=v1.4.3
+/// Selector to be used for fetching provider’s components and metadata from
+/// ConfigMaps stored inside the cluster. Each ConfigMap is expected to contain
+/// components and metadata for a specific version only.
+/// Note: the name of the ConfigMap should be set to the version or to override this
+/// add a label like the following: provider.cluster.x-k8s.io/version=v1.4.3
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderFetchConfigSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CoreProviderFetchConfigSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderFetchConfigSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -680,38 +977,59 @@ pub struct CoreProviderFetchConfigSelectorMatchExpressions {
 /// Manager defines the properties that can be enabled on the controller manager for the provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderManager {
-    /// CacheNamespace if specified restricts the manager's cache to watch objects in the desired namespace Defaults to all namespaces 
-    ///  Note: If a namespace is specified, controllers can still Watch for a cluster-scoped resource (e.g Node).  For namespaced resources the cache will only hold objects from the desired namespace.
+    /// CacheNamespace if specified restricts the manager's cache to watch objects in
+    /// the desired namespace Defaults to all namespaces
+    /// 
+    /// 
+    /// Note: If a namespace is specified, controllers can still Watch for a
+    /// cluster-scoped resource (e.g Node).  For namespaced resources the cache
+    /// will only hold objects from the desired namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheNamespace")]
     pub cache_namespace: Option<String>,
-    /// Controller contains global configuration options for controllers registered within this manager.
+    /// Controller contains global configuration options for controllers
+    /// registered within this manager.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller: Option<CoreProviderManagerController>,
-    /// FeatureGates define provider specific feature flags that will be passed in as container args to the provider's controller manager. Controller Manager flag is --feature-gates.
+    /// FeatureGates define provider specific feature flags that will be passed
+    /// in as container args to the provider's controller manager.
+    /// Controller Manager flag is --feature-gates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<BTreeMap<String, bool>>,
-    /// GracefulShutdownTimeout is the duration given to runnable to stop before the manager actually returns on stop. To disable graceful shutdown, set to time.Duration(0) To use graceful shutdown without timeout, set to a negative duration, e.G. time.Duration(-1) The graceful shutdown is skipped for safety reasons in case the leader election lease is lost.
+    /// GracefulShutdownTimeout is the duration given to runnable to stop before the manager actually returns on stop.
+    /// To disable graceful shutdown, set to time.Duration(0)
+    /// To use graceful shutdown without timeout, set to a negative duration, e.G. time.Duration(-1)
+    /// The graceful shutdown is skipped for safety reasons in case the leader election lease is lost.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutDown")]
     pub graceful_shut_down: Option<String>,
     /// Health contains the controller health configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<CoreProviderManagerHealth>,
-    /// LeaderElection is the LeaderElection config to be used when configuring the manager.Manager leader election
+    /// LeaderElection is the LeaderElection config to be used when configuring
+    /// the manager.Manager leader election
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "leaderElection")]
     pub leader_election: Option<CoreProviderManagerLeaderElection>,
-    /// MaxConcurrentReconciles is the maximum number of concurrent Reconciles which can be run.
+    /// MaxConcurrentReconciles is the maximum number of concurrent Reconciles
+    /// which can be run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentReconciles")]
     pub max_concurrent_reconciles: Option<i64>,
     /// Metrics contains thw controller metrics configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<CoreProviderManagerMetrics>,
-    /// ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060). Default empty, meaning the profiler is disabled. Controller Manager flag is --profiler-address.
+    /// ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060).
+    /// Default empty, meaning the profiler is disabled.
+    /// Controller Manager flag is --profiler-address.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilerAddress")]
     pub profiler_address: Option<String>,
-    /// SyncPeriod determines the minimum frequency at which watched resources are reconciled. A lower period will correct entropy more quickly, but reduce responsiveness to change if there are many watched resources. Change this value only if you know what you are doing. Defaults to 10 hours if unset. there will a 10 percent jitter between the SyncPeriod of all controllers so that all controllers will not send list requests simultaneously.
+    /// SyncPeriod determines the minimum frequency at which watched resources are
+    /// reconciled. A lower period will correct entropy more quickly, but reduce
+    /// responsiveness to change if there are many watched resources. Change this
+    /// value only if you know what you are doing. Defaults to 10 hours if unset.
+    /// there will a 10 percent jitter between the SyncPeriod of all controllers
+    /// so that all controllers will not send list requests simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncPeriod")]
     pub sync_period: Option<String>,
-    /// Verbosity set the logs verbosity. Defaults to 1. Controller Manager flag is --verbosity.
+    /// Verbosity set the logs verbosity. Defaults to 1.
+    /// Controller Manager flag is --verbosity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verbosity: Option<i64>,
     /// Webhook contains the controllers webhook configuration
@@ -719,15 +1037,26 @@ pub struct CoreProviderManager {
     pub webhook: Option<CoreProviderManagerWebhook>,
 }
 
-/// Controller contains global configuration options for controllers registered within this manager.
+/// Controller contains global configuration options for controllers
+/// registered within this manager.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderManagerController {
-    /// CacheSyncTimeout refers to the time limit set to wait for syncing caches. Defaults to 2 minutes if not set.
+    /// CacheSyncTimeout refers to the time limit set to wait for syncing caches.
+    /// Defaults to 2 minutes if not set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSyncTimeout")]
     pub cache_sync_timeout: Option<i64>,
-    /// GroupKindConcurrency is a map from a Kind to the number of concurrent reconciliation allowed for that controller. 
-    ///  When a controller is registered within this manager using the builder utilities, users have to specify the type the controller reconciles in the For(...) call. If the object's kind passed matches one of the keys in this map, the concurrency for that controller is set to the number specified. 
-    ///  The key is expected to be consistent in form with GroupKind.String(), e.g. ReplicaSet in apps group (regardless of version) would be `ReplicaSet.apps`.
+    /// GroupKindConcurrency is a map from a Kind to the number of concurrent reconciliation
+    /// allowed for that controller.
+    /// 
+    /// 
+    /// When a controller is registered within this manager using the builder utilities,
+    /// users have to specify the type the controller reconciles in the For(...) call.
+    /// If the object's kind passed matches one of the keys in this map, the concurrency
+    /// for that controller is set to the number specified.
+    /// 
+    /// 
+    /// The key is expected to be consistent in form with GroupKind.String(),
+    /// e.g. ReplicaSet in apps group (regardless of version) would be `ReplicaSet.apps`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupKindConcurrency")]
     pub group_kind_concurrency: Option<BTreeMap<String, i64>>,
     /// RecoverPanic indicates if panics should be recovered.
@@ -738,7 +1067,9 @@ pub struct CoreProviderManagerController {
 /// Health contains the controller health configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderManagerHealth {
-    /// HealthProbeBindAddress is the TCP address that the controller should bind to for serving health probes It can be set to "0" or "" to disable serving the health probe.
+    /// HealthProbeBindAddress is the TCP address that the controller should bind to
+    /// for serving health probes
+    /// It can be set to "0" or "" to disable serving the health probe.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthProbeBindAddress")]
     pub health_probe_bind_address: Option<String>,
     /// LivenessEndpointName, defaults to "healthz"
@@ -749,28 +1080,44 @@ pub struct CoreProviderManagerHealth {
     pub readiness_endpoint_name: Option<String>,
 }
 
-/// LeaderElection is the LeaderElection config to be used when configuring the manager.Manager leader election
+/// LeaderElection is the LeaderElection config to be used when configuring
+/// the manager.Manager leader election
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderManagerLeaderElection {
-    /// leaderElect enables a leader election client to gain leadership before executing the main loop. Enable this when running replicated components for high availability.
+    /// leaderElect enables a leader election client to gain leadership
+    /// before executing the main loop. Enable this when running replicated
+    /// components for high availability.
     #[serde(rename = "leaderElect")]
     pub leader_elect: bool,
-    /// leaseDuration is the duration that non-leader candidates will wait after observing a leadership renewal until attempting to acquire leadership of a led but unrenewed leader slot. This is effectively the maximum duration that a leader can be stopped before it is replaced by another candidate. This is only applicable if leader election is enabled.
+    /// leaseDuration is the duration that non-leader candidates will wait
+    /// after observing a leadership renewal until attempting to acquire
+    /// leadership of a led but unrenewed leader slot. This is effectively the
+    /// maximum duration that a leader can be stopped before it is replaced
+    /// by another candidate. This is only applicable if leader election is
+    /// enabled.
     #[serde(rename = "leaseDuration")]
     pub lease_duration: String,
-    /// renewDeadline is the interval between attempts by the acting master to renew a leadership slot before it stops leading. This must be less than or equal to the lease duration. This is only applicable if leader election is enabled.
+    /// renewDeadline is the interval between attempts by the acting master to
+    /// renew a leadership slot before it stops leading. This must be less
+    /// than or equal to the lease duration. This is only applicable if leader
+    /// election is enabled.
     #[serde(rename = "renewDeadline")]
     pub renew_deadline: String,
-    /// resourceLock indicates the resource object type that will be used to lock during leader election cycles.
+    /// resourceLock indicates the resource object type that will be used to lock
+    /// during leader election cycles.
     #[serde(rename = "resourceLock")]
     pub resource_lock: String,
-    /// resourceName indicates the name of resource object that will be used to lock during leader election cycles.
+    /// resourceName indicates the name of resource object that will be used to lock
+    /// during leader election cycles.
     #[serde(rename = "resourceName")]
     pub resource_name: String,
-    /// resourceName indicates the namespace of resource object that will be used to lock during leader election cycles.
+    /// resourceName indicates the namespace of resource object that will be used to lock
+    /// during leader election cycles.
     #[serde(rename = "resourceNamespace")]
     pub resource_namespace: String,
-    /// retryPeriod is the duration the clients should wait between attempting acquisition and renewal of a leadership. This is only applicable if leader election is enabled.
+    /// retryPeriod is the duration the clients should wait between attempting
+    /// acquisition and renewal of a leadership. This is only applicable if
+    /// leader election is enabled.
     #[serde(rename = "retryPeriod")]
     pub retry_period: String,
 }
@@ -778,7 +1125,9 @@ pub struct CoreProviderManagerLeaderElection {
 /// Metrics contains thw controller metrics configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderManagerMetrics {
-    /// BindAddress is the TCP address that the controller should bind to for serving prometheus metrics. It can be set to "0" to disable the metrics serving.
+    /// BindAddress is the TCP address that the controller should bind to
+    /// for serving prometheus metrics.
+    /// It can be set to "0" to disable the metrics serving.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindAddress")]
     pub bind_address: Option<String>,
 }
@@ -786,13 +1135,18 @@ pub struct CoreProviderManagerMetrics {
 /// Webhook contains the controllers webhook configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderManagerWebhook {
-    /// CertDir is the directory that contains the server key and certificate. if not set, webhook server would look up the server key and certificate in {TempDir}/k8s-webhook-server/serving-certs. The server key and certificate must be named tls.key and tls.crt, respectively.
+    /// CertDir is the directory that contains the server key and certificate.
+    /// if not set, webhook server would look up the server key and certificate in
+    /// {TempDir}/k8s-webhook-server/serving-certs. The server key and certificate
+    /// must be named tls.key and tls.crt, respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certDir")]
     pub cert_dir: Option<String>,
-    /// Host is the hostname that the webhook server binds to. It is used to set webhook.Server.Host.
+    /// Host is the hostname that the webhook server binds to.
+    /// It is used to set webhook.Server.Host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Port is the port that the webhook server serves at. It is used to set webhook.Server.Port.
+    /// Port is the port that the webhook server serves at.
+    /// It is used to set webhook.Server.Port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
 }
@@ -803,7 +1157,8 @@ pub struct CoreProviderStatus {
     /// Conditions define the current service state of the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Contract will contain the core provider contract that the provider is abiding by, like e.g. v1alpha4.
+    /// Contract will contain the core provider contract that the provider is
+    /// abiding by, like e.g. v1alpha4.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub contract: Option<String>,
     /// InstalledVersion is the version of the provider that is installed.

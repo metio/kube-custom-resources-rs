@@ -3174,7 +3174,7 @@ pub struct ContourDeploymentRuntimeSettingsXdsServer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ContourDeploymentRuntimeSettingsXdsServerTls>,
     /// Defines the XDSServer to use for `contour serve`.
-    /// Values: `contour` (default), `envoy`.
+    /// Values: `envoy` (default), `contour (deprecated)`.
     /// Other values will produce an error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,

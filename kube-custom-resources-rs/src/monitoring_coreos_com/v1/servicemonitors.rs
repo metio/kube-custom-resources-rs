@@ -17,6 +17,10 @@ pub struct ServiceMonitorSpec {
     ///  It requires Prometheus >= v2.37.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<ServiceMonitorAttachMetadata>,
+    /// When defined, bodySizeLimit specifies a job level limit on the size of uncompressed response body that will be accepted by Prometheus. 
+    ///  It requires Prometheus >= v2.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
+    pub body_size_limit: Option<String>,
     /// List of endpoints part of this ServiceMonitor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<ServiceMonitorEndpoints>>,

@@ -28,6 +28,9 @@ pub struct VaultDynamicSecretSpec {
     pub params: Option<BTreeMap<String, String>>,
     /// Path in Vault to get the credentials for, and is relative to Mount. Please consult https://developer.hashicorp.com/vault/docs/secrets if you are uncertain about what 'path' should be set to.
     pub path: String,
+    /// RefreshAfter a period of time for VSO to sync the source secret data, in duration notation e.g. 30s, 1m, 24h. This value only needs to be set when syncing from a secret's engine that does not provide a lease TTL in its response. The value should be within the secret engine's configured ttl or max_ttl. The source secret's lease duration takes precedence over this configuration when it is greater than 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshAfter")]
+    pub refresh_after: Option<String>,
     /// RenewalPercent is the percent out of 100 of the lease duration when the lease is renewed. Defaults to 67 percent plus jitter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewalPercent")]
     pub renewal_percent: Option<i64>,
@@ -52,14 +55,16 @@ pub struct VaultDynamicSecretDestination {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Create the destination Secret. If the Secret already exists this should be set to false.
-    pub create: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub create: Option<bool>,
     /// Labels to apply to the Secret. Requires Create to be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name of the Secret
     pub name: String,
     /// Overwrite the destination Secret if it exists and Create is true. This is useful when migrating to VSO from a previous secret deployment strategy.
-    pub overwrite: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub overwrite: Option<bool>,
     /// Transformation provides configuration for transforming the secret data before it is stored in the Destination.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub transformation: Option<VaultDynamicSecretDestinationTransformation>,

@@ -22,7 +22,9 @@ pub struct BucketSpec {
     pub bucket_name: String,
     /// The bucket endpoint address.
     pub endpoint: String,
-    /// Ignore overrides the set of excluded patterns in the .sourceignore format (which is the same as .gitignore). If not provided, a default will be used, consult the documentation for your version to find out what those are.
+    /// Ignore overrides the set of excluded patterns in the .sourceignore format
+    /// (which is the same as .gitignore). If not provided, a default will be used,
+    /// consult the documentation for your version to find out what those are.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<String>,
     /// Insecure allows connecting to a non-TLS S3 HTTP endpoint.
@@ -36,7 +38,8 @@ pub struct BucketSpec {
     /// The bucket region.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    /// The name of the secret containing authentication credentials for the Bucket.
+    /// The name of the secret containing authentication credentials
+    /// for the Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<BucketSecretRef>,
     /// This flag tells the controller to suspend the reconciliation of this source.
@@ -50,15 +53,19 @@ pub struct BucketSpec {
 /// AccessFrom defines an Access Control List for allowing cross-namespace references to this object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketAccessFrom {
-    /// NamespaceSelectors is the list of namespace selectors to which this ACL applies. Items in this list are evaluated using a logical OR operation.
+    /// NamespaceSelectors is the list of namespace selectors to which this ACL applies.
+    /// Items in this list are evaluated using a logical OR operation.
     #[serde(rename = "namespaceSelectors")]
     pub namespace_selectors: Vec<BucketAccessFromNamespaceSelectors>,
 }
 
-/// NamespaceSelector selects the namespaces to which this ACL applies. An empty map of MatchLabels matches all namespaces in a cluster.
+/// NamespaceSelector selects the namespaces to which this ACL applies.
+/// An empty map of MatchLabels matches all namespaces in a cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketAccessFromNamespaceSelectors {
-    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
@@ -74,7 +81,8 @@ pub enum BucketProvider {
     Gcp,
 }
 
-/// The name of the secret containing authentication credentials for the Bucket.
+/// The name of the secret containing authentication credentials
+/// for the Bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketSecretRef {
     /// Name of the referent.
@@ -90,7 +98,9 @@ pub struct BucketStatus {
     /// Conditions holds the conditions for the Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
+    /// LastHandledReconcileAt holds the value of the most recent
+    /// reconcile request value, so a change of the annotation value
+    /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation.
@@ -107,12 +117,15 @@ pub struct BucketStatusArtifact {
     /// Checksum is the SHA256 checksum of the artifact.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    /// LastUpdateTime is the timestamp corresponding to the last update of this artifact.
+    /// LastUpdateTime is the timestamp corresponding to the last update of this
+    /// artifact.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// Path is the relative file path of this artifact.
     pub path: String,
-    /// Revision is a human readable identifier traceable in the origin source system. It can be a Git commit SHA, Git tag, a Helm index timestamp, a Helm chart version, etc.
+    /// Revision is a human readable identifier traceable in the origin source
+    /// system. It can be a Git commit SHA, Git tag, a Helm index timestamp, a Helm
+    /// chart version, etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
     /// URL is the HTTP address of this artifact.

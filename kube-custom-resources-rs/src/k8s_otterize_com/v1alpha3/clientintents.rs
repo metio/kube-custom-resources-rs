@@ -101,7 +101,8 @@ pub struct ClientIntentsStatus {
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedIPs")]
     pub resolved_i_ps: Option<Vec<ClientIntentsStatusResolvedIPs>>,
-    /// upToDate field reflects whether the client intents have successfully been applied to the cluster to the state specified
+    /// upToDate field reflects whether the client intents have successfully been applied
+    /// to the cluster to the state specified
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDate")]
     pub up_to_date: Option<bool>,
 }

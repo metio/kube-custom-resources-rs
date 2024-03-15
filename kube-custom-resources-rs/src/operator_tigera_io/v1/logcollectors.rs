@@ -4,6 +4,8 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// Specification of the desired state for Tigera log collection.
@@ -21,6 +23,12 @@ pub struct LogCollectorSpec {
     /// Configuration for enabling/disabling process path collection in flowlogs. If Enabled, this feature sets hostPID to true in order to read process cmdline. Default: Enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectProcessPath")]
     pub collect_process_path: Option<LogCollectorCollectProcessPath>,
+    /// EKSLogForwarderDeployment configures the EKSLogForwarderDeployment Deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eksLogForwarderDeployment")]
+    pub eks_log_forwarder_deployment: Option<LogCollectorEksLogForwarderDeployment>,
+    /// FluentdDaemonSet configures the Fluentd DaemonSet.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fluentdDaemonSet")]
+    pub fluentd_daemon_set: Option<LogCollectorFluentdDaemonSet>,
     /// If running as a multi-tenant management cluster, the namespace in which the management cluster's tenant services are running.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiTenantManagementClusterNamespace")]
     pub multi_tenant_management_cluster_namespace: Option<String>,
@@ -113,6 +121,236 @@ pub enum LogCollectorAdditionalStoresSyslogEncryption {
 pub enum LogCollectorCollectProcessPath {
     Enabled,
     Disabled,
+}
+
+/// EKSLogForwarderDeployment configures the EKSLogForwarderDeployment Deployment.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeployment {
+    /// Spec is the specification of the EKSLogForwarder Deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<LogCollectorEksLogForwarderDeploymentSpec>,
+}
+
+/// Spec is the specification of the EKSLogForwarder Deployment.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpec {
+    /// Template describes the EKSLogForwarder Deployment pod that will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<LogCollectorEksLogForwarderDeploymentSpecTemplate>,
+}
+
+/// Template describes the EKSLogForwarder Deployment pod that will be created.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpecTemplate {
+    /// Spec is the EKSLogForwarder Deployment's PodSpec.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<LogCollectorEksLogForwarderDeploymentSpecTemplateSpec>,
+}
+
+/// Spec is the EKSLogForwarder Deployment's PodSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpec {
+    /// Containers is a list of EKSLogForwarder containers. If specified, this overrides the specified EKSLogForwarder Deployment containers. If omitted, the EKSLogForwarder Deployment will use its default values for its containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<Vec<LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainers>>,
+    /// InitContainers is a list of EKSLogForwarder init containers. If specified, this overrides the specified EKSLogForwarder Deployment init containers. If omitted, the EKSLogForwarder Deployment will use its default values for its init containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainers>>,
+}
+
+/// EKSLogForwarderDeploymentContainer is a EKSLogForwarder Deployment container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainers {
+    /// Name is an enum which identifies the EKSLogForwarder Deployment container by name.
+    pub name: LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named EKSLogForwarder Deployment container's resources. If omitted, the EKSLogForwarder Deployment will use its default value for this container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersResources>,
+}
+
+/// EKSLogForwarderDeploymentContainer is a EKSLogForwarder Deployment container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersName {
+    #[serde(rename = "eks-log-forwarder")]
+    EksLogForwarder,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named EKSLogForwarder Deployment container's resources. If omitted, the EKSLogForwarder Deployment will use its default value for this container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
+}
+
+/// EKSLogForwarderDeploymentInitContainer is a EKSLogForwarder Deployment init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainers {
+    /// Name is an enum which identifies the EKSLogForwarder Deployment init container by name.
+    pub name: LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named EKSLogForwarder Deployment init container's resources. If omitted, the EKSLogForwarder Deployment will use its default value for this init container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainersResources>,
+}
+
+/// EKSLogForwarderDeploymentInitContainer is a EKSLogForwarder Deployment init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainersName {
+    #[serde(rename = "eks-log-forwarder-startup")]
+    EksLogForwarderStartup,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named EKSLogForwarder Deployment init container's resources. If omitted, the EKSLogForwarder Deployment will use its default value for this init container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
+}
+
+/// FluentdDaemonSet configures the Fluentd DaemonSet.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSet {
+    /// Spec is the specification of the Fluentd DaemonSet.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<LogCollectorFluentdDaemonSetSpec>,
+}
+
+/// Spec is the specification of the Fluentd DaemonSet.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpec {
+    /// Template describes the Fluentd DaemonSet pod that will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<LogCollectorFluentdDaemonSetSpecTemplate>,
+}
+
+/// Template describes the Fluentd DaemonSet pod that will be created.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpecTemplate {
+    /// Spec is the Fluentd DaemonSet's PodSpec.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<LogCollectorFluentdDaemonSetSpecTemplateSpec>,
+}
+
+/// Spec is the Fluentd DaemonSet's PodSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpecTemplateSpec {
+    /// Containers is a list of Fluentd DaemonSet containers. If specified, this overrides the specified Fluentd DaemonSet containers. If omitted, the Fluentd DaemonSet will use its default values for its containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<Vec<LogCollectorFluentdDaemonSetSpecTemplateSpecContainers>>,
+    /// InitContainers is a list of Fluentd DaemonSet init containers. If specified, this overrides the specified Fluentd DaemonSet init containers. If omitted, the Fluentd DaemonSet will use its default values for its init containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainers>>,
+}
+
+/// FluentdDaemonSetContainer is a Fluentd DaemonSet container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecContainers {
+    /// Name is an enum which identifies the Fluentd DaemonSet container by name.
+    pub name: LogCollectorFluentdDaemonSetSpecTemplateSpecContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Fluentd DaemonSet container's resources. If omitted, the Fluentd DaemonSet will use its default value for this container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<LogCollectorFluentdDaemonSetSpecTemplateSpecContainersResources>,
+}
+
+/// FluentdDaemonSetContainer is a Fluentd DaemonSet container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogCollectorFluentdDaemonSetSpecTemplateSpecContainersName {
+    #[serde(rename = "fluentd")]
+    Fluentd,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Fluentd DaemonSet container's resources. If omitted, the Fluentd DaemonSet will use its default value for this container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<LogCollectorFluentdDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
+}
+
+/// FluentdDaemonSetInitContainer is a Fluentd DaemonSet init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainers {
+    /// Name is an enum which identifies the Fluentd DaemonSet init container by name.
+    pub name: LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Fluentd DaemonSet init container's resources. If omitted, the Fluentd DaemonSet will use its default value for this init container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainersResources>,
+}
+
+/// FluentdDaemonSetInitContainer is a Fluentd DaemonSet init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainersName {
+    #[serde(rename = "tigera-fluentd-prometheus-tls-key-cert-provisioner")]
+    TigeraFluentdPrometheusTlsKeyCertProvisioner,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Fluentd DaemonSet init container's resources. If omitted, the Fluentd DaemonSet will use its default value for this init container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// Most recently observed state for Tigera log collection.

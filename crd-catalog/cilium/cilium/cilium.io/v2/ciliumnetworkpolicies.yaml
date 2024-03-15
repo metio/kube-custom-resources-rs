@@ -214,7 +214,7 @@ spec:
                       toGroups:
                         description: "ToGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: \n Example: toGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'"
                         items:
-                          description: "ToGroups structure to store all kinds of new integrations that needs a new derivative policy."
+                          description: "Groups structure to store all kinds of new integrations that needs a new derivative policy."
                           properties:
                             aws:
                               description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -749,7 +749,7 @@ spec:
                       toGroups:
                         description: "ToGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: \n Example: toGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'"
                         items:
-                          description: "ToGroups structure to store all kinds of new integrations that needs a new derivative policy."
+                          description: "Groups structure to store all kinds of new integrations that needs a new derivative policy."
                           properties:
                             aws:
                               description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -944,6 +944,16 @@ spec:
                         type: "array"
                     type: "object"
                   type: "array"
+                enableDefaultDeny:
+                  description: "EnableDefaultDeny determines whether this policy configures the subject endpoint(s) to have a default deny mode. If enabled, this causes all traffic not explicitly allowed by a network policy to be dropped. \n If not specified, the default is true for each traffic direction that has rules, and false otherwise. For example, if a policy only has Ingress or IngressDeny rules, then the default for ingress is true and egress is false. \n If multiple policies apply to an endpoint, that endpoint's default deny will be enabled if any policy requests it. \n This is useful for creating broad-based network policies that will not cause endpoints to enter default-deny mode."
+                  properties:
+                    egress:
+                      description: "Whether or not the endpoint should have a default-deny rule applied to egress traffic."
+                      type: "boolean"
+                    ingress:
+                      description: "Whether or not the endpoint should have a default-deny rule applied to ingress traffic."
+                      type: "boolean"
+                  type: "object"
                 endpointSelector:
                   description: "EndpointSelector selects all endpoints which should be subject to this rule. EndpointSelector and NodeSelector cannot be both empty and are mutually exclusive."
                   properties:
@@ -1097,6 +1107,31 @@ spec:
                             - "none"
                             - "kube-apiserver"
                           type: "string"
+                        type: "array"
+                      fromGroups:
+                        description: "FromGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: \n Example: FromGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'"
+                        items:
+                          description: "Groups structure to store all kinds of new integrations that needs a new derivative policy."
+                          properties:
+                            aws:
+                              description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
+                              properties:
+                                labels:
+                                  additionalProperties:
+                                    type: "string"
+                                  type: "object"
+                                region:
+                                  type: "string"
+                                securityGroupsIds:
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                securityGroupsNames:
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                              type: "object"
+                          type: "object"
                         type: "array"
                       fromNodes:
                         description: "FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule."
@@ -1447,7 +1482,7 @@ spec:
                 ingressDeny:
                   description: "IngressDeny is a list of IngressDenyRule which are enforced at ingress. Any rule inserted here will be denied regardless of the allowed ingress rules in the 'ingress' field. If omitted or empty, this rule does not apply at ingress."
                   items:
-                    description: "IngressDenyRule contains all rule types which can be applied at ingress, i.e. network traffic that originates outside of the endpoint and is entering the endpoint selected by the endpointSelector. \n - All members of this structure are optional. If omitted or empty, the member will have no effect on the rule. \n - If multiple members are set, all of them need to match in order for the rule to take effect. The exception to this rule is FromRequires field; the effects of any Requires field in any rule will apply to all other rules as well. \n - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually exclusive. Only one of these members may be present within an individual rule."
+                    description: "IngressDenyRule contains all rule types which can be applied at ingress, i.e. network traffic that originates outside of the endpoint and is entering the endpoint selected by the endpointSelector. \n - All members of this structure are optional. If omitted or empty, the member will have no effect on the rule. \n - If multiple members are set, all of them need to match in order for the rule to take effect. The exception to this rule is FromRequires field; the effects of any Requires field in any rule will apply to all other rules as well. \n - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually exclusive. Only one of these members may be present within an individual rule."
                     properties:
                       fromCIDR:
                         description: "FromCIDR is a list of IP blocks which the endpoint subject to the rule is allowed to receive connections from. Only connections which do *not* originate from the cluster or from the local host are subject to CIDR rules. In order to allow in-cluster connectivity, use the FromEndpoints field.  This will match on the source IP address of incoming connections. Adding  a prefix into FromCIDR or into FromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are allowed between FromCIDR and FromCIDRSet. \n Example: Any endpoint with the label \"app=my-legacy-pet\" is allowed to receive connections from 10.3.9.1"
@@ -1546,6 +1581,31 @@ spec:
                             - "none"
                             - "kube-apiserver"
                           type: "string"
+                        type: "array"
+                      fromGroups:
+                        description: "FromGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: \n Example: FromGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'"
+                        items:
+                          description: "Groups structure to store all kinds of new integrations that needs a new derivative policy."
+                          properties:
+                            aws:
+                              description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
+                              properties:
+                                labels:
+                                  additionalProperties:
+                                    type: "string"
+                                  type: "object"
+                                region:
+                                  type: "string"
+                                securityGroupsIds:
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                securityGroupsNames:
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                              type: "object"
+                          type: "object"
                         type: "array"
                       fromNodes:
                         description: "FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule."
@@ -1924,7 +1984,7 @@ spec:
                         toGroups:
                           description: "ToGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: \n Example: toGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'"
                           items:
-                            description: "ToGroups structure to store all kinds of new integrations that needs a new derivative policy."
+                            description: "Groups structure to store all kinds of new integrations that needs a new derivative policy."
                             properties:
                               aws:
                                 description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -2459,7 +2519,7 @@ spec:
                         toGroups:
                           description: "ToGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: \n Example: toGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'"
                           items:
-                            description: "ToGroups structure to store all kinds of new integrations that needs a new derivative policy."
+                            description: "Groups structure to store all kinds of new integrations that needs a new derivative policy."
                             properties:
                               aws:
                                 description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -2654,6 +2714,16 @@ spec:
                           type: "array"
                       type: "object"
                     type: "array"
+                  enableDefaultDeny:
+                    description: "EnableDefaultDeny determines whether this policy configures the subject endpoint(s) to have a default deny mode. If enabled, this causes all traffic not explicitly allowed by a network policy to be dropped. \n If not specified, the default is true for each traffic direction that has rules, and false otherwise. For example, if a policy only has Ingress or IngressDeny rules, then the default for ingress is true and egress is false. \n If multiple policies apply to an endpoint, that endpoint's default deny will be enabled if any policy requests it. \n This is useful for creating broad-based network policies that will not cause endpoints to enter default-deny mode."
+                    properties:
+                      egress:
+                        description: "Whether or not the endpoint should have a default-deny rule applied to egress traffic."
+                        type: "boolean"
+                      ingress:
+                        description: "Whether or not the endpoint should have a default-deny rule applied to ingress traffic."
+                        type: "boolean"
+                    type: "object"
                   endpointSelector:
                     description: "EndpointSelector selects all endpoints which should be subject to this rule. EndpointSelector and NodeSelector cannot be both empty and are mutually exclusive."
                     properties:
@@ -2807,6 +2877,31 @@ spec:
                               - "none"
                               - "kube-apiserver"
                             type: "string"
+                          type: "array"
+                        fromGroups:
+                          description: "FromGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: \n Example: FromGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'"
+                          items:
+                            description: "Groups structure to store all kinds of new integrations that needs a new derivative policy."
+                            properties:
+                              aws:
+                                description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
+                                properties:
+                                  labels:
+                                    additionalProperties:
+                                      type: "string"
+                                    type: "object"
+                                  region:
+                                    type: "string"
+                                  securityGroupsIds:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  securityGroupsNames:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                type: "object"
+                            type: "object"
                           type: "array"
                         fromNodes:
                           description: "FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule."
@@ -3157,7 +3252,7 @@ spec:
                   ingressDeny:
                     description: "IngressDeny is a list of IngressDenyRule which are enforced at ingress. Any rule inserted here will be denied regardless of the allowed ingress rules in the 'ingress' field. If omitted or empty, this rule does not apply at ingress."
                     items:
-                      description: "IngressDenyRule contains all rule types which can be applied at ingress, i.e. network traffic that originates outside of the endpoint and is entering the endpoint selected by the endpointSelector. \n - All members of this structure are optional. If omitted or empty, the member will have no effect on the rule. \n - If multiple members are set, all of them need to match in order for the rule to take effect. The exception to this rule is FromRequires field; the effects of any Requires field in any rule will apply to all other rules as well. \n - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually exclusive. Only one of these members may be present within an individual rule."
+                      description: "IngressDenyRule contains all rule types which can be applied at ingress, i.e. network traffic that originates outside of the endpoint and is entering the endpoint selected by the endpointSelector. \n - All members of this structure are optional. If omitted or empty, the member will have no effect on the rule. \n - If multiple members are set, all of them need to match in order for the rule to take effect. The exception to this rule is FromRequires field; the effects of any Requires field in any rule will apply to all other rules as well. \n - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually exclusive. Only one of these members may be present within an individual rule."
                       properties:
                         fromCIDR:
                           description: "FromCIDR is a list of IP blocks which the endpoint subject to the rule is allowed to receive connections from. Only connections which do *not* originate from the cluster or from the local host are subject to CIDR rules. In order to allow in-cluster connectivity, use the FromEndpoints field.  This will match on the source IP address of incoming connections. Adding  a prefix into FromCIDR or into FromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are allowed between FromCIDR and FromCIDRSet. \n Example: Any endpoint with the label \"app=my-legacy-pet\" is allowed to receive connections from 10.3.9.1"
@@ -3256,6 +3351,31 @@ spec:
                               - "none"
                               - "kube-apiserver"
                             type: "string"
+                          type: "array"
+                        fromGroups:
+                          description: "FromGroups is a directive that allows the integration with multiple outside providers. Currently, only AWS is supported, and the rule can select by multiple sub directives: \n Example: FromGroups: - aws: securityGroupsIds: - 'sg-XXXXXXXXXXXXX'"
+                          items:
+                            description: "Groups structure to store all kinds of new integrations that needs a new derivative policy."
+                            properties:
+                              aws:
+                                description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
+                                properties:
+                                  labels:
+                                    additionalProperties:
+                                      type: "string"
+                                    type: "object"
+                                  region:
+                                    type: "string"
+                                  securityGroupsIds:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  securityGroupsNames:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                type: "object"
+                            type: "object"
                           type: "array"
                         fromNodes:
                           description: "FromNodes is a list of nodes identified by an EndpointSelector which are allowed to communicate with the endpoint subject to the rule."

@@ -352,12 +352,12 @@ spec:
                       type: "object"
                     version:
                       enum:
-                        - "10"
                         - "11"
                         - "12"
                         - "13"
                         - "14"
                         - "15"
+                        - "16"
                       type: "string"
                   required:
                     - "version"

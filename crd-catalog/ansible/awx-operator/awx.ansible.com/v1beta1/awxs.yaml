@@ -494,13 +494,12 @@ spec:
                       type: "object"
                   type: "object"
                 extra_settings:
-                  description: "Extra settings to specify for the API"
+                  description: "Extra settings to specify for AWX"
                   items:
                     properties:
                       setting:
                         type: "string"
                       value:
-                        type: "string"
                         x-kubernetes-preserve-unknown-fields: true
                     type: "object"
                   type: "array"

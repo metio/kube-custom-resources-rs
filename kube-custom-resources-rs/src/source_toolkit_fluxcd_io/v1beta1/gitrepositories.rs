@@ -17,10 +17,13 @@ pub struct GitRepositorySpec {
     /// AccessFrom defines an Access Control List for allowing cross-namespace references to this object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessFrom")]
     pub access_from: Option<GitRepositoryAccessFrom>,
-    /// Determines which git client library to use. Defaults to go-git, valid values are ('go-git', 'libgit2').
+    /// Determines which git client library to use.
+    /// Defaults to go-git, valid values are ('go-git', 'libgit2').
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitImplementation")]
     pub git_implementation: Option<GitRepositoryGitImplementation>,
-    /// Ignore overrides the set of excluded patterns in the .sourceignore format (which is the same as .gitignore). If not provided, a default will be used, consult the documentation for your version to find out what those are.
+    /// Ignore overrides the set of excluded patterns in the .sourceignore format
+    /// (which is the same as .gitignore). If not provided, a default will be used,
+    /// consult the documentation for your version to find out what those are.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<String>,
     /// Extra git repositories to map into the repository
@@ -28,13 +31,20 @@ pub struct GitRepositorySpec {
     pub include: Option<Vec<GitRepositoryInclude>>,
     /// The interval at which to check for repository updates.
     pub interval: String,
-    /// When enabled, after the clone is created, initializes all submodules within, using their default settings. This option is available only when using the 'go-git' GitImplementation.
+    /// When enabled, after the clone is created, initializes all submodules within,
+    /// using their default settings.
+    /// This option is available only when using the 'go-git' GitImplementation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recurseSubmodules")]
     pub recurse_submodules: Option<bool>,
-    /// The Git reference to checkout and monitor for changes, defaults to master branch.
+    /// The Git reference to checkout and monitor for changes, defaults to
+    /// master branch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ref")]
     pub r#ref: Option<GitRepositoryRef>,
-    /// The secret name containing the Git credentials. For HTTPS repositories the secret must contain username and password fields. For SSH repositories the secret must contain identity and known_hosts fields.
+    /// The secret name containing the Git credentials.
+    /// For HTTPS repositories the secret must contain username and password
+    /// fields.
+    /// For SSH repositories the secret must contain identity and known_hosts
+    /// fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<GitRepositorySecretRef>,
     /// This flag tells the controller to suspend the reconciliation of this source.
@@ -53,15 +63,19 @@ pub struct GitRepositorySpec {
 /// AccessFrom defines an Access Control List for allowing cross-namespace references to this object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct GitRepositoryAccessFrom {
-    /// NamespaceSelectors is the list of namespace selectors to which this ACL applies. Items in this list are evaluated using a logical OR operation.
+    /// NamespaceSelectors is the list of namespace selectors to which this ACL applies.
+    /// Items in this list are evaluated using a logical OR operation.
     #[serde(rename = "namespaceSelectors")]
     pub namespace_selectors: Vec<GitRepositoryAccessFromNamespaceSelectors>,
 }
 
-/// NamespaceSelector selects the namespaces to which this ACL applies. An empty map of MatchLabels matches all namespaces in a cluster.
+/// NamespaceSelector selects the namespaces to which this ACL applies.
+/// An empty map of MatchLabels matches all namespaces in a cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct GitRepositoryAccessFromNamespaceSelectors {
-    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
@@ -95,7 +109,8 @@ pub struct GitRepositoryIncludeRepository {
     pub name: String,
 }
 
-/// The Git reference to checkout and monitor for changes, defaults to master branch.
+/// The Git reference to checkout and monitor for changes, defaults to
+/// master branch.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct GitRepositoryRef {
     /// The Git branch to checkout, defaults to master.
@@ -112,7 +127,11 @@ pub struct GitRepositoryRef {
     pub tag: Option<String>,
 }
 
-/// The secret name containing the Git credentials. For HTTPS repositories the secret must contain username and password fields. For SSH repositories the secret must contain identity and known_hosts fields.
+/// The secret name containing the Git credentials.
+/// For HTTPS repositories the secret must contain username and password
+/// fields.
+/// For SSH repositories the secret must contain identity and known_hosts
+/// fields.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct GitRepositorySecretRef {
     /// Name of the referent.
@@ -155,13 +174,16 @@ pub struct GitRepositoryStatus {
     /// IncludedArtifacts represents the included artifacts from the last successful repository sync.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedArtifacts")]
     pub included_artifacts: Option<Vec<GitRepositoryStatusIncludedArtifacts>>,
-    /// LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
+    /// LastHandledReconcileAt holds the value of the most recent
+    /// reconcile request value, so a change of the annotation value
+    /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// URL is the download link for the artifact output of the last repository sync.
+    /// URL is the download link for the artifact output of the last repository
+    /// sync.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -172,12 +194,15 @@ pub struct GitRepositoryStatusArtifact {
     /// Checksum is the SHA256 checksum of the artifact.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    /// LastUpdateTime is the timestamp corresponding to the last update of this artifact.
+    /// LastUpdateTime is the timestamp corresponding to the last update of this
+    /// artifact.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// Path is the relative file path of this artifact.
     pub path: String,
-    /// Revision is a human readable identifier traceable in the origin source system. It can be a Git commit SHA, Git tag, a Helm index timestamp, a Helm chart version, etc.
+    /// Revision is a human readable identifier traceable in the origin source
+    /// system. It can be a Git commit SHA, Git tag, a Helm index timestamp, a Helm
+    /// chart version, etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
     /// URL is the HTTP address of this artifact.
@@ -190,12 +215,15 @@ pub struct GitRepositoryStatusIncludedArtifacts {
     /// Checksum is the SHA256 checksum of the artifact.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    /// LastUpdateTime is the timestamp corresponding to the last update of this artifact.
+    /// LastUpdateTime is the timestamp corresponding to the last update of this
+    /// artifact.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// Path is the relative file path of this artifact.
     pub path: String,
-    /// Revision is a human readable identifier traceable in the origin source system. It can be a Git commit SHA, Git tag, a Helm index timestamp, a Helm chart version, etc.
+    /// Revision is a human readable identifier traceable in the origin source
+    /// system. It can be a Git commit SHA, Git tag, a Helm index timestamp, a Helm
+    /// chart version, etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
     /// URL is the HTTP address of this artifact.

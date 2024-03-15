@@ -13,11 +13,18 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "ProviderStatus")]
 #[kube(schema = "disabled")]
 pub struct ProviderSpec {
-    /// Address specifies the endpoint, in a generic sense, to where alerts are sent. What kind of endpoint depends on the specific Provider type being used. For the generic Provider, for example, this is an HTTP/S address. For other Provider types this could be a project ID or a namespace.
+    /// Address specifies the endpoint, in a generic sense, to where alerts are sent.
+    /// What kind of endpoint depends on the specific Provider type being used.
+    /// For the generic Provider, for example, this is an HTTP/S address.
+    /// For other Provider types this could be a project ID or a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    /// CertSecretRef specifies the Secret containing a PEM-encoded CA certificate (in the `ca.crt` key). 
-    ///  Note: Support for the `caFile` key has been deprecated.
+    /// CertSecretRef specifies the Secret containing
+    /// a PEM-encoded CA certificate (in the `ca.crt` key).
+    /// 
+    /// 
+    /// Note: Support for the `caFile` key has
+    /// been deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ProviderCertSecretRef>,
     /// Channel specifies the destination channel where events should be posted.
@@ -29,10 +36,12 @@ pub struct ProviderSpec {
     /// Proxy the HTTP/S address of the proxy server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,
-    /// SecretRef specifies the Secret containing the authentication credentials for this Provider.
+    /// SecretRef specifies the Secret containing the authentication
+    /// credentials for this Provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ProviderSecretRef>,
-    /// Suspend tells the controller to suspend subsequent events handling for this Provider.
+    /// Suspend tells the controller to suspend subsequent
+    /// events handling for this Provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
     /// Timeout for sending alerts to the Provider.
@@ -46,15 +55,20 @@ pub struct ProviderSpec {
     pub username: Option<String>,
 }
 
-/// CertSecretRef specifies the Secret containing a PEM-encoded CA certificate (in the `ca.crt` key). 
-///  Note: Support for the `caFile` key has been deprecated.
+/// CertSecretRef specifies the Secret containing
+/// a PEM-encoded CA certificate (in the `ca.crt` key).
+/// 
+/// 
+/// Note: Support for the `caFile` key has
+/// been deprecated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProviderCertSecretRef {
     /// Name of the referent.
     pub name: String,
 }
 
-/// SecretRef specifies the Secret containing the authentication credentials for this Provider.
+/// SecretRef specifies the Secret containing the authentication
+/// credentials for this Provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProviderSecretRef {
     /// Name of the referent.
@@ -124,7 +138,9 @@ pub struct ProviderStatus {
     /// Conditions holds the conditions for the Provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// LastHandledReconcileAt holds the value of the most recent reconcile request value, so a change of the annotation value can be detected.
+    /// LastHandledReconcileAt holds the value of the most recent
+    /// reconcile request value, so a change of the annotation value
+    /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last reconciled generation.

@@ -1024,6 +1024,15 @@ spec:
                           type: "object"
                       type: "object"
                   type: "object"
+                hosting:
+                  description: "Hosting settings for the object store"
+                  properties:
+                    dnsNames:
+                      description: "A list of DNS names in which bucket can be accessed via virtual host path. These names need to valid according RFC-1123. Each domain requires wildcard support like ingress loadbalancer. Do not include the wildcard itself in the list of hostnames (e.g. use \"mystore.example.com\" instead of \"*.mystore.example.com\"). Add all hostnames including user-created Kubernetes Service endpoints to the list. CephObjectStore Service Endpoints and CephObjectZone customEndpoints are automatically added to the list. The feature is supported only for Ceph v18 and later versions."
+                      items:
+                        type: "string"
+                      type: "array"
+                  type: "object"
                 metadataPool:
                   description: "The metadata pool settings"
                   nullable: true
@@ -1239,6 +1248,29 @@ spec:
                           description: "TokenSecretName is the kubernetes secret containing the KMS token"
                           type: "string"
                       type: "object"
+                  type: "object"
+                sharedPools:
+                  description: "The pool information when configuring RADOS namespaces in existing pools."
+                  nullable: true
+                  properties:
+                    dataPoolName:
+                      description: "The data pool used for creating RADOS namespaces in the object store"
+                      type: "string"
+                      x-kubernetes-validations:
+                        - message: "object store shared data pool is immutable"
+                          rule: "self == oldSelf"
+                    metadataPoolName:
+                      description: "The metadata pool used for creating RADOS namespaces in the object store"
+                      type: "string"
+                      x-kubernetes-validations:
+                        - message: "object store shared metadata pool is immutable"
+                          rule: "self == oldSelf"
+                    preserveRadosNamespaceDataOnDelete:
+                      description: "Whether the RADOS namespaces should be preserved on deletion of the object store"
+                      type: "boolean"
+                  required:
+                    - "dataPoolName"
+                    - "metadataPoolName"
                   type: "object"
                 zone:
                   description: "The multisite info"

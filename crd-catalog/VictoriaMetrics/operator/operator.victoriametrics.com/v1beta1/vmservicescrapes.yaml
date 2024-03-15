@@ -29,6 +29,13 @@ spec:
             spec:
               description: "VMServiceScrapeSpec defines the desired state of VMServiceScrape"
               properties:
+                attach_metadata:
+                  description: "AttachMetadata configures metadata attaching from service discovery"
+                  properties:
+                    node:
+                      description: "Node instructs vmagent to add node specific metadata from service discovery\nValid for roles: pod, endpoints, endpointslice."
+                      type: "boolean"
+                  type: "object"
                 discoveryRole:
                   description: "DiscoveryRole - defines kubernetes_sd role for objects discovery.\nby default, its endpoints.\ncan be changed to service or endpointslices.\nnote, that with service setting, you have to use port: \"name\"\nand cannot use targetPort for endpoints."
                   enum:

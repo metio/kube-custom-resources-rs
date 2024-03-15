@@ -465,7 +465,7 @@ spec:
                           enum:
                             - "static"
                             - "token"
-                            - "managed"
+                            - "token-cco"
                           type: "string"
                         name:
                           description: "Name of a secret in the namespace configured for object storage secrets."
@@ -2472,7 +2472,7 @@ spec:
                       enum:
                         - "static"
                         - "token"
-                        - "managed"
+                        - "token-cco"
                       type: "string"
                     schemas:
                       description: "Schemas is a list of schemas which have been applied\nto the LokiStack."

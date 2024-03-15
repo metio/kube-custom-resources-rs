@@ -107,8 +107,9 @@ pub struct InputManifestLoadBalancersRoles {
     pub port: i32,
     /// Protocol of the rule. Allowed values are: tcp, udp.
     pub protocol: InputManifestLoadBalancersRolesProtocol,
-    /// Defines a target group of nodes. Allowed values are: k8sAllNodes - All nodes in the cluster k8sControlNodes - Only control/master nodes in cluster k8sComputeNodes - Only compute/worker nodes in cluster
-    pub target: InputManifestLoadBalancersRolesTarget,
+    /// Defines nodepools of the targeted K8s cluster, from which nodes will be used for loadbalancing.
+    #[serde(rename = "targetPools")]
+    pub target_pools: Vec<String>,
     /// Port where loadbalancer forwards the traffic.
     #[serde(rename = "targetPort")]
     pub target_port: i32,
@@ -121,17 +122,6 @@ pub enum InputManifestLoadBalancersRolesProtocol {
     Tcp,
     #[serde(rename = "udp")]
     Udp,
-}
-
-/// Role defines a concrete loadbalancer configuration. Single loadbalancer can have multiple roles.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum InputManifestLoadBalancersRolesTarget {
-    #[serde(rename = "k8sAllNodes")]
-    K8sAllNodes,
-    #[serde(rename = "k8sControlPlane")]
-    K8sControlPlane,
-    #[serde(rename = "k8sComputePlane")]
-    K8sComputePlane,
 }
 
 /// NodePool is a map of dynamic nodepools and static nodepools which will be used to form kubernetes or loadbalancer clusters.

@@ -58,6 +58,9 @@ pub struct SecretStoreProvider {
     /// Oracle configures this store to sync secrets using Oracle Vault provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oracle: Option<SecretStoreProviderOracle>,
+    /// Configures a store to sync secrets with a Password Depot instance.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub passworddepot: Option<SecretStoreProviderPassworddepot>,
     /// Vault configures this store to sync secrets using Hashi provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vault: Option<SecretStoreProviderVault>,
@@ -971,6 +974,47 @@ pub struct SecretStoreProviderOracleServiceAccountRef {
     pub audiences: Option<Vec<String>>,
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
+    /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
+    /// to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Configures a store to sync secrets with a Password Depot instance.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SecretStoreProviderPassworddepot {
+    /// Auth configures how secret-manager authenticates with a Password Depot instance.
+    pub auth: SecretStoreProviderPassworddepotAuth,
+    /// Database to use as source
+    pub database: String,
+    /// URL configures the Password Depot instance URL.
+    pub host: String,
+}
+
+/// Auth configures how secret-manager authenticates with a Password Depot instance.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SecretStoreProviderPassworddepotAuth {
+    #[serde(rename = "secretRef")]
+    pub secret_ref: SecretStoreProviderPassworddepotAuthSecretRef,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SecretStoreProviderPassworddepotAuthSecretRef {
+    /// Username / Password is used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<SecretStoreProviderPassworddepotAuthSecretRefCredentials>,
+}
+
+/// Username / Password is used for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SecretStoreProviderPassworddepotAuthSecretRefCredentials {
+    /// The key of the entry in the Secret resource's `data` field to be used. Some instances of this field may be
+    /// defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Namespace of the resource being referred to. Ignored if referent is not cluster-scoped. cluster-scoped defaults
     /// to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]

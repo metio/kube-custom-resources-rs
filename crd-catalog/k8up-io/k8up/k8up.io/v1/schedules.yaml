@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.10.0"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "schedules.k8up.io"
 spec:
   group: "k8up.io"
@@ -19,10 +19,10 @@ spec:
           description: "Schedule is the Schema for the schedules API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -33,7 +33,7 @@ spec:
                   description: "ArchiveSchedule manages schedules for the archival service"
                   properties:
                     activeDeadlineSeconds:
-                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given."
+                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.\nValue must be positive integer if given."
                       format: "int64"
                       type: "integer"
                     backend:
@@ -48,7 +48,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -64,7 +64,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -87,7 +87,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -103,7 +103,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -126,7 +126,7 @@ spec:
                                 description: "The ConfigMap to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap must be defined"
@@ -140,7 +140,7 @@ spec:
                                 description: "The Secret to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret must be defined"
@@ -158,7 +158,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -176,7 +176,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -198,7 +198,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -216,7 +216,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -234,7 +234,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -253,7 +253,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -273,7 +273,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -294,34 +294,34 @@ spec:
                     concurrentRunsAllowed:
                       type: "boolean"
                     failedJobsHistoryLimit:
-                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                     keepJobs:
-                      description: "KeepJobs amount of jobs to keep for later analysis. \n Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
+                      description: "KeepJobs amount of jobs to keep for later analysis.\n\n\nDeprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
                       type: "integer"
                     podSecurityContext:
                       description: "PodSecurityContext describes the security context with which this action shall be executed."
                       properties:
                         fsGroup:
-                          description: "A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: \n 1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- \n If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         fsGroupChangePolicy:
-                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used. Note that this field cannot be set when spec.os.name is windows."
+                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume\nbefore being exposed inside Pod. This field will only apply to\nvolume types which support fsGroup based ownership(and permissions).\nIt will have no effect on ephemeral volume types such as: secret, configmaps\nand emptydir.\nValid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "string"
                         runAsGroup:
-                          description: "The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         runAsNonRoot:
-                          description: "Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                          description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                           type: "boolean"
                         runAsUser:
-                          description: "The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         seLinuxOptions:
-                          description: "The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             level:
                               description: "Level is SELinux level label that applies to the container."
@@ -337,25 +337,25 @@ spec:
                               type: "string"
                           type: "object"
                         seccompProfile:
-                          description: "The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is \"Localhost\"."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
                           type: "object"
                         supplementalGroups:
-                          description: "A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID, the fsGroup (if specified), and group memberships\ndefined in the container image for the uid of the container process. If unspecified,\nno additional groups are added to any container. Note that group memberships\ndefined in the container image for the uid of the container process are still effective,\neven if they are not included in this list.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             format: "int64"
                             type: "integer"
                           type: "array"
                         sysctls:
-                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows."
+                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             description: "Sysctl defines a kernel parameter to be set"
                             properties:
@@ -371,25 +371,40 @@ spec:
                             type: "object"
                           type: "array"
                         windowsOptions:
-                          description: "The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux."
+                          description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
                           properties:
                             gmsaCredentialSpec:
-                              description: "GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field."
+                              description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
                               type: "string"
                             gmsaCredentialSpecName:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
-                              description: "The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                              description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                               type: "string"
                           type: "object"
                       type: "object"
                     resources:
                       description: "Resources describes the compute resource requirements (cpu, memory, etc.)"
                       properties:
+                        claims:
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          items:
+                            description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                            properties:
+                              name:
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
                         limits:
                           additionalProperties:
                             anyOf:
@@ -397,7 +412,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                         requests:
                           additionalProperties:
@@ -406,21 +421,21 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
                     restoreFilter:
                       type: "string"
                     restoreMethod:
-                      description: "RestoreMethod contains how and where the restore should happen all the settings are mutual exclusive."
+                      description: "RestoreMethod contains how and where the restore should happen\nall the settings are mutual exclusive."
                       properties:
                         folder:
                           properties:
                             claimName:
-                              description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
+                              description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
                               type: "string"
                             readOnly:
-                              description: "readOnly Will force the ReadOnly setting in VolumeMounts. Default false."
+                              description: "readOnly Will force the ReadOnly setting in VolumeMounts.\nDefault false."
                               type: "boolean"
                           required:
                             - "claimName"
@@ -434,7 +449,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -454,7 +469,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -471,7 +486,7 @@ spec:
                     snapshot:
                       type: "string"
                     successfulJobsHistoryLimit:
-                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                     tags:
                       description: "Tags is a list of arbitrary tags that get added to the backup via Restic's tagging system"
@@ -480,7 +495,7 @@ spec:
                       type: "array"
                   type: "object"
                 backend:
-                  description: "Backend allows configuring several backend implementations. It is expected that users only configure one storage type."
+                  description: "Backend allows configuring several backend implementations.\nIt is expected that users only configure one storage type."
                   properties:
                     azure:
                       properties:
@@ -491,7 +506,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -507,7 +522,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -530,7 +545,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -546,7 +561,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -569,7 +584,7 @@ spec:
                             description: "The ConfigMap to select from"
                             properties:
                               name:
-                                description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                 type: "string"
                               optional:
                                 description: "Specify whether the ConfigMap must be defined"
@@ -583,7 +598,7 @@ spec:
                             description: "The Secret to select from"
                             properties:
                               name:
-                                description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                 type: "string"
                               optional:
                                 description: "Specify whether the Secret must be defined"
@@ -601,7 +616,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -619,7 +634,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -641,7 +656,7 @@ spec:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -659,7 +674,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -677,7 +692,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -696,7 +711,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -716,7 +731,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -738,7 +753,7 @@ spec:
                   description: "BackupSchedule manages schedules for the backup service"
                   properties:
                     activeDeadlineSeconds:
-                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given."
+                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.\nValue must be positive integer if given."
                       format: "int64"
                       type: "integer"
                     backend:
@@ -753,7 +768,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -769,7 +784,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -792,7 +807,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -808,7 +823,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -831,7 +846,7 @@ spec:
                                 description: "The ConfigMap to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap must be defined"
@@ -845,7 +860,7 @@ spec:
                                 description: "The Secret to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret must be defined"
@@ -863,7 +878,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -881,7 +896,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -903,7 +918,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -921,7 +936,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -939,7 +954,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -958,7 +973,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -978,7 +993,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -999,34 +1014,34 @@ spec:
                     concurrentRunsAllowed:
                       type: "boolean"
                     failedJobsHistoryLimit:
-                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                     keepJobs:
-                      description: "KeepJobs amount of jobs to keep for later analysis. \n Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
+                      description: "KeepJobs amount of jobs to keep for later analysis.\n\n\nDeprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
                       type: "integer"
                     podSecurityContext:
                       description: "PodSecurityContext describes the security context with which this action shall be executed."
                       properties:
                         fsGroup:
-                          description: "A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: \n 1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- \n If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         fsGroupChangePolicy:
-                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used. Note that this field cannot be set when spec.os.name is windows."
+                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume\nbefore being exposed inside Pod. This field will only apply to\nvolume types which support fsGroup based ownership(and permissions).\nIt will have no effect on ephemeral volume types such as: secret, configmaps\nand emptydir.\nValid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "string"
                         runAsGroup:
-                          description: "The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         runAsNonRoot:
-                          description: "Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                          description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                           type: "boolean"
                         runAsUser:
-                          description: "The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         seLinuxOptions:
-                          description: "The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             level:
                               description: "Level is SELinux level label that applies to the container."
@@ -1042,25 +1057,25 @@ spec:
                               type: "string"
                           type: "object"
                         seccompProfile:
-                          description: "The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is \"Localhost\"."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
                           type: "object"
                         supplementalGroups:
-                          description: "A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID, the fsGroup (if specified), and group memberships\ndefined in the container image for the uid of the container process. If unspecified,\nno additional groups are added to any container. Note that group memberships\ndefined in the container image for the uid of the container process are still effective,\neven if they are not included in this list.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             format: "int64"
                             type: "integer"
                           type: "array"
                         sysctls:
-                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows."
+                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             description: "Sysctl defines a kernel parameter to be set"
                             properties:
@@ -1076,19 +1091,19 @@ spec:
                             type: "object"
                           type: "array"
                         windowsOptions:
-                          description: "The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux."
+                          description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
                           properties:
                             gmsaCredentialSpec:
-                              description: "GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field."
+                              description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
                               type: "string"
                             gmsaCredentialSpecName:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
-                              description: "The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                              description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                               type: "string"
                           type: "object"
                       type: "object"
@@ -1098,6 +1113,21 @@ spec:
                     resources:
                       description: "Resources describes the compute resource requirements (cpu, memory, etc.)"
                       properties:
+                        claims:
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          items:
+                            description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                            properties:
+                              name:
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
                         limits:
                           additionalProperties:
                             anyOf:
@@ -1105,7 +1135,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                         requests:
                           additionalProperties:
@@ -1114,17 +1144,17 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
                     schedule:
                       description: "ScheduleDefinition is the actual cron-type expression that defines the interval of the actions."
                       type: "string"
                     statsURL:
-                      description: "StatsURL sets an arbitrary URL where the restic container posts metrics and information about the snapshots to. This is in addition to the prometheus pushgateway."
+                      description: "StatsURL sets an arbitrary URL where the restic container posts metrics and\ninformation about the snapshots to. This is in addition to the prometheus\npushgateway."
                       type: "string"
                     successfulJobsHistoryLimit:
-                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                     tags:
                       description: "Tags is a list of arbitrary tags that get added to the backup via Restic's tagging system"
@@ -1136,7 +1166,7 @@ spec:
                   description: "CheckSchedule manages the schedules for the checks"
                   properties:
                     activeDeadlineSeconds:
-                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given."
+                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.\nValue must be positive integer if given."
                       format: "int64"
                       type: "integer"
                     backend:
@@ -1151,7 +1181,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1167,7 +1197,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1190,7 +1220,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1206,7 +1236,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1229,7 +1259,7 @@ spec:
                                 description: "The ConfigMap to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap must be defined"
@@ -1243,7 +1273,7 @@ spec:
                                 description: "The Secret to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret must be defined"
@@ -1261,7 +1291,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1279,7 +1309,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1301,7 +1331,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -1319,7 +1349,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1337,7 +1367,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1356,7 +1386,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1376,7 +1406,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1397,34 +1427,34 @@ spec:
                     concurrentRunsAllowed:
                       type: "boolean"
                     failedJobsHistoryLimit:
-                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                     keepJobs:
-                      description: "KeepJobs amount of jobs to keep for later analysis. \n Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
+                      description: "KeepJobs amount of jobs to keep for later analysis.\n\n\nDeprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
                       type: "integer"
                     podSecurityContext:
                       description: "PodSecurityContext describes the security context with which this action shall be executed."
                       properties:
                         fsGroup:
-                          description: "A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: \n 1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- \n If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         fsGroupChangePolicy:
-                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used. Note that this field cannot be set when spec.os.name is windows."
+                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume\nbefore being exposed inside Pod. This field will only apply to\nvolume types which support fsGroup based ownership(and permissions).\nIt will have no effect on ephemeral volume types such as: secret, configmaps\nand emptydir.\nValid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "string"
                         runAsGroup:
-                          description: "The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         runAsNonRoot:
-                          description: "Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                          description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                           type: "boolean"
                         runAsUser:
-                          description: "The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         seLinuxOptions:
-                          description: "The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             level:
                               description: "Level is SELinux level label that applies to the container."
@@ -1440,25 +1470,25 @@ spec:
                               type: "string"
                           type: "object"
                         seccompProfile:
-                          description: "The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is \"Localhost\"."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
                           type: "object"
                         supplementalGroups:
-                          description: "A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID, the fsGroup (if specified), and group memberships\ndefined in the container image for the uid of the container process. If unspecified,\nno additional groups are added to any container. Note that group memberships\ndefined in the container image for the uid of the container process are still effective,\neven if they are not included in this list.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             format: "int64"
                             type: "integer"
                           type: "array"
                         sysctls:
-                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows."
+                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             description: "Sysctl defines a kernel parameter to be set"
                             properties:
@@ -1474,19 +1504,19 @@ spec:
                             type: "object"
                           type: "array"
                         windowsOptions:
-                          description: "The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux."
+                          description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
                           properties:
                             gmsaCredentialSpec:
-                              description: "GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field."
+                              description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
                               type: "string"
                             gmsaCredentialSpecName:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
-                              description: "The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                              description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                               type: "string"
                           type: "object"
                       type: "object"
@@ -1496,6 +1526,21 @@ spec:
                     resources:
                       description: "Resources describes the compute resource requirements (cpu, memory, etc.)"
                       properties:
+                        claims:
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          items:
+                            description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                            properties:
+                              name:
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
                         limits:
                           additionalProperties:
                             anyOf:
@@ -1503,7 +1548,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                         requests:
                           additionalProperties:
@@ -1512,45 +1557,45 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
                     schedule:
                       description: "ScheduleDefinition is the actual cron-type expression that defines the interval of the actions."
                       type: "string"
                     successfulJobsHistoryLimit:
-                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                   type: "object"
                 failedJobsHistoryLimit:
-                  description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified."
+                  description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                   type: "integer"
                 keepJobs:
-                  description: "KeepJobs amount of jobs to keep for later analysis. \n Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
+                  description: "KeepJobs amount of jobs to keep for later analysis.\n\n\nDeprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
                   type: "integer"
                 podSecurityContext:
                   description: "PodSecurityContext describes the security context with which actions (such as backups) shall be executed."
                   properties:
                     fsGroup:
-                      description: "A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: \n 1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- \n If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows."
+                      description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                       format: "int64"
                       type: "integer"
                     fsGroupChangePolicy:
-                      description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used. Note that this field cannot be set when spec.os.name is windows."
+                      description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume\nbefore being exposed inside Pod. This field will only apply to\nvolume types which support fsGroup based ownership(and permissions).\nIt will have no effect on ephemeral volume types such as: secret, configmaps\nand emptydir.\nValid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used.\nNote that this field cannot be set when spec.os.name is windows."
                       type: "string"
                     runAsGroup:
-                      description: "The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                      description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                       format: "int64"
                       type: "integer"
                     runAsNonRoot:
-                      description: "Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                      description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                       type: "boolean"
                     runAsUser:
-                      description: "The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                      description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                       format: "int64"
                       type: "integer"
                     seLinuxOptions:
-                      description: "The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                      description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                       properties:
                         level:
                           description: "Level is SELinux level label that applies to the container."
@@ -1566,25 +1611,25 @@ spec:
                           type: "string"
                       type: "object"
                     seccompProfile:
-                      description: "The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows."
+                      description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
                       properties:
                         localhostProfile:
-                          description: "localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is \"Localhost\"."
+                          description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                           type: "string"
                         type:
-                          description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                          description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                           type: "string"
                       required:
                         - "type"
                       type: "object"
                     supplementalGroups:
-                      description: "A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows."
+                      description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID, the fsGroup (if specified), and group memberships\ndefined in the container image for the uid of the container process. If unspecified,\nno additional groups are added to any container. Note that group memberships\ndefined in the container image for the uid of the container process are still effective,\neven if they are not included in this list.\nNote that this field cannot be set when spec.os.name is windows."
                       items:
                         format: "int64"
                         type: "integer"
                       type: "array"
                     sysctls:
-                      description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows."
+                      description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
                       items:
                         description: "Sysctl defines a kernel parameter to be set"
                         properties:
@@ -1600,19 +1645,19 @@ spec:
                         type: "object"
                       type: "array"
                     windowsOptions:
-                      description: "The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux."
+                      description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
                       properties:
                         gmsaCredentialSpec:
-                          description: "GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field."
+                          description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
                           type: "string"
                         gmsaCredentialSpecName:
                           description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                           type: "string"
                         hostProcess:
-                          description: "HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true."
+                          description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                           type: "boolean"
                         runAsUserName:
-                          description: "The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                          description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                           type: "string"
                       type: "object"
                   type: "object"
@@ -1620,7 +1665,7 @@ spec:
                   description: "PruneSchedule manages the schedules for the prunes"
                   properties:
                     activeDeadlineSeconds:
-                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given."
+                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.\nValue must be positive integer if given."
                       format: "int64"
                       type: "integer"
                     backend:
@@ -1635,7 +1680,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1651,7 +1696,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1674,7 +1719,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1690,7 +1735,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1713,7 +1758,7 @@ spec:
                                 description: "The ConfigMap to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap must be defined"
@@ -1727,7 +1772,7 @@ spec:
                                 description: "The Secret to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret must be defined"
@@ -1745,7 +1790,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1763,7 +1808,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1785,7 +1830,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -1803,7 +1848,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1821,7 +1866,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1840,7 +1885,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1860,7 +1905,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1881,34 +1926,34 @@ spec:
                     concurrentRunsAllowed:
                       type: "boolean"
                     failedJobsHistoryLimit:
-                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                     keepJobs:
-                      description: "KeepJobs amount of jobs to keep for later analysis. \n Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
+                      description: "KeepJobs amount of jobs to keep for later analysis.\n\n\nDeprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
                       type: "integer"
                     podSecurityContext:
                       description: "PodSecurityContext describes the security context with which this action shall be executed."
                       properties:
                         fsGroup:
-                          description: "A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: \n 1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- \n If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         fsGroupChangePolicy:
-                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used. Note that this field cannot be set when spec.os.name is windows."
+                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume\nbefore being exposed inside Pod. This field will only apply to\nvolume types which support fsGroup based ownership(and permissions).\nIt will have no effect on ephemeral volume types such as: secret, configmaps\nand emptydir.\nValid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "string"
                         runAsGroup:
-                          description: "The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         runAsNonRoot:
-                          description: "Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                          description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                           type: "boolean"
                         runAsUser:
-                          description: "The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         seLinuxOptions:
-                          description: "The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             level:
                               description: "Level is SELinux level label that applies to the container."
@@ -1924,25 +1969,25 @@ spec:
                               type: "string"
                           type: "object"
                         seccompProfile:
-                          description: "The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is \"Localhost\"."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
                           type: "object"
                         supplementalGroups:
-                          description: "A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID, the fsGroup (if specified), and group memberships\ndefined in the container image for the uid of the container process. If unspecified,\nno additional groups are added to any container. Note that group memberships\ndefined in the container image for the uid of the container process are still effective,\neven if they are not included in this list.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             format: "int64"
                             type: "integer"
                           type: "array"
                         sysctls:
-                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows."
+                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             description: "Sysctl defines a kernel parameter to be set"
                             properties:
@@ -1958,25 +2003,40 @@ spec:
                             type: "object"
                           type: "array"
                         windowsOptions:
-                          description: "The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux."
+                          description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
                           properties:
                             gmsaCredentialSpec:
-                              description: "GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field."
+                              description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
                               type: "string"
                             gmsaCredentialSpecName:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
-                              description: "The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                              description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                               type: "string"
                           type: "object"
                       type: "object"
                     resources:
                       description: "Resources describes the compute resource requirements (cpu, memory, etc.)"
                       properties:
+                        claims:
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          items:
+                            description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                            properties:
+                              name:
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
                         limits:
                           additionalProperties:
                             anyOf:
@@ -1984,7 +2044,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                         requests:
                           additionalProperties:
@@ -1993,7 +2053,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
                     retention:
@@ -2021,7 +2081,7 @@ spec:
                         keepYearly:
                           type: "integer"
                         tags:
-                          description: "Tags is a filter on what tags the policy should be applied DO NOT CONFUSE THIS WITH KeepTags OR YOU'LL have a bad time"
+                          description: "Tags is a filter on what tags the policy should be applied\nDO NOT CONFUSE THIS WITH KeepTags OR YOU'LL have a bad time"
                           items:
                             type: "string"
                           type: "array"
@@ -2030,12 +2090,27 @@ spec:
                       description: "ScheduleDefinition is the actual cron-type expression that defines the interval of the actions."
                       type: "string"
                     successfulJobsHistoryLimit:
-                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                   type: "object"
                 resourceRequirementsTemplate:
                   description: "ResourceRequirementsTemplate describes the compute resource requirements (cpu, memory, etc.)"
                   properties:
+                    claims:
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                      items:
+                        description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                        properties:
+                          name:
+                            description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                            type: "string"
+                        required:
+                          - "name"
+                        type: "object"
+                      type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "name"
+                      x-kubernetes-list-type: "map"
                     limits:
                       additionalProperties:
                         anyOf:
@@ -2043,7 +2118,7 @@ spec:
                           - type: "string"
                         pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                         x-kubernetes-int-or-string: true
-                      description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       type: "object"
                     requests:
                       additionalProperties:
@@ -2052,14 +2127,14 @@ spec:
                           - type: "string"
                         pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                         x-kubernetes-int-or-string: true
-                      description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                      description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       type: "object"
                   type: "object"
                 restore:
                   description: "RestoreSchedule manages schedules for the restore service"
                   properties:
                     activeDeadlineSeconds:
-                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given."
+                      description: "ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.\nValue must be positive integer if given."
                       format: "int64"
                       type: "integer"
                     backend:
@@ -2074,7 +2149,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2090,7 +2165,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2113,7 +2188,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2129,7 +2204,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2152,7 +2227,7 @@ spec:
                                 description: "The ConfigMap to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap must be defined"
@@ -2166,7 +2241,7 @@ spec:
                                 description: "The Secret to select from"
                                 properties:
                                   name:
-                                    description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret must be defined"
@@ -2184,7 +2259,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2202,7 +2277,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2224,7 +2299,7 @@ spec:
                               description: "The key of the secret to select from.  Must be a valid secret key."
                               type: "string"
                             name:
-                              description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                             optional:
                               description: "Specify whether the Secret or its key must be defined"
@@ -2242,7 +2317,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2260,7 +2335,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2279,7 +2354,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2299,7 +2374,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2320,34 +2395,34 @@ spec:
                     concurrentRunsAllowed:
                       type: "boolean"
                     failedJobsHistoryLimit:
-                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                     keepJobs:
-                      description: "KeepJobs amount of jobs to keep for later analysis. \n Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
+                      description: "KeepJobs amount of jobs to keep for later analysis.\n\n\nDeprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively."
                       type: "integer"
                     podSecurityContext:
                       description: "PodSecurityContext describes the security context with which this action shall be executed."
                       properties:
                         fsGroup:
-                          description: "A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: \n 1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- \n If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         fsGroupChangePolicy:
-                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used. Note that this field cannot be set when spec.os.name is windows."
+                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume\nbefore being exposed inside Pod. This field will only apply to\nvolume types which support fsGroup based ownership(and permissions).\nIt will have no effect on ephemeral volume types such as: secret, configmaps\nand emptydir.\nValid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "string"
                         runAsGroup:
-                          description: "The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         runAsNonRoot:
-                          description: "Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                          description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                           type: "boolean"
                         runAsUser:
-                          description: "The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         seLinuxOptions:
-                          description: "The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             level:
                               description: "Level is SELinux level label that applies to the container."
@@ -2363,25 +2438,25 @@ spec:
                               type: "string"
                           type: "object"
                         seccompProfile:
-                          description: "The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows."
+                          description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is \"Localhost\"."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
                           type: "object"
                         supplementalGroups:
-                          description: "A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows."
+                          description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID, the fsGroup (if specified), and group memberships\ndefined in the container image for the uid of the container process. If unspecified,\nno additional groups are added to any container. Note that group memberships\ndefined in the container image for the uid of the container process are still effective,\neven if they are not included in this list.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             format: "int64"
                             type: "integer"
                           type: "array"
                         sysctls:
-                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows."
+                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             description: "Sysctl defines a kernel parameter to be set"
                             properties:
@@ -2397,25 +2472,40 @@ spec:
                             type: "object"
                           type: "array"
                         windowsOptions:
-                          description: "The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux."
+                          description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
                           properties:
                             gmsaCredentialSpec:
-                              description: "GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field."
+                              description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
                               type: "string"
                             gmsaCredentialSpecName:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
-                              description: "The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+                              description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                               type: "string"
                           type: "object"
                       type: "object"
                     resources:
                       description: "Resources describes the compute resource requirements (cpu, memory, etc.)"
                       properties:
+                        claims:
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          items:
+                            description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                            properties:
+                              name:
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "name"
+                          x-kubernetes-list-type: "map"
                         limits:
                           additionalProperties:
                             anyOf:
@@ -2423,7 +2513,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                         requests:
                           additionalProperties:
@@ -2432,21 +2522,21 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
                     restoreFilter:
                       type: "string"
                     restoreMethod:
-                      description: "RestoreMethod contains how and where the restore should happen all the settings are mutual exclusive."
+                      description: "RestoreMethod contains how and where the restore should happen\nall the settings are mutual exclusive."
                       properties:
                         folder:
                           properties:
                             claimName:
-                              description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
+                              description: "claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
                               type: "string"
                             readOnly:
-                              description: "readOnly Will force the ReadOnly setting in VolumeMounts. Default false."
+                              description: "readOnly Will force the ReadOnly setting in VolumeMounts.\nDefault false."
                               type: "boolean"
                           required:
                             - "claimName"
@@ -2460,7 +2550,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2480,7 +2570,7 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2497,7 +2587,7 @@ spec:
                     snapshot:
                       type: "string"
                     successfulJobsHistoryLimit:
-                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified."
+                      description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                       type: "integer"
                     tags:
                       description: "Tags is a list of arbitrary tags that get added to the backup via Restic's tagging system"
@@ -2506,32 +2596,32 @@ spec:
                       type: "array"
                   type: "object"
                 successfulJobsHistoryLimit:
-                  description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified."
+                  description: "SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.\nKeepJobs is used property is not specified."
                   type: "integer"
               type: "object"
             status:
               description: "ScheduleStatus defines the observed state of Schedule"
               properties:
                 conditions:
-                  description: "Conditions provide a standard mechanism for higher-level status reporting from a controller. They are an extension mechanism which allows tools and other controllers to collect summary information about resources without needing to understand resource-specific status details."
+                  description: "Conditions provide a standard mechanism for higher-level status reporting from a controller.\nThey are an extension mechanism which allows tools and other controllers to collect summary information about\nresources without needing to understand resource-specific status details."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
                     properties:
                       lastTransitionTime:
-                        description: "lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
                         format: "date-time"
                         type: "string"
                       message:
-                        description: "message is a human readable message indicating details about the transition. This may be an empty string."
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
                         maxLength: 32768
                         type: "string"
                       observedGeneration:
-                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance."
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
                         format: "int64"
                         minimum: 0.0
                         type: "integer"
                       reason:
-                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty."
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
                         maxLength: 1024
                         minLength: 1
                         pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
@@ -2544,7 +2634,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

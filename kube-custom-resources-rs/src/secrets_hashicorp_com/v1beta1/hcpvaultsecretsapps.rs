@@ -36,14 +36,16 @@ pub struct HCPVaultSecretsAppDestination {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Create the destination Secret. If the Secret already exists this should be set to false.
-    pub create: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub create: Option<bool>,
     /// Labels to apply to the Secret. Requires Create to be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name of the Secret
     pub name: String,
     /// Overwrite the destination Secret if it exists and Create is true. This is useful when migrating to VSO from a previous secret deployment strategy.
-    pub overwrite: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub overwrite: Option<bool>,
     /// Transformation provides configuration for transforming the secret data before it is stored in the Destination.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub transformation: Option<HCPVaultSecretsAppDestinationTransformation>,

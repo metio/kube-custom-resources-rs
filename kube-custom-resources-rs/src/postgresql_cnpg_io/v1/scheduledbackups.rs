@@ -4,6 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
 
 /// Specification of the desired behavior of the ScheduledBackup.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
@@ -37,6 +38,9 @@ pub struct ScheduledBackupSpec {
     /// Overrides the default settings specified in the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineConfiguration")]
     pub online_configuration: Option<ScheduledBackupOnlineConfiguration>,
+    /// Configuration parameters passed to the plugin managing this backup
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginConfiguration")]
+    pub plugin_configuration: Option<ScheduledBackupPluginConfiguration>,
     /// The schedule does not follow the same format used in Kubernetes CronJobs
     /// as it includes an additional seconds specifier,
     /// see https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format
@@ -105,6 +109,17 @@ pub struct ScheduledBackupOnlineConfiguration {
     /// an immediate segment switch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForArchive")]
     pub wait_for_archive: Option<bool>,
+}
+
+/// Configuration parameters passed to the plugin managing this backup
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScheduledBackupPluginConfiguration {
+    /// Name is the name of the plugin managing this backup
+    pub name: String,
+    /// Parameters are the configuration parameters passed to the backup
+    /// plugin for this backup
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<BTreeMap<String, String>>,
 }
 
 /// Specification of the desired behavior of the ScheduledBackup.

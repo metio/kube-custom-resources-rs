@@ -107,6 +107,10 @@ spec:
                                       name:
                                         description: "Name of the referenced resource. Can only be used with kinds: `MeshService`,\n`MeshServiceSubset` and `MeshGatewayRoute`"
                                         type: "string"
+                                      port:
+                                        description: "Port is only supported when this ref refers to a real MeshService object"
+                                        format: "int32"
+                                        type: "integer"
                                       proxyTypes:
                                         description: "ProxyTypes specifies the data plane types that are subject to the policy. When not specified,\nall data plane types are targeted by the policy."
                                         items:
@@ -180,7 +184,7 @@ spec:
                                       requestMirror:
                                         properties:
                                           backendRef:
-                                            description: "TargetRef defines structure that allows attaching policy to various objects"
+                                            description: "TODO forbid weight"
                                             properties:
                                               kind:
                                                 description: "Kind of the referenced resource"
@@ -198,6 +202,10 @@ spec:
                                               name:
                                                 description: "Name of the referenced resource. Can only be used with kinds: `MeshService`,\n`MeshServiceSubset` and `MeshGatewayRoute`"
                                                 type: "string"
+                                              port:
+                                                description: "Port is only supported when this ref refers to a real MeshService object"
+                                                format: "int32"
+                                                type: "integer"
                                               proxyTypes:
                                                 description: "ProxyTypes specifies the data plane types that are subject to the policy. When not specified,\nall data plane types are targeted by the policy."
                                                 items:
@@ -212,6 +220,10 @@ spec:
                                                   type: "string"
                                                 description: "Tags used to select a subset of proxies by tags. Can only be used with kinds\n`MeshSubset` and `MeshServiceSubset`"
                                                 type: "object"
+                                              weight:
+                                                default: 1
+                                                minimum: 0.0
+                                                type: "integer"
                                             type: "object"
                                           percentage:
                                             anyOf:

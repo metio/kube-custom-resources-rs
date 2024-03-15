@@ -27,6 +27,9 @@ pub struct CephObjectZoneSpec {
     /// Preserve pools on object zone deletion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolsOnDelete")]
     pub preserve_pools_on_delete: Option<bool>,
+    /// The pool information when configuring RADOS namespaces in existing pools.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedPools")]
+    pub shared_pools: Option<CephObjectZoneSharedPools>,
     /// The display name for the ceph users
     #[serde(rename = "zoneGroup")]
     pub zone_group: String,
@@ -382,6 +385,20 @@ pub struct CephObjectZoneMetadataPoolStatusCheckMirror {
     pub interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+/// The pool information when configuring RADOS namespaces in existing pools.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectZoneSharedPools {
+    /// The data pool used for creating RADOS namespaces in the object store
+    #[serde(rename = "dataPoolName")]
+    pub data_pool_name: String,
+    /// The metadata pool used for creating RADOS namespaces in the object store
+    #[serde(rename = "metadataPoolName")]
+    pub metadata_pool_name: String,
+    /// Whether the RADOS namespaces should be preserved on deletion of the object store
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveRadosNamespaceDataOnDelete")]
+    pub preserve_rados_namespace_data_on_delete: Option<bool>,
 }
 
 /// Status represents the status of an object

@@ -6999,11 +6999,20 @@ pub struct JobSetStatus {
 /// ReplicatedJobStatus defines the observed ReplicatedJobs Readiness.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct JobSetStatusReplicatedJobsStatus {
+    /// Active is the number of child Jobs with at least 1 pod in a running or pending state
+    /// which are not marked for deletion.
     pub active: i32,
+    /// Failed is the number of failed child Jobs.
     pub failed: i32,
+    /// Name of the ReplicatedJob.
     pub name: String,
+    /// Ready is the number of child Jobs where the number of ready pods and completed pods
+    /// is greater than or equal to the total expected pod count for the Job (i.e., the minimum
+    /// of job.spec.parallelism and job.spec.completions).
     pub ready: i32,
+    /// Succeeded is the number of successfully completed child Jobs.
     pub succeeded: i32,
+    /// Suspended is the number of child Jobs which are in a suspended state.
     pub suspended: i32,
 }
 

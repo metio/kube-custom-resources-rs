@@ -11,26 +11,36 @@ use serde::{Serialize, Deserialize};
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct ProviderSpec {
-    /// Address specifies the endpoint, in a generic sense, to where alerts are sent. What kind of endpoint depends on the specific Provider type being used. For the generic Provider, for example, this is an HTTP/S address. For other Provider types this could be a project ID or a namespace.
+    /// Address specifies the endpoint, in a generic sense, to where alerts are sent.
+    /// What kind of endpoint depends on the specific Provider type being used.
+    /// For the generic Provider, for example, this is an HTTP/S address.
+    /// For other Provider types this could be a project ID or a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    /// CertSecretRef specifies the Secret containing a PEM-encoded CA certificate (in the `ca.crt` key). 
-    ///  Note: Support for the `caFile` key has been deprecated.
+    /// CertSecretRef specifies the Secret containing
+    /// a PEM-encoded CA certificate (in the `ca.crt` key).
+    /// 
+    /// 
+    /// Note: Support for the `caFile` key has
+    /// been deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ProviderCertSecretRef>,
     /// Channel specifies the destination channel where events should be posted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<String>,
-    /// Interval at which to reconcile the Provider with its Secret references. Deprecated and not used in v1beta3.
+    /// Interval at which to reconcile the Provider with its Secret references.
+    /// Deprecated and not used in v1beta3.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// Proxy the HTTP/S address of the proxy server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,
-    /// SecretRef specifies the Secret containing the authentication credentials for this Provider.
+    /// SecretRef specifies the Secret containing the authentication
+    /// credentials for this Provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ProviderSecretRef>,
-    /// Suspend tells the controller to suspend subsequent events handling for this Provider.
+    /// Suspend tells the controller to suspend subsequent
+    /// events handling for this Provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
     /// Timeout for sending alerts to the Provider.
@@ -44,15 +54,20 @@ pub struct ProviderSpec {
     pub username: Option<String>,
 }
 
-/// CertSecretRef specifies the Secret containing a PEM-encoded CA certificate (in the `ca.crt` key). 
-///  Note: Support for the `caFile` key has been deprecated.
+/// CertSecretRef specifies the Secret containing
+/// a PEM-encoded CA certificate (in the `ca.crt` key).
+/// 
+/// 
+/// Note: Support for the `caFile` key has
+/// been deprecated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProviderCertSecretRef {
     /// Name of the referent.
     pub name: String,
 }
 
-/// SecretRef specifies the Secret containing the authentication credentials for this Provider.
+/// SecretRef specifies the Secret containing the authentication
+/// credentials for this Provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProviderSecretRef {
     /// Name of the referent.

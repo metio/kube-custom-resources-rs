@@ -590,8 +590,38 @@ pub struct CertificateAuthorityStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// Date and time at which your private CA was created.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdAt")]
+    pub created_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csr: Option<String>,
+    /// Reason the request to create your private CA failed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
+    pub failure_reason: Option<String>,
+    /// Date and time at which your private CA was last updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStateChangeAt")]
+    pub last_state_change_at: Option<String>,
+    /// Date and time after which your private CA certificate is not valid.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
+    /// Date and time before which your private CA certificate is not valid.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
+    /// The Amazon Web Services account ID that owns the certificate authority.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerAccount")]
+    pub owner_account: Option<String>,
+    /// The period during which a deleted CA can be restored. For more information,
+    /// see the PermanentDeletionTimeInDays parameter of the DeleteCertificateAuthorityRequest
+    /// (https://docs.aws.amazon.com/privateca/latest/APIReference/API_DeleteCertificateAuthorityRequest.html)
+    /// action.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorableUntil")]
+    pub restorable_until: Option<String>,
+    /// Serial number of your private CA.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub serial: Option<String>,
+    /// Status of your private CA.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
 }
 
 /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member

@@ -59,9 +59,21 @@ spec:
                       type: "object"
                   type: "object"
                 certificateChain:
-                  description: "A PEM-encoded file that contains all of your certificates, other than the\ncertificate you're importing, chaining up to your root CA. Your Amazon Web\nServices Private CA-hosted or on-premises root certificate is the last in\nthe chain, and each certificate in the chain signs the one preceding.\n\n\nThis parameter must be supplied when you import a subordinate CA. When you\nimport a root CA, there is no chain."
-                  format: "byte"
-                  type: "string"
+                  description: "SecretKeyReference combines a k8s corev1.SecretReference with a\nspecific key within the referred-to Secret"
+                  properties:
+                    key:
+                      description: "Key is the key within the secret"
+                      type: "string"
+                    name:
+                      description: "name is unique within a namespace to reference a secret resource."
+                      type: "string"
+                    namespace:
+                      description: "namespace defines the space within which the secret name must be unique."
+                      type: "string"
+                  required:
+                    - "key"
+                  type: "object"
+                  x-kubernetes-map-type: "atomic"
                 status:
                   type: "string"
               required:

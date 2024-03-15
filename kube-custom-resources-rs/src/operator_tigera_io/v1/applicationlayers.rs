@@ -4,6 +4,8 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// ApplicationLayerSpec defines the desired state of ApplicationLayer
@@ -18,6 +20,9 @@ pub struct ApplicationLayerSpec {
     /// User-configurable settings for the Envoy proxy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envoy: Option<ApplicationLayerEnvoy>,
+    /// L7LogCollectorDaemonSet configures the L7LogCollector DaemonSet.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "l7LogCollectorDaemonSet")]
+    pub l7_log_collector_daemon_set: Option<ApplicationLayerL7LogCollectorDaemonSet>,
     /// Specification for application layer (L7) log collection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logCollection")]
     pub log_collection: Option<ApplicationLayerLogCollection>,
@@ -35,6 +40,118 @@ pub struct ApplicationLayerEnvoy {
     /// The number of additional ingress proxy hops from the right side of the x-forwarded-for HTTP header to trust when determining the origin client’s IP address. 0 is permitted, but >=1 is the typical setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "xffNumTrustedHops")]
     pub xff_num_trusted_hops: Option<i32>,
+}
+
+/// L7LogCollectorDaemonSet configures the L7LogCollector DaemonSet.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSet {
+    /// Spec is the specification of the L7LogCollector DaemonSet.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ApplicationLayerL7LogCollectorDaemonSetSpec>,
+}
+
+/// Spec is the specification of the L7LogCollector DaemonSet.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpec {
+    /// Template describes the L7LogCollector DaemonSet pod that will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<ApplicationLayerL7LogCollectorDaemonSetSpecTemplate>,
+}
+
+/// Template describes the L7LogCollector DaemonSet pod that will be created.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplate {
+    /// Spec is the L7LogCollector DaemonSet's PodSpec.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpec>,
+}
+
+/// Spec is the L7LogCollector DaemonSet's PodSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpec {
+    /// Containers is a list of L7LogCollector DaemonSet containers. If specified, this overrides the specified L7LogCollector DaemonSet containers. If omitted, the L7LogCollector DaemonSet will use its default values for its containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainers>>,
+    /// InitContainers is a list of L7LogCollector DaemonSet init containers. If specified, this overrides the specified L7LogCollector DaemonSet init containers. If omitted, the L7LogCollector DaemonSet will use its default values for its init containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainers>>,
+}
+
+/// L7LogCollectorDaemonSetContainer is a L7LogCollector DaemonSet container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainers {
+    /// Name is an enum which identifies the L7LogCollector DaemonSet container by name.
+    pub name: ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named L7LogCollector DaemonSet container's resources. If omitted, the L7LogCollector DaemonSet will use its default value for this container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersResources>,
+}
+
+/// L7LogCollectorDaemonSetContainer is a L7LogCollector DaemonSet container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersName {
+    #[serde(rename = "l7-collector")]
+    L7Collector,
+    #[serde(rename = "envoy-proxy")]
+    EnvoyProxy,
+    #[serde(rename = "dikastes")]
+    Dikastes,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named L7LogCollector DaemonSet container's resources. If omitted, the L7LogCollector DaemonSet will use its default value for this container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
+}
+
+/// L7LogCollectorDaemonSetInitContainer is a L7LogCollector DaemonSet init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainers {
+    /// Name is an enum which identifies the L7LogCollector DaemonSet init container by name.
+    pub name: String,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named L7LogCollector DaemonSet init container's resources. If omitted, the L7LogCollector DaemonSet will use its default value for this init container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainersResources>,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named L7LogCollector DaemonSet init container's resources. If omitted, the L7LogCollector DaemonSet will use its default value for this init container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// Specification for application layer (L7) log collection.

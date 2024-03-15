@@ -212,6 +212,10 @@ spec:
                       description: "Defines additional secrets that are to be mounted in the Kiali pod.\n\nThese are useful to contain certs that are used by Kiali to securely connect to third party systems\n(for example, see `external_services.tracing.auth.ca_file`).\n\nThese secrets must be created by an external mechanism. Kiali will not generate these secrets; it\nis assumed these secrets are externally managed. You can define 0, 1, or more secrets.\nAn example configuration is,\n```\ncustom_secrets:\n- name: mysecret\n  mount: /mysecret-path\n- name: my-other-secret\n  mount: /my-other-secret-location\n  optional: true\n```\n"
                       items:
                         properties:
+                          csi:
+                            description: "Defines CSI-specific settings that allows a secret from an external CSI secret store to be injected in the pod via a volume mount. For details, see https://secrets-store-csi-driver.sigs.k8s.io/"
+                            type: "object"
+                            x-kubernetes-preserve-unknown-fields: true
                           mount:
                             description: "The file path location where the secret content will be mounted. The custom secret cannot be mounted on a path that the operator will use to mount its secrets. Make sure you set your custom secret mount path to a unique, unused path. Paths such as `/kiali-configuration`, `/kiali-cert`, `/kiali-cabundle`, and `/kiali-secret` should not be used as mount paths for custom secrets because the operator may want to use one of those paths."
                             type: "string"
@@ -219,7 +223,7 @@ spec:
                             description: "The name of the secret that is to be mounted to the Kiali pod's file system. The name of the custom secret must not be the same name as one created by the operator. Names such as `kiali`, `kiali-cert-secret`, and `kiali-cabundle` should not be used as a custom secret name because the operator may want to create one with one of those names."
                             type: "string"
                           optional:
-                            description: "Indicates if the secret may or may not exist at the time the Kiali pod starts. This will default to 'false' if not specified."
+                            description: "Indicates if the secret may or may not exist at the time the Kiali pod starts. This will default to 'false' if not specified. This is ignored if `csi` is specified - CSI secrets must exist when specified."
                             type: "boolean"
                         required:
                           - "name"
@@ -722,6 +726,9 @@ spec:
                         grpc_port:
                           description: "Set port number when `use_grpc` is true and `provider` is `tempo`. By default is `9095`"
                           type: "integer"
+                        health_check_url:
+                          description: "Used in the Components health feature. This is the url which Kiali will ping to determine whether the component is reachable or not. It defaults to `url` when not provided."
+                          type: "string"
                         in_cluster_url:
                           description: "Set URL for in-cluster access, which enables further integration between Kiali and Jaeger. When not provided, Kiali will only show external links using the `url` setting. Note: Jaeger v1.20+ has separated ports for GRPC(16685) and HTTP(16686) requests. Make sure you use the appropriate port according to the `use_grpc` value. Example: http://tracing.istio-system:16685"
                           type: "string"

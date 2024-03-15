@@ -27,6 +27,9 @@ pub struct CephObjectStoreSpec {
     /// The RGW health probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<CephObjectStoreHealthCheck>,
+    /// Hosting settings for the object store
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hosting: Option<CephObjectStoreHosting>,
     /// The metadata pool settings
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataPool")]
     pub metadata_pool: Option<CephObjectStoreMetadataPool>,
@@ -36,6 +39,9 @@ pub struct CephObjectStoreSpec {
     /// Security represents security settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<CephObjectStoreSecurity>,
+    /// The pool information when configuring RADOS namespaces in existing pools.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedPools")]
+    pub shared_pools: Option<CephObjectStoreSharedPools>,
     /// The multisite info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<CephObjectStoreZone>,
@@ -877,6 +883,14 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeTcpSocket {
     pub port: IntOrString,
 }
 
+/// Hosting settings for the object store
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreHosting {
+    /// A list of DNS names in which bucket can be accessed via virtual host path. These names need to valid according RFC-1123. Each domain requires wildcard support like ingress loadbalancer. Do not include the wildcard itself in the list of hostnames (e.g. use "mystore.example.com" instead of "*.mystore.example.com"). Add all hostnames including user-created Kubernetes Service endpoints to the list. CephObjectStore Service Endpoints and CephObjectZone customEndpoints are automatically added to the list. The feature is supported only for Ceph v18 and later versions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsNames")]
+    pub dns_names: Option<Vec<String>>,
+}
+
 /// The metadata pool settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreMetadataPool {
@@ -1098,6 +1112,20 @@ pub struct CephObjectStoreSecurityS3 {
     /// TokenSecretName is the kubernetes secret containing the KMS token
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecretName")]
     pub token_secret_name: Option<String>,
+}
+
+/// The pool information when configuring RADOS namespaces in existing pools.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreSharedPools {
+    /// The data pool used for creating RADOS namespaces in the object store
+    #[serde(rename = "dataPoolName")]
+    pub data_pool_name: String,
+    /// The metadata pool used for creating RADOS namespaces in the object store
+    #[serde(rename = "metadataPoolName")]
+    pub metadata_pool_name: String,
+    /// Whether the RADOS namespaces should be preserved on deletion of the object store
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveRadosNamespaceDataOnDelete")]
+    pub preserve_rados_namespace_data_on_delete: Option<bool>,
 }
 
 /// The multisite info

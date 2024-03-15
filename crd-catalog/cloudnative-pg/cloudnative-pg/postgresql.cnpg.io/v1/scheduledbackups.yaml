@@ -80,6 +80,20 @@ spec:
                       description: "If false, the function will return immediately after the backup is completed,\nwithout waiting for WAL to be archived.\nThis behavior is only useful with backup software that independently monitors WAL archiving.\nOtherwise, WAL required to make the backup consistent might be missing and make the backup useless.\nBy default, or when this parameter is true, pg_backup_stop will wait for WAL to be archived when archiving is\nenabled.\nOn a standby, this means that it will wait only when archive_mode = always.\nIf write activity on the primary is low, it may be useful to run pg_switch_wal on the primary in order to trigger\nan immediate segment switch."
                       type: "boolean"
                   type: "object"
+                pluginConfiguration:
+                  description: "Configuration parameters passed to the plugin managing this backup"
+                  properties:
+                    name:
+                      description: "Name is the name of the plugin managing this backup"
+                      type: "string"
+                    parameters:
+                      additionalProperties:
+                        type: "string"
+                      description: "Parameters are the configuration parameters passed to the backup\nplugin for this backup"
+                      type: "object"
+                  required:
+                    - "name"
+                  type: "object"
                 schedule:
                   description: "The schedule does not follow the same format used in Kubernetes CronJobs\nas it includes an additional seconds specifier,\nsee https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format"
                   type: "string"

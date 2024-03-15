@@ -14,23 +14,28 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "ReceiverStatus")]
 #[kube(schema = "disabled")]
 pub struct ReceiverSpec {
-    /// A list of events to handle, e.g. 'push' for GitHub or 'Push Hook' for GitLab.
+    /// A list of events to handle,
+    /// e.g. 'push' for GitHub or 'Push Hook' for GitLab.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<String>>,
     /// A list of resources to be notified about changes.
     pub resources: Vec<ReceiverResources>,
-    /// Secret reference containing the token used to validate the payload authenticity
+    /// Secret reference containing the token used
+    /// to validate the payload authenticity
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ReceiverSecretRef>,
-    /// This flag tells the controller to suspend subsequent events handling. Defaults to false.
+    /// This flag tells the controller to suspend subsequent events handling.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
-    /// Type of webhook sender, used to determine the validation procedure and payload deserialization.
+    /// Type of webhook sender, used to determine
+    /// the validation procedure and payload deserialization.
     #[serde(rename = "type")]
     pub r#type: ReceiverType,
 }
 
-/// CrossNamespaceObjectReference contains enough information to let you locate the typed referenced object at cluster level
+/// CrossNamespaceObjectReference contains enough information to let you locate the
+/// typed referenced object at cluster level
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReceiverResources {
     /// API version of the referent
@@ -39,7 +44,9 @@ pub struct ReceiverResources {
     /// Kind of the referent
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<ReceiverResourcesKind>,
-    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
     /// Name of the referent
@@ -49,7 +56,8 @@ pub struct ReceiverResources {
     pub namespace: Option<String>,
 }
 
-/// CrossNamespaceObjectReference contains enough information to let you locate the typed referenced object at cluster level
+/// CrossNamespaceObjectReference contains enough information to let you locate the
+/// typed referenced object at cluster level
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ReceiverResourcesKind {
     Bucket,
@@ -65,7 +73,8 @@ pub enum ReceiverResourcesKind {
     OciRepository,
 }
 
-/// Secret reference containing the token used to validate the payload authenticity
+/// Secret reference containing the token used
+/// to validate the payload authenticity
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReceiverSecretRef {
     /// Name of the referent.
@@ -107,7 +116,8 @@ pub struct ReceiverStatus {
     /// ObservedGeneration is the last observed generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Generated webhook URL in the format of '/hook/sha256sum(token+name+namespace)'.
+    /// Generated webhook URL in the format
+    /// of '/hook/sha256sum(token+name+namespace)'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }

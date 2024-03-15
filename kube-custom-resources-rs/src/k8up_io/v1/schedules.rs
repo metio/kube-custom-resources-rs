@@ -18,7 +18,8 @@ pub struct ScheduleSpec {
     /// ArchiveSchedule manages schedules for the archival service
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archive: Option<ScheduleArchive>,
-    /// Backend allows configuring several backend implementations. It is expected that users only configure one storage type.
+    /// Backend allows configuring several backend implementations.
+    /// It is expected that users only configure one storage type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backend: Option<ScheduleBackend>,
     /// BackupSchedule manages schedules for the backup service
@@ -27,11 +28,14 @@ pub struct ScheduleSpec {
     /// CheckSchedule manages the schedules for the checks
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub check: Option<ScheduleCheck>,
-    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i64>,
-    /// KeepJobs amount of jobs to keep for later analysis. 
-    ///  Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
+    /// KeepJobs amount of jobs to keep for later analysis.
+    /// 
+    /// 
+    /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
     /// PodSecurityContext describes the security context with which actions (such as backups) shall be executed.
@@ -46,7 +50,8 @@ pub struct ScheduleSpec {
     /// RestoreSchedule manages schedules for the restore service
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restore: Option<ScheduleRestore>,
-    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i64>,
 }
@@ -54,7 +59,8 @@ pub struct ScheduleSpec {
 /// ArchiveSchedule manages schedules for the archival service
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchive {
-    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given.
+    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.
+    /// Value must be positive integer if given.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// Backend contains the restic repo where the job should backup to.
@@ -62,11 +68,14 @@ pub struct ScheduleArchive {
     pub backend: Option<ScheduleArchiveBackend>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentRunsAllowed")]
     pub concurrent_runs_allowed: Option<bool>,
-    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i64>,
-    /// KeepJobs amount of jobs to keep for later analysis. 
-    ///  Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
+    /// KeepJobs amount of jobs to keep for later analysis.
+    /// 
+    /// 
+    /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
@@ -77,7 +86,8 @@ pub struct ScheduleArchive {
     pub resources: Option<ScheduleArchiveResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreFilter")]
     pub restore_filter: Option<String>,
-    /// RestoreMethod contains how and where the restore should happen all the settings are mutual exclusive.
+    /// RestoreMethod contains how and where the restore should happen
+    /// all the settings are mutual exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreMethod")]
     pub restore_method: Option<ScheduleArchiveRestoreMethod>,
     /// ScheduleDefinition is the actual cron-type expression that defines the interval of the actions.
@@ -85,7 +95,8 @@ pub struct ScheduleArchive {
     pub schedule: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
-    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i64>,
     /// Tags is a list of arbitrary tags that get added to the backup via Restic's tagging system
@@ -137,7 +148,9 @@ pub struct ScheduleArchiveBackendAzure {
 pub struct ScheduleArchiveBackendAzureAccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -150,7 +163,9 @@ pub struct ScheduleArchiveBackendAzureAccountKeySecretRef {
 pub struct ScheduleArchiveBackendAzureAccountNameSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -177,7 +192,9 @@ pub struct ScheduleArchiveBackendB2 {
 pub struct ScheduleArchiveBackendB2AccountIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -190,7 +207,9 @@ pub struct ScheduleArchiveBackendB2AccountIdSecretRef {
 pub struct ScheduleArchiveBackendB2AccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -215,7 +234,9 @@ pub struct ScheduleArchiveBackendEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchiveBackendEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -226,7 +247,9 @@ pub struct ScheduleArchiveBackendEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchiveBackendEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -251,7 +274,9 @@ pub struct ScheduleArchiveBackendGcs {
 pub struct ScheduleArchiveBackendGcsAccessTokenSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -264,7 +289,9 @@ pub struct ScheduleArchiveBackendGcsAccessTokenSecretRef {
 pub struct ScheduleArchiveBackendGcsProjectIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -283,7 +310,9 @@ pub struct ScheduleArchiveBackendLocal {
 pub struct ScheduleArchiveBackendRepoPasswordSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -308,7 +337,9 @@ pub struct ScheduleArchiveBackendRest {
 pub struct ScheduleArchiveBackendRestPasswordSecretReg {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -321,7 +352,9 @@ pub struct ScheduleArchiveBackendRestPasswordSecretReg {
 pub struct ScheduleArchiveBackendRestUserSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -348,7 +381,9 @@ pub struct ScheduleArchiveBackendS3 {
 pub struct ScheduleArchiveBackendS3AccessKeyIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -361,7 +396,9 @@ pub struct ScheduleArchiveBackendS3AccessKeyIdSecretRef {
 pub struct ScheduleArchiveBackendS3SecretAccessKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -380,41 +417,93 @@ pub struct ScheduleArchiveBackendSwift {
 /// PodSecurityContext describes the security context with which this action shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchivePodSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
-    ///  If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    /// A special supplemental group that applies to all containers in a pod.
+    /// Some volume types allow the Kubelet to change the ownership of that volume
+    /// to be owned by the pod:
+    /// 
+    /// 
+    /// 1. The owning GID will be the FSGroup
+    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
+    /// 3. The permission bits are OR'd with rw-rw----
+    /// 
+    /// 
+    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
+    /// before being exposed inside Pod. This field will only apply to
+    /// volume types which support fsGroup based ownership(and permissions).
+    /// It will have no effect on ephemeral volume types such as: secret, configmaps
+    /// and emptydir.
+    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to all containers.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in SecurityContext.  If set in
+    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+    /// takes precedence for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ScheduleArchivePodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ScheduleArchivePodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows.
+    /// A list of groups applied to the first process run in each container, in addition
+    /// to the container's primary GID, the fsGroup (if specified), and group memberships
+    /// defined in the container image for the uid of the container process. If unspecified,
+    /// no additional groups are added to any container. Note that group memberships
+    /// defined in the container image for the uid of the container process are still effective,
+    /// even if they are not included in this list.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
+    /// sysctls (by the container runtime) might fail to launch.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<ScheduleArchivePodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options within a container's SecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ScheduleArchivePodSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to all containers.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in SecurityContext.  If set in
+/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+/// takes precedence for that container.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchivePodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -431,14 +520,23 @@ pub struct ScheduleArchivePodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchivePodSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -452,19 +550,30 @@ pub struct ScheduleArchivePodSecurityContextSysctls {
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options within a container's SecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchivePodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
@@ -472,15 +581,40 @@ pub struct ScheduleArchivePodSecurityContextWindowsOptions {
 /// Resources describes the compute resource requirements (cpu, memory, etc.)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchiveResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ScheduleArchiveResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// RestoreMethod contains how and where the restore should happen all the settings are mutual exclusive.
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleArchiveResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// RestoreMethod contains how and where the restore should happen
+/// all the settings are mutual exclusive.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchiveRestoreMethod {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -491,10 +625,12 @@ pub struct ScheduleArchiveRestoreMethod {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleArchiveRestoreMethodFolder {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -518,7 +654,9 @@ pub struct ScheduleArchiveRestoreMethodS3 {
 pub struct ScheduleArchiveRestoreMethodS3AccessKeyIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -531,7 +669,9 @@ pub struct ScheduleArchiveRestoreMethodS3AccessKeyIdSecretRef {
 pub struct ScheduleArchiveRestoreMethodS3SecretAccessKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -539,7 +679,8 @@ pub struct ScheduleArchiveRestoreMethodS3SecretAccessKeySecretRef {
     pub optional: Option<bool>,
 }
 
-/// Backend allows configuring several backend implementations. It is expected that users only configure one storage type.
+/// Backend allows configuring several backend implementations.
+/// It is expected that users only configure one storage type.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackend {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -583,7 +724,9 @@ pub struct ScheduleBackendAzure {
 pub struct ScheduleBackendAzureAccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -596,7 +739,9 @@ pub struct ScheduleBackendAzureAccountKeySecretRef {
 pub struct ScheduleBackendAzureAccountNameSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -623,7 +768,9 @@ pub struct ScheduleBackendB2 {
 pub struct ScheduleBackendB2AccountIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -636,7 +783,9 @@ pub struct ScheduleBackendB2AccountIdSecretRef {
 pub struct ScheduleBackendB2AccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -661,7 +810,9 @@ pub struct ScheduleBackendEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackendEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -672,7 +823,9 @@ pub struct ScheduleBackendEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackendEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -697,7 +850,9 @@ pub struct ScheduleBackendGcs {
 pub struct ScheduleBackendGcsAccessTokenSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -710,7 +865,9 @@ pub struct ScheduleBackendGcsAccessTokenSecretRef {
 pub struct ScheduleBackendGcsProjectIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -729,7 +886,9 @@ pub struct ScheduleBackendLocal {
 pub struct ScheduleBackendRepoPasswordSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -754,7 +913,9 @@ pub struct ScheduleBackendRest {
 pub struct ScheduleBackendRestPasswordSecretReg {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -767,7 +928,9 @@ pub struct ScheduleBackendRestPasswordSecretReg {
 pub struct ScheduleBackendRestUserSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -794,7 +957,9 @@ pub struct ScheduleBackendS3 {
 pub struct ScheduleBackendS3AccessKeyIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -807,7 +972,9 @@ pub struct ScheduleBackendS3AccessKeyIdSecretRef {
 pub struct ScheduleBackendS3SecretAccessKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -826,7 +993,8 @@ pub struct ScheduleBackendSwift {
 /// BackupSchedule manages schedules for the backup service
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackup {
-    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given.
+    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.
+    /// Value must be positive integer if given.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// Backend contains the restic repo where the job should backup to.
@@ -834,11 +1002,14 @@ pub struct ScheduleBackup {
     pub backend: Option<ScheduleBackupBackend>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentRunsAllowed")]
     pub concurrent_runs_allowed: Option<bool>,
-    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i64>,
-    /// KeepJobs amount of jobs to keep for later analysis. 
-    ///  Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
+    /// KeepJobs amount of jobs to keep for later analysis.
+    /// 
+    /// 
+    /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
@@ -853,10 +1024,13 @@ pub struct ScheduleBackup {
     /// ScheduleDefinition is the actual cron-type expression that defines the interval of the actions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
-    /// StatsURL sets an arbitrary URL where the restic container posts metrics and information about the snapshots to. This is in addition to the prometheus pushgateway.
+    /// StatsURL sets an arbitrary URL where the restic container posts metrics and
+    /// information about the snapshots to. This is in addition to the prometheus
+    /// pushgateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statsURL")]
     pub stats_url: Option<String>,
-    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i64>,
     /// Tags is a list of arbitrary tags that get added to the backup via Restic's tagging system
@@ -908,7 +1082,9 @@ pub struct ScheduleBackupBackendAzure {
 pub struct ScheduleBackupBackendAzureAccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -921,7 +1097,9 @@ pub struct ScheduleBackupBackendAzureAccountKeySecretRef {
 pub struct ScheduleBackupBackendAzureAccountNameSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -948,7 +1126,9 @@ pub struct ScheduleBackupBackendB2 {
 pub struct ScheduleBackupBackendB2AccountIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -961,7 +1141,9 @@ pub struct ScheduleBackupBackendB2AccountIdSecretRef {
 pub struct ScheduleBackupBackendB2AccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -986,7 +1168,9 @@ pub struct ScheduleBackupBackendEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackupBackendEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -997,7 +1181,9 @@ pub struct ScheduleBackupBackendEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackupBackendEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1022,7 +1208,9 @@ pub struct ScheduleBackupBackendGcs {
 pub struct ScheduleBackupBackendGcsAccessTokenSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1035,7 +1223,9 @@ pub struct ScheduleBackupBackendGcsAccessTokenSecretRef {
 pub struct ScheduleBackupBackendGcsProjectIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1054,7 +1244,9 @@ pub struct ScheduleBackupBackendLocal {
 pub struct ScheduleBackupBackendRepoPasswordSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1079,7 +1271,9 @@ pub struct ScheduleBackupBackendRest {
 pub struct ScheduleBackupBackendRestPasswordSecretReg {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1092,7 +1286,9 @@ pub struct ScheduleBackupBackendRestPasswordSecretReg {
 pub struct ScheduleBackupBackendRestUserSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1119,7 +1315,9 @@ pub struct ScheduleBackupBackendS3 {
 pub struct ScheduleBackupBackendS3AccessKeyIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1132,7 +1330,9 @@ pub struct ScheduleBackupBackendS3AccessKeyIdSecretRef {
 pub struct ScheduleBackupBackendS3SecretAccessKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1151,41 +1351,93 @@ pub struct ScheduleBackupBackendSwift {
 /// PodSecurityContext describes the security context with which this action shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackupPodSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
-    ///  If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    /// A special supplemental group that applies to all containers in a pod.
+    /// Some volume types allow the Kubelet to change the ownership of that volume
+    /// to be owned by the pod:
+    /// 
+    /// 
+    /// 1. The owning GID will be the FSGroup
+    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
+    /// 3. The permission bits are OR'd with rw-rw----
+    /// 
+    /// 
+    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
+    /// before being exposed inside Pod. This field will only apply to
+    /// volume types which support fsGroup based ownership(and permissions).
+    /// It will have no effect on ephemeral volume types such as: secret, configmaps
+    /// and emptydir.
+    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to all containers.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in SecurityContext.  If set in
+    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+    /// takes precedence for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ScheduleBackupPodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ScheduleBackupPodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows.
+    /// A list of groups applied to the first process run in each container, in addition
+    /// to the container's primary GID, the fsGroup (if specified), and group memberships
+    /// defined in the container image for the uid of the container process. If unspecified,
+    /// no additional groups are added to any container. Note that group memberships
+    /// defined in the container image for the uid of the container process are still effective,
+    /// even if they are not included in this list.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
+    /// sysctls (by the container runtime) might fail to launch.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<ScheduleBackupPodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options within a container's SecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ScheduleBackupPodSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to all containers.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in SecurityContext.  If set in
+/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+/// takes precedence for that container.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackupPodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -1202,14 +1454,23 @@ pub struct ScheduleBackupPodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackupPodSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -1223,19 +1484,30 @@ pub struct ScheduleBackupPodSecurityContextSysctls {
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options within a container's SecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackupPodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
@@ -1243,18 +1515,43 @@ pub struct ScheduleBackupPodSecurityContextWindowsOptions {
 /// Resources describes the compute resource requirements (cpu, memory, etc.)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleBackupResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ScheduleBackupResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleBackupResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
 }
 
 /// CheckSchedule manages the schedules for the checks
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheck {
-    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given.
+    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.
+    /// Value must be positive integer if given.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// Backend contains the restic repo where the job should backup to.
@@ -1262,11 +1559,14 @@ pub struct ScheduleCheck {
     pub backend: Option<ScheduleCheckBackend>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentRunsAllowed")]
     pub concurrent_runs_allowed: Option<bool>,
-    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i64>,
-    /// KeepJobs amount of jobs to keep for later analysis. 
-    ///  Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
+    /// KeepJobs amount of jobs to keep for later analysis.
+    /// 
+    /// 
+    /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
@@ -1281,7 +1581,8 @@ pub struct ScheduleCheck {
     /// ScheduleDefinition is the actual cron-type expression that defines the interval of the actions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
-    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i64>,
 }
@@ -1330,7 +1631,9 @@ pub struct ScheduleCheckBackendAzure {
 pub struct ScheduleCheckBackendAzureAccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1343,7 +1646,9 @@ pub struct ScheduleCheckBackendAzureAccountKeySecretRef {
 pub struct ScheduleCheckBackendAzureAccountNameSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1370,7 +1675,9 @@ pub struct ScheduleCheckBackendB2 {
 pub struct ScheduleCheckBackendB2AccountIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1383,7 +1690,9 @@ pub struct ScheduleCheckBackendB2AccountIdSecretRef {
 pub struct ScheduleCheckBackendB2AccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1408,7 +1717,9 @@ pub struct ScheduleCheckBackendEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheckBackendEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1419,7 +1730,9 @@ pub struct ScheduleCheckBackendEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheckBackendEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1444,7 +1757,9 @@ pub struct ScheduleCheckBackendGcs {
 pub struct ScheduleCheckBackendGcsAccessTokenSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1457,7 +1772,9 @@ pub struct ScheduleCheckBackendGcsAccessTokenSecretRef {
 pub struct ScheduleCheckBackendGcsProjectIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1476,7 +1793,9 @@ pub struct ScheduleCheckBackendLocal {
 pub struct ScheduleCheckBackendRepoPasswordSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1501,7 +1820,9 @@ pub struct ScheduleCheckBackendRest {
 pub struct ScheduleCheckBackendRestPasswordSecretReg {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1514,7 +1835,9 @@ pub struct ScheduleCheckBackendRestPasswordSecretReg {
 pub struct ScheduleCheckBackendRestUserSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1541,7 +1864,9 @@ pub struct ScheduleCheckBackendS3 {
 pub struct ScheduleCheckBackendS3AccessKeyIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1554,7 +1879,9 @@ pub struct ScheduleCheckBackendS3AccessKeyIdSecretRef {
 pub struct ScheduleCheckBackendS3SecretAccessKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1573,41 +1900,93 @@ pub struct ScheduleCheckBackendSwift {
 /// PodSecurityContext describes the security context with which this action shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheckPodSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
-    ///  If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    /// A special supplemental group that applies to all containers in a pod.
+    /// Some volume types allow the Kubelet to change the ownership of that volume
+    /// to be owned by the pod:
+    /// 
+    /// 
+    /// 1. The owning GID will be the FSGroup
+    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
+    /// 3. The permission bits are OR'd with rw-rw----
+    /// 
+    /// 
+    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
+    /// before being exposed inside Pod. This field will only apply to
+    /// volume types which support fsGroup based ownership(and permissions).
+    /// It will have no effect on ephemeral volume types such as: secret, configmaps
+    /// and emptydir.
+    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to all containers.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in SecurityContext.  If set in
+    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+    /// takes precedence for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ScheduleCheckPodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ScheduleCheckPodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows.
+    /// A list of groups applied to the first process run in each container, in addition
+    /// to the container's primary GID, the fsGroup (if specified), and group memberships
+    /// defined in the container image for the uid of the container process. If unspecified,
+    /// no additional groups are added to any container. Note that group memberships
+    /// defined in the container image for the uid of the container process are still effective,
+    /// even if they are not included in this list.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
+    /// sysctls (by the container runtime) might fail to launch.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<ScheduleCheckPodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options within a container's SecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ScheduleCheckPodSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to all containers.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in SecurityContext.  If set in
+/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+/// takes precedence for that container.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheckPodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -1624,14 +2003,23 @@ pub struct ScheduleCheckPodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheckPodSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -1645,19 +2033,30 @@ pub struct ScheduleCheckPodSecurityContextSysctls {
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options within a container's SecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheckPodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
@@ -1665,52 +2064,128 @@ pub struct ScheduleCheckPodSecurityContextWindowsOptions {
 /// Resources describes the compute resource requirements (cpu, memory, etc.)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleCheckResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ScheduleCheckResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleCheckResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
 }
 
 /// PodSecurityContext describes the security context with which actions (such as backups) shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePodSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
-    ///  If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    /// A special supplemental group that applies to all containers in a pod.
+    /// Some volume types allow the Kubelet to change the ownership of that volume
+    /// to be owned by the pod:
+    /// 
+    /// 
+    /// 1. The owning GID will be the FSGroup
+    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
+    /// 3. The permission bits are OR'd with rw-rw----
+    /// 
+    /// 
+    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
+    /// before being exposed inside Pod. This field will only apply to
+    /// volume types which support fsGroup based ownership(and permissions).
+    /// It will have no effect on ephemeral volume types such as: secret, configmaps
+    /// and emptydir.
+    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to all containers.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in SecurityContext.  If set in
+    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+    /// takes precedence for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SchedulePodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SchedulePodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows.
+    /// A list of groups applied to the first process run in each container, in addition
+    /// to the container's primary GID, the fsGroup (if specified), and group memberships
+    /// defined in the container image for the uid of the container process. If unspecified,
+    /// no additional groups are added to any container. Note that group memberships
+    /// defined in the container image for the uid of the container process are still effective,
+    /// even if they are not included in this list.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
+    /// sysctls (by the container runtime) might fail to launch.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<SchedulePodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options within a container's SecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SchedulePodSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to all containers.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in SecurityContext.  If set in
+/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+/// takes precedence for that container.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -1727,14 +2202,23 @@ pub struct SchedulePodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePodSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -1748,19 +2232,30 @@ pub struct SchedulePodSecurityContextSysctls {
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options within a container's SecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
@@ -1768,7 +2263,8 @@ pub struct SchedulePodSecurityContextWindowsOptions {
 /// PruneSchedule manages the schedules for the prunes
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePrune {
-    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given.
+    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.
+    /// Value must be positive integer if given.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// Backend contains the restic repo where the job should backup to.
@@ -1776,11 +2272,14 @@ pub struct SchedulePrune {
     pub backend: Option<SchedulePruneBackend>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentRunsAllowed")]
     pub concurrent_runs_allowed: Option<bool>,
-    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i64>,
-    /// KeepJobs amount of jobs to keep for later analysis. 
-    ///  Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
+    /// KeepJobs amount of jobs to keep for later analysis.
+    /// 
+    /// 
+    /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
@@ -1795,7 +2294,8 @@ pub struct SchedulePrune {
     /// ScheduleDefinition is the actual cron-type expression that defines the interval of the actions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
-    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i64>,
 }
@@ -1844,7 +2344,9 @@ pub struct SchedulePruneBackendAzure {
 pub struct SchedulePruneBackendAzureAccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1857,7 +2359,9 @@ pub struct SchedulePruneBackendAzureAccountKeySecretRef {
 pub struct SchedulePruneBackendAzureAccountNameSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1884,7 +2388,9 @@ pub struct SchedulePruneBackendB2 {
 pub struct SchedulePruneBackendB2AccountIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1897,7 +2403,9 @@ pub struct SchedulePruneBackendB2AccountIdSecretRef {
 pub struct SchedulePruneBackendB2AccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1922,7 +2430,9 @@ pub struct SchedulePruneBackendEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePruneBackendEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1933,7 +2443,9 @@ pub struct SchedulePruneBackendEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePruneBackendEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1958,7 +2470,9 @@ pub struct SchedulePruneBackendGcs {
 pub struct SchedulePruneBackendGcsAccessTokenSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1971,7 +2485,9 @@ pub struct SchedulePruneBackendGcsAccessTokenSecretRef {
 pub struct SchedulePruneBackendGcsProjectIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1990,7 +2506,9 @@ pub struct SchedulePruneBackendLocal {
 pub struct SchedulePruneBackendRepoPasswordSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2015,7 +2533,9 @@ pub struct SchedulePruneBackendRest {
 pub struct SchedulePruneBackendRestPasswordSecretReg {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2028,7 +2548,9 @@ pub struct SchedulePruneBackendRestPasswordSecretReg {
 pub struct SchedulePruneBackendRestUserSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2055,7 +2577,9 @@ pub struct SchedulePruneBackendS3 {
 pub struct SchedulePruneBackendS3AccessKeyIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2068,7 +2592,9 @@ pub struct SchedulePruneBackendS3AccessKeyIdSecretRef {
 pub struct SchedulePruneBackendS3SecretAccessKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2087,41 +2613,93 @@ pub struct SchedulePruneBackendSwift {
 /// PodSecurityContext describes the security context with which this action shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePrunePodSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
-    ///  If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    /// A special supplemental group that applies to all containers in a pod.
+    /// Some volume types allow the Kubelet to change the ownership of that volume
+    /// to be owned by the pod:
+    /// 
+    /// 
+    /// 1. The owning GID will be the FSGroup
+    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
+    /// 3. The permission bits are OR'd with rw-rw----
+    /// 
+    /// 
+    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
+    /// before being exposed inside Pod. This field will only apply to
+    /// volume types which support fsGroup based ownership(and permissions).
+    /// It will have no effect on ephemeral volume types such as: secret, configmaps
+    /// and emptydir.
+    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to all containers.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in SecurityContext.  If set in
+    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+    /// takes precedence for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SchedulePrunePodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SchedulePrunePodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows.
+    /// A list of groups applied to the first process run in each container, in addition
+    /// to the container's primary GID, the fsGroup (if specified), and group memberships
+    /// defined in the container image for the uid of the container process. If unspecified,
+    /// no additional groups are added to any container. Note that group memberships
+    /// defined in the container image for the uid of the container process are still effective,
+    /// even if they are not included in this list.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
+    /// sysctls (by the container runtime) might fail to launch.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<SchedulePrunePodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options within a container's SecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SchedulePrunePodSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to all containers.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in SecurityContext.  If set in
+/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+/// takes precedence for that container.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePrunePodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -2138,14 +2716,23 @@ pub struct SchedulePrunePodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePrunePodSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -2159,19 +2746,30 @@ pub struct SchedulePrunePodSecurityContextSysctls {
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options within a container's SecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePrunePodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
@@ -2179,12 +2777,36 @@ pub struct SchedulePrunePodSecurityContextWindowsOptions {
 /// Resources describes the compute resource requirements (cpu, memory, etc.)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SchedulePruneResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<SchedulePruneResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SchedulePruneResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
 }
 
 /// Retention sets how many backups should be kept after a forget and prune
@@ -2207,7 +2829,8 @@ pub struct SchedulePruneRetention {
     pub keep_weekly: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepYearly")]
     pub keep_yearly: Option<i64>,
-    /// Tags is a filter on what tags the policy should be applied DO NOT CONFUSE THIS WITH KeepTags OR YOU'LL have a bad time
+    /// Tags is a filter on what tags the policy should be applied
+    /// DO NOT CONFUSE THIS WITH KeepTags OR YOU'LL have a bad time
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
 }
@@ -2215,18 +2838,43 @@ pub struct SchedulePruneRetention {
 /// ResourceRequirementsTemplate describes the compute resource requirements (cpu, memory, etc.)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleResourceRequirementsTemplate {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ScheduleResourceRequirementsTemplateClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleResourceRequirementsTemplateClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
 }
 
 /// RestoreSchedule manages schedules for the restore service
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestore {
-    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it. Value must be positive integer if given.
+    /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.
+    /// Value must be positive integer if given.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// Backend contains the restic repo where the job should backup to.
@@ -2234,11 +2882,14 @@ pub struct ScheduleRestore {
     pub backend: Option<ScheduleRestoreBackend>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentRunsAllowed")]
     pub concurrent_runs_allowed: Option<bool>,
-    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i64>,
-    /// KeepJobs amount of jobs to keep for later analysis. 
-    ///  Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
+    /// KeepJobs amount of jobs to keep for later analysis.
+    /// 
+    /// 
+    /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
@@ -2249,7 +2900,8 @@ pub struct ScheduleRestore {
     pub resources: Option<ScheduleRestoreResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreFilter")]
     pub restore_filter: Option<String>,
-    /// RestoreMethod contains how and where the restore should happen all the settings are mutual exclusive.
+    /// RestoreMethod contains how and where the restore should happen
+    /// all the settings are mutual exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreMethod")]
     pub restore_method: Option<ScheduleRestoreRestoreMethod>,
     /// ScheduleDefinition is the actual cron-type expression that defines the interval of the actions.
@@ -2257,7 +2909,8 @@ pub struct ScheduleRestore {
     pub schedule: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
-    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis. KeepJobs is used property is not specified.
+    /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.
+    /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i64>,
     /// Tags is a list of arbitrary tags that get added to the backup via Restic's tagging system
@@ -2309,7 +2962,9 @@ pub struct ScheduleRestoreBackendAzure {
 pub struct ScheduleRestoreBackendAzureAccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2322,7 +2977,9 @@ pub struct ScheduleRestoreBackendAzureAccountKeySecretRef {
 pub struct ScheduleRestoreBackendAzureAccountNameSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2349,7 +3006,9 @@ pub struct ScheduleRestoreBackendB2 {
 pub struct ScheduleRestoreBackendB2AccountIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2362,7 +3021,9 @@ pub struct ScheduleRestoreBackendB2AccountIdSecretRef {
 pub struct ScheduleRestoreBackendB2AccountKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2387,7 +3048,9 @@ pub struct ScheduleRestoreBackendEnvFrom {
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestoreBackendEnvFromConfigMapRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -2398,7 +3061,9 @@ pub struct ScheduleRestoreBackendEnvFromConfigMapRef {
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestoreBackendEnvFromSecretRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -2423,7 +3088,9 @@ pub struct ScheduleRestoreBackendGcs {
 pub struct ScheduleRestoreBackendGcsAccessTokenSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2436,7 +3103,9 @@ pub struct ScheduleRestoreBackendGcsAccessTokenSecretRef {
 pub struct ScheduleRestoreBackendGcsProjectIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2455,7 +3124,9 @@ pub struct ScheduleRestoreBackendLocal {
 pub struct ScheduleRestoreBackendRepoPasswordSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2480,7 +3151,9 @@ pub struct ScheduleRestoreBackendRest {
 pub struct ScheduleRestoreBackendRestPasswordSecretReg {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2493,7 +3166,9 @@ pub struct ScheduleRestoreBackendRestPasswordSecretReg {
 pub struct ScheduleRestoreBackendRestUserSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2520,7 +3195,9 @@ pub struct ScheduleRestoreBackendS3 {
 pub struct ScheduleRestoreBackendS3AccessKeyIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2533,7 +3210,9 @@ pub struct ScheduleRestoreBackendS3AccessKeyIdSecretRef {
 pub struct ScheduleRestoreBackendS3SecretAccessKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2552,41 +3231,93 @@ pub struct ScheduleRestoreBackendSwift {
 /// PodSecurityContext describes the security context with which this action shall be executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestorePodSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
-    ///  If unset, the Kubelet will not modify the ownership and permissions of any volume. Note that this field cannot be set when spec.os.name is windows.
+    /// A special supplemental group that applies to all containers in a pod.
+    /// Some volume types allow the Kubelet to change the ownership of that volume
+    /// to be owned by the pod:
+    /// 
+    /// 
+    /// 1. The owning GID will be the FSGroup
+    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
+    /// 3. The permission bits are OR'd with rw-rw----
+    /// 
+    /// 
+    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used. Note that this field cannot be set when spec.os.name is windows.
+    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
+    /// before being exposed inside Pod. This field will only apply to
+    /// volume types which support fsGroup based ownership(and permissions).
+    /// It will have no effect on ephemeral volume types such as: secret, configmaps
+    /// and emptydir.
+    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in SecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence
+    /// for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+    /// The SELinux context to be applied to all containers.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in SecurityContext.  If set in
+    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+    /// takes precedence for that container.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ScheduleRestorePodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+    /// The seccomp options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ScheduleRestorePodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container. Note that this field cannot be set when spec.os.name is windows.
+    /// A list of groups applied to the first process run in each container, in addition
+    /// to the container's primary GID, the fsGroup (if specified), and group memberships
+    /// defined in the container image for the uid of the container process. If unspecified,
+    /// no additional groups are added to any container. Note that group memberships
+    /// defined in the container image for the uid of the container process are still effective,
+    /// even if they are not included in this list.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows.
+    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
+    /// sysctls (by the container runtime) might fail to launch.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<ScheduleRestorePodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options within a container's SecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ScheduleRestorePodSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows.
+/// The SELinux context to be applied to all containers.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in SecurityContext.  If set in
+/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
+/// takes precedence for that container.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestorePodSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
@@ -2603,14 +3334,23 @@ pub struct ScheduleRestorePodSecurityContextSeLinuxOptions {
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
+/// The seccomp options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestorePodSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
-    ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -2624,19 +3364,30 @@ pub struct ScheduleRestorePodSecurityContextSysctls {
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options within a container's SecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestorePodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
@@ -2644,15 +3395,40 @@ pub struct ScheduleRestorePodSecurityContextWindowsOptions {
 /// Resources describes the compute resource requirements (cpu, memory, etc.)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestoreResources {
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ScheduleRestoreResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// RestoreMethod contains how and where the restore should happen all the settings are mutual exclusive.
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScheduleRestoreResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// RestoreMethod contains how and where the restore should happen
+/// all the settings are mutual exclusive.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestoreRestoreMethod {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2663,10 +3439,12 @@ pub struct ScheduleRestoreRestoreMethod {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleRestoreRestoreMethodFolder {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts. Default false.
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
@@ -2690,7 +3468,9 @@ pub struct ScheduleRestoreRestoreMethodS3 {
 pub struct ScheduleRestoreRestoreMethodS3AccessKeyIdSecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2703,7 +3483,9 @@ pub struct ScheduleRestoreRestoreMethodS3AccessKeyIdSecretRef {
 pub struct ScheduleRestoreRestoreMethodS3SecretAccessKeySecretRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2714,7 +3496,9 @@ pub struct ScheduleRestoreRestoreMethodS3SecretAccessKeySecretRef {
 /// ScheduleStatus defines the observed state of Schedule
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScheduleStatus {
-    /// Conditions provide a standard mechanism for higher-level status reporting from a controller. They are an extension mechanism which allows tools and other controllers to collect summary information about resources without needing to understand resource-specific status details.
+    /// Conditions provide a standard mechanism for higher-level status reporting from a controller.
+    /// They are an extension mechanism which allows tools and other controllers to collect summary information about
+    /// resources without needing to understand resource-specific status details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// EffectiveSchedules contains a list of schedules generated from randomizing schedules.

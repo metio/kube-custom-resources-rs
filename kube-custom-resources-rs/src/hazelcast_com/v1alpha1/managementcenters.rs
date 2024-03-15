@@ -176,13 +176,13 @@ pub struct ManagementCenterPersistence {
 pub struct ManagementCenterResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
     ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable.
+    ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ManagementCenterResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -643,7 +643,8 @@ pub struct ManagementCenterSchedulingTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ManagementCenterSchedulingTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector.
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. 
+    ///  This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. The global minimum is the minimum number of matching pods in an eligible domain or zero if the number of eligible domains is less than MinDomains. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 2/2/1: In this case, the global minimum is 1. | zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.

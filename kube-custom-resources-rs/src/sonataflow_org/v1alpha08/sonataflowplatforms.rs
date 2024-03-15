@@ -20,6 +20,9 @@ pub struct SonataFlowPlatformSpec {
     /// DevMode Attributes for running workflows in devmode (immutable, no build required)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "devMode")]
     pub dev_mode: Option<SonataFlowPlatformDevMode>,
+    /// Persistence defines the platform persistence configuration. When this field is set, the configuration is used as the persistence for platform services and sonataflow instances that don't provide one of their own.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub persistence: Option<SonataFlowPlatformPersistence>,
     /// Services attributes for deploying supporting applications like Data Index & Job Service. Only workflows without the `sonataflow.org/profile: dev` annotation will be configured to use these service(s). Setting this will override the use of any cluster-scoped services that might be defined via `SonataFlowClusterPlatform`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<SonataFlowPlatformServices>,
@@ -285,6 +288,57 @@ pub struct SonataFlowPlatformDevMode {
     /// Base image to run the Workflow in dev mode instead of the operator's default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
     pub base_image: Option<String>,
+}
+
+/// Persistence defines the platform persistence configuration. When this field is set, the configuration is used as the persistence for platform services and sonataflow instances that don't provide one of their own.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformPersistence {
+    /// Connect configured services to a postgresql database.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub postgresql: Option<SonataFlowPlatformPersistencePostgresql>,
+}
+
+/// Connect configured services to a postgresql database.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformPersistencePostgresql {
+    /// PostgreSql JDBC URL. Mutually exclusive to serviceRef. e.g. "jdbc:postgresql://host:port/database?currentSchema=data-index-service"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jdbcUrl")]
+    pub jdbc_url: Option<String>,
+    /// Secret reference to the database user credentials
+    #[serde(rename = "secretRef")]
+    pub secret_ref: SonataFlowPlatformPersistencePostgresqlSecretRef,
+    /// Service reference to postgresql datasource. Mutually exclusive to jdbcUrl.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRef")]
+    pub service_ref: Option<SonataFlowPlatformPersistencePostgresqlServiceRef>,
+}
+
+/// Secret reference to the database user credentials
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformPersistencePostgresqlSecretRef {
+    /// Name of the postgresql credentials secret.
+    pub name: String,
+    /// Defaults to POSTGRESQL_PASSWORD
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
+    pub password_key: Option<String>,
+    /// Defaults to POSTGRESQL_USER
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userKey")]
+    pub user_key: Option<String>,
+}
+
+/// Service reference to postgresql datasource. Mutually exclusive to jdbcUrl.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformPersistencePostgresqlServiceRef {
+    /// Name of postgresql database to be used. Defaults to "sonataflow"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseName")]
+    pub database_name: Option<String>,
+    /// Name of the postgresql k8s service.
+    pub name: String,
+    /// Namespace of the postgresql k8s service. Defaults to the SonataFlowPlatform's local namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Port to use when connecting to the postgresql k8s service. Defaults to 5432.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
 }
 
 /// Services attributes for deploying supporting applications like Data Index & Job Service. Only workflows without the `sonataflow.org/profile: dev` annotation will be configured to use these service(s). Setting this will override the use of any cluster-scoped services that might be defined via `SonataFlowClusterPlatform`.

@@ -17,6 +17,10 @@ pub struct PodMonitorSpec {
     ///  It requires Prometheus >= v2.37.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<PodMonitorAttachMetadata>,
+    /// When defined, bodySizeLimit specifies a job level limit on the size of uncompressed response body that will be accepted by Prometheus. 
+    ///  It requires Prometheus >= v2.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
+    pub body_size_limit: Option<String>,
     /// The label to use to retrieve the job name from. `jobLabel` selects the label from the associated Kubernetes `Pod` object which will be used as the `job` label for all metrics. 
     ///  For example if `jobLabel` is set to `foo` and the Kubernetes `Pod` object is labeled with `foo: bar`, then Prometheus adds the `job="bar"` label to all ingested metrics. 
     ///  If the value of this field is empty, the `job` label of the metrics defaults to the namespace and name of the PodMonitor object (e.g. `<namespace>/<name>`).
