@@ -5,4 +5,5 @@ pub mod globalizations;
 pub mod helmcharts;
 pub mod helmreleases;
 pub mod localizations;
+pub mod manifests;
 pub mod subscriptions;

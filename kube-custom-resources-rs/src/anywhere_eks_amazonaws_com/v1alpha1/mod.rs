@@ -6,6 +6,7 @@ pub mod cloudstackmachineconfigs;
 pub mod clusters;
 pub mod controlplaneupgrades;
 pub mod dockerdatacenterconfigs;
+pub mod eksareleases;
 pub mod fluxconfigs;
 pub mod gitopsconfigs;
 pub mod machinedeploymentupgrades;

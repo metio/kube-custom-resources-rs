@@ -10,6 +10,11 @@ Every group has its own feature in this crate. The available features are as fol
 apiVersion `about.k8s.io/v1alpha1`:
 - `ClusterProperty`
 
+## acid_zalan_do
+
+apiVersion `acid.zalan.do/v1`:
+- `PostgresTeam`
+
 ## acme_cert_manager_io
 
 apiVersion `acme.cert-manager.io/v1`:
@@ -42,12 +47,15 @@ apiVersion `actions.summerwind.dev/v1alpha1`:
 ## addons_cluster_x_k8s_io
 
 apiVersion `addons.cluster.x-k8s.io/v1alpha3`:
+- `ClusterResourceSetBinding`
 - `ClusterResourceSet`
 
 apiVersion `addons.cluster.x-k8s.io/v1alpha4`:
+- `ClusterResourceSetBinding`
 - `ClusterResourceSet`
 
 apiVersion `addons.cluster.x-k8s.io/v1beta1`:
+- `ClusterResourceSetBinding`
 - `ClusterResourceSet`
 
 ## agent_k8s_elastic_co
@@ -66,6 +74,7 @@ apiVersion `anywhere.eks.amazonaws.com/v1alpha1`:
 - `Cluster`
 - `ControlPlaneUpgrade`
 - `DockerDatacenterConfig`
+- `EKSARelease`
 - `FluxConfig`
 - `GitOpsConfig`
 - `MachineDeploymentUpgrade`
@@ -123,6 +132,8 @@ apiVersion `apigatewayv2.services.k8s.aws/v1alpha1`:
 ## apisix_apache_org
 
 apiVersion `apisix.apache.org/v2`:
+- `ApisixClusterConfig`
+- `ApisixConsumer`
 - `ApisixGlobalRule`
 - `ApisixPluginConfig`
 - `ApisixRoute`
@@ -226,6 +237,7 @@ apiVersion `apps.clusternet.io/v1alpha1`:
 - `HelmChart`
 - `HelmRelease`
 - `Localization`
+- `Manifest`
 - `Subscription`
 
 ## apps_emqx_io
@@ -238,6 +250,7 @@ apiVersion `apps.emqx.io/v1beta3`:
 apiVersion `apps.emqx.io/v1beta4`:
 - `EmqxBroker`
 - `EmqxEnterprise`
+- `EmqxPlugin`
 - `Rebalance`
 
 apiVersion `apps.emqx.io/v2alpha1`:
@@ -251,6 +264,9 @@ apiVersion `apps.emqx.io/v2beta1`:
 
 apiVersion `apps.gitlab.com/v1beta1`:
 - `GitLab`
+
+apiVersion `apps.gitlab.com/v1beta2`:
+- `Runner`
 
 ## apps_kubeblocks_io
 
@@ -280,10 +296,17 @@ apiVersion `apps.kubeedge.io/v1alpha1`:
 apiVersion `apps.m88i.io/v1alpha1`:
 - `Nexus`
 
+## apps_redhat_com
+
+apiVersion `apps.redhat.com/v1alpha1`:
+- `ClusterImpairment`
+
 ## aquasecurity_github_io
 
 apiVersion `aquasecurity.github.io/v1alpha1`:
 - `AquaStarboard`
+- `ClusterConfigAuditReport`
+- `ConfigAuditReport`
 
 ## argoproj_io
 
@@ -339,6 +362,13 @@ apiVersion `autoscaling.k8s.io/v1beta2`:
 apiVersion `autoscaling.karmada.io/v1alpha1`:
 - `CronFederatedHPA`
 - `FederatedHPA`
+
+## awx_ansible_com
+
+apiVersion `awx.ansible.com/v1beta1`:
+- `AWXBackup`
+- `AWXRestore`
+- `AWX`
 
 ## azure_microsoft_com
 
@@ -577,6 +607,26 @@ apiVersion `chaosblade.io/v1alpha1`:
 apiVersion `charts.amd.com/v1alpha1`:
 - `AMDGPU`
 
+## charts_flagsmith_com
+
+apiVersion `charts.flagsmith.com/v1alpha1`:
+- `Flagsmith`
+
+## charts_helm_k8s_io
+
+apiVersion `charts.helm.k8s.io/v1alpha1`:
+- `SnykMonitor`
+
+## charts_opdev_io
+
+apiVersion `charts.opdev.io/v1alpha1`:
+- `Synapse`
+
+## charts_operatorhub_io
+
+apiVersion `charts.operatorhub.io/v1alpha1`:
+- `Cockroachdb`
+
 ## che_eclipse_org
 
 apiVersion `che.eclipse.org/v1alpha1`:
@@ -595,6 +645,8 @@ apiVersion `cilium.io/v2`:
 - `CiliumEgressGatewayPolicy`
 - `CiliumEndpoint`
 - `CiliumExternalWorkload`
+- `CiliumIdentity`
+- `CiliumLocalRedirectPolicy`
 - `CiliumNetworkPolicy`
 - `CiliumNode`
 
@@ -706,6 +758,7 @@ apiVersion `clustertemplate.openshift.io/v1alpha1`:
 - `ClusterTemplateQuota`
 - `ClusterTemplate`
 - `ClusterTemplateSetup`
+- `Config`
 
 ## config_gatekeeper_sh
 
@@ -733,11 +786,13 @@ apiVersion `config.koordinator.sh/v1alpha1`:
 apiVersion `config.openshift.io/v1`:
 - `APIServer`
 - `Authentication`
+- `Build`
 - `ClusterOperator`
 - `ClusterVersion`
 - `Console`
 - `DNS`
 - `FeatureGate`
+- `ImageContentPolicy`
 - `ImageDigestMirrorSet`
 - `Image`
 - `ImageTagMirrorSet`
@@ -754,6 +809,10 @@ apiVersion `config.openshift.io/v1`:
 ## console_openshift_io
 
 apiVersion `console.openshift.io/v1`:
+- `ConsoleCLIDownload`
+- `ConsoleExternalLogLink`
+- `ConsoleLink`
+- `ConsoleNotification`
 - `ConsolePlugin`
 - `ConsoleQuickStart`
 - `ConsoleSample`
@@ -778,6 +837,7 @@ apiVersion `core.kubeadmiral.io/v1alpha1`:
 - `CollectedStatus`
 - `FederatedCluster`
 - `FederatedObject`
+- `FederatedTypeConfig`
 - `OverridePolicy`
 - `PropagatedVersion`
 - `PropagationPolicy`
@@ -900,6 +960,20 @@ apiVersion `designer.kaoto.io/v1alpha1`:
 apiVersion `devices.kubeedge.io/v1alpha2`:
 - `DeviceModel`
 - `Device`
+
+## dex_coreos_com
+
+apiVersion `dex.coreos.com/v1`:
+- `AuthCode`
+- `AuthRequest`
+- `Connector`
+- `DeviceRequest`
+- `DeviceToken`
+- `OAuth2Client`
+- `OfflineSessions`
+- `Password`
+- `RefreshToken`
+- `SigningKey`
 
 ## dex_gpu_ninja_com
 
@@ -1052,6 +1126,11 @@ apiVersion `expansion.gatekeeper.sh/v1alpha1`:
 apiVersion `expansion.gatekeeper.sh/v1beta1`:
 - `ExpansionTemplate`
 
+## extensions_istio_io
+
+apiVersion `extensions.istio.io/v1alpha1`:
+- `WasmPlugin`
+
 ## extensions_kubeblocks_io
 
 apiVersion `extensions.kubeblocks.io/v1alpha1`:
@@ -1091,7 +1170,9 @@ apiVersion `externaldns.nginx.org/v1`:
 ## flagger_app
 
 apiVersion `flagger.app/v1beta1`:
+- `AlertProvider`
 - `Canary`
+- `MetricTemplate`
 
 ## flink_apache_org
 
@@ -1162,6 +1243,15 @@ apiVersion `forklift.konveyor.io/v1beta1`:
 - `Plan`
 - `Provider`
 - `StorageMap`
+
+## fossul_io
+
+apiVersion `fossul.io/v1`:
+- `BackupConfig`
+- `Backup`
+- `BackupSchedule`
+- `Fossul`
+- `Restore`
 
 ## gateway_networking_k8s_io
 
@@ -1239,6 +1329,11 @@ apiVersion `hazelcast.com/v1alpha1`:
 apiVersion `helm.openshift.io/v1beta1`:
 - `HelmChartRepository`
 - `ProjectHelmChartRepository`
+
+## helm_sigstore_dev
+
+apiVersion `helm.sigstore.dev/v1alpha1`:
+- `Rekor`
 
 ## helm_toolkit_fluxcd_io
 
@@ -1341,6 +1436,9 @@ apiVersion `inference.kubedl.io/v1alpha1`:
 
 ## infinispan_org
 
+apiVersion `infinispan.org/v1`:
+- `Infinispan`
+
 apiVersion `infinispan.org/v2alpha1`:
 - `Backup`
 - `Batch`
@@ -1423,6 +1521,11 @@ apiVersion `ingress.operator.openshift.io/v1`:
 apiVersion `insights.openshift.io/v1alpha1`:
 - `DataGather`
 
+## install_istio_io
+
+apiVersion `install.istio.io/v1alpha1`:
+- `IstioOperator`
+
 ## installation_mattermost_com
 
 apiVersion `installation.mattermost.com/v1beta1`:
@@ -1470,6 +1573,11 @@ apiVersion `jaegertracing.io/v1`:
 
 apiVersion `jobset.x-k8s.io/v1alpha2`:
 - `JobSet`
+
+## jobsmanager_raczylo_com
+
+apiVersion `jobsmanager.raczylo.com/v1beta1`:
+- `ManagedJob`
 
 ## k6_io
 
@@ -1521,6 +1629,7 @@ apiVersion `k8up.io/v1`:
 - `Archive`
 - `Backup`
 - `Check`
+- `PreBackupPod`
 - `Prune`
 - `Restore`
 - `Schedule`
@@ -1634,6 +1743,7 @@ apiVersion `kube-green.com/v1alpha1`:
 apiVersion `kubean.io/v1alpha1`:
 - `ClusterOperation`
 - `Cluster`
+- `LocalArtifactSet`
 - `Manifest`
 
 ## kubecost_com
@@ -1659,14 +1769,24 @@ apiVersion `kueue.x-k8s.io/v1beta1`:
 ## kuma_io
 
 apiVersion `kuma.io/v1alpha1`:
+- `CircuitBreaker`
 - `ContainerPatch`
+- `DataplaneInsight`
+- `Dataplane`
+- `ExternalService`
+- `FaultInjection`
+- `HealthCheck`
 - `MeshAccessLog`
 - `MeshCircuitBreaker`
+- `Mesh`
 - `MeshFaultInjection`
 - `MeshGatewayConfig`
 - `MeshGatewayInstance`
+- `MeshGatewayRoute`
+- `MeshGateway`
 - `MeshHealthCheck`
 - `MeshHTTPRoute`
+- `MeshInsight`
 - `MeshLoadBalancingStrategy`
 - `MeshProxyPatch`
 - `MeshRateLimit`
@@ -1675,6 +1795,22 @@ apiVersion `kuma.io/v1alpha1`:
 - `MeshTimeout`
 - `MeshTrace`
 - `MeshTrafficPermission`
+- `ProxyTemplate`
+- `RateLimit`
+- `Retry`
+- `ServiceInsight`
+- `Timeout`
+- `TrafficLog`
+- `TrafficPermission`
+- `TrafficRoute`
+- `TrafficTrace`
+- `VirtualOutbound`
+- `ZoneEgress`
+- `ZoneEgressInsight`
+- `ZoneIngress`
+- `ZoneIngressInsight`
+- `ZoneInsight`
+- `Zone`
 
 ## kustomize_toolkit_fluxcd_io
 
@@ -1756,6 +1892,7 @@ apiVersion `limitador.kuadrant.io/v1alpha1`:
 apiVersion `litmuschaos.io/v1alpha1`:
 - `ChaosEngine`
 - `ChaosExperiment`
+- `ChaosResult`
 
 ## logging_extensions_banzaicloud_io
 
@@ -1797,6 +1934,23 @@ apiVersion `loki.grafana.com/v1beta1`:
 
 ## longhorn_io
 
+apiVersion `longhorn.io/v1beta1`:
+- `BackingImageDataSource`
+- `BackingImageManager`
+- `BackingImage`
+- `Backup`
+- `BackupTarget`
+- `BackupVolume`
+- `EngineImage`
+- `Engine`
+- `InstanceManager`
+- `Node`
+- `RecurringJob`
+- `Replica`
+- `Setting`
+- `ShareManager`
+- `Volume`
+
 apiVersion `longhorn.io/v1beta2`:
 - `BackingImageDataSource`
 - `BackingImageManager`
@@ -1812,6 +1966,7 @@ apiVersion `longhorn.io/v1beta2`:
 - `Orphan`
 - `RecurringJob`
 - `Replica`
+- `Setting`
 - `ShareManager`
 - `Snapshot`
 - `SupportBundle`
@@ -1898,6 +2053,11 @@ apiVersion `metal3.io/v1alpha1`:
 - `HardwareData`
 - `HostFirmwareSettings`
 - `PreprovisioningImage`
+
+## microcks_github_io
+
+apiVersion `microcks.github.io/v1alpha1`:
+- `MicrocksInstall`
 
 ## minio_min_io
 
@@ -2029,6 +2189,28 @@ apiVersion `networkfirewall.services.k8s.aws/v1alpha1`:
 apiVersion `networking.gke.io/v1`:
 - `ManagedCertificate`
 
+## networking_istio_io
+
+apiVersion `networking.istio.io/v1alpha3`:
+- `DestinationRule`
+- `EnvoyFilter`
+- `Gateway`
+- `ServiceEntry`
+- `Sidecar`
+- `VirtualService`
+- `WorkloadEntry`
+- `WorkloadGroup`
+
+apiVersion `networking.istio.io/v1beta1`:
+- `DestinationRule`
+- `Gateway`
+- `ProxyConfig`
+- `ServiceEntry`
+- `Sidecar`
+- `VirtualService`
+- `WorkloadEntry`
+- `WorkloadGroup`
+
 ## networking_k8s_aws
 
 apiVersion `networking.k8s.aws/v1alpha1`:
@@ -2081,6 +2263,12 @@ apiVersion `notification.toolkit.fluxcd.io/v1beta2`:
 apiVersion `notification.toolkit.fluxcd.io/v1beta3`:
 - `Alert`
 - `Provider`
+
+## objectbucket_io
+
+apiVersion `objectbucket.io/v1alpha1`:
+- `ObjectBucketClaim`
+- `ObjectBucket`
 
 ## onepassword_com
 
@@ -2179,6 +2367,16 @@ apiVersion `operator.openshift.io/v1`:
 apiVersion `operator.shipwright.io/v1alpha1`:
 - `ShipwrightBuild`
 
+## operator_tekton_dev
+
+apiVersion `operator.tekton.dev/v1alpha1`:
+- `TektonChain`
+- `TektonConfig`
+- `TektonHub`
+- `TektonInstallerSet`
+- `TektonPipeline`
+- `TektonTrigger`
+
 ## operator_tigera_io
 
 apiVersion `operator.tigera.io/v1`:
@@ -2188,11 +2386,13 @@ apiVersion `operator.tigera.io/v1`:
 - `Authentication`
 - `Compliance`
 - `EgressGateway`
+- `ImageSet`
 - `Installation`
 - `IntrusionDetection`
 - `LogCollector`
 - `LogStorage`
 - `ManagementClusterConnection`
+- `ManagementCluster`
 - `Manager`
 - `Monitor`
 - `PolicyRecommendation`
@@ -2205,7 +2405,13 @@ apiVersion `operator.tigera.io/v1beta1`:
 ## operator_victoriametrics_com
 
 apiVersion `operator.victoriametrics.com/v1beta1`:
+- `VMAlertmanagerConfig`
+- `VMNodeScrape`
+- `VMPodScrape`
+- `VMProbe`
 - `VMRule`
+- `VMServiceScrape`
+- `VMStaticScrape`
 - `VMUser`
 
 ## oracle_db_anthosapis_com
@@ -2414,6 +2620,7 @@ apiVersion `reliablesyncs.kubeedge.io/v1alpha1`:
 apiVersion `repo-manager.pulpproject.org/v1beta2`:
 - `PulpBackup`
 - `PulpRestore`
+- `Pulp`
 
 ## resources_teleport_dev
 
@@ -2602,10 +2809,27 @@ apiVersion `security-profiles-operator.x-k8s.io/v1beta1`:
 apiVersion `security.internal.openshift.io/v1`:
 - `RangeAllocation`
 
+## security_istio_io
+
+apiVersion `security.istio.io/v1`:
+- `AuthorizationPolicy`
+- `PeerAuthentication`
+- `RequestAuthentication`
+
+apiVersion `security.istio.io/v1beta1`:
+- `AuthorizationPolicy`
+- `PeerAuthentication`
+- `RequestAuthentication`
+
 ## security_openshift_io
 
 apiVersion `security.openshift.io/v1`:
 - `SecurityContextConstraints`
+
+## sematext_com
+
+apiVersion `sematext.com/v1`:
+- `SematextAgent`
 
 ## servicebinding_io
 
@@ -2690,6 +2914,9 @@ apiVersion `sonataflow.org/v1alpha08`:
 
 ## source_toolkit_fluxcd_io
 
+apiVersion `source.toolkit.fluxcd.io/v1`:
+- `GitRepository`
+
 apiVersion `source.toolkit.fluxcd.io/v1beta1`:
 - `Bucket`
 - `GitRepository`
@@ -2767,6 +2994,11 @@ apiVersion `submariner.io/v1alpha1`:
 - `Broker`
 - `ServiceDiscovery`
 - `Submariner`
+
+## telemetry_istio_io
+
+apiVersion `telemetry.istio.io/v1alpha1`:
+- `Telemetry`
 
 ## templates_gatekeeper_sh
 
@@ -2869,6 +3101,11 @@ apiVersion `training.kubedl.io/v1alpha1`:
 - `TFJob`
 - `XDLJob`
 - `XGBoostJob`
+
+## trident_netapp_io
+
+apiVersion `trident.netapp.io/v1`:
+- `TridentOrchestrator`
 
 ## trust_cert_manager_io
 
@@ -2977,6 +3214,8 @@ apiVersion `zookeeper.pravega.io/v1beta1`:
 
 #[cfg(feature = "about_k8s_io")]
 pub mod about_k8s_io;
+#[cfg(feature = "acid_zalan_do")]
+pub mod acid_zalan_do;
 #[cfg(feature = "acme_cert_manager_io")]
 pub mod acme_cert_manager_io;
 #[cfg(feature = "acmpca_services_k8s_aws")]
@@ -3039,6 +3278,8 @@ pub mod apps_kubedl_io;
 pub mod apps_kubeedge_io;
 #[cfg(feature = "apps_m88i_io")]
 pub mod apps_m88i_io;
+#[cfg(feature = "apps_redhat_com")]
+pub mod apps_redhat_com;
 #[cfg(feature = "aquasecurity_github_io")]
 pub mod aquasecurity_github_io;
 #[cfg(feature = "argoproj_io")]
@@ -3057,6 +3298,8 @@ pub mod authzed_com;
 pub mod autoscaling_k8s_io;
 #[cfg(feature = "autoscaling_karmada_io")]
 pub mod autoscaling_karmada_io;
+#[cfg(feature = "awx_ansible_com")]
+pub mod awx_ansible_com;
 #[cfg(feature = "azure_microsoft_com")]
 pub mod azure_microsoft_com;
 #[cfg(feature = "b3scale_infra_run")]
@@ -3101,6 +3344,14 @@ pub mod chaos_mesh_org;
 pub mod chaosblade_io;
 #[cfg(feature = "charts_amd_com")]
 pub mod charts_amd_com;
+#[cfg(feature = "charts_flagsmith_com")]
+pub mod charts_flagsmith_com;
+#[cfg(feature = "charts_helm_k8s_io")]
+pub mod charts_helm_k8s_io;
+#[cfg(feature = "charts_opdev_io")]
+pub mod charts_opdev_io;
+#[cfg(feature = "charts_operatorhub_io")]
+pub mod charts_operatorhub_io;
 #[cfg(feature = "che_eclipse_org")]
 pub mod che_eclipse_org;
 #[cfg(feature = "chisel_operator_io")]
@@ -3175,6 +3426,8 @@ pub mod dataprotection_kubeblocks_io;
 pub mod designer_kaoto_io;
 #[cfg(feature = "devices_kubeedge_io")]
 pub mod devices_kubeedge_io;
+#[cfg(feature = "dex_coreos_com")]
+pub mod dex_coreos_com;
 #[cfg(feature = "dex_gpu_ninja_com")]
 pub mod dex_gpu_ninja_com;
 #[cfg(feature = "digitalis_io")]
@@ -3215,6 +3468,8 @@ pub mod execution_furiko_io;
 pub mod executor_testkube_io;
 #[cfg(feature = "expansion_gatekeeper_sh")]
 pub mod expansion_gatekeeper_sh;
+#[cfg(feature = "extensions_istio_io")]
+pub mod extensions_istio_io;
 #[cfg(feature = "extensions_kubeblocks_io")]
 pub mod extensions_kubeblocks_io;
 #[cfg(feature = "external_secrets_io")]
@@ -3241,6 +3496,8 @@ pub mod fluentd_fluent_io;
 pub mod flux_framework_org;
 #[cfg(feature = "forklift_konveyor_io")]
 pub mod forklift_konveyor_io;
+#[cfg(feature = "fossul_io")]
+pub mod fossul_io;
 #[cfg(feature = "gateway_networking_k8s_io")]
 pub mod gateway_networking_k8s_io;
 #[cfg(feature = "gateway_nginx_org")]
@@ -3257,6 +3514,8 @@ pub mod groupsnapshot_storage_k8s_io;
 pub mod hazelcast_com;
 #[cfg(feature = "helm_openshift_io")]
 pub mod helm_openshift_io;
+#[cfg(feature = "helm_sigstore_dev")]
+pub mod helm_sigstore_dev;
 #[cfg(feature = "helm_toolkit_fluxcd_io")]
 pub mod helm_toolkit_fluxcd_io;
 #[cfg(feature = "hive_openshift_io")]
@@ -3289,6 +3548,8 @@ pub mod infrastructure_cluster_x_k8s_io;
 pub mod ingress_operator_openshift_io;
 #[cfg(feature = "insights_openshift_io")]
 pub mod insights_openshift_io;
+#[cfg(feature = "install_istio_io")]
+pub mod install_istio_io;
 #[cfg(feature = "installation_mattermost_com")]
 pub mod installation_mattermost_com;
 #[cfg(feature = "integration_rock8s_com")]
@@ -3303,6 +3564,8 @@ pub mod isindir_github_com;
 pub mod jaegertracing_io;
 #[cfg(feature = "jobset_x_k8s_io")]
 pub mod jobset_x_k8s_io;
+#[cfg(feature = "jobsmanager_raczylo_com")]
+pub mod jobsmanager_raczylo_com;
 #[cfg(feature = "k6_io")]
 pub mod k6_io;
 #[cfg(feature = "k8gb_absa_oss")]
@@ -3391,6 +3654,8 @@ pub mod memorydb_services_k8s_aws;
 pub mod metacontroller_k8s_io;
 #[cfg(feature = "metal3_io")]
 pub mod metal3_io;
+#[cfg(feature = "microcks_github_io")]
+pub mod microcks_github_io;
 #[cfg(feature = "minio_min_io")]
 pub mod minio_min_io;
 #[cfg(feature = "mirrors_kts_studio")]
@@ -3423,6 +3688,8 @@ pub mod network_operator_openshift_io;
 pub mod networkfirewall_services_k8s_aws;
 #[cfg(feature = "networking_gke_io")]
 pub mod networking_gke_io;
+#[cfg(feature = "networking_istio_io")]
+pub mod networking_istio_io;
 #[cfg(feature = "networking_k8s_aws")]
 pub mod networking_k8s_aws;
 #[cfg(feature = "networking_karmada_io")]
@@ -3437,6 +3704,8 @@ pub mod nodeinfo_volcano_sh;
 pub mod notebook_kubedl_io;
 #[cfg(feature = "notification_toolkit_fluxcd_io")]
 pub mod notification_toolkit_fluxcd_io;
+#[cfg(feature = "objectbucket_io")]
+pub mod objectbucket_io;
 #[cfg(feature = "onepassword_com")]
 pub mod onepassword_com;
 #[cfg(feature = "opensearchservice_services_k8s_aws")]
@@ -3459,6 +3728,8 @@ pub mod operator_open_cluster_management_io;
 pub mod operator_openshift_io;
 #[cfg(feature = "operator_shipwright_io")]
 pub mod operator_shipwright_io;
+#[cfg(feature = "operator_tekton_dev")]
+pub mod operator_tekton_dev;
 #[cfg(feature = "operator_tigera_io")]
 pub mod operator_tigera_io;
 #[cfg(feature = "operator_victoriametrics_com")]
@@ -3567,8 +3838,12 @@ pub mod secscan_quay_redhat_com;
 pub mod security_profiles_operator_x_k8s_io;
 #[cfg(feature = "security_internal_openshift_io")]
 pub mod security_internal_openshift_io;
+#[cfg(feature = "security_istio_io")]
+pub mod security_istio_io;
 #[cfg(feature = "security_openshift_io")]
 pub mod security_openshift_io;
+#[cfg(feature = "sematext_com")]
+pub mod sematext_com;
 #[cfg(feature = "servicebinding_io")]
 pub mod servicebinding_io;
 #[cfg(feature = "services_k8s_aws")]
@@ -3611,6 +3886,8 @@ pub mod sts_min_io;
 pub mod stunner_l7mp_io;
 #[cfg(feature = "submariner_io")]
 pub mod submariner_io;
+#[cfg(feature = "telemetry_istio_io")]
+pub mod telemetry_istio_io;
 #[cfg(feature = "templates_gatekeeper_sh")]
 pub mod templates_gatekeeper_sh;
 #[cfg(feature = "tempo_grafana_com")]
@@ -3631,6 +3908,8 @@ pub mod topolvm_cybozu_com;
 pub mod traefik_io;
 #[cfg(feature = "training_kubedl_io")]
 pub mod training_kubedl_io;
+#[cfg(feature = "trident_netapp_io")]
+pub mod trident_netapp_io;
 #[cfg(feature = "trust_cert_manager_io")]
 pub mod trust_cert_manager_io;
 #[cfg(feature = "upgrade_cattle_io")]
