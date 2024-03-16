@@ -12,6 +12,7 @@ pub mod nodes;
 pub mod orphans;
 pub mod recurringjobs;
 pub mod replicas;
+pub mod settings;
 pub mod sharemanagers;
 pub mod snapshots;
 pub mod supportbundles;

@@ -1,10 +1,12 @@
 pub mod apiservers;
 pub mod authentications;
+pub mod builds;
 pub mod clusteroperators;
 pub mod clusterversions;
 pub mod consoles;
 pub mod dnses;
 pub mod featuregates;
+pub mod imagecontentpolicies;
 pub mod imagedigestmirrorsets;
 pub mod images;
 pub mod imagetagmirrorsets;

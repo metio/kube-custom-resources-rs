@@ -6,6 +6,7 @@ pub mod clusterpropagationpolicies;
 pub mod collectedstatuses;
 pub mod federatedclusters;
 pub mod federatedobjects;
+pub mod federatedtypeconfigs;
 pub mod overridepolicies;
 pub mod propagatedversions;
 pub mod propagationpolicies;
