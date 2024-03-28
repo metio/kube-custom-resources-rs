@@ -2304,14 +2304,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/open-cluster-management-io/ocm/blob/main/deploy/cluster-manager/config/crds/0000_01_operator.open-cluster-management.io_clustermanagers.crd.yaml",
-        ],
-    },
-    UpstreamSource {
-        project_name: "open-cluster-management-io/registration-operator",
-        license: APACHE_V2,
-        urls: &[
-            "https://github.com/open-cluster-management-io/registration-operator/blob/main/deploy/cluster-manager/config/crds/0000_01_operator.open-cluster-management.io_clustermanagers.crd.yaml",
-            "https://github.com/open-cluster-management-io/registration-operator/blob/main/deploy/klusterlet/config/crds/0000_00_operator.open-cluster-management.io_klusterlets.crd.yaml",
+            "https://github.com/open-cluster-management-io/ocm/blob/main/deploy/klusterlet/config/crds/0000_00_operator.open-cluster-management.io_klusterlets.crd.yaml",
         ],
     },
     UpstreamSource {
