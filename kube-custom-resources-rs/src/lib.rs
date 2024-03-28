@@ -2335,7 +2335,6 @@ apiVersion `operator.cryostat.io/v1beta1`:
 
 apiVersion `operator.open-cluster-management.io/v1`:
 - `ClusterManager`
-- `ClusterManager`
 - `Klusterlet`
 
 ## operator_openshift_io

@@ -907,10 +907,6 @@ Files: crd-catalog/open-cluster-management-io/ocm/*
 Copyright: The open-cluster-management-io/ocm Authors
 License: Apache-2.0
 
-Files: crd-catalog/open-cluster-management-io/registration-operator/*
-Copyright: The open-cluster-management-io/registration-operator Authors
-License: Apache-2.0
-
 Files: crd-catalog/open-feature/open-feature-operator/*
 Copyright: The open-feature/open-feature-operator Authors
 License: Apache-2.0
