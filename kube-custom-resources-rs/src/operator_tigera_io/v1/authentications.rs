@@ -75,7 +75,7 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpec {
 /// DexDeploymentContainer is a Dex Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Dex Deployment container by name.
+    /// Name is an enum which identifies the Dex Deployment container by name. Supported values are: tigera-dex
     pub name: AuthenticationDexDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment container's resources. If omitted, the Dex Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -115,7 +115,7 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpecContainersResourcesClaims 
 /// DexDeploymentInitContainer is a Dex Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the Dex Deployment init container by name.
+    /// Name is an enum which identifies the Dex Deployment init container by name. Supported values are: tigera-dex-tls-key-cert-provisioner
     pub name: AuthenticationDexDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment init container's resources. If omitted, the Dex Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

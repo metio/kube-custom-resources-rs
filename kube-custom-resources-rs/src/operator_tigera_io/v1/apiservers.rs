@@ -506,7 +506,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRe
 /// APIServerDeploymentContainer is an API server Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct APIServerApiServerDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the API server Deployment container by name.
+    /// Name is an enum which identifies the API server Deployment container by name. Supported values are: calico-apiserver, tigera-queryserver
     pub name: APIServerApiServerDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named API server Deployment container's resources. If omitted, the API server Deployment will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -548,7 +548,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecContainersResourcesClaims
 /// APIServerDeploymentInitContainer is an API server Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct APIServerApiServerDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the API server Deployment init container by name.
+    /// Name is an enum which identifies the API server Deployment init container by name. Supported values are: calico-apiserver-certs-key-cert-provisioner
     pub name: APIServerApiServerDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named API server Deployment init container's resources. If omitted, the API server Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

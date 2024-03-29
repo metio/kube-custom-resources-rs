@@ -64,7 +64,8 @@ pub struct IBMVPCClusterStatus {
     /// Subnet describes a subnet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnet: Option<IBMVPCClusterStatusSubnet>,
-    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file
+    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+    /// Important: Run "make" to regenerate code after modifying this file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMVPCClusterStatusVpc>,
     /// VPCEndpoint describes a VPCEndpoint.
@@ -81,7 +82,8 @@ pub struct IBMVPCClusterStatusSubnet {
     pub zone: String,
 }
 
-/// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file
+/// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+/// Important: Run "make" to regenerate code after modifying this file
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterStatusVpc {
     pub id: String,

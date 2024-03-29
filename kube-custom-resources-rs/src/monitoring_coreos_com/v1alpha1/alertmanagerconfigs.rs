@@ -708,6 +708,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigs {
     /// Whether to notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
+    /// Message summary template. It requires Alertmanager >= 0.27.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub summary: Option<String>,
     /// Message body template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,

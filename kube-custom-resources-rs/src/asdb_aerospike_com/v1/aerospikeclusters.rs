@@ -8028,6 +8028,9 @@ pub struct AerospikeClusterStatusPods {
     /// InitializedVolumes is the list of volume names that have already been initialized.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initializedVolumes")]
     pub initialized_volumes: Option<Vec<String>>,
+    /// IsSecurityEnabled is true if security is enabled in the pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isSecurityEnabled")]
+    pub is_security_enabled: Option<bool>,
     /// NetworkPolicyHash is ripemd160 hash of NetworkPolicy used by this pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicyHash")]
     pub network_policy_hash: Option<String>,

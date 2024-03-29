@@ -69,7 +69,7 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpec {
 /// ComplianceBenchmarkerDaemonSetContainer is a Compliance Benchmarker DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Compliance Benchmarker DaemonSet container by name.
+    /// Name is an enum which identifies the Compliance Benchmarker DaemonSet container by name. Supported values are: compliance-benchmarker
     pub name: ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Compliance Benchmarker DaemonSet container's resources. If omitted, the Compliance Benchmarker DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -109,7 +109,7 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersRes
 /// ComplianceBenchmarkerDaemonSetInitContainer is a Compliance Benchmarker DaemonSet init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the Compliance Benchmarker DaemonSet init container by name.
+    /// Name is an enum which identifies the Compliance Benchmarker DaemonSet init container by name. Supported values are: tigera-compliance-benchmarker-tls-key-cert-provisioner
     pub name: ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Compliance Benchmarker DaemonSet init container's resources. If omitted, the Compliance Benchmarker DaemonSet will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -184,7 +184,7 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpec {
 /// ComplianceControllerDeploymentContainer is a compliance controller Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the compliance controller Deployment container by name.
+    /// Name is an enum which identifies the compliance controller Deployment container by name. Supported values are: compliance-controller
     pub name: ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance controller Deployment container's resources. If omitted, the compliance controller Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -224,7 +224,7 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersRes
 /// ComplianceControllerDeploymentInitContainer is a compliance controller Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the compliance controller Deployment init container by name.
+    /// Name is an enum which identifies the compliance controller Deployment init container by name. Supported values are: tigera-compliance-controller-tls-key-cert-provisioner
     pub name: ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance controller Deployment init container's resources. If omitted, the compliance controller Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -291,7 +291,7 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpec {
 /// ComplianceReporterPodTemplateContainer is a ComplianceServer Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainers {
-    /// Name is an enum which identifies the ComplianceServer Deployment container by name.
+    /// Name is an enum which identifies the ComplianceServer Deployment container by name. Supported values are: reporter
     pub name: ComplianceComplianceReporterPodTemplateTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment container's resources. If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -331,7 +331,7 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainersResource
 /// ComplianceReporterPodTemplateInitContainer is a ComplianceServer Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainers {
-    /// Name is an enum which identifies the ComplianceReporter PodSpec init container by name.
+    /// Name is an enum which identifies the ComplianceReporter PodSpec init container by name. Supported values are: tigera-compliance-reporter-tls-key-cert-provisioner
     pub name: ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceReporter PodSpec init container's resources. If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -406,7 +406,7 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpec {
 /// ComplianceServerDeploymentContainer is a ComplianceServer Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the ComplianceServer Deployment container by name.
+    /// Name is an enum which identifies the ComplianceServer Deployment container by name. Supported values are: compliance-server
     pub name: ComplianceComplianceServerDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment container's resources. If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -446,7 +446,7 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResourc
 /// ComplianceServerDeploymentInitContainer is a ComplianceServer Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the ComplianceServer Deployment init container by name.
+    /// Name is an enum which identifies the ComplianceServer Deployment init container by name. Supported values are: tigera-compliance-server-tls-key-cert-provisioner
     pub name: ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment init container's resources. If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -521,7 +521,7 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpec {
 /// ComplianceSnapshotterDeploymentContainer is a compliance snapshotter Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the compliance snapshotter Deployment container by name.
+    /// Name is an enum which identifies the compliance snapshotter Deployment container by name. Supported values are: compliance-snapshotter
     pub name: ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance snapshotter Deployment container's resources. If omitted, the compliance snapshotter Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -561,7 +561,7 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersRe
 /// ComplianceSnapshotterDeploymentInitContainer is a compliance snapshotter Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the compliance snapshotter Deployment init container by name.
+    /// Name is an enum which identifies the compliance snapshotter Deployment init container by name. Supported values are: tigera-compliance-snapshotter-tls-key-cert-provisioner
     pub name: ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance snapshotter Deployment init container's resources. If omitted, the compliance snapshotter Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -56,7 +56,7 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpec {
 /// PolicyRecommendationDeploymentContainer is a PolicyRecommendation Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the PolicyRecommendation Deployment container by name.
+    /// Name is an enum which identifies the PolicyRecommendation Deployment container by name. Supported values are: policy-recommendation-controller
     pub name: PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named PolicyRecommendation Deployment container's resources. If omitted, the PolicyRecommendation Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -30,9 +30,15 @@ pub struct OpsRequestSpec {
     /// Defines services the component needs to expose.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expose: Option<Vec<OpsRequestExpose>>,
+    /// Indicates if pre-checks should be bypassed, allowing the opsRequest to execute immediately. If set to true, pre-checks are skipped except for 'Start' type. Particularly useful when concurrent execution of VerticalScaling and HorizontalScaling opsRequests is required, achievable through the use of the Force flag.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub force: Option<bool>,
     /// Defines what component need to horizontal scale the specified replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalScaling")]
     pub horizontal_scaling: Option<Vec<OpsRequestHorizontalScaling>>,
+    /// Specifies the instances that require re-creation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildFrom")]
+    pub rebuild_from: Option<Vec<OpsRequestRebuildFrom>>,
     /// Deprecated: replace by reconfigures. Defines the variables that need to input when updating configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconfigure: Option<OpsRequestReconfigure>,
@@ -154,6 +160,13 @@ pub struct OpsRequestExposeServices {
     /// Contains cloud provider related parameters if ServiceType is LoadBalancer. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this service. This field is usually assigned automatically based on cluster configuration and the ipFamilyPolicy field. If this field is specified manually, the requested family is available in the cluster, and ipFamilyPolicy allows it, it will be used; otherwise creation of the service will fail. This field is conditionally mutable: it allows for adding or removing a secondary IP family, but it does not allow changing the primary IP family of the Service. Valid values are "IPv4" and "IPv6".  This field only applies to Services of types ClusterIP, NodePort, and LoadBalancer, and does apply to "headless" services. This field will be wiped when updating a Service to type ExternalName. 
+    ///  This field may hold a maximum of two entries (dual-stack families, in either order).  These families must correspond to the values of the clusterIPs field, if specified. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
+    pub ip_families: Option<Vec<String>>,
+    /// IPFamilyPolicy represents the dual-stack-ness requested or required by this Service. If there is no value provided, then this field will be set to SingleStack. Services can be "SingleStack" (a single IP family), "PreferDualStack" (two IP families on dual-stack configured clusters or a single IP family on single-stack clusters), or "RequireDualStack" (two IP families on dual-stack configured clusters, otherwise fail). The ipFamilies and clusterIPs fields depend on the value of this field. This field will be wiped when updating a service to type ExternalName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
+    pub ip_family_policy: Option<String>,
     /// Specifies the name of the service. This name is used by others to refer to this service (e.g., connection credential). Note: This field cannot be updated.
     pub name: String,
     /// Lists the ports that are exposed by this service. If not provided, the default Services Ports defined in the ClusterDefinition or ComponentDefinition that are neither of NodePort nor LoadBalancer service type will be used. If there is no corresponding Service defined in the ClusterDefinition or ComponentDefinition, the expose operation will fail. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
@@ -207,15 +220,113 @@ pub struct OpsRequestHorizontalScaling {
     /// Specifies the name of the cluster component.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// Defines the names of instances that the rsm should prioritize for scale-down operations. If the RsmTransformPolicy is set to ToPod and the expected number of replicas is less than the current number, the list of Instances will be used. 
-    ///  - `current replicas - expected replicas > len(Instances)`: Scale down from the list of Instances priorly, the others will select from NodeAssignment. - `current replicas - expected replicas < len(Instances)`: Scale down from the list of Instances. - `current replicas - expected replicas < len(Instances)`: Scale down from a part of Instances.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub instances: Option<Vec<String>>,
-    /// Defines the list of nodes where pods can be scheduled during a scale-up operation. If the RsmTransformPolicy is set to ToPod and the expected number of replicas is greater than the current number, the list of Nodes will be used. If the list of Nodes is empty, pods will not be assigned to any specific node. However, if the list of Nodes is populated, pods will be evenly distributed across the nodes in the list during scale-up.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nodes: Option<Vec<String>>,
     /// Specifies the number of replicas for the workloads.
     pub replicas: i32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFrom {
+    /// Indicates the name of the backup from which to recover. Currently, only a full physical backup is supported unless your component only has one replica. Such as 'xtrabackup' is full physical backup for mysql and 'mysqldump' is not. And if no specified backupName, the instance will be recreated with empty 'PersistentVolumes'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupName")]
+    pub backup_name: Option<String>,
+    /// Specifies the name of the cluster component.
+    #[serde(rename = "componentName")]
+    pub component_name: String,
+    /// List of environment variables to set in the container for restore. These will be merged with the env of Backup and ActionSet. 
+    ///  The priority of merging is as follows: `Restore env > Backup env > ActionSet env`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envForRestore")]
+    pub env_for_restore: Option<Vec<OpsRequestRebuildFromEnvForRestore>>,
+    /// Defines the instances that need to be rebuilt.
+    pub instances: Vec<OpsRequestRebuildFromInstances>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFromEnvForRestore {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OpsRequestRebuildFromEnvForRestoreValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFromEnvForRestoreValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<OpsRequestRebuildFromEnvForRestoreValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<OpsRequestRebuildFromEnvForRestoreValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<OpsRequestRebuildFromEnvForRestoreValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OpsRequestRebuildFromEnvForRestoreValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFromEnvForRestoreValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFromEnvForRestoreValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFromEnvForRestoreValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFromEnvForRestoreValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestRebuildFromInstances {
+    /// Pod name of the instance.
+    pub name: String,
+    /// The instance will rebuild on the specified node when the instance uses local PersistentVolume as the storage disk. If not set, it will rebuild on a random node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNodeName")]
+    pub target_node_name: Option<String>,
 }
 
 /// Deprecated: replace by reconfigures. Defines the variables that need to input when updating configuration.
@@ -542,6 +653,7 @@ pub enum OpsRequestType {
     DataScript,
     Backup,
     Restore,
+    RebuildInstance,
     Custom,
 }
 
@@ -660,6 +772,9 @@ pub struct OpsRequestStatusComponents {
     /// Provides a human-readable message indicating details about this operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    /// Describes the configuration covered by the latest OpsRequest of the same kind. when reconciling, this information will be used as a benchmark rather than the 'spec', such as 'Spec.HorizontalScaling'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideBy")]
+    pub override_by: Option<OpsRequestStatusComponentsOverrideBy>,
     /// Describes the component phase, referencing Cluster.status.component.phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<OpsRequestStatusComponentsPhase>,
@@ -675,6 +790,87 @@ pub struct OpsRequestStatusComponents {
     /// References the workload type of component in ClusterDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadType")]
     pub workload_type: Option<OpsRequestStatusComponentsWorkloadType>,
+}
+
+/// Describes the configuration covered by the latest OpsRequest of the same kind. when reconciling, this information will be used as a benchmark rather than the 'spec', such as 'Spec.HorizontalScaling'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusComponentsOverrideBy {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<OpsRequestStatusComponentsOverrideByClaims>>,
+    /// References a class defined in ComponentClassDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
+    pub class_def_ref: Option<OpsRequestStatusComponentsOverrideByClassDefRef>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Indicates the opsRequest name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "opsName")]
+    pub ops_name: Option<String>,
+    /// Represents the last replicas of the component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+    /// Records the last services of the component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub services: Option<Vec<OpsRequestStatusComponentsOverrideByServices>>,
+    /// Records the information about the target resources affected by the component. The resource key is in the list of [pods].
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetResources")]
+    pub target_resources: Option<BTreeMap<String, String>>,
+    /// Records the last volumeClaimTemplates of the component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
+    pub volume_claim_templates: Option<Vec<OpsRequestStatusComponentsOverrideByVolumeClaimTemplates>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusComponentsOverrideByClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
+}
+
+/// References a class defined in ComponentClassDefinition.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusComponentsOverrideByClassDefRef {
+    /// Defines the name of the class that is defined in the ComponentClassDefinition.
+    pub class: String,
+    /// Specifies the name of the ComponentClassDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusComponentsOverrideByServices {
+    /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// The name of the service.
+    pub name: String,
+    /// Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. 
+    ///  - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
+    ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
+    pub service_type: Option<OpsRequestStatusComponentsOverrideByServicesServiceType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OpsRequestStatusComponentsOverrideByServicesServiceType {
+    #[serde(rename = "ClusterIP")]
+    ClusterIp,
+    NodePort,
+    LoadBalancer,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct OpsRequestStatusComponentsOverrideByVolumeClaimTemplates {
+    /// A reference to the volumeClaimTemplate name from the cluster components.
+    pub name: String,
+    /// Specifies the requested storage size for the volume.
+    pub storage: IntOrString,
 }
 
 /// Records the status information of components changed due to the operation request.

@@ -19,20 +19,28 @@ pub struct IBMPowerVSClusterTemplateSpec {
 /// IBMPowerVSClusterTemplateResource describes the data needed to create an IBMPowerVSCluster from a template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplate {
-    /// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+    /// Standard object's metadata.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<IBMPowerVSClusterTemplateTemplateMetadata>,
     /// IBMPowerVSClusterSpec defines the desired state of IBMPowerVSCluster.
     pub spec: IBMPowerVSClusterTemplateTemplateSpec,
 }
 
-/// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+/// Standard object's metadata.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// and services.
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
@@ -43,39 +51,93 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<IBMPowerVSClusterTemplateTemplateSpecControlPlaneEndpoint>,
-    /// cosInstance contains options to configure a supporting IBM Cloud COS bucket for this cluster - currently used for nodes requiring Ignition (https://coreos.github.io/ignition/) for bootstrapping (requires BootstrapFormatIgnition feature flag to be enabled). when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource and Ignition is set, then 1. CosInstance.Name should be set not setting will result in webhook error. 2. CosInstance.BucketName should be set not setting will result in webhook error. 3. CosInstance.BucketRegion should be set not setting will result in webhook error.
+    /// cosInstance contains options to configure a supporting IBM Cloud COS bucket for this
+    /// cluster - currently used for nodes requiring Ignition
+    /// (https://coreos.github.io/ignition/) for bootstrapping (requires
+    /// BootstrapFormatIgnition feature flag to be enabled).
+    /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource and Ignition is set, then
+    /// 1. CosInstance.Name should be set not setting will result in webhook error.
+    /// 2. CosInstance.BucketName should be set not setting will result in webhook error.
+    /// 3. CosInstance.BucketRegion should be set not setting will result in webhook error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosInstance")]
     pub cos_instance: Option<IBMPowerVSClusterTemplateTemplateSpecCosInstance>,
-    /// dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace. when the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created. it will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace.
+    /// dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace.
+    /// when the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created.
+    /// it will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
     pub dhcp_server: Option<IBMPowerVSClusterTemplateTemplateSpecDhcpServer>,
     /// Ignition defined options related to the bootstrapping systems where Ignition is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignition: Option<IBMPowerVSClusterTemplateTemplateSpecIgnition>,
-    /// loadBalancers is optional configuration for configuring loadbalancers to control plane or data plane nodes. when omitted system will create a default public loadbalancer with name CLUSTER_NAME-loadbalancer. when specified a vpc loadbalancer will be created and controlPlaneEndpoint will be set with associated hostname of loadbalancer. ControlPlaneEndpoint will be set with associated hostname of public loadbalancer. when LoadBalancers[].ID is set, its expected that there exist a loadbalancer with ID or else system will give error. when LoadBalancers[].Name is set, system will first check for loadbalancer with Name, if not exist system will create new loadbalancer. For each loadbalancer a default backed pool and front listener will be configured with port 6443.
+    /// loadBalancers is optional configuration for configuring loadbalancers to control plane or data plane nodes.
+    /// when omitted system will create a default public loadbalancer with name CLUSTER_NAME-loadbalancer.
+    /// when specified a vpc loadbalancer will be created and controlPlaneEndpoint will be set with associated hostname of loadbalancer.
+    /// ControlPlaneEndpoint will be set with associated hostname of public loadbalancer.
+    /// when LoadBalancers[].ID is set, its expected that there exist a loadbalancer with ID or else system will give error.
+    /// when LoadBalancers[].Name is set, system will first check for loadbalancer with Name, if not exist system will create new loadbalancer.
+    /// For each loadbalancer a default backed pool and front listener will be configured with port 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancers>>,
-    /// Network is the reference to the Network to use for this cluster. when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used. the DHCP service created network will have the following name format 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private. 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private. when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error. when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist network will be created by DHCP service. Network.RegEx is not yet supported and system will ignore the value.
+    /// Network is the reference to the Network to use for this cluster.
+    /// when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used.
+    /// the DHCP service created network will have the following name format
+    /// 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private.
+    /// 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private.
+    /// when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error.
+    /// when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist network will be created by DHCP service.
+    /// Network.RegEx is not yet supported and system will ignore the value.
     pub network: IBMPowerVSClusterTemplateTemplateSpecNetwork,
-    /// resourceGroup name under which the resources will be created. when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource, 1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error. ServiceInstance.ID and ServiceInstance.Regex is not yet supported and system will ignore the value.
+    /// resourceGroup name under which the resources will be created.
+    /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
+    /// 1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error.
+    /// ServiceInstance.ID and ServiceInstance.Regex is not yet supported and system will ignore the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IBMPowerVSClusterTemplateTemplateSpecResourceGroup>,
-    /// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created. Power VS server workspace is a container for all Power VS instances at a specific geographic region. serviceInstance can be created via IBM Cloud catalog or CLI. supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli. More detail about Power VS service instance. https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server when omitted system will dynamically create the service instance with name CLUSTER_NAME-serviceInstance. when ServiceInstance.ID is set, its expected that there exist a service instance in PowerVS workspace with id or else system will give error. when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance. ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
+    /// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created.
+    /// Power VS server workspace is a container for all Power VS instances at a specific geographic region.
+    /// serviceInstance can be created via IBM Cloud catalog or CLI.
+    /// supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
+    /// More detail about Power VS service instance.
+    /// https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server
+    /// when omitted system will dynamically create the service instance with name CLUSTER_NAME-serviceInstance.
+    /// when ServiceInstance.ID is set, its expected that there exist a service instance in PowerVS workspace with id or else system will give error.
+    /// when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance.
+    /// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSClusterTemplateTemplateSpecServiceInstance>,
-    /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed. Deprecated: use ServiceInstance instead
+    /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
+    /// Deprecated: use ServiceInstance instead
     #[serde(rename = "serviceInstanceID")]
     pub service_instance_id: String,
-    /// transitGateway contains information about IBM Cloud TransitGateway IBM Cloud TransitGateway helps in establishing network connectivity between IBM Cloud Power VS and VPC infrastructure more information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway. when TransitGateway.ID is set, its expected that there exist a TransitGateway with ID or else system will give error. when TransitGateway.Name is set, system will first check for TransitGateway with Name, if not exist system will create new TransitGateway.
+    /// transitGateway contains information about IBM Cloud TransitGateway
+    /// IBM Cloud TransitGateway helps in establishing network connectivity between IBM Cloud Power VS and VPC infrastructure
+    /// more information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway.
+    /// when TransitGateway.ID is set, its expected that there exist a TransitGateway with ID or else system will give error.
+    /// when TransitGateway.Name is set, system will first check for TransitGateway with Name, if not exist system will create new TransitGateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGateway")]
     pub transit_gateway: Option<IBMPowerVSClusterTemplateTemplateSpecTransitGateway>,
-    /// vpc contains information about IBM Cloud VPC resources. when omitted system will dynamically create the VPC with name CLUSTER_NAME-vpc. when VPC.ID is set, its expected that there exist a VPC with ID or else system will give error. when VPC.Name is set, system will first check for VPC with Name, if not exist system will create new VPC. when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource, 1. it is expected to set the VPC.Region, not setting will result in webhook error.
+    /// vpc contains information about IBM Cloud VPC resources.
+    /// when omitted system will dynamically create the VPC with name CLUSTER_NAME-vpc.
+    /// when VPC.ID is set, its expected that there exist a VPC with ID or else system will give error.
+    /// when VPC.Name is set, system will first check for VPC with Name, if not exist system will create new VPC.
+    /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
+    /// 1. it is expected to set the VPC.Region, not setting will result in webhook error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMPowerVSClusterTemplateTemplateSpecVpc>,
-    /// vpcSubnets contains information about IBM Cloud VPC Subnet resources. when omitted system will create the subnets in all the zone corresponding to VPC.Region, with name CLUSTER_NAME-vpcsubnet-ZONE_NAME. possible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server. when VPCSubnets[].ID is set, its expected that there exist a subnet with ID or else system will give error. when VPCSubnets[].Zone is not set, a random zone is picked from available zones of VPC.Region. when VPCSubnets[].Name is not set, system will set name as CLUSTER_NAME-vpcsubnet-INDEX. if subnet with name VPCSubnets[].Name not found, system will create new subnet in VPCSubnets[].Zone.
+    /// vpcSubnets contains information about IBM Cloud VPC Subnet resources.
+    /// when omitted system will create the subnets in all the zone corresponding to VPC.Region, with name CLUSTER_NAME-vpcsubnet-ZONE_NAME.
+    /// possible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server.
+    /// when VPCSubnets[].ID is set, its expected that there exist a subnet with ID or else system will give error.
+    /// when VPCSubnets[].Zone is not set, a random zone is picked from available zones of VPC.Region.
+    /// when VPCSubnets[].Name is not set, system will set name as CLUSTER_NAME-vpcsubnet-INDEX.
+    /// if subnet with name VPCSubnets[].Name not found, system will create new subnet in VPCSubnets[].Zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSubnets")]
     pub vpc_subnets: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecVpcSubnets>>,
-    /// zone is the name of Power VS zone where the cluster will be created possible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server. when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource, 1. it is expected to set the zone, not setting will result in webhook error. 2. the zone should have PER capabilities, or else system will give error.
+    /// zone is the name of Power VS zone where the cluster will be created
+    /// possible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server.
+    /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
+    /// 1. it is expected to set the zone, not setting will result in webhook error.
+    /// 2. the zone should have PER capabilities, or else system will give error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
 }
@@ -89,7 +151,14 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecControlPlaneEndpoint {
     pub port: i32,
 }
 
-/// cosInstance contains options to configure a supporting IBM Cloud COS bucket for this cluster - currently used for nodes requiring Ignition (https://coreos.github.io/ignition/) for bootstrapping (requires BootstrapFormatIgnition feature flag to be enabled). when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource and Ignition is set, then 1. CosInstance.Name should be set not setting will result in webhook error. 2. CosInstance.BucketName should be set not setting will result in webhook error. 3. CosInstance.BucketRegion should be set not setting will result in webhook error.
+/// cosInstance contains options to configure a supporting IBM Cloud COS bucket for this
+/// cluster - currently used for nodes requiring Ignition
+/// (https://coreos.github.io/ignition/) for bootstrapping (requires
+/// BootstrapFormatIgnition feature flag to be enabled).
+/// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource and Ignition is set, then
+/// 1. CosInstance.Name should be set not setting will result in webhook error.
+/// 2. CosInstance.BucketName should be set not setting will result in webhook error.
+/// 3. CosInstance.BucketRegion should be set not setting will result in webhook error.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecCosInstance {
     /// bucketName is IBM cloud COS bucket name
@@ -98,12 +167,15 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecCosInstance {
     /// bucketRegion is IBM cloud COS bucket region
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketRegion")]
     pub bucket_region: Option<String>,
-    /// name defines name of IBM cloud COS instance to be created. when IBMPowerVSCluster.Ignition is set
+    /// name defines name of IBM cloud COS instance to be created.
+    /// when IBMPowerVSCluster.Ignition is set
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace. when the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created. it will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace.
+/// dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace.
+/// when the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created.
+/// it will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecDhcpServer {
     /// Optional cidr for DHCP private network
@@ -167,14 +239,22 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecLoadBalancers {
     pub public: Option<bool>,
 }
 
-/// AdditionalListenerSpec defines the desired state of an additional listener on an VPC load balancer.
+/// AdditionalListenerSpec defines the desired state of an
+/// additional listener on an VPC load balancer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecLoadBalancersAdditionalListeners {
     /// Port sets the port for the additional listener.
     pub port: i64,
 }
 
-/// Network is the reference to the Network to use for this cluster. when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used. the DHCP service created network will have the following name format 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private. 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private. when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error. when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist network will be created by DHCP service. Network.RegEx is not yet supported and system will ignore the value.
+/// Network is the reference to the Network to use for this cluster.
+/// when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used.
+/// the DHCP service created network will have the following name format
+/// 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private.
+/// 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private.
+/// when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error.
+/// when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist network will be created by DHCP service.
+/// Network.RegEx is not yet supported and system will ignore the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecNetwork {
     /// ID of resource
@@ -183,12 +263,16 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecNetwork {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
 
-/// resourceGroup name under which the resources will be created. when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource, 1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error. ServiceInstance.ID and ServiceInstance.Regex is not yet supported and system will ignore the value.
+/// resourceGroup name under which the resources will be created.
+/// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
+/// 1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error.
+/// ServiceInstance.ID and ServiceInstance.Regex is not yet supported and system will ignore the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecResourceGroup {
     /// ID of resource
@@ -197,12 +281,22 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecResourceGroup {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
 
-/// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created. Power VS server workspace is a container for all Power VS instances at a specific geographic region. serviceInstance can be created via IBM Cloud catalog or CLI. supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli. More detail about Power VS service instance. https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server when omitted system will dynamically create the service instance with name CLUSTER_NAME-serviceInstance. when ServiceInstance.ID is set, its expected that there exist a service instance in PowerVS workspace with id or else system will give error. when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance. ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
+/// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created.
+/// Power VS server workspace is a container for all Power VS instances at a specific geographic region.
+/// serviceInstance can be created via IBM Cloud catalog or CLI.
+/// supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
+/// More detail about Power VS service instance.
+/// https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server
+/// when omitted system will dynamically create the service instance with name CLUSTER_NAME-serviceInstance.
+/// when ServiceInstance.ID is set, its expected that there exist a service instance in PowerVS workspace with id or else system will give error.
+/// when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance.
+/// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecServiceInstance {
     /// ID of resource
@@ -211,12 +305,17 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecServiceInstance {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
 
-/// transitGateway contains information about IBM Cloud TransitGateway IBM Cloud TransitGateway helps in establishing network connectivity between IBM Cloud Power VS and VPC infrastructure more information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway. when TransitGateway.ID is set, its expected that there exist a TransitGateway with ID or else system will give error. when TransitGateway.Name is set, system will first check for TransitGateway with Name, if not exist system will create new TransitGateway.
+/// transitGateway contains information about IBM Cloud TransitGateway
+/// IBM Cloud TransitGateway helps in establishing network connectivity between IBM Cloud Power VS and VPC infrastructure
+/// more information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway.
+/// when TransitGateway.ID is set, its expected that there exist a TransitGateway with ID or else system will give error.
+/// when TransitGateway.Name is set, system will first check for TransitGateway with Name, if not exist system will create new TransitGateway.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecTransitGateway {
     /// id of resource.
@@ -227,7 +326,12 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecTransitGateway {
     pub name: Option<String>,
 }
 
-/// vpc contains information about IBM Cloud VPC resources. when omitted system will dynamically create the VPC with name CLUSTER_NAME-vpc. when VPC.ID is set, its expected that there exist a VPC with ID or else system will give error. when VPC.Name is set, system will first check for VPC with Name, if not exist system will create new VPC. when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource, 1. it is expected to set the VPC.Region, not setting will result in webhook error.
+/// vpc contains information about IBM Cloud VPC resources.
+/// when omitted system will dynamically create the VPC with name CLUSTER_NAME-vpc.
+/// when VPC.ID is set, its expected that there exist a VPC with ID or else system will give error.
+/// when VPC.Name is set, system will first check for VPC with Name, if not exist system will create new VPC.
+/// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
+/// 1. it is expected to set the VPC.Region, not setting will result in webhook error.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecVpc {
     /// id of resource.
@@ -236,7 +340,9 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpc {
     /// name of resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// region of IBM Cloud VPC. when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource, it is expected to set the region, not setting will result in webhook error.
+    /// region of IBM Cloud VPC.
+    /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
+    /// it is expected to set the region, not setting will result in webhook error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
 }

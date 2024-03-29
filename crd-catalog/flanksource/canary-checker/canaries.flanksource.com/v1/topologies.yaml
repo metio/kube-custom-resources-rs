@@ -77,24 +77,44 @@ spec:
                         items:
                           description: "ConfigQuery is used to look up and associate\nconfig items with a component."
                           properties:
+                            agent:
+                              description: "Agent can be the agent id or the name of the agent.\n Additionally, the special \"self\" value can be used to select resources without an agent."
+                              type: "string"
+                            cache:
+                              description: "Cache directives\n 'no-cache' (should not fetch from cache but can be cached)\n 'no-store' (should not cache)\n 'max-age=X' (cache for X duration)"
+                              type: "string"
                             class:
+                              description: "Deprecated. Use `fieldSelector (config_class=)`"
                               type: "string"
                             external_id:
+                              description: "Deprecated. Use `fieldSelector (external_id=)`"
+                              type: "string"
+                            fieldSelector:
                               type: "string"
                             id:
-                              items:
-                                type: "string"
-                              type: "array"
+                              type: "string"
+                            labelSelector:
+                              type: "string"
                             name:
                               type: "string"
                             namespace:
                               type: "string"
+                            statuses:
+                              items:
+                                type: "string"
+                              type: "array"
                             tags:
                               additionalProperties:
                                 type: "string"
+                              description: "Deprecated. Use `labelSelector`"
                               type: "object"
                             type:
+                              description: "Deprecated. Use `types`"
                               type: "string"
+                            types:
+                              items:
+                                type: "string"
+                              type: "array"
                           type: "object"
                         type: "array"
                       forEach:
@@ -170,24 +190,44 @@ spec:
                                 config:
                                   description: "Lookup a config by it"
                                   properties:
+                                    agent:
+                                      description: "Agent can be the agent id or the name of the agent.\n Additionally, the special \"self\" value can be used to select resources without an agent."
+                                      type: "string"
+                                    cache:
+                                      description: "Cache directives\n 'no-cache' (should not fetch from cache but can be cached)\n 'no-store' (should not cache)\n 'max-age=X' (cache for X duration)"
+                                      type: "string"
                                     class:
+                                      description: "Deprecated. Use `fieldSelector (config_class=)`"
                                       type: "string"
                                     external_id:
+                                      description: "Deprecated. Use `fieldSelector (external_id=)`"
+                                      type: "string"
+                                    fieldSelector:
                                       type: "string"
                                     id:
-                                      items:
-                                        type: "string"
-                                      type: "array"
+                                      type: "string"
+                                    labelSelector:
+                                      type: "string"
                                     name:
                                       type: "string"
                                     namespace:
                                       type: "string"
+                                    statuses:
+                                      items:
+                                        type: "string"
+                                      type: "array"
                                     tags:
                                       additionalProperties:
                                         type: "string"
+                                      description: "Deprecated. Use `labelSelector`"
                                       type: "object"
                                     type:
+                                      description: "Deprecated. Use `types`"
                                       type: "string"
+                                    types:
+                                      items:
+                                        type: "string"
+                                      type: "array"
                                   type: "object"
                                 display:
                                   description: "Apply transformations to the value"
@@ -354,24 +394,44 @@ spec:
                   items:
                     description: "ConfigQuery is used to look up and associate\nconfig items with a component."
                     properties:
+                      agent:
+                        description: "Agent can be the agent id or the name of the agent.\n Additionally, the special \"self\" value can be used to select resources without an agent."
+                        type: "string"
+                      cache:
+                        description: "Cache directives\n 'no-cache' (should not fetch from cache but can be cached)\n 'no-store' (should not cache)\n 'max-age=X' (cache for X duration)"
+                        type: "string"
                       class:
+                        description: "Deprecated. Use `fieldSelector (config_class=)`"
                         type: "string"
                       external_id:
+                        description: "Deprecated. Use `fieldSelector (external_id=)`"
+                        type: "string"
+                      fieldSelector:
                         type: "string"
                       id:
-                        items:
-                          type: "string"
-                        type: "array"
+                        type: "string"
+                      labelSelector:
+                        type: "string"
                       name:
                         type: "string"
                       namespace:
                         type: "string"
+                      statuses:
+                        items:
+                          type: "string"
+                        type: "array"
                       tags:
                         additionalProperties:
                           type: "string"
+                        description: "Deprecated. Use `labelSelector`"
                         type: "object"
                       type:
+                        description: "Deprecated. Use `types`"
                         type: "string"
+                      types:
+                        items:
+                          type: "string"
+                        type: "array"
                     type: "object"
                   type: "array"
                 icon:
@@ -402,24 +462,44 @@ spec:
                           config:
                             description: "Lookup a config by it"
                             properties:
+                              agent:
+                                description: "Agent can be the agent id or the name of the agent.\n Additionally, the special \"self\" value can be used to select resources without an agent."
+                                type: "string"
+                              cache:
+                                description: "Cache directives\n 'no-cache' (should not fetch from cache but can be cached)\n 'no-store' (should not cache)\n 'max-age=X' (cache for X duration)"
+                                type: "string"
                               class:
+                                description: "Deprecated. Use `fieldSelector (config_class=)`"
                                 type: "string"
                               external_id:
+                                description: "Deprecated. Use `fieldSelector (external_id=)`"
+                                type: "string"
+                              fieldSelector:
                                 type: "string"
                               id:
-                                items:
-                                  type: "string"
-                                type: "array"
+                                type: "string"
+                              labelSelector:
+                                type: "string"
                               name:
                                 type: "string"
                               namespace:
                                 type: "string"
+                              statuses:
+                                items:
+                                  type: "string"
+                                type: "array"
                               tags:
                                 additionalProperties:
                                   type: "string"
+                                description: "Deprecated. Use `labelSelector`"
                                 type: "object"
                               type:
+                                description: "Deprecated. Use `types`"
                                 type: "string"
+                              types:
+                                items:
+                                  type: "string"
+                                type: "array"
                             type: "object"
                           display:
                             description: "Apply transformations to the value"

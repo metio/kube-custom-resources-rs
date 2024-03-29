@@ -150,6 +150,6 @@ spec:
               x-kubernetes-preserve-unknown-fields: true
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

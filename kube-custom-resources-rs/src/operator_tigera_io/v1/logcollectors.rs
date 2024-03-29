@@ -161,7 +161,7 @@ pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpec {
 /// EKSLogForwarderDeploymentContainer is a EKSLogForwarder Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the EKSLogForwarder Deployment container by name.
+    /// Name is an enum which identifies the EKSLogForwarder Deployment container by name. Supported values are: eks-log-forwarder
     pub name: LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named EKSLogForwarder Deployment container's resources. If omitted, the EKSLogForwarder Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -201,7 +201,7 @@ pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersResour
 /// EKSLogForwarderDeploymentInitContainer is a EKSLogForwarder Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the EKSLogForwarder Deployment init container by name.
+    /// Name is an enum which identifies the EKSLogForwarder Deployment init container by name. Supported values are: eks-log-forwarder-startup
     pub name: LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named EKSLogForwarder Deployment init container's resources. If omitted, the EKSLogForwarder Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -276,7 +276,7 @@ pub struct LogCollectorFluentdDaemonSetSpecTemplateSpec {
 /// FluentdDaemonSetContainer is a Fluentd DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Fluentd DaemonSet container by name.
+    /// Name is an enum which identifies the Fluentd DaemonSet container by name. Supported values are: fluentd
     pub name: LogCollectorFluentdDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Fluentd DaemonSet container's resources. If omitted, the Fluentd DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -316,7 +316,7 @@ pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecContainersResourcesClaims
 /// FluentdDaemonSetInitContainer is a Fluentd DaemonSet init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the Fluentd DaemonSet init container by name.
+    /// Name is an enum which identifies the Fluentd DaemonSet init container by name. Supported values are: tigera-fluentd-prometheus-tls-key-cert-provisioner
     pub name: LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Fluentd DaemonSet init container's resources. If omitted, the Fluentd DaemonSet will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

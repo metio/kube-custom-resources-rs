@@ -63,7 +63,7 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpec {
 /// GuardianDeploymentContainer is a guardian Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the guardian Deployment container by name.
+    /// Name is an enum which identifies the guardian Deployment container by name. Supported values are: tigera-guardian
     pub name: ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named guardian Deployment container's resources. If omitted, the guardian Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

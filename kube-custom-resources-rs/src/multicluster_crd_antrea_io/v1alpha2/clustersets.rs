@@ -35,10 +35,6 @@ pub struct ClusterSetLeaders {
     /// API server endpoint of the leader cluster. E.g. "https://172.18.0.1:6443", "https://example.com:6443".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
-    /// ServiceAccount in the leader cluster, from which the member cluster's token is generated. This is an optional field which helps admin to check which ServiceAccount is used by a member cluster to access the leader cluster. 
-    ///  DEPRECATED This field is planned to be removed in the future releases.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
-    pub service_account: Option<String>,
 }
 
 /// ClusterSetStatus defines the observed state of ClusterSet.

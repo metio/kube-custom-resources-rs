@@ -64,7 +64,8 @@ pub struct ApmServerElasticsearchRef {
     /// - `url`: the URL to reach the Elastic resource
     /// - `username`: the username of the user to be authenticated to the Elastic resource
     /// - `password`: the password of the user to be authenticated to the Elastic resource
-    /// - `ca.crt`: the CA certificate in PEM format (optional).
+    /// - `ca.crt`: the CA certificate in PEM format (optional)
+    /// - `api-key`: the key to authenticate against the Elastic resource instead of a username and password (supported only for `elasticsearchRefs` in AgentSpec and in BeatSpec)
     /// This field cannot be used in combination with the other fields name, namespace or serviceName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
@@ -470,7 +471,8 @@ pub struct ApmServerKibanaRef {
     /// - `url`: the URL to reach the Elastic resource
     /// - `username`: the username of the user to be authenticated to the Elastic resource
     /// - `password`: the password of the user to be authenticated to the Elastic resource
-    /// - `ca.crt`: the CA certificate in PEM format (optional).
+    /// - `ca.crt`: the CA certificate in PEM format (optional)
+    /// - `api-key`: the key to authenticate against the Elastic resource instead of a username and password (supported only for `elasticsearchRefs` in AgentSpec and in BeatSpec)
     /// This field cannot be used in combination with the other fields name, namespace or serviceName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,

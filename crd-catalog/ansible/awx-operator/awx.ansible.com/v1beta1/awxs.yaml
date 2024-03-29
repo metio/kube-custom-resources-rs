@@ -665,6 +665,40 @@ spec:
                     - "http"
                     - "https"
                   type: "string"
+                metrics_utility_configmap:
+                  description: "Metrics-Utlity ConfigMap"
+                  type: "string"
+                metrics_utility_cronjob_gather_schedule:
+                  default: "@hourly"
+                  description: "Metrics-Utlity Gather Data CronJob Schedule"
+                  type: "string"
+                metrics_utility_cronjob_report_schedule:
+                  default: "@monthly"
+                  description: "Metrics-Utlity Report CronJob Schedule"
+                  type: "string"
+                metrics_utility_enabled:
+                  default: false
+                  description: "Enable metrics utility"
+                  type: "boolean"
+                metrics_utility_image:
+                  description: "Metrics-Utility Image"
+                  type: "string"
+                metrics_utility_image_pull_policy:
+                  description: "Metrics-Utility Image PullPolicy"
+                  type: "string"
+                metrics_utility_image_version:
+                  description: "Metrics-Utility Image Version"
+                  type: "string"
+                metrics_utility_pvc_claim:
+                  description: "Metrics-Utlity PVC Claim"
+                  type: "string"
+                metrics_utility_pvc_claim_size:
+                  default: "5Gi"
+                  description: "Metrics-Utlity PVC Claim Size"
+                  type: "string"
+                metrics_utility_pvc_claim_storage_class:
+                  description: "Metrics-Utlity PVC Claim Storage Class"
+                  type: "string"
                 nginx_listen_queue_size:
                   description: "Set the socket listen queue size for nginx (defaults to same as uwsgi)"
                   type: "integer"

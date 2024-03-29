@@ -372,9 +372,6 @@ spec:
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
-                    verbose_mode:
-                      description: "DEPRECATED! Determines which priority levels of log messages Kiali will output. Use `deployment.logger` settings instead."
-                      type: "string"
                     version_label:
                       description: "Kiali resources will be assigned a 'version' label when they are deployed.\nThis setting determines what value those 'version' labels will have.\nWhen empty, its default will be determined as follows,\n\n* If `deployment.image_version` is 'latest', `version_label` will be fixed to 'master'.\n* If `deployment.image_version` is 'lastrelease', `version_label` will be fixed to the last Kiali release version string.\n* If `deployment.image_version` is anything else, `version_label` will be that value, too.\n"
                       type: "string"
@@ -748,6 +745,16 @@ spec:
                         query_timeout:
                           description: "The amount of time in seconds Kiali will wait for a response from 'jaeger-query' service when fetching traces."
                           type: "integer"
+                        tempo_config:
+                          description: "Settings used to configure the access url to the Tempo Datasource in Grafana."
+                          properties:
+                            datasource_uid:
+                              description: "The unique identifier (uid) of the Tempo datasource in Grafana."
+                              type: "string"
+                            org_id:
+                              description: "The Id of the organization that the dashboard is in. Default to 1 (the first and default organization)."
+                              type: "string"
+                          type: "object"
                         url:
                           description: "The external URL that will be used to generate links to Jaeger. It must be accessible to clients external to the cluster (e.g: a browser) in order to generate valid links. If the tracing service is deployed with a QUERY_BASE_PATH set, set this URL like https://<hostname>/<QUERY_BASE_PATH>. For example, https://tracing-service:8080/jaeger"
                           type: "string"

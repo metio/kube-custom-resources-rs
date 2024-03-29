@@ -79,7 +79,7 @@ pub struct PrometheusAgentSpec {
     ///  The label's name is this field's value. The label's value is the namespace of the `ServiceMonitor`, `PodMonitor`, `Probe` or `PrometheusRule` object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedNamespaceLabel")]
     pub enforced_namespace_label: Option<String>,
-    /// When defined, enforcedSampleLimit specifies a global limit on the number of scraped samples that will be accepted. This overrides any `spec.sampleLimit` set by ServiceMonitor, PodMonitor, Probe objects unless `spec.sampleLimit` is greater than zero and less than than `spec.enforcedSampleLimit`. 
+    /// When defined, enforcedSampleLimit specifies a global limit on the number of scraped samples that will be accepted. This overrides any `spec.sampleLimit` set by ServiceMonitor, PodMonitor, Probe objects unless `spec.sampleLimit` is greater than zero and less than `spec.enforcedSampleLimit`. 
     ///  It is meant to be used by admins to keep the overall number of samples/series under a desired limit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedSampleLimit")]
     pub enforced_sample_limit: Option<i64>,
@@ -175,7 +175,7 @@ pub struct PrometheusAgentSpec {
     /// Namespaces to match for PodMonitors discovery. An empty label selector matches all namespaces. A null label selector matches the current namespace only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorNamespaceSelector")]
     pub pod_monitor_namespace_selector: Option<PrometheusAgentPodMonitorNamespaceSelector>,
-    /// *Experimental* PodMonitors to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
+    /// PodMonitors to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
     ///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorSelector")]
     pub pod_monitor_selector: Option<PrometheusAgentPodMonitorSelector>,
@@ -188,10 +188,10 @@ pub struct PrometheusAgentSpec {
     /// Priority class assigned to the Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// *Experimental* Namespaces to match for Probe discovery. An empty label selector matches all namespaces. A null label selector matches the current namespace only.
+    /// Namespaces to match for Probe discovery. An empty label selector matches all namespaces. A null label selector matches the current namespace only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "probeNamespaceSelector")]
     pub probe_namespace_selector: Option<PrometheusAgentProbeNamespaceSelector>,
-    /// *Experimental* Probes to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
+    /// Probes to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
     ///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "probeSelector")]
     pub probe_selector: Option<PrometheusAgentProbeSelector>,
@@ -223,14 +223,17 @@ pub struct PrometheusAgentSpec {
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted. Only valid in Prometheus versions 2.45.0 and newer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
-    /// EXPERIMENTAL List of scrape classes to expose to monitors and other scrape configs. This is experimental feature and might change in the future.
+    /// List of scrape classes to expose to scraping objects such as PodMonitors, ServiceMonitors, Probes and ScrapeConfigs. 
+    ///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClasses")]
     pub scrape_classes: Option<Vec<PrometheusAgentScrapeClasses>>,
-    /// Namespaces to match for ScrapeConfig discovery. An empty label selector matches all namespaces. A null label selector matches the current current namespace only.
+    /// Namespaces to match for ScrapeConfig discovery. An empty label selector matches all namespaces. A null label selector matches the current namespace only. 
+    ///  Note that the ScrapeConfig custom resource definition is currently at Alpha level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigNamespaceSelector")]
     pub scrape_config_namespace_selector: Option<PrometheusAgentScrapeConfigNamespaceSelector>,
-    /// *Experimental* ScrapeConfigs to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
-    ///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead.
+    /// ScrapeConfigs to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
+    ///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead. 
+    ///  Note that the ScrapeConfig custom resource definition is currently at Alpha level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigSelector")]
     pub scrape_config_selector: Option<PrometheusAgentScrapeConfigSelector>,
     /// Interval between consecutive scrapes. 
@@ -261,7 +264,7 @@ pub struct PrometheusAgentSpec {
     ///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitorSelector")]
     pub service_monitor_selector: Option<PrometheusAgentServiceMonitorSelector>,
-    /// EXPERIMENTAL: Number of shards to distribute targets onto. `spec.replicas` multiplied by `spec.shards` is the total number of Pods created. 
+    /// Number of shards to distribute targets onto. `spec.replicas` multiplied by `spec.shards` is the total number of Pods created. 
     ///  Note that scaling down shards will not reshard data onto remaining instances, it must be manually moved. Increasing shards will not reshard data either but it will continue to be available from the same instances. To query globally, use Thanos sidecar and Thanos querier or remote write data to a central location. 
     ///  Sharding is performed on the content of the `__address__` target meta-label for PodMonitors and ServiceMonitors and `__param_target__` for Probes. 
     ///  Default: 1
@@ -279,7 +282,8 @@ pub struct PrometheusAgentSpec {
     /// Defines the pod's topology spread constraints if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<PrometheusAgentTopologySpreadConstraints>>,
-    /// EXPERIMENTAL: TracingConfig configures tracing in Prometheus. This is an experimental feature, it may change in any upcoming release in a breaking way.
+    /// TracingConfig configures tracing in Prometheus. 
+    ///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<PrometheusAgentTracingConfig>,
     /// Version of Prometheus being deployed. The operator uses this information to generate the Prometheus StatefulSet + configuration files. 
@@ -2713,7 +2717,7 @@ pub struct PrometheusAgentPodMonitorNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// *Experimental* PodMonitors to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
+/// PodMonitors to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
 ///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentPodMonitorSelector {
@@ -2737,7 +2741,7 @@ pub struct PrometheusAgentPodMonitorSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// *Experimental* Namespaces to match for Probe discovery. An empty label selector matches all namespaces. A null label selector matches the current namespace only.
+/// Namespaces to match for Probe discovery. An empty label selector matches all namespaces. A null label selector matches the current namespace only.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentProbeNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -2760,7 +2764,7 @@ pub struct PrometheusAgentProbeNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// *Experimental* Probes to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
+/// Probes to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
 ///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentProbeSelector {
@@ -3110,7 +3114,8 @@ pub struct PrometheusAgentRemoteWriteQueueConfig {
     /// MinShards is the minimum number of shards, i.e. amount of concurrency.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minShards")]
     pub min_shards: Option<i64>,
-    /// Retry upon receiving a 429 status code from the remote-write storage. This is experimental feature and might change in the future.
+    /// Retry upon receiving a 429 status code from the remote-write storage. 
+    ///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOnRateLimit")]
     pub retry_on_rate_limit: Option<bool>,
     /// SampleAgeLimit drops samples older than the limit. It requires Prometheus >= v2.50.0.
@@ -3390,9 +3395,91 @@ pub struct PrometheusAgentScrapeClasses {
     pub default: Option<bool>,
     /// Name of the scrape class.
     pub name: String,
+    /// Relabelings configures the relabeling rules to apply to all scrape targets. 
+    ///  The Operator automatically adds relabelings for a few standard Kubernetes fields like `__meta_kubernetes_namespace` and `__meta_kubernetes_service_name`. Then the Operator adds the scrape class relabelings defined here. Then the Operator adds the target-specific relabelings defined in the scrape object. 
+    ///  More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub relabelings: Option<Vec<PrometheusAgentScrapeClassesRelabelings>>,
     /// TLSConfig section for scrapes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PrometheusAgentScrapeClassesTlsConfig>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts, scraped samples and remote write samples. 
+///  More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PrometheusAgentScrapeClassesRelabelings {
+    /// Action to perform based on the regex matching. 
+    ///  `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0. `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0. 
+    ///  Default: "Replace"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<PrometheusAgentScrapeClassesRelabelingsAction>,
+    /// Modulus to take of the hash of the source label values. 
+    ///  Only applicable when the action is `HashMod`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modulus: Option<i64>,
+    /// Regular expression against which the extracted value is matched.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<String>,
+    /// Replacement value against which a Replace action is performed if the regular expression matches. 
+    ///  Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replacement: Option<String>,
+    /// Separator is the string between concatenated SourceLabels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    /// The source labels select values from existing labels. Their content is concatenated using the configured Separator and matched against the configured regular expression.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
+    pub source_labels: Option<Vec<String>>,
+    /// Label to which the resulting string is written in a replacement. 
+    ///  It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`, `KeepEqual` and `DropEqual` actions. 
+    ///  Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
+    pub target_label: Option<String>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts, scraped samples and remote write samples. 
+///  More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentScrapeClassesRelabelingsAction {
+    #[serde(rename = "replace")]
+    Replace,
+    #[serde(rename = "Replace")]
+    ReplaceX,
+    #[serde(rename = "keep")]
+    Keep,
+    #[serde(rename = "Keep")]
+    KeepX,
+    #[serde(rename = "drop")]
+    Drop,
+    #[serde(rename = "Drop")]
+    DropX,
+    #[serde(rename = "hashmod")]
+    Hashmod,
+    HashMod,
+    #[serde(rename = "labelmap")]
+    Labelmap,
+    LabelMap,
+    #[serde(rename = "labeldrop")]
+    Labeldrop,
+    LabelDrop,
+    #[serde(rename = "labelkeep")]
+    Labelkeep,
+    LabelKeep,
+    #[serde(rename = "lowercase")]
+    Lowercase,
+    #[serde(rename = "Lowercase")]
+    LowercaseX,
+    #[serde(rename = "uppercase")]
+    Uppercase,
+    #[serde(rename = "Uppercase")]
+    UppercaseX,
+    #[serde(rename = "keepequal")]
+    Keepequal,
+    KeepEqual,
+    #[serde(rename = "dropequal")]
+    Dropequal,
+    DropEqual,
 }
 
 /// TLSConfig section for scrapes.
@@ -3511,7 +3598,8 @@ pub struct PrometheusAgentScrapeClassesTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// Namespaces to match for ScrapeConfig discovery. An empty label selector matches all namespaces. A null label selector matches the current current namespace only.
+/// Namespaces to match for ScrapeConfig discovery. An empty label selector matches all namespaces. A null label selector matches the current namespace only. 
+///  Note that the ScrapeConfig custom resource definition is currently at Alpha level.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentScrapeConfigNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -3534,8 +3622,9 @@ pub struct PrometheusAgentScrapeConfigNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// *Experimental* ScrapeConfigs to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
-///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead.
+/// ScrapeConfigs to be selected for target discovery. An empty label selector matches all objects. A null label selector matches no objects. 
+///  If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector` and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged. The Prometheus operator will ensure that the Prometheus configuration's Secret exists, but it is the responsibility of the user to provide the raw gzipped Prometheus configuration under the `prometheus.yaml.gz` key. This behavior is *deprecated* and will be removed in the next major version of the custom resource definition. It is recommended to use `spec.additionalScrapeConfigs` instead. 
+///  Note that the ScrapeConfig custom resource definition is currently at Alpha level.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentScrapeConfigSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -4104,7 +4193,8 @@ pub struct PrometheusAgentTopologySpreadConstraintsLabelSelectorMatchExpressions
     pub values: Option<Vec<String>>,
 }
 
-/// EXPERIMENTAL: TracingConfig configures tracing in Prometheus. This is an experimental feature, it may change in any upcoming release in a breaking way.
+/// TracingConfig configures tracing in Prometheus. 
+///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PrometheusAgentTracingConfig {
     /// Client used to export the traces. Supported values are `http` or `grpc`.
@@ -4132,7 +4222,8 @@ pub struct PrometheusAgentTracingConfig {
     pub tls_config: Option<PrometheusAgentTracingConfigTlsConfig>,
 }
 
-/// EXPERIMENTAL: TracingConfig configures tracing in Prometheus. This is an experimental feature, it may change in any upcoming release in a breaking way.
+/// TracingConfig configures tracing in Prometheus. 
+///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusAgentTracingConfigClientType {
     #[serde(rename = "http")]
@@ -4141,7 +4232,8 @@ pub enum PrometheusAgentTracingConfigClientType {
     Grpc,
 }
 
-/// EXPERIMENTAL: TracingConfig configures tracing in Prometheus. This is an experimental feature, it may change in any upcoming release in a breaking way.
+/// TracingConfig configures tracing in Prometheus. 
+///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusAgentTracingConfigCompression {
     #[serde(rename = "gzip")]

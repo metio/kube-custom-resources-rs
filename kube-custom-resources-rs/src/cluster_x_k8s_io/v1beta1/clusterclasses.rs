@@ -528,6 +528,11 @@ pub struct ClusterClassPatchesExternal {
 /// be configured in the Cluster topology and used in patches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassVariables {
+    /// Metadata is the metadata of a variable.
+    /// It can be used to add additional data for higher level tools to
+    /// a ClusterClassVariable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<ClusterClassVariablesMetadata>,
     /// Name of the variable.
     pub name: String,
     /// Required specifies if the variable is required.
@@ -537,6 +542,22 @@ pub struct ClusterClassVariables {
     pub required: bool,
     /// Schema defines the schema of the variable.
     pub schema: ClusterClassVariablesSchema,
+}
+
+/// Metadata is the metadata of a variable.
+/// It can be used to add additional data for higher level tools to
+/// a ClusterClassVariable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassVariablesMetadata {
+    /// Annotations is an unstructured key value map that can be used to store and
+    /// retrieve arbitrary metadata.
+    /// They are not queryable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Schema defines the schema of the variable.
@@ -1256,6 +1277,11 @@ pub struct ClusterClassStatusVariablesDefinitions {
     /// This will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass
     /// for variables discovered from a DiscoverVariables runtime extensions.
     pub from: String,
+    /// Metadata is the metadata of a variable.
+    /// It can be used to add additional data for higher level tools to
+    /// a ClusterClassVariable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<ClusterClassStatusVariablesDefinitionsMetadata>,
     /// Required specifies if the variable is required.
     /// Note: this applies to the variable as a whole and thus the
     /// top-level object defined in the schema. If nested fields are
@@ -1263,6 +1289,22 @@ pub struct ClusterClassStatusVariablesDefinitions {
     pub required: bool,
     /// Schema defines the schema of the variable.
     pub schema: ClusterClassStatusVariablesDefinitionsSchema,
+}
+
+/// Metadata is the metadata of a variable.
+/// It can be used to add additional data for higher level tools to
+/// a ClusterClassVariable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassStatusVariablesDefinitionsMetadata {
+    /// Annotations is an unstructured key value map that can be used to store and
+    /// retrieve arbitrary metadata.
+    /// They are not queryable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Schema defines the schema of the variable.

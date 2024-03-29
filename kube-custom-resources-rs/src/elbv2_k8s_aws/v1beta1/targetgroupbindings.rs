@@ -32,6 +32,9 @@ pub struct TargetGroupBindingSpec {
     /// targetType is the TargetType of TargetGroup. If unspecified, it will be automatically inferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetType")]
     pub target_type: Option<TargetGroupBindingTargetType>,
+    /// VpcID is the VPC of the TargetGroup. If unspecified, it will be automatically inferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
+    pub vpc_id: Option<String>,
 }
 
 /// TargetGroupBindingSpec defines the desired state of TargetGroupBinding

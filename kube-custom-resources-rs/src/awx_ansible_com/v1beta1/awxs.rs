@@ -177,6 +177,36 @@ pub struct AWXSpec {
     /// Protocol to use for the loadbalancer
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loadbalancer_protocol: Option<AWXLoadbalancerProtocol>,
+    /// Metrics-Utlity ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_configmap: Option<String>,
+    /// Metrics-Utlity Gather Data CronJob Schedule
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_cronjob_gather_schedule: Option<String>,
+    /// Metrics-Utlity Report CronJob Schedule
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_cronjob_report_schedule: Option<String>,
+    /// Enable metrics utility
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_enabled: Option<bool>,
+    /// Metrics-Utility Image
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_image: Option<String>,
+    /// Metrics-Utility Image PullPolicy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_image_pull_policy: Option<String>,
+    /// Metrics-Utility Image Version
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_image_version: Option<String>,
+    /// Metrics-Utlity PVC Claim
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_pvc_claim: Option<String>,
+    /// Metrics-Utlity PVC Claim Size
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_pvc_claim_size: Option<String>,
+    /// Metrics-Utlity PVC Claim Storage Class
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_pvc_claim_storage_class: Option<String>,
     /// Set the socket listen queue size for nginx (defaults to same as uwsgi)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nginx_listen_queue_size: Option<i64>,

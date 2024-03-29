@@ -23,6 +23,10 @@ pub struct MonitoringConfigSpec {
     /// Type is type of monitoring.
     #[serde(rename = "type")]
     pub r#type: MonitoringConfigType,
+    /// VerifyTLS is set to ensure TLS/SSL verification.
+    /// If unspecified, the default value is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyTLS")]
+    pub verify_tls: Option<bool>,
 }
 
 /// PMM is configuration for the PMM monitoring type.

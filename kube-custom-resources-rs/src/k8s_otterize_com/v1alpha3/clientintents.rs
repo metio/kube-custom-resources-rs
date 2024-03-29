@@ -22,6 +22,8 @@ pub struct ClientIntentsCalls {
     pub http_resources: Option<Vec<ClientIntentsCallsHttpResources>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsActions")]
     pub aws_actions: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureKeyVaultPolicy")]
+    pub azure_key_vault_policy: Option<ClientIntentsCallsAzureKeyVaultPolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureRoles")]
     pub azure_roles: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseResources")]
@@ -42,6 +44,18 @@ pub struct ClientIntentsCalls {
 pub struct ClientIntentsCallsHttpResources {
     pub methods: Vec<String>,
     pub path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClientIntentsCallsAzureKeyVaultPolicy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatePermissions")]
+    pub certificate_permissions: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPermissions")]
+    pub key_permissions: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretPermissions")]
+    pub secret_permissions: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePermissions")]
+    pub storage_permissions: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

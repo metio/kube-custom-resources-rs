@@ -80,7 +80,7 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpec {
 /// L7LogCollectorDaemonSetContainer is a L7LogCollector DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the L7LogCollector DaemonSet container by name.
+    /// Name is an enum which identifies the L7LogCollector DaemonSet container by name. Supported values are: l7-collector, envoy-proxy, dikastes
     pub name: ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named L7LogCollector DaemonSet container's resources. If omitted, the L7LogCollector DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

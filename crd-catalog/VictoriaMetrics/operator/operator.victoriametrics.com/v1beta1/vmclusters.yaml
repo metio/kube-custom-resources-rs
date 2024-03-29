@@ -115,7 +115,7 @@ spec:
                       description: "ClusterNativePort for multi-level cluster setup.\nMore details: https://docs.victoriametrics.com/Cluster-VictoriaMetrics.html#multi-level-cluster-setup"
                       type: "string"
                     configMaps:
-                      description: "ConfigMaps is a list of ConfigMaps in the same namespace as the VMSelect\nobject, which shall be mounted into the VMSelect Pods.\nThe ConfigMaps are mounted into /etc/vm/configs/<configmap-name>."
+                      description: "ConfigMaps is a list of ConfigMaps in the same namespace as the VMInsert\nobject, which shall be mounted into the VMInsert Pods.\nThe ConfigMaps are mounted into /etc/vm/configs/<configmap-name>."
                       items:
                         type: "string"
                       type: "array"
@@ -164,7 +164,7 @@ spec:
                         type: "string"
                       type: "object"
                     extraEnvs:
-                      description: "ExtraEnvs that will be added to VMSelect pod"
+                      description: "ExtraEnvs that will be added to VMInsert pod"
                       items:
                         description: "EnvVar represents an environment variable present in a Container."
                         properties:
@@ -200,7 +200,7 @@ spec:
                           type: "string"
                       type: "object"
                     initContainers:
-                      description: "InitContainers allows adding initContainers to the pod definition. Those can be used to e.g.\nfetch secrets for injection into the VMSelect configuration from external sources. Any\nerrors during the execution of an initContainer will lead to a restart of the Pod. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\nUsing initContainers for any use case other then secret fetching is entirely outside the scope\nof what the maintainers will support and by doing so, you accept that this behaviour may break\nat any time without notice."
+                      description: "InitContainers allows adding initContainers to the pod definition. Those can be used to e.g.\nfetch secrets for injection into the VMInsert configuration from external sources. Any\nerrors during the execution of an initContainer will lead to a restart of the Pod. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\nUsing initContainers for any use case other then secret fetching is entirely outside the scope\nof what the maintainers will support and by doing so, you accept that this behaviour may break\nat any time without notice."
                       items:
                         description: "A single application container that you want to run within a pod."
                         required:
@@ -229,13 +229,13 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     logFormat:
-                      description: "LogFormat for VMSelect to be configured with.\ndefault or json"
+                      description: "LogFormat for VMInsert to be configured with.\ndefault or json"
                       enum:
                         - "default"
                         - "json"
                       type: "string"
                     logLevel:
-                      description: "LogLevel for VMSelect to be configured with."
+                      description: "LogLevel for VMInsert to be configured with."
                       enum:
                         - "INFO"
                         - "WARN"
@@ -247,9 +247,6 @@ spec:
                       description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state"
                       format: "int32"
                       type: "integer"
-                    name:
-                      description: "Name is deprecated and will be removed at 0.22.0 release"
-                      type: "string"
                     nodeSelector:
                       additionalProperties:
                         type: "string"
@@ -277,7 +274,7 @@ spec:
                           type: "object"
                       type: "object"
                     podMetadata:
-                      description: "PodMetadata configures Labels and Annotations which are propagated to the VMSelect pods."
+                      description: "PodMetadata configures Labels and Annotations which are propagated to the VMInsert pods."
                       properties:
                         annotations:
                           additionalProperties:
@@ -383,7 +380,7 @@ spec:
                       description: "SchedulerName - defines kubernetes scheduler name"
                       type: "string"
                     secrets:
-                      description: "Secrets is a list of Secrets in the same namespace as the VMSelect\nobject, which shall be mounted into the VMSelect Pods.\nThe Secrets are mounted into /etc/vm/secrets/<secret-name>."
+                      description: "Secrets is a list of Secrets in the same namespace as the VMInsert\nobject, which shall be mounted into the VMInsert Pods.\nThe Secrets are mounted into /etc/vm/secrets/<secret-name>."
                       items:
                         type: "string"
                       type: "array"
@@ -473,7 +470,7 @@ spec:
                         - "RollingUpdate"
                       type: "string"
                     volumeMounts:
-                      description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment definition.\nVolumeMounts specified will be appended to other VolumeMounts in the VMSelect container,\nthat are generated as a result of StorageSpec objects."
+                      description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment definition.\nVolumeMounts specified will be appended to other VolumeMounts in the VMInsert container,\nthat are generated as a result of StorageSpec objects."
                       items:
                         description: "VolumeMount describes a mounting of a Volume within a container."
                         properties:
@@ -842,9 +839,6 @@ spec:
                       description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state"
                       format: "int32"
                       type: "integer"
-                    name:
-                      description: "Name is deprecated and will be removed at 0.22.0 release"
-                      type: "string"
                     nodeSelector:
                       additionalProperties:
                         type: "string"
@@ -1553,7 +1547,7 @@ spec:
                         type: "object"
                       type: "array"
                     configMaps:
-                      description: "ConfigMaps is a list of ConfigMaps in the same namespace as the VMSelect\nobject, which shall be mounted into the VMSelect Pods.\nThe ConfigMaps are mounted into /etc/vm/configs/<configmap-name>."
+                      description: "ConfigMaps is a list of ConfigMaps in the same namespace as the VMStorage\nobject, which shall be mounted into the VMStorage Pods.\nThe ConfigMaps are mounted into /etc/vm/configs/<configmap-name>."
                       items:
                         type: "string"
                       type: "array"
@@ -1602,7 +1596,7 @@ spec:
                         type: "string"
                       type: "object"
                     extraEnvs:
-                      description: "ExtraEnvs that will be added to VMSelect pod"
+                      description: "ExtraEnvs that will be added to VMStorage pod"
                       items:
                         description: "EnvVar represents an environment variable present in a Container."
                         properties:
@@ -1634,7 +1628,7 @@ spec:
                           type: "string"
                       type: "object"
                     initContainers:
-                      description: "InitContainers allows adding initContainers to the pod definition. Those can be used to e.g.\nfetch secrets for injection into the VMSelect configuration from external sources. Any\nerrors during the execution of an initContainer will lead to a restart of the Pod. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\nUsing initContainers for any use case other then secret fetching is entirely outside the scope\nof what the maintainers will support and by doing so, you accept that this behaviour may break\nat any time without notice."
+                      description: "InitContainers allows adding initContainers to the pod definition. Those can be used to e.g.\nfetch secrets for injection into the VMStorage configuration from external sources. Any\nerrors during the execution of an initContainer will lead to a restart of the Pod. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\nUsing initContainers for any use case other then secret fetching is entirely outside the scope\nof what the maintainers will support and by doing so, you accept that this behaviour may break\nat any time without notice."
                       items:
                         description: "A single application container that you want to run within a pod."
                         required:
@@ -1647,13 +1641,13 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     logFormat:
-                      description: "LogFormat for VMSelect to be configured with.\ndefault or json"
+                      description: "LogFormat for VMStorage to be configured with.\ndefault or json"
                       enum:
                         - "default"
                         - "json"
                       type: "string"
                     logLevel:
-                      description: "LogLevel for VMSelect to be configured with."
+                      description: "LogLevel for VMStorage to be configured with."
                       enum:
                         - "INFO"
                         - "WARN"
@@ -1677,9 +1671,6 @@ spec:
                       description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state"
                       format: "int32"
                       type: "integer"
-                    name:
-                      description: "Name is deprecated and will be removed at 0.22.0 release"
-                      type: "string"
                     nodeSelector:
                       additionalProperties:
                         type: "string"
@@ -1707,7 +1698,7 @@ spec:
                           type: "object"
                       type: "object"
                     podMetadata:
-                      description: "PodMetadata configures Labels and Annotations which are propagated to the VMSelect pods."
+                      description: "PodMetadata configures Labels and Annotations which are propagated to the VMStorage pods."
                       properties:
                         annotations:
                           additionalProperties:
@@ -1800,7 +1791,7 @@ spec:
                       description: "SchedulerName - defines kubernetes scheduler name"
                       type: "string"
                     secrets:
-                      description: "Secrets is a list of Secrets in the same namespace as the VMSelect\nobject, which shall be mounted into the VMSelect Pods.\nThe Secrets are mounted into /etc/vm/secrets/<secret-name>."
+                      description: "Secrets is a list of Secrets in the same namespace as the VMStorage\nobject, which shall be mounted into the VMStorage Pods.\nThe Secrets are mounted into /etc/vm/secrets/<secret-name>."
                       items:
                         type: "string"
                       type: "array"
@@ -2060,13 +2051,13 @@ spec:
                               type: "string"
                           type: "object"
                         logFormat:
-                          description: "LogFormat for VMSelect to be configured with.\ndefault or json"
+                          description: "LogFormat for VMBackup to be configured with.\ndefault or json"
                           enum:
                             - "default"
                             - "json"
                           type: "string"
                         logLevel:
-                          description: "LogLevel for VMSelect to be configured with."
+                          description: "LogLevel for VMBackup to be configured with."
                           enum:
                             - "INFO"
                             - "WARN"
@@ -2167,7 +2158,7 @@ spec:
                       description: "VMSelectPort for VMSelect connections"
                       type: "string"
                     volumeMounts:
-                      description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment definition.\nVolumeMounts specified will be appended to other VolumeMounts in the VMSelect container,\nthat are generated as a result of StorageSpec objects."
+                      description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment definition.\nVolumeMounts specified will be appended to other VolumeMounts in the VMStorage container,\nthat are generated as a result of StorageSpec objects."
                       items:
                         description: "VolumeMount describes a mounting of a Volume within a container."
                         properties:

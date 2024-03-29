@@ -30,7 +30,9 @@ pub struct AlertmanagerSpec {
     /// AlertmanagerConfigs to be selected for to merge and configure Alertmanager with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertmanagerConfigSelector")]
     pub alertmanager_config_selector: Option<AlertmanagerAlertmanagerConfigSelector>,
-    /// EXPERIMENTAL: alertmanagerConfiguration specifies the configuration of Alertmanager. If defined, it takes precedence over the `configSecret` field. This field may change in future releases.
+    /// alertmanagerConfiguration specifies the configuration of Alertmanager. 
+    ///  If defined, it takes precedence over the `configSecret` field. 
+    ///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertmanagerConfiguration")]
     pub alertmanager_configuration: Option<AlertmanagerAlertmanagerConfiguration>,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted in the pod. If the service account has `automountServiceAccountToken: true`, set the field to `false` to opt out of automounting API credentials.
@@ -659,7 +661,9 @@ pub struct AlertmanagerAlertmanagerConfigSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// EXPERIMENTAL: alertmanagerConfiguration specifies the configuration of Alertmanager. If defined, it takes precedence over the `configSecret` field. This field may change in future releases.
+/// alertmanagerConfiguration specifies the configuration of Alertmanager. 
+///  If defined, it takes precedence over the `configSecret` field. 
+///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfiguration {
     /// Defines the global parameters of the Alertmanager configuration.

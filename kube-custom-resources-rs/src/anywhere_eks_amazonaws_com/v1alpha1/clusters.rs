@@ -164,6 +164,9 @@ pub struct ClusterClusterNetworkServices {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneConfiguration {
+    /// APIServerExtraArgs defines the flags to configure for the API server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerExtraArgs")]
+    pub api_server_extra_args: Option<BTreeMap<String, String>>,
     /// CertSANs is a slice of domain names or IPs to be added as Subject Name Alternatives of the Kube API Servers Certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSans")]
     pub cert_sans: Option<Vec<String>>,

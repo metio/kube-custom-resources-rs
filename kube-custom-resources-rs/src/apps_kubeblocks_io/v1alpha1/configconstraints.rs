@@ -203,6 +203,30 @@ pub struct ConfigConstraintReloadOptionsAutoTrigger {
 /// Used to perform the reload command in shell script.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptionsShellTrigger {
+    /// When `batchReload` is set to 'True', this parameter allows for the optional specification of the batch input format that is passed into the STDIN of the script. The format should be provided as a Go template string. In the template, the updated parameters' key-value map can be referenced using the dollar sign ('$') variable. Here's an example of an input template: 
+    ///  ```yaml 
+    ///  batchInputTemplate: |- 
+    ///  {{- range $pKey, $pValue := $ }} 
+    ///  {{ printf "%s:%s" $pKey $pValue }} 
+    ///  {{- end }} 
+    ///  ``` 
+    ///  In this example, each updated parameter is iterated over in a sorted order by keys to generate the batch input data as follows: 
+    ///  ``` 
+    ///  key1:value1 
+    ///  key2:value2 
+    ///  key3:value3 
+    ///  ``` 
+    ///  If this parameter is not specified, the default format used for STDIN is as follows: Each updated parameter generates a line that concatenates the parameter's key and value with a equal sign ('='). These lines are then sorted by their keys and inserted accordingly. Here's an example of the batch input data using the default template: 
+    ///  ``` 
+    ///  key1=value1 
+    ///  key2=value2 
+    ///  key3=value3 
+    ///  ```
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchInputTemplate")]
+    pub batch_input_template: Option<String>,
+    /// Specifies whether to reconfigure dynamic parameters individually or in a batch. - Set to 'True' to execute the reload action in a batch, incorporating all parameter changes. - Set to 'False' to execute the reload action for each parameter change individually. The default value is 'False'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchReload")]
+    pub batch_reload: Option<bool>,
     /// Specifies the list of commands for reload.
     pub command: Vec<String>,
     /// Specifies whether to synchronize updates parameters to the config manager. Specifies two ways of controller to reload the parameter: - set to 'True', execute the reload action in sync mode, wait for the completion of reload - set to 'False', execute the reload action in async mode, just update the 'Configmap', no need to wait

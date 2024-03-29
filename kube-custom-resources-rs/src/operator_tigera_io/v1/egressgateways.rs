@@ -577,7 +577,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedul
 /// EGWDeploymentContainer is a Egress Gateway Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct EgressGatewayTemplateSpecContainers {
-    /// Name is an enum which identifies the EGW Deployment container by name.
+    /// Name is an enum which identifies the EGW Deployment container by name. Supported values are: calico-egw
     pub name: EgressGatewayTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named EGW Deployment container's resources. If omitted, the EGW Deployment will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -617,7 +617,7 @@ pub struct EgressGatewayTemplateSpecContainersResourcesClaims {
 /// EGWDeploymentInitContainer is a Egress Gateway Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct EgressGatewayTemplateSpecInitContainers {
-    /// Name is an enum which identifies the EGW Deployment init container by name.
+    /// Name is an enum which identifies the EGW Deployment init container by name. Supported values are: egress-gateway-init
     pub name: EgressGatewayTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named EGW Deployment init container's resources. If omitted, the EGW Deployment will use its default value for this init container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]

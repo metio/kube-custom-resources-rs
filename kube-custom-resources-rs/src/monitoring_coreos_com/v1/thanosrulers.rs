@@ -151,10 +151,14 @@ pub struct ThanosRulerSpec {
     /// If specified, the pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<ThanosRulerTopologySpreadConstraints>>,
-    /// TracingConfig configures tracing in Thanos. This is an experimental feature, it may change in any upcoming release in a breaking way.
+    /// TracingConfig configures tracing in Thanos. 
+    ///  `tracingConfigFile` takes precedence over this field. 
+    ///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<ThanosRulerTracingConfig>,
-    /// TracingConfig specifies the path of the tracing configuration file. When used alongside with TracingConfig, TracingConfigFile takes precedence.
+    /// TracingConfig specifies the path of the tracing configuration file. 
+    ///  This field takes precedence over `tracingConfig`. 
+    ///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfigFile")]
     pub tracing_config_file: Option<String>,
     /// Version of Thanos to be deployed.
@@ -3055,7 +3059,9 @@ pub struct ThanosRulerTopologySpreadConstraintsLabelSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// TracingConfig configures tracing in Thanos. This is an experimental feature, it may change in any upcoming release in a breaking way.
+/// TracingConfig configures tracing in Thanos. 
+///  `tracingConfigFile` takes precedence over this field. 
+///  This is an *experimental feature*, it may change in any upcoming release in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ThanosRulerTracingConfig {
     /// The key of the secret to select from.  Must be a valid secret key.

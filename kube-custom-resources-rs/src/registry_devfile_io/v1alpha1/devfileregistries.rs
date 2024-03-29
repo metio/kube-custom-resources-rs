@@ -19,12 +19,21 @@ pub struct DevfileRegistrySpec {
     /// Sets the container image containing devfile stacks to be deployed on the Devfile Registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "devfileIndexImage")]
     pub devfile_index_image: Option<String>,
+    /// Overrides the fully qualified app name of the devfile registry
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullnameOverride")]
+    pub fullname_override: Option<String>,
     /// Sets the registry server deployment to run under headless mode
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headless: Option<bool>,
+    /// Overrides the entire hostname and domain of the devfile registry ingress
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameOverride")]
+    pub hostname_override: Option<String>,
     /// DevfileRegistrySpecK8sOnly defines the desired state of the kubernetes-only fields of the DevfileRegistry
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub k8s: Option<DevfileRegistryK8s>,
+    /// Overrides the app name of the devfile registry
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameOverride")]
+    pub name_override: Option<String>,
     /// Sets the OCI registry container spec to be deployed on the Devfile Registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ociRegistry")]
     pub oci_registry: Option<DevfileRegistryOciRegistry>,

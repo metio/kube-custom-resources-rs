@@ -53,9 +53,15 @@ spec:
                 devfileIndexImage:
                   description: "Sets the container image containing devfile stacks to be deployed on the Devfile Registry"
                   type: "string"
+                fullnameOverride:
+                  description: "Overrides the fully qualified app name of the devfile registry"
+                  type: "string"
                 headless:
                   description: "Sets the registry server deployment to run under headless mode"
                   type: "boolean"
+                hostnameOverride:
+                  description: "Overrides the entire hostname and domain of the devfile registry ingress"
+                  type: "string"
                 k8s:
                   description: "DevfileRegistrySpecK8sOnly defines the desired state of the kubernetes-only fields of the DevfileRegistry"
                   properties:
@@ -66,6 +72,9 @@ spec:
                       description: "Ingress domain for a Kubernetes cluster. This MUST be explicitly specified on Kubernetes. There are no defaults"
                       type: "string"
                   type: "object"
+                nameOverride:
+                  description: "Overrides the app name of the devfile registry"
+                  type: "string"
                 ociRegistry:
                   description: "Sets the OCI registry container spec to be deployed on the Devfile Registry"
                   properties:

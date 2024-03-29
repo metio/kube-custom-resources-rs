@@ -301,7 +301,8 @@ pub struct CephObjectStoreUserQuotas {
     /// Maximum number of objects across all the user's buckets
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
-    /// Maximum size limit of all objects across all the user's buckets See https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity for more info.
+    /// Maximum size limit of all objects across all the user's buckets
+    /// See https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity for more info.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
     pub max_size: Option<IntOrString>,
 }

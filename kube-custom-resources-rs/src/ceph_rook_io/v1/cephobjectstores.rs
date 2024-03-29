@@ -15,7 +15,12 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "CephObjectStoreStatus")]
 #[kube(schema = "disabled")]
 pub struct CephObjectStoreSpec {
-    /// The list of allowed namespaces in addition to the object store namespace where ceph object store users may be created. Specify "*" to allow all namespaces, otherwise list individual namespaces that are to be allowed. This is useful for applications that need object store credentials to be created in their own namespace, where neither OBCs nor COSI is being used to create buckets. The default is empty.
+    /// The list of allowed namespaces in addition to the object store namespace
+    /// where ceph object store users may be created. Specify "*" to allow all
+    /// namespaces, otherwise list individual namespaces that are to be allowed.
+    /// This is useful for applications that need object store credentials
+    /// to be created in their own namespace, where neither OBCs nor COSI
+    /// is being used to create buckets. The default is empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUsersInNamespaces")]
     pub allow_users_in_namespaces: Option<Vec<String>>,
     /// The data pool settings
@@ -53,7 +58,9 @@ pub struct CephObjectStoreDataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+    /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+    /// Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectStoreDataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -109,10 +116,13 @@ pub struct CephObjectStoreDataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// The number of chunks required to recover an object when any single OSD is lost is the same
+    /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -159,7 +169,8 @@ pub struct CephObjectStoreDataPoolMirroringSnapshotSchedules {
 /// The quota settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreDataPoolQuotas {
-    /// MaxBytes represents the quota in bytes Deprecated in favor of MaxSize
+    /// MaxBytes represents the quota in bytes
+    /// Deprecated in favor of MaxSize
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
@@ -235,10 +246,16 @@ pub struct CephObjectStoreGateway {
     /// Whether rgw dashboard is enabled for the rgw daemon. If not set, the rgw dashboard will be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dashboardEnabled")]
     pub dashboard_enabled: Option<bool>,
-    /// DisableMultisiteSyncTraffic, when true, prevents this object store's gateways from transmitting multisite replication data. Note that this value does not affect whether gateways receive multisite replication traffic: see ObjectZone.spec.customEndpoints for that. If false or unset, this object store's gateways will be able to transmit multisite replication data.
+    /// DisableMultisiteSyncTraffic, when true, prevents this object store's gateways from
+    /// transmitting multisite replication data. Note that this value does not affect whether
+    /// gateways receive multisite replication traffic: see ObjectZone.spec.customEndpoints for that.
+    /// If false or unset, this object store's gateways will be able to transmit multisite
+    /// replication data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMultisiteSyncTraffic")]
     pub disable_multisite_sync_traffic: Option<bool>,
-    /// ExternalRgwEndpoints points to external RGW endpoint(s). Multiple endpoints can be given, but for stability of ObjectBucketClaims, we highly recommend that users give only a single external RGW endpoint that is a load balancer that sends requests to the multiple RGWs.
+    /// ExternalRgwEndpoints points to external RGW endpoint(s). Multiple endpoints can be given, but
+    /// for stability of ObjectBucketClaims, we highly recommend that users give only a single
+    /// external RGW endpoint that is a load balancer that sends requests to the multiple RGWs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalRgwEndpoints")]
     pub external_rgw_endpoints: Option<Vec<CephObjectStoreGatewayExternalRgwEndpoints>>,
     /// Whether host networking is enabled for the rgw daemon. If not set, the network settings from the cluster CR will be applied.
@@ -272,7 +289,8 @@ pub struct CephObjectStoreGateway {
     pub ssl_certificate_ref: Option<String>,
 }
 
-/// EndpointAddress is a tuple that describes a single IP address or host name. This is a subset of Kubernetes's v1.EndpointAddress.
+/// EndpointAddress is a tuple that describes a single IP address or host name. This is a subset of
+/// Kubernetes's v1.EndpointAddress.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayExternalRgwEndpoints {
     /// The DNS-addressable Hostname of this endpoint. This field will be preferred over IP if both are given.
@@ -640,15 +658,25 @@ pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelector
 /// The resource requirements for the rgw pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephObjectStoreGatewayResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -656,14 +684,18 @@ pub struct CephObjectStoreGatewayResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// The configuration related to add/set on each rgw service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayService {
-    /// The annotations-related configuration to add/set on each rgw service. nullable optional
+    /// The annotations-related configuration to add/set on each rgw service.
+    /// nullable
+    /// optional
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
 }
@@ -685,18 +717,21 @@ pub struct CephObjectStoreHealthCheckReadinessProbe {
     /// Disabled determines whether probe is disable or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+    /// Probe describes a health check to be performed against a container to determine whether it is
+    /// alive or ready to receive traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probe: Option<CephObjectStoreHealthCheckReadinessProbeProbe>,
 }
 
-/// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+/// Probe describes a health check to be performed against a container to determine whether it is
+/// alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephObjectStoreHealthCheckReadinessProbeProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -705,13 +740,16 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephObjectStoreHealthCheckReadinessProbeProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
@@ -719,7 +757,9 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
     pub tcp_socket: Option<CephObjectStoreHealthCheckReadinessProbeProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -727,7 +767,11 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckReadinessProbeProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -737,8 +781,11 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeExec {
 pub struct CephObjectStoreHealthCheckReadinessProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -746,7 +793,8 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -755,9 +803,12 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -765,7 +816,8 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -777,7 +829,9 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -787,18 +841,21 @@ pub struct CephObjectStoreHealthCheckStartupProbe {
     /// Disabled determines whether probe is disable or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+    /// Probe describes a health check to be performed against a container to determine whether it is
+    /// alive or ready to receive traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probe: Option<CephObjectStoreHealthCheckStartupProbeProbe>,
 }
 
-/// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+/// Probe describes a health check to be performed against a container to determine whether it is
+/// alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckStartupProbeProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephObjectStoreHealthCheckStartupProbeProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -807,13 +864,16 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephObjectStoreHealthCheckStartupProbeProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
@@ -821,7 +881,9 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbe {
     pub tcp_socket: Option<CephObjectStoreHealthCheckStartupProbeProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -829,7 +891,11 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckStartupProbeProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -839,8 +905,11 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeExec {
 pub struct CephObjectStoreHealthCheckStartupProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -848,7 +917,8 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -857,9 +927,12 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -867,7 +940,8 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -879,14 +953,21 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
 /// Hosting settings for the object store
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHosting {
-    /// A list of DNS names in which bucket can be accessed via virtual host path. These names need to valid according RFC-1123. Each domain requires wildcard support like ingress loadbalancer. Do not include the wildcard itself in the list of hostnames (e.g. use "mystore.example.com" instead of "*.mystore.example.com"). Add all hostnames including user-created Kubernetes Service endpoints to the list. CephObjectStore Service Endpoints and CephObjectZone customEndpoints are automatically added to the list. The feature is supported only for Ceph v18 and later versions.
+    /// A list of DNS names in which bucket can be accessed via virtual host path. These names need to valid according RFC-1123.
+    /// Each domain requires wildcard support like ingress loadbalancer.
+    /// Do not include the wildcard itself in the list of hostnames (e.g. use "mystore.example.com" instead of "*.mystore.example.com").
+    /// Add all hostnames including user-created Kubernetes Service endpoints to the list.
+    /// CephObjectStore Service Endpoints and CephObjectZone customEndpoints are automatically added to the list.
+    /// The feature is supported only for Ceph v18 and later versions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsNames")]
     pub dns_names: Option<Vec<String>>,
 }
@@ -897,7 +978,9 @@ pub struct CephObjectStoreMetadataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+    /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+    /// Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectStoreMetadataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -953,10 +1036,13 @@ pub struct CephObjectStoreMetadataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// The number of chunks required to recover an object when any single OSD is lost is the same
+    /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -1003,7 +1089,8 @@ pub struct CephObjectStoreMetadataPoolMirroringSnapshotSchedules {
 /// The quota settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreMetadataPoolQuotas {
-    /// MaxBytes represents the quota in bytes Deprecated in favor of MaxSize
+    /// MaxBytes represents the quota in bytes
+    /// Deprecated in favor of MaxSize
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects

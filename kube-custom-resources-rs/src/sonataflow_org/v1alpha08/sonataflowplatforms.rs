@@ -8743,7 +8743,7 @@ pub struct SonataFlowPlatformStatusClusterPlatformRefServices {
 /// DataIndexRef displays information on the cluster-wide Data Index service
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformStatusClusterPlatformRefServicesDataIndexRef {
-    /// Url displays the base url of a cluster-wide service
+    /// Url displays the base url of the service
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -8751,7 +8751,7 @@ pub struct SonataFlowPlatformStatusClusterPlatformRefServicesDataIndexRef {
 /// JobServiceRef displays information on the cluster-wide Job Service
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformStatusClusterPlatformRefServicesJobServiceRef {
-    /// Url displays the base url of a cluster-wide service
+    /// Url displays the base url of the service
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }

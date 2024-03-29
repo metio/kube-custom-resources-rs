@@ -47,7 +47,7 @@ spec:
                                     description: "GuardianDeploymentContainer is a guardian Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the guardian Deployment container by name."
+                                        description: "Name is an enum which identifies the guardian Deployment container by name. Supported values are: tigera-guardian"
                                         enum:
                                           - "tigera-guardian"
                                         type: "string"

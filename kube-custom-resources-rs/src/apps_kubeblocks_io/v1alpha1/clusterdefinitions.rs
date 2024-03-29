@@ -14,13 +14,16 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(schema = "disabled")]
 pub struct ClusterDefinitionSpec {
     /// Provides the definitions for the cluster components.
-    #[serde(rename = "componentDefs")]
-    pub component_defs: Vec<ClusterDefinitionComponentDefs>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefs")]
+    pub component_defs: Option<Vec<ClusterDefinitionComponentDefs>>,
     /// Connection credential template used for creating a connection credential secret for cluster objects. 
     ///  Built-in objects are: 
     ///  - `$(RANDOM_PASSWD)` random 8 characters. - `$(STRONG_RANDOM_PASSWD)` random 16 characters, with mixed cases, digits and symbols. - `$(UUID)` generate a random UUID v4 string. - `$(UUID_B64)` generate a random UUID v4 BASE64 encoded string. - `$(UUID_STR_B64)` generate a random UUID v4 string then BASE64 encoded. - `$(UUID_HEX)` generate a random UUID v4 HEX representation. - `$(HEADLESS_SVC_FQDN)` headless service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME)-headless.$(NAMESPACE).svc`, where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute; - `$(SVC_FQDN)` service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME).$(NAMESPACE).svc`, where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute; - `$(SVC_PORT_{PORT-NAME})` is ServicePort's port value with specified port name, i.e, a servicePort JSON struct: `{"name": "mysql", "targetPort": "mysqlContainerPort", "port": 3306}`, and `$(SVC_PORT_mysql)` in the connection credential value is 3306.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BTreeMap<String, String>>,
+    /// Topologies represents the different topologies within the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub topologies: Option<Vec<ClusterDefinitionTopologies>>,
     /// Specifies the well-known application cluster type, such as mysql, redis, or mongodb.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -5615,6 +5618,45 @@ pub enum ClusterDefinitionComponentDefsWorkloadType {
     Replication,
 }
 
+/// ClusterTopology represents the definition for a specific cluster topology.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionTopologies {
+    /// Components specifies the components in the topology.
+    pub components: Vec<ClusterDefinitionTopologiesComponents>,
+    /// Default indicates whether this topology is the default configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<bool>,
+    /// Name is the unique identifier for the cluster topology. Cannot be updated.
+    pub name: String,
+    /// Orders defines the orders of components within the topology.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub orders: Option<ClusterDefinitionTopologiesOrders>,
+}
+
+/// ClusterTopologyComponent defines a component within a cluster topology.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionTopologiesComponents {
+    /// CompDef specifies the component definition to use, either as a specific name or a name prefix. Cannot be updated.
+    #[serde(rename = "compDef")]
+    pub comp_def: String,
+    /// Name defines the name of the component. This name is also part of Service DNS name, following IANA Service Naming rules. Cannot be updated.
+    pub name: String,
+}
+
+/// Orders defines the orders of components within the topology.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterDefinitionTopologiesOrders {
+    /// Provision defines the order in which components should be provisioned in the cluster. Components with the same order can be listed together, separated by commas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provision: Option<Vec<String>>,
+    /// Terminate defines the order in which components should be terminated in the cluster. Components with the same order can be listed together, separated by commas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub terminate: Option<Vec<String>>,
+    /// Update defines the order in which components should be updated in the cluster. Components with the same order can be listed together, separated by commas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub update: Option<Vec<String>>,
+}
+
 /// ClusterDefinitionStatus defines the observed state of ClusterDefinition
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionStatus {
@@ -5627,6 +5669,12 @@ pub struct ClusterDefinitionStatus {
     /// Specifies the current phase of the ClusterDefinition. Valid values are `empty`, `Available`, `Unavailable`. When `Available`, the ClusterDefinition is ready and can be referenced by related objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterDefinitionStatusPhase>,
+    /// The service references declared by this ClusterDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefs")]
+    pub service_refs: Option<String>,
+    /// Topologies this ClusterDefinition supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub topologies: Option<String>,
 }
 
 /// ClusterDefinitionStatus defines the observed state of ClusterDefinition

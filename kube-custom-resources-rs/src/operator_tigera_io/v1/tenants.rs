@@ -69,7 +69,7 @@ pub struct TenantDashboardsJobSpecTemplateSpec {
 /// DashboardsJobContainer is the Dashboards job container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantDashboardsJobSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Dashboard Job container by name.
+    /// Name is an enum which identifies the Dashboard Job container by name. Supported values are: dashboards-installer
     pub name: TenantDashboardsJobSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dashboard Job container's resources. If omitted, the Dashboard Job will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -187,7 +187,7 @@ pub struct TenantLinseedDeploymentSpecTemplateSpec {
 /// LinseedDeploymentContainer is a linseed Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the linseed Deployment container by name.
+    /// Name is an enum which identifies the linseed Deployment container by name. Supported values are: tigera-linseed
     pub name: TenantLinseedDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment container's resources. If omitted, the linseed Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -227,7 +227,7 @@ pub struct TenantLinseedDeploymentSpecTemplateSpecContainersResourcesClaims {
 /// LinseedDeploymentInitContainer is a linseed Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantLinseedDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the linseed Deployment init container by name.
+    /// Name is an enum which identifies the linseed Deployment init container by name. Supported values are: tigera-secure-linseed-token-tls-key-cert-provisioner,tigera-secure-linseed-cert-key-cert-provisioner
     pub name: TenantLinseedDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment init container's resources. If omitted, the linseed Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

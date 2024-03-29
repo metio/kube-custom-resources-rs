@@ -31,7 +31,8 @@ pub struct IBMPowerVSMachineTemplateTemplateSpec {
     /// Image is the reference to the Image from which to create the machine instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<IBMPowerVSMachineTemplateTemplateSpecImage>,
-    /// ImageRef is an optional reference to a provider-specific resource that holds the details for provisioning the Image for a Cluster.
+    /// ImageRef is an optional reference to a provider-specific resource that holds
+    /// the details for provisioning the Image for a Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRef")]
     pub image_ref: Option<IBMPowerVSMachineTemplateTemplateSpecImageRef>,
     /// Memory is Amount of memory allocated (in GB)
@@ -68,15 +69,19 @@ pub struct IBMPowerVSMachineTemplateTemplateSpecImage {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
 
-/// ImageRef is an optional reference to a provider-specific resource that holds the details for provisioning the Image for a Cluster.
+/// ImageRef is an optional reference to a provider-specific resource that holds
+/// the details for provisioning the Image for a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSMachineTemplateTemplateSpecImageRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -90,7 +95,8 @@ pub struct IBMPowerVSMachineTemplateTemplateSpecNetwork {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
@@ -98,7 +104,9 @@ pub struct IBMPowerVSMachineTemplateTemplateSpecNetwork {
 /// IBMPowerVSMachineTemplateStatus defines the observed state of IBMPowerVSMachineTemplate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSMachineTemplateStatus {
-    /// Capacity defines the resource capacity for this machine. This value is used for autoscaling from zero operations as defined in: https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20210310-opt-in-autoscaling-from-zero.md
+    /// Capacity defines the resource capacity for this machine.
+    /// This value is used for autoscaling from zero operations as defined in:
+    /// https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20210310-opt-in-autoscaling-from-zero.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<BTreeMap<String, IntOrString>>,
 }

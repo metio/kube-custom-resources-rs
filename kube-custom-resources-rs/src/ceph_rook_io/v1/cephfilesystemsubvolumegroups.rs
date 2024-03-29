@@ -13,18 +13,25 @@ use std::collections::BTreeMap;
 #[kube(status = "CephFilesystemSubVolumeGroupStatus")]
 #[kube(schema = "disabled")]
 pub struct CephFilesystemSubVolumeGroupSpec {
-    /// FilesystemName is the name of Ceph Filesystem SubVolumeGroup volume name. Typically it's the name of the CephFilesystem CR. If not coming from the CephFilesystem CR, it can be retrieved from the list of Ceph Filesystem volumes with `ceph fs volume ls`. To learn more about Ceph Filesystem abstractions see https://docs.ceph.com/en/latest/cephfs/fs-volumes/#fs-volumes-and-subvolumes
+    /// FilesystemName is the name of Ceph Filesystem SubVolumeGroup volume name. Typically it's the name of
+    /// the CephFilesystem CR. If not coming from the CephFilesystem CR, it can be retrieved from the
+    /// list of Ceph Filesystem volumes with `ceph fs volume ls`. To learn more about Ceph Filesystem
+    /// abstractions see https://docs.ceph.com/en/latest/cephfs/fs-volumes/#fs-volumes-and-subvolumes
     #[serde(rename = "filesystemName")]
     pub filesystem_name: String,
     /// The name of the subvolume group. If not set, the default is the name of the subvolumeGroup CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Pinning configuration of CephFilesystemSubVolumeGroup, reference https://docs.ceph.com/en/latest/cephfs/fs-volumes/#pinning-subvolumes-and-subvolume-groups only one out of (export, distributed, random) can be set at a time
+    /// Pinning configuration of CephFilesystemSubVolumeGroup,
+    /// reference https://docs.ceph.com/en/latest/cephfs/fs-volumes/#pinning-subvolumes-and-subvolume-groups
+    /// only one out of (export, distributed, random) can be set at a time
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pinning: Option<CephFilesystemSubVolumeGroupPinning>,
 }
 
-/// Pinning configuration of CephFilesystemSubVolumeGroup, reference https://docs.ceph.com/en/latest/cephfs/fs-volumes/#pinning-subvolumes-and-subvolume-groups only one out of (export, distributed, random) can be set at a time
+/// Pinning configuration of CephFilesystemSubVolumeGroup,
+/// reference https://docs.ceph.com/en/latest/cephfs/fs-volumes/#pinning-subvolumes-and-subvolume-groups
+/// only one out of (export, distributed, random) can be set at a time
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemSubVolumeGroupPinning {
     #[serde(default, skip_serializing_if = "Option::is_none")]

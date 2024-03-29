@@ -20,9 +20,13 @@ spec:
   scope: "Cluster"
   versions:
     - additionalPrinterColumns:
-        - description: "main component names"
-          jsonPath: ".spec.componentDefs[0].name"
-          name: "MAIN-COMPONENT-NAME"
+        - description: "topologies"
+          jsonPath: ".status.topologies"
+          name: "Topologies"
+          type: "string"
+        - description: "service references"
+          jsonPath: ".status.serviceRefs"
+          name: "ServiceRefs"
           type: "string"
         - description: "status phase"
           jsonPath: ".status.phase"
@@ -5914,7 +5918,6 @@ spec:
                     x-kubernetes-validations:
                       - message: "componentDefs.consensusSpec(deprecated) or componentDefs.rsmSpec(recommended) is required when componentDefs.workloadType is Consensus, and forbidden otherwise"
                         rule: "has(self.workloadType) && self.workloadType == 'Consensus' ? (has(self.consensusSpec) || has(self.rsmSpec)) : !has(self.consensusSpec)"
-                  minItems: 1
                   type: "array"
                   x-kubernetes-list-map-keys:
                     - "name"
@@ -5924,13 +5927,70 @@ spec:
                     type: "string"
                   description: "Connection credential template used for creating a connection credential secret for cluster objects. \n Built-in objects are: \n - `$(RANDOM_PASSWD)` random 8 characters. - `$(STRONG_RANDOM_PASSWD)` random 16 characters, with mixed cases, digits and symbols. - `$(UUID)` generate a random UUID v4 string. - `$(UUID_B64)` generate a random UUID v4 BASE64 encoded string. - `$(UUID_STR_B64)` generate a random UUID v4 string then BASE64 encoded. - `$(UUID_HEX)` generate a random UUID v4 HEX representation. - `$(HEADLESS_SVC_FQDN)` headless service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME)-headless.$(NAMESPACE).svc`, where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute; - `$(SVC_FQDN)` service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME).$(NAMESPACE).svc`, where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute; - `$(SVC_PORT_{PORT-NAME})` is ServicePort's port value with specified port name, i.e, a servicePort JSON struct: `{\"name\": \"mysql\", \"targetPort\": \"mysqlContainerPort\", \"port\": 3306}`, and `$(SVC_PORT_mysql)` in the connection credential value is 3306."
                   type: "object"
+                topologies:
+                  description: "Topologies represents the different topologies within the cluster."
+                  items:
+                    description: "ClusterTopology represents the definition for a specific cluster topology."
+                    properties:
+                      components:
+                        description: "Components specifies the components in the topology."
+                        items:
+                          description: "ClusterTopologyComponent defines a component within a cluster topology."
+                          properties:
+                            compDef:
+                              description: "CompDef specifies the component definition to use, either as a specific name or a name prefix. Cannot be updated."
+                              maxLength: 64
+                              type: "string"
+                            name:
+                              description: "Name defines the name of the component. This name is also part of Service DNS name, following IANA Service Naming rules. Cannot be updated."
+                              maxLength: 16
+                              pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
+                              type: "string"
+                          required:
+                            - "compDef"
+                            - "name"
+                          type: "object"
+                        maxItems: 128
+                        minItems: 1
+                        type: "array"
+                      default:
+                        description: "Default indicates whether this topology is the default configuration."
+                        type: "boolean"
+                      name:
+                        description: "Name is the unique identifier for the cluster topology. Cannot be updated."
+                        maxLength: 32
+                        type: "string"
+                      orders:
+                        description: "Orders defines the orders of components within the topology."
+                        properties:
+                          provision:
+                            description: "Provision defines the order in which components should be provisioned in the cluster. Components with the same order can be listed together, separated by commas."
+                            items:
+                              type: "string"
+                            type: "array"
+                          terminate:
+                            description: "Terminate defines the order in which components should be terminated in the cluster. Components with the same order can be listed together, separated by commas."
+                            items:
+                              type: "string"
+                            type: "array"
+                          update:
+                            description: "Update defines the order in which components should be updated in the cluster. Components with the same order can be listed together, separated by commas."
+                            items:
+                              type: "string"
+                            type: "array"
+                        type: "object"
+                    required:
+                      - "components"
+                      - "name"
+                    type: "object"
+                  maxItems: 128
+                  minItems: 1
+                  type: "array"
                 type:
                   description: "Specifies the well-known application cluster type, such as mysql, redis, or mongodb."
                   maxLength: 24
                   pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
                   type: "string"
-              required:
-                - "componentDefs"
               type: "object"
             status:
               description: "ClusterDefinitionStatus defines the observed state of ClusterDefinition"
@@ -5947,6 +6007,12 @@ spec:
                   enum:
                     - "Available"
                     - "Unavailable"
+                  type: "string"
+                serviceRefs:
+                  description: "The service references declared by this ClusterDefinition."
+                  type: "string"
+                topologies:
+                  description: "Topologies this ClusterDefinition supported."
                   type: "string"
               type: "object"
           type: "object"

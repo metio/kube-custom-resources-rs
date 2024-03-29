@@ -50,7 +50,7 @@ spec:
                                     description: "DashboardsJobContainer is the Dashboards job container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the Dashboard Job container by name."
+                                        description: "Name is an enum which identifies the Dashboard Job container by name. Supported values are: dashboards-installer"
                                         enum:
                                           - "dashboards-installer"
                                         type: "string"
@@ -163,7 +163,7 @@ spec:
                                     description: "LinseedDeploymentContainer is a linseed Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the linseed Deployment container by name."
+                                        description: "Name is an enum which identifies the linseed Deployment container by name. Supported values are: tigera-linseed"
                                         enum:
                                           - "tigera-linseed"
                                         type: "string"
@@ -214,7 +214,7 @@ spec:
                                     description: "LinseedDeploymentInitContainer is a linseed Deployment init container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the linseed Deployment init container by name."
+                                        description: "Name is an enum which identifies the linseed Deployment init container by name. Supported values are: tigera-secure-linseed-token-tls-key-cert-provisioner,tigera-secure-linseed-cert-key-cert-provisioner"
                                         enum:
                                           - "tigera-secure-linseed-token-tls-key-cert-provisioner"
                                           - "tigera-secure-linseed-cert-key-cert-provisioner"
