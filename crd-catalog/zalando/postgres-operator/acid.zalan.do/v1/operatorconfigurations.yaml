@@ -266,6 +266,9 @@ spec:
                     oauth_token_secret_name:
                       default: "postgresql-operator"
                       type: "string"
+                    pdb_master_label_selector:
+                      default: true
+                      type: "boolean"
                     pdb_name_format:
                       default: "postgres-{cluster}-pdb"
                       type: "string"
@@ -420,7 +423,7 @@ spec:
                     logical_backup_cronjob_environment_secret:
                       type: "string"
                     logical_backup_docker_image:
-                      default: "registry.opensource.zalan.do/acid/logical-backup:v1.10.1"
+                      default: "registry.opensource.zalan.do/acid/logical-backup:v1.11.0"
                       type: "string"
                     logical_backup_google_application_credentials:
                       type: "string"

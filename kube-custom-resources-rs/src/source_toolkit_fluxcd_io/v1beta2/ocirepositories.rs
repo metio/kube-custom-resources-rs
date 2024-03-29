@@ -160,6 +160,9 @@ pub struct OCIRepositoryRef {
     /// the range, takes precedence over Tag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub semver: Option<String>,
+    /// SemverFilter is a regex pattern to filter the tags within the SemVer range.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "semverFilter")]
+    pub semver_filter: Option<String>,
     /// Tag is the image tag to pull, defaults to latest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
@@ -214,6 +217,8 @@ pub struct OCIRepositoryVerifyMatchOidcIdentity {
 pub enum OCIRepositoryVerifyProvider {
     #[serde(rename = "cosign")]
     Cosign,
+    #[serde(rename = "notation")]
+    Notation,
 }
 
 /// SecretRef specifies the Kubernetes Secret containing the

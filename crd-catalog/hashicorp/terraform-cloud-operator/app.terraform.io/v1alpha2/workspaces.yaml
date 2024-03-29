@@ -464,6 +464,10 @@ spec:
                       description: "A reference to your VCS repository in the format `<organization>/<repository>` where `<organization>` and `<repository>` refer to the organization and repository in your VCS provider."
                       minLength: 1
                       type: "string"
+                    speculativePlans:
+                      default: true
+                      description: "Whether this workspace allows automatic speculative plans on PR. Default: `true`. More information: - https://developer.hashicorp.com/terraform/cloud-docs/run/ui#speculative-plans-on-pull-requests - https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans"
+                      type: "boolean"
                   type: "object"
                 workingDirectory:
                   description: "The directory where Terraform will execute, specified as a relative path from the root of the configuration directory. More information: - https://www.terraform.io/cloud-docs/workspaces/settings#terraform-working-directory"
@@ -481,10 +485,25 @@ spec:
                   description: "Real world state generation."
                   format: "int64"
                   type: "integer"
+                plan:
+                  description: "Run status of plan-only/speculative plan that was triggered manually."
+                  properties:
+                    id:
+                      description: "Latest plan-only/speculative plan Terraform Cloud run ID."
+                      type: "string"
+                    status:
+                      description: "Latest plan-only/speculative plan Terraform Cloud run status."
+                      type: "string"
+                    terraformVersion:
+                      description: "The version of Terraform to use for this run."
+                      pattern: "^\\d{1}\\.\\d{1,2}\\.\\d{1,2}$"
+                      type: "string"
+                  type: "object"
                 runStatus:
                   description: "Workspace Runs status."
                   properties:
                     configurationVersion:
+                      description: "The configuration version of this run."
                       type: "string"
                     id:
                       description: "Current(both active and finished) Terraform Cloud run ID."

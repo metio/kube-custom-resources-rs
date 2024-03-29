@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.11.3"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "cephfilesystems.ceph.rook.io"
 spec:
   group: "ceph.rook.io"
@@ -30,10 +30,10 @@ spec:
           description: "CephFilesystem represents a Ceph Filesystem"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -49,7 +49,7 @@ spec:
                         description: "The application name to set on the pool. Only expected to be set for rgw pools."
                         type: "string"
                       compressionMode:
-                        description: "DEPRECATED: use Parameters instead, e.g., Parameters[\"compression_mode\"] = \"force\" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters"
+                        description: "DEPRECATED: use Parameters instead, e.g., Parameters[\"compression_mode\"] = \"force\"\nThe inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)\nDo NOT set a default value for kubebuilder as this will override the Parameters"
                         enum:
                           - "none"
                           - "passive"
@@ -76,11 +76,11 @@ spec:
                             description: "The algorithm for erasure coding"
                             type: "string"
                           codingChunks:
-                            description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered."
+                            description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThis is the number of OSDs that can be lost simultaneously before data cannot be recovered."
                             minimum: 0.0
                             type: "integer"
                           dataChunks:
-                            description: "Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery."
+                            description: "Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThe number of chunks required to recover an object when any single OSD is lost is the same\nas dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery."
                             minimum: 0.0
                             type: "integer"
                         required:
@@ -141,7 +141,7 @@ spec:
                         nullable: true
                         properties:
                           maxBytes:
-                            description: "MaxBytes represents the quota in bytes Deprecated in favor of MaxSize"
+                            description: "MaxBytes represents the quota in bytes\nDeprecated in favor of MaxSize"
                             format: "int64"
                             type: "integer"
                           maxObjects:
@@ -220,7 +220,7 @@ spec:
                       description: "The application name to set on the pool. Only expected to be set for rgw pools."
                       type: "string"
                     compressionMode:
-                      description: "DEPRECATED: use Parameters instead, e.g., Parameters[\"compression_mode\"] = \"force\" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters"
+                      description: "DEPRECATED: use Parameters instead, e.g., Parameters[\"compression_mode\"] = \"force\"\nThe inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)\nDo NOT set a default value for kubebuilder as this will override the Parameters"
                       enum:
                         - "none"
                         - "passive"
@@ -247,11 +247,11 @@ spec:
                           description: "The algorithm for erasure coding"
                           type: "string"
                         codingChunks:
-                          description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered."
+                          description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThis is the number of OSDs that can be lost simultaneously before data cannot be recovered."
                           minimum: 0.0
                           type: "integer"
                         dataChunks:
-                          description: "Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery."
+                          description: "Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThe number of chunks required to recover an object when any single OSD is lost is the same\nas dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery."
                           minimum: 0.0
                           type: "integer"
                       required:
@@ -309,7 +309,7 @@ spec:
                       nullable: true
                       properties:
                         maxBytes:
-                          description: "MaxBytes represents the quota in bytes Deprecated in favor of MaxSize"
+                          description: "MaxBytes represents the quota in bytes\nDeprecated in favor of MaxSize"
                           format: "int64"
                           type: "integer"
                         maxObjects:
@@ -388,7 +388,7 @@ spec:
                       minimum: 1.0
                       type: "integer"
                     activeStandby:
-                      description: "Whether each active MDS instance will have an active standby with a warm metadata cache for faster failover. If false, standbys will still be available, but will not have a warm metadata cache."
+                      description: "Whether each active MDS instance will have an active standby with a warm metadata cache for faster failover.\nIf false, standbys will still be available, but will not have a warm metadata cache."
                       type: "boolean"
                     annotations:
                       additionalProperties:
@@ -411,19 +411,19 @@ spec:
                           description: "Disabled determines whether probe is disable or not"
                           type: "boolean"
                         probe:
-                          description: "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic."
+                          description: "Probe describes a health check to be performed against a container to determine whether it is\nalive or ready to receive traffic."
                           properties:
                             exec:
                               description: "Exec specifies the action to take."
                               properties:
                                 command:
-                                  description: "Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy."
+                                  description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                   items:
                                     type: "string"
                                   type: "array"
                               type: "object"
                             failureThreshold:
-                              description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1."
+                              description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
                               format: "int32"
                               type: "integer"
                             grpc:
@@ -434,7 +434,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 service:
-                                  description: "Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). \n If this is not specified, the default behavior is defined by gRPC."
+                                  description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
                                   type: "string"
                               required:
                                 - "port"
@@ -443,7 +443,7 @@ spec:
                               description: "HTTPGet specifies the http request to perform."
                               properties:
                                 host:
-                                  description: "Host name to connect to, defaults to the pod IP. You probably want to set \"Host\" in httpHeaders instead."
+                                  description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
                                   type: "string"
                                 httpHeaders:
                                   description: "Custom headers to set in the request. HTTP allows repeated headers."
@@ -451,7 +451,7 @@ spec:
                                     description: "HTTPHeader describes a custom header to be used in HTTP probes"
                                     properties:
                                       name:
-                                        description: "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header."
+                                        description: "The header field name.\nThis will be canonicalized upon output, so case-variant names will be understood as the same header."
                                         type: "string"
                                       value:
                                         description: "The header field value"
@@ -468,24 +468,24 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
+                                  description: "Name or number of the port to access on the container.\nNumber must be in the range 1 to 65535.\nName must be an IANA_SVC_NAME."
                                   x-kubernetes-int-or-string: true
                                 scheme:
-                                  description: "Scheme to use for connecting to the host. Defaults to HTTP."
+                                  description: "Scheme to use for connecting to the host.\nDefaults to HTTP."
                                   type: "string"
                               required:
                                 - "port"
                               type: "object"
                             initialDelaySeconds:
-                              description: "Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+                              description: "Number of seconds after the container has started before liveness probes are initiated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               format: "int32"
                               type: "integer"
                             periodSeconds:
-                              description: "How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1."
+                              description: "How often (in seconds) to perform the probe.\nDefault to 10 seconds. Minimum value is 1."
                               format: "int32"
                               type: "integer"
                             successThreshold:
-                              description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1."
+                              description: "Minimum consecutive successes for the probe to be considered successful after having failed.\nDefaults to 1. Must be 1 for liveness and startup. Minimum value is 1."
                               format: "int32"
                               type: "integer"
                             tcpSocket:
@@ -498,7 +498,7 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
+                                  description: "Number or name of the port to access on the container.\nNumber must be in the range 1 to 65535.\nName must be an IANA_SVC_NAME."
                                   x-kubernetes-int-or-string: true
                               required:
                                 - "port"
@@ -507,7 +507,7 @@ spec:
                               format: "int64"
                               type: "integer"
                             timeoutSeconds:
-                              description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+                              description: "Number of seconds after which the probe times out.\nDefaults to 1 second. Minimum value is 1.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               format: "int32"
                               type: "integer"
                           type: "object"
@@ -995,12 +995,12 @@ spec:
                       nullable: true
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
-                                description: "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container."
+                                description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
                                 type: "string"
                             required:
                               - "name"
@@ -1016,7 +1016,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                         requests:
                           additionalProperties:
@@ -1025,7 +1025,7 @@ spec:
                               - type: "string"
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
-                          description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                          description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
@@ -1036,19 +1036,19 @@ spec:
                           description: "Disabled determines whether probe is disable or not"
                           type: "boolean"
                         probe:
-                          description: "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic."
+                          description: "Probe describes a health check to be performed against a container to determine whether it is\nalive or ready to receive traffic."
                           properties:
                             exec:
                               description: "Exec specifies the action to take."
                               properties:
                                 command:
-                                  description: "Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy."
+                                  description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                   items:
                                     type: "string"
                                   type: "array"
                               type: "object"
                             failureThreshold:
-                              description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1."
+                              description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
                               format: "int32"
                               type: "integer"
                             grpc:
@@ -1059,7 +1059,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 service:
-                                  description: "Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). \n If this is not specified, the default behavior is defined by gRPC."
+                                  description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
                                   type: "string"
                               required:
                                 - "port"
@@ -1068,7 +1068,7 @@ spec:
                               description: "HTTPGet specifies the http request to perform."
                               properties:
                                 host:
-                                  description: "Host name to connect to, defaults to the pod IP. You probably want to set \"Host\" in httpHeaders instead."
+                                  description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
                                   type: "string"
                                 httpHeaders:
                                   description: "Custom headers to set in the request. HTTP allows repeated headers."
@@ -1076,7 +1076,7 @@ spec:
                                     description: "HTTPHeader describes a custom header to be used in HTTP probes"
                                     properties:
                                       name:
-                                        description: "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header."
+                                        description: "The header field name.\nThis will be canonicalized upon output, so case-variant names will be understood as the same header."
                                         type: "string"
                                       value:
                                         description: "The header field value"
@@ -1093,24 +1093,24 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
+                                  description: "Name or number of the port to access on the container.\nNumber must be in the range 1 to 65535.\nName must be an IANA_SVC_NAME."
                                   x-kubernetes-int-or-string: true
                                 scheme:
-                                  description: "Scheme to use for connecting to the host. Defaults to HTTP."
+                                  description: "Scheme to use for connecting to the host.\nDefaults to HTTP."
                                   type: "string"
                               required:
                                 - "port"
                               type: "object"
                             initialDelaySeconds:
-                              description: "Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+                              description: "Number of seconds after the container has started before liveness probes are initiated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               format: "int32"
                               type: "integer"
                             periodSeconds:
-                              description: "How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1."
+                              description: "How often (in seconds) to perform the probe.\nDefault to 10 seconds. Minimum value is 1."
                               format: "int32"
                               type: "integer"
                             successThreshold:
-                              description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1."
+                              description: "Minimum consecutive successes for the probe to be considered successful after having failed.\nDefaults to 1. Must be 1 for liveness and startup. Minimum value is 1."
                               format: "int32"
                               type: "integer"
                             tcpSocket:
@@ -1123,7 +1123,7 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
+                                  description: "Number or name of the port to access on the container.\nNumber must be in the range 1 to 65535.\nName must be an IANA_SVC_NAME."
                                   x-kubernetes-int-or-string: true
                               required:
                                 - "port"
@@ -1132,7 +1132,7 @@ spec:
                               format: "int64"
                               type: "integer"
                             timeoutSeconds:
-                              description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+                              description: "Number of seconds after which the probe times out.\nDefaults to 1 second. Minimum value is 1.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               format: "int32"
                               type: "integer"
                           type: "object"
@@ -1158,7 +1158,7 @@ spec:
                           type: "array"
                       type: "object"
                     snapshotRetention:
-                      description: "Retention is the retention policy for a snapshot schedule One path has exactly one retention policy. A policy can however contain multiple count-time period pairs in order to specify complex retention policies"
+                      description: "Retention is the retention policy for a snapshot schedule\nOne path has exactly one retention policy.\nA policy can however contain multiple count-time period pairs in order to specify complex retention policies"
                       items:
                         description: "SnapshotScheduleRetentionSpec is a retention policy"
                         properties:

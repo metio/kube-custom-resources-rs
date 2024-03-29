@@ -1960,6 +1960,13 @@ pub struct ClusterSecretStoreProviderVaultAuth {
     /// the LDAP authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap: Option<ClusterSecretStoreProviderVaultAuthLdap>,
+    /// Name of the vault namespace to authenticate to. This can be different than the namespace your secret is in.
+    /// Namespaces is a set of features within Vault Enterprise that allows
+    /// Vault environments to support Secure Multi-tenancy. e.g: "ns1".
+    /// More about namespaces can be found here https://www.vaultproject.io/docs/enterprise/namespaces
+    /// This will default to Vault.Namespace field if set, or empty otherwise
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// TokenSecretRef authenticates with Vault by presenting a token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecretRef")]
     pub token_secret_ref: Option<ClusterSecretStoreProviderVaultAuthTokenSecretRef>,

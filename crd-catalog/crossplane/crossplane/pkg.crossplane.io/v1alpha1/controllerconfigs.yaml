@@ -699,12 +699,12 @@ spec:
                     annotations:
                       additionalProperties:
                         type: "string"
-                      description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
+                      description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http:https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
                       type: "object"
                     labels:
                       additionalProperties:
                         type: "string"
-                      description: "Map of string keys and values that can be used to organize and\ncategorize (scope and select) objects. This will only affect\nlabels on the pod, not the pod selector. Labels will be merged\nwith internal labels used by crossplane, and labels with a\ncrossplane.io key might be overwritten.\nMore info: http://kubernetes.io/docs/user-guide/labels"
+                      description: "Map of string keys and values that can be used to organize and\ncategorize (scope and select) objects. This will only affect\nlabels on the pod, not the pod selector. Labels will be merged\nwith internal labels used by crossplane, and labels with a\ncrossplane.io key might be overwritten.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
                       type: "object"
                   type: "object"
                 nodeName:
@@ -875,7 +875,7 @@ spec:
                       type: "object"
                   type: "object"
                 runtimeClassName:
-                  description: "RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used\nto run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.\nIf unset or empty, the \"legacy\" RuntimeClass will be used, which is an implicit class with an\nempty definition that uses the default runtime handler.\nMore info: https://git.k8s.io/enhancements/keps/sig-node/runtime-class.md\nThis is a beta feature as of Kubernetes v1.14."
+                  description: "RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used\nto run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.\nIf unset or empty, the \"legacy\" RuntimeClass will be used, which is an implicit class with an\nempty definition that uses the default runtime handler.\nMore info: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/585-runtime-class/README.md\nThis is a beta feature as of Kubernetes v1.14."
                   type: "string"
                 securityContext:
                   description: "SecurityContext holds container-level security attributes and common container settings.\nOptional: Defaults to empty.  See type description for default values of each field."

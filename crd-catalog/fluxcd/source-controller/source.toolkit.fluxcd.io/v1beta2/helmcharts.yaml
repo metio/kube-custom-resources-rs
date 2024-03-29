@@ -140,6 +140,7 @@ spec:
                       description: "Provider specifies the technology used to sign the OCI Artifact."
                       enum:
                         - "cosign"
+                        - "notation"
                       type: "string"
                     secretRef:
                       description: "SecretRef specifies the Kubernetes Secret containing the\ntrusted public keys."

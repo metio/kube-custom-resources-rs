@@ -2198,6 +2198,8 @@ pub struct JaegerAllInOneLivenessProbeTcpSocket {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JaegerAllInOneMetricsStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "server-url")]
+    pub server_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -7697,6 +7699,8 @@ pub struct JaegerQueryLivenessProbeTcpSocket {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JaegerQueryMetricsStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "server-url")]
+    pub server_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }

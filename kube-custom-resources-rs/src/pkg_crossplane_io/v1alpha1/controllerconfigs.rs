@@ -104,7 +104,7 @@ pub struct ControllerConfigSpec {
     /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
     /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
     /// empty definition that uses the default runtime handler.
-    /// More info: https://git.k8s.io/enhancements/keps/sig-node/runtime-class.md
+    /// More info: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/585-runtime-class/README.md
     /// This is a beta feature as of Kubernetes v1.14.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
@@ -993,7 +993,7 @@ pub struct ControllerConfigMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: http:https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and
@@ -1001,7 +1001,7 @@ pub struct ControllerConfigMetadata {
     /// labels on the pod, not the pod selector. Labels will be merged
     /// with internal labels used by crossplane, and labels with a
     /// crossplane.io key might be overwritten.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }

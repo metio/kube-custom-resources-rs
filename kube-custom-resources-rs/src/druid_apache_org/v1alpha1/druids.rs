@@ -143,6 +143,9 @@ pub struct DruidSpec {
     /// Volumes Kubernetes Native `Volumes` specification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<DruidVolumes>>,
+    /// WorkloadAnnotations annotations to be populated in StatefulSet or Deployment spec. if the same key is specified at both the DruidNodeSpec level and DruidSpec level, the DruidNodeSpec WorkloadAnnotations will take precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadAnnotations")]
+    pub workload_annotations: Option<BTreeMap<String, String>>,
     /// Zookeeper IGNORED (Future API): In order to make Druid dependency setup extensible from within Druid operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zookeeper: Option<DruidZookeeper>,
@@ -1337,6 +1340,9 @@ pub struct DruidNodes {
     /// Volumes Kubernetes Native `volumes` specification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<DruidNodesVolumes>>,
+    /// WorkloadAnnotations annotations to be populated in StatefulSet or Deployment spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadAnnotations")]
+    pub workload_annotations: Option<BTreeMap<String, String>>,
 }
 
 /// AdditionalContainer defines additional sidecar containers to be deployed with the `Druid` pods. (will be part of Kubernetes native in the future: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/753-sidecar-containers/README.md#summary).

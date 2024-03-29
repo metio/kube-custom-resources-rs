@@ -57,7 +57,7 @@ spec:
                 commonLabels:
                   additionalProperties:
                     type: "string"
-                  description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
+                  description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
                   type: "object"
                 controllerConfigRef:
                   description: "ControllerConfigRef references a ControllerConfig resource that will be\nused to configure the packaged controller Deployment.\nDeprecated: Use RuntimeConfigReference instead."

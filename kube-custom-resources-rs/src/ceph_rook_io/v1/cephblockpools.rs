@@ -7,7 +7,9 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
-/// NamedBlockPoolSpec allows a block pool to be created with a non-default name. This is more specific than the NamedPoolSpec so we get schema validation on the allowed pool names that can be specified.
+/// NamedBlockPoolSpec allows a block pool to be created with a non-default name.
+/// This is more specific than the NamedPoolSpec so we get schema validation on the
+/// allowed pool names that can be specified.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ceph.rook.io", version = "v1", kind = "CephBlockPool", plural = "cephblockpools")]
 #[kube(namespaced)]
@@ -17,7 +19,9 @@ pub struct CephBlockPoolSpec {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+    /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+    /// Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephBlockPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -55,7 +59,9 @@ pub struct CephBlockPoolSpec {
     pub status_check: Option<CephBlockPoolStatusCheck>,
 }
 
-/// NamedBlockPoolSpec allows a block pool to be created with a non-default name. This is more specific than the NamedPoolSpec so we get schema validation on the allowed pool names that can be specified.
+/// NamedBlockPoolSpec allows a block pool to be created with a non-default name.
+/// This is more specific than the NamedPoolSpec so we get schema validation on the
+/// allowed pool names that can be specified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CephBlockPoolCompressionMode {
     #[serde(rename = "none")]
@@ -76,10 +82,13 @@ pub struct CephBlockPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// The number of chunks required to recover an object when any single OSD is lost is the same
+    /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -123,7 +132,9 @@ pub struct CephBlockPoolMirroringSnapshotSchedules {
     pub start_time: Option<String>,
 }
 
-/// NamedBlockPoolSpec allows a block pool to be created with a non-default name. This is more specific than the NamedPoolSpec so we get schema validation on the allowed pool names that can be specified.
+/// NamedBlockPoolSpec allows a block pool to be created with a non-default name.
+/// This is more specific than the NamedPoolSpec so we get schema validation on the
+/// allowed pool names that can be specified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CephBlockPoolName {
     #[serde(rename = ".rgw.root")]
@@ -137,7 +148,8 @@ pub enum CephBlockPoolName {
 /// The quota settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBlockPoolQuotas {
-    /// MaxBytes represents the quota in bytes Deprecated in favor of MaxSize
+    /// MaxBytes represents the quota in bytes
+    /// Deprecated in favor of MaxSize
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects

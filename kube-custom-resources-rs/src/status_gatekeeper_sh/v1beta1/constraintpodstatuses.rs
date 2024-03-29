@@ -23,7 +23,7 @@ pub struct ConstraintPodStatusStatus {
     pub operations: Option<Vec<String>>,
 }
 
-/// Error represents a single error caught while adding a constraint to OPA.
+/// Error represents a single error caught while adding a constraint to engine.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConstraintPodStatusStatusErrors {
     pub code: String,

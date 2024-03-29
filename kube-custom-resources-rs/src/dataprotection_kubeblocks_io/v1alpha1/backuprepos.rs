@@ -23,6 +23,9 @@ pub struct BackupRepoSpec {
     /// References to the secret that holds the credentials for the `StorageProvider`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credential: Option<BackupRepoCredential>,
+    /// Specifies the prefix of the path for storing backup data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathPrefix")]
+    pub path_prefix: Option<String>,
     /// Specifies reclaim policy of the PV created by this backup repository.
     #[serde(rename = "pvReclaimPolicy")]
     pub pv_reclaim_policy: BackupRepoPvReclaimPolicy,

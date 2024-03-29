@@ -180,6 +180,8 @@ pub struct PolicyWaf {
 /// SecurityLog defines the security log of a WAF policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyWafSecurityLog {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogBundle")]
+    pub ap_log_bundle: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogConf")]
     pub ap_log_conf: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -191,6 +193,8 @@ pub struct PolicyWafSecurityLog {
 /// SecurityLog defines the security log of a WAF policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyWafSecurityLogs {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogBundle")]
+    pub ap_log_bundle: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogConf")]
     pub ap_log_conf: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

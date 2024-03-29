@@ -395,6 +395,9 @@ pub struct WorkspaceVersionControl {
     /// A reference to your VCS repository in the format `<organization>/<repository>` where `<organization>` and `<repository>` refer to the organization and repository in your VCS provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
+    /// Whether this workspace allows automatic speculative plans on PR. Default: `true`. More information: - https://developer.hashicorp.com/terraform/cloud-docs/run/ui#speculative-plans-on-pull-requests - https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "speculativePlans")]
+    pub speculative_plans: Option<bool>,
 }
 
 /// WorkspaceStatus defines the observed state of Workspace.
@@ -403,6 +406,9 @@ pub struct WorkspaceStatus {
     /// Real world state generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// Run status of plan-only/speculative plan that was triggered manually.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plan: Option<WorkspaceStatusPlan>,
     /// Workspace Runs status.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runStatus")]
     pub run_status: Option<WorkspaceStatusRunStatus>,
@@ -417,9 +423,24 @@ pub struct WorkspaceStatus {
     pub workspace_id: String,
 }
 
+/// Run status of plan-only/speculative plan that was triggered manually.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct WorkspaceStatusPlan {
+    /// Latest plan-only/speculative plan Terraform Cloud run ID.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Latest plan-only/speculative plan Terraform Cloud run status.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+    /// The version of Terraform to use for this run.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terraformVersion")]
+    pub terraform_version: Option<String>,
+}
+
 /// Workspace Runs status.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkspaceStatusRunStatus {
+    /// The configuration version of this run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<String>,
     /// Current(both active and finished) Terraform Cloud run ID.

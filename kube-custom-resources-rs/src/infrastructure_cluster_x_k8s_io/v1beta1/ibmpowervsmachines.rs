@@ -16,7 +16,8 @@ pub struct IBMPowerVSMachineSpec {
     /// Image is the reference to the Image from which to create the machine instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<IBMPowerVSMachineImage>,
-    /// ImageRef is an optional reference to a provider-specific resource that holds the details for provisioning the Image for a Cluster.
+    /// ImageRef is an optional reference to a provider-specific resource that holds
+    /// the details for provisioning the Image for a Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRef")]
     pub image_ref: Option<IBMPowerVSMachineImageRef>,
     /// Memory is Amount of memory allocated (in GB)
@@ -53,15 +54,19 @@ pub struct IBMPowerVSMachineImage {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
 
-/// ImageRef is an optional reference to a provider-specific resource that holds the details for provisioning the Image for a Cluster.
+/// ImageRef is an optional reference to a provider-specific resource that holds
+/// the details for provisioning the Image for a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSMachineImageRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -75,7 +80,8 @@ pub struct IBMPowerVSMachineNetwork {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
@@ -89,14 +95,44 @@ pub struct IBMPowerVSMachineStatus {
     /// Conditions defines current service state of the IBMPowerVSMachine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
-    ///  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
-    ///  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+    /// FailureMessage will be set in the event that there is a terminal problem
+    /// reconciling the Machine and will contain a more verbose string suitable
+    /// for logging and human consumption.
+    /// 
+    /// 
+    /// This field should not be set for transitive errors that a controller
+    /// faces that are expected to be fixed automatically over
+    /// time (like service outages), but instead indicate that something is
+    /// fundamentally wrong with the Machine's spec or the configuration of
+    /// the controller, and that manual intervention is required. Examples
+    /// of terminal errors would be invalid combinations of settings in the
+    /// spec, values that are unsupported by the controller, or the
+    /// responsible controller itself being critically misconfigured.
+    /// 
+    /// 
+    /// Any transient errors that occur during the reconciliation of Machines
+    /// can be added as events to the Machine object and/or logged in the
+    /// controller's output.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
-    /// FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
-    ///  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
-    ///  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+    /// FailureReason will be set in the event that there is a terminal problem
+    /// reconciling the Machine and will contain a succinct value suitable
+    /// for machine interpretation.
+    /// 
+    /// 
+    /// This field should not be set for transitive errors that a controller
+    /// faces that are expected to be fixed automatically over
+    /// time (like service outages), but instead indicate that something is
+    /// fundamentally wrong with the Machine's spec or the configuration of
+    /// the controller, and that manual intervention is required. Examples
+    /// of terminal errors would be invalid combinations of settings in the
+    /// spec, values that are unsupported by the controller, or the
+    /// responsible controller itself being critically misconfigured.
+    /// 
+    /// 
+    /// Any transient errors that occur during the reconciliation of Machines
+    /// can be added as events to the Machine object and/or logged in the
+    /// controller's output.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Fault will report if any fault messages for the vsi.

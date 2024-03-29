@@ -17,7 +17,7 @@ pub struct ConfigurationSpec {
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
     /// IgnoreCrossplaneConstraints indicates to the package manager whether to

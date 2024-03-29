@@ -21,6 +21,9 @@ pub struct CiliumNodeSpec {
     /// Azure is the Azure IPAM specific configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub azure: Option<CiliumNodeAzure>,
+    /// BootID is a unique node identifier generated on boot
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bootid: Option<String>,
     /// Encryption is the encryption configuration of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encryption: Option<CiliumNodeEncryption>,

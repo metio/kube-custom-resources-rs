@@ -14,8 +14,17 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "CephObjectZoneStatus")]
 #[kube(schema = "disabled")]
 pub struct CephObjectZoneSpec {
-    /// If this zone cannot be accessed from other peer Ceph clusters via the ClusterIP Service endpoint created by Rook, you must set this to the externally reachable endpoint(s). You may include the port in the definition. For example: "https://my-object-store.my-domain.net:443". In many cases, you should set this to the endpoint of the ingress resource that makes the CephObjectStore associated with this CephObjectStoreZone reachable to peer clusters. The list can have one or more endpoints pointing to different RGW servers in the zone. 
-    ///  If a CephObjectStore endpoint is omitted from this list, that object store's gateways will not receive multisite replication data (see CephObjectStore.spec.gateway.disableMultisiteSyncTraffic).
+    /// If this zone cannot be accessed from other peer Ceph clusters via the ClusterIP Service
+    /// endpoint created by Rook, you must set this to the externally reachable endpoint(s). You may
+    /// include the port in the definition. For example: "https://my-object-store.my-domain.net:443".
+    /// In many cases, you should set this to the endpoint of the ingress resource that makes the
+    /// CephObjectStore associated with this CephObjectStoreZone reachable to peer clusters.
+    /// The list can have one or more endpoints pointing to different RGW servers in the zone.
+    /// 
+    /// 
+    /// If a CephObjectStore endpoint is omitted from this list, that object store's gateways will
+    /// not receive multisite replication data
+    /// (see CephObjectStore.spec.gateway.disableMultisiteSyncTraffic).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customEndpoints")]
     pub custom_endpoints: Option<Vec<String>>,
     /// The data pool settings
@@ -41,7 +50,9 @@ pub struct CephObjectZoneDataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+    /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+    /// Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectZoneDataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -97,10 +108,13 @@ pub struct CephObjectZoneDataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// The number of chunks required to recover an object when any single OSD is lost is the same
+    /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -147,7 +161,8 @@ pub struct CephObjectZoneDataPoolMirroringSnapshotSchedules {
 /// The quota settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneDataPoolQuotas {
-    /// MaxBytes represents the quota in bytes Deprecated in favor of MaxSize
+    /// MaxBytes represents the quota in bytes
+    /// Deprecated in favor of MaxSize
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
@@ -217,7 +232,9 @@ pub struct CephObjectZoneMetadataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+    /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+    /// Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectZoneMetadataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -273,10 +290,13 @@ pub struct CephObjectZoneMetadataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// The number of chunks required to recover an object when any single OSD is lost is the same
+    /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -323,7 +343,8 @@ pub struct CephObjectZoneMetadataPoolMirroringSnapshotSchedules {
 /// The quota settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneMetadataPoolQuotas {
-    /// MaxBytes represents the quota in bytes Deprecated in favor of MaxSize
+    /// MaxBytes represents the quota in bytes
+    /// Deprecated in favor of MaxSize
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects

@@ -139,6 +139,7 @@ pub struct ModuleStatusOutput {
 /// Workspace Runs status. More information: - https://developer.hashicorp.com/terraform/cloud-docs/run/states
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleStatusRun {
+    /// The configuration version of this run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<String>,
     /// Current(both active and finished) Terraform Cloud run ID.

@@ -101,6 +101,9 @@ pub struct MachinePoolPlatformAws {
     /// InstanceType defines the ec2 instance type. eg. m4-large
     #[serde(rename = "type")]
     pub r#type: String,
+    /// UserTags contains the user defined tags to be supplied for the ec2 instance. Note that these will be merged with ClusterDeployment.Spec.Platform.AWS.UserTags, with this field taking precedence when keys collide.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userTags")]
+    pub user_tags: Option<BTreeMap<String, String>>,
     /// Zones is list of availability zones that can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zones: Option<Vec<String>>,

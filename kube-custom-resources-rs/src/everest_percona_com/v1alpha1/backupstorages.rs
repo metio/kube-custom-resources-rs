@@ -33,6 +33,10 @@ pub struct BackupStorageSpec {
     /// Type is a type of backup storage.
     #[serde(rename = "type")]
     pub r#type: BackupStorageType,
+    /// VerifyTLS is set to ensure TLS/SSL verification.
+    /// If unspecified, the default value is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyTLS")]
+    pub verify_tls: Option<bool>,
 }
 
 /// BackupStorageSpec defines the desired state of BackupStorage.

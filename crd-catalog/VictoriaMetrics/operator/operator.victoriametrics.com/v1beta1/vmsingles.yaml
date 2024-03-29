@@ -850,13 +850,13 @@ spec:
                           type: "string"
                       type: "object"
                     logFormat:
-                      description: "LogFormat for VMSelect to be configured with.\ndefault or json"
+                      description: "LogFormat for VMBackup to be configured with.\ndefault or json"
                       enum:
                         - "default"
                         - "json"
                       type: "string"
                     logLevel:
-                      description: "LogLevel for VMSelect to be configured with."
+                      description: "LogLevel for VMBackup to be configured with."
                       enum:
                         - "INFO"
                         - "WARN"

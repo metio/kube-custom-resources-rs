@@ -159,6 +159,8 @@ pub struct HelmChartVerifyMatchOidcIdentity {
 pub enum HelmChartVerifyProvider {
     #[serde(rename = "cosign")]
     Cosign,
+    #[serde(rename = "notation")]
+    Notation,
 }
 
 /// SecretRef specifies the Kubernetes Secret containing the

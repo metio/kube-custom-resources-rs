@@ -44,7 +44,9 @@ pub struct CephFilesystemDataPools {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+    /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+    /// Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephFilesystemDataPoolsCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -103,10 +105,13 @@ pub struct CephFilesystemDataPoolsErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// The number of chunks required to recover an object when any single OSD is lost is the same
+    /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -153,7 +158,8 @@ pub struct CephFilesystemDataPoolsMirroringSnapshotSchedules {
 /// The quota settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemDataPoolsQuotas {
-    /// MaxBytes represents the quota in bytes Deprecated in favor of MaxSize
+    /// MaxBytes represents the quota in bytes
+    /// Deprecated in favor of MaxSize
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
@@ -223,7 +229,9 @@ pub struct CephFilesystemMetadataPool {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force" The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force) Do NOT set a default value for kubebuilder as this will override the Parameters
+    /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+    /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+    /// Do NOT set a default value for kubebuilder as this will override the Parameters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephFilesystemMetadataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
@@ -279,10 +287,13 @@ pub struct CephFilesystemMetadataPoolErasureCoded {
     /// The algorithm for erasure coding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<String>,
-    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type). This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+    /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
     pub coding_chunks: i64,
-    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type). The number of chunks required to recover an object when any single OSD is lost is the same as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+    /// Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+    /// The number of chunks required to recover an object when any single OSD is lost is the same
+    /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
 }
@@ -329,7 +340,8 @@ pub struct CephFilesystemMetadataPoolMirroringSnapshotSchedules {
 /// The quota settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataPoolQuotas {
-    /// MaxBytes represents the quota in bytes Deprecated in favor of MaxSize
+    /// MaxBytes represents the quota in bytes
+    /// Deprecated in favor of MaxSize
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
@@ -399,7 +411,8 @@ pub struct CephFilesystemMetadataServer {
     /// The number of metadata servers that are active. The remaining servers in the cluster will be in standby mode.
     #[serde(rename = "activeCount")]
     pub active_count: i32,
-    /// Whether each active MDS instance will have an active standby with a warm metadata cache for faster failover. If false, standbys will still be available, but will not have a warm metadata cache.
+    /// Whether each active MDS instance will have an active standby with a warm metadata cache for faster failover.
+    /// If false, standbys will still be available, but will not have a warm metadata cache.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeStandby")]
     pub active_standby: Option<bool>,
     /// The annotations-related configuration to add/set on each Pod related object.
@@ -430,18 +443,21 @@ pub struct CephFilesystemMetadataServerLivenessProbe {
     /// Disabled determines whether probe is disable or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+    /// Probe describes a health check to be performed against a container to determine whether it is
+    /// alive or ready to receive traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probe: Option<CephFilesystemMetadataServerLivenessProbeProbe>,
 }
 
-/// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+/// Probe describes a health check to be performed against a container to determine whether it is
+/// alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephFilesystemMetadataServerLivenessProbeProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -450,13 +466,16 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephFilesystemMetadataServerLivenessProbeProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
@@ -464,7 +483,9 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbe {
     pub tcp_socket: Option<CephFilesystemMetadataServerLivenessProbeProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -472,7 +493,11 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -482,8 +507,11 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeExec {
 pub struct CephFilesystemMetadataServerLivenessProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -491,7 +519,8 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -500,9 +529,12 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -510,7 +542,8 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -522,7 +555,9 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -883,15 +918,25 @@ pub struct CephFilesystemMetadataServerPlacementTopologySpreadConstraintsLabelSe
 /// The resource requirements for the mds pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephFilesystemMetadataServerResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -899,7 +944,9 @@ pub struct CephFilesystemMetadataServerResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -909,18 +956,21 @@ pub struct CephFilesystemMetadataServerStartupProbe {
     /// Disabled determines whether probe is disable or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+    /// Probe describes a health check to be performed against a container to determine whether it is
+    /// alive or ready to receive traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probe: Option<CephFilesystemMetadataServerStartupProbeProbe>,
 }
 
-/// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+/// Probe describes a health check to be performed against a container to determine whether it is
+/// alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephFilesystemMetadataServerStartupProbeProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -929,13 +979,16 @@ pub struct CephFilesystemMetadataServerStartupProbeProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephFilesystemMetadataServerStartupProbeProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
@@ -943,7 +996,9 @@ pub struct CephFilesystemMetadataServerStartupProbeProbe {
     pub tcp_socket: Option<CephFilesystemMetadataServerStartupProbeProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -951,7 +1006,11 @@ pub struct CephFilesystemMetadataServerStartupProbeProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -961,8 +1020,11 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeExec {
 pub struct CephFilesystemMetadataServerStartupProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -970,7 +1032,8 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -979,9 +1042,12 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -989,7 +1055,8 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1001,7 +1068,9 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -1014,7 +1083,9 @@ pub struct CephFilesystemMirroring {
     /// Peers represents the peers spec
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<CephFilesystemMirroringPeers>,
-    /// Retention is the retention policy for a snapshot schedule One path has exactly one retention policy. A policy can however contain multiple count-time period pairs in order to specify complex retention policies
+    /// Retention is the retention policy for a snapshot schedule
+    /// One path has exactly one retention policy.
+    /// A policy can however contain multiple count-time period pairs in order to specify complex retention policies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotRetention")]
     pub snapshot_retention: Option<Vec<CephFilesystemMirroringSnapshotRetention>>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored filesystems

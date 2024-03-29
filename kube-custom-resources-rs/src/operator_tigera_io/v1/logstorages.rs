@@ -125,7 +125,7 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpec {
 /// ECKOperatorStatefulSetContainer is a ECKOperator StatefulSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the ECKOperator StatefulSet container by name.
+    /// Name is an enum which identifies the ECKOperator StatefulSet container by name. Supported values are: manager
     pub name: LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ECKOperator StatefulSet container's resources. If omitted, the ECKOperator StatefulSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -233,7 +233,7 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpec {
 /// ElasticsearchMetricsDeploymentContainer is a ElasticsearchMetricsDeployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the ElasticsearchMetricsDeployment container by name.
+    /// Name is an enum which identifies the ElasticsearchMetricsDeployment container by name. Supported values are: tigera-elasticsearch-metrics
     pub name: LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ElasticsearchMetricsDeployment container's resources. If omitted, the ElasticsearchMetrics Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -273,7 +273,7 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersRes
 /// ElasticsearchMetricsDeploymentInitContainer is a ElasticsearchMetricsDeployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the ElasticsearchMetricsDeployment init container by name.
+    /// Name is an enum which identifies the ElasticsearchMetricsDeployment init container by name. Supported values are: tigera-ee-elasticsearch-metrics-tls-key-cert-provisioner
     pub name: LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ElasticsearchMetricsDeployment init container's resources. If omitted, the ElasticsearchMetrics Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -356,7 +356,7 @@ pub struct LogStorageKibanaSpecTemplateSpec {
 /// KibanaContainer is a Kibana container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Kibana Deployment container by name.
+    /// Name is an enum which identifies the Kibana Deployment container by name. Supported values are: kibana
     pub name: LogStorageKibanaSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Kibana container's resources. If omitted, the Kibana will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -396,7 +396,7 @@ pub struct LogStorageKibanaSpecTemplateSpecContainersResourcesClaims {
 /// KibanaInitContainer is a Kibana init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the Kibana init container by name.
+    /// Name is an enum which identifies the Kibana init container by name. Supported values are: key-cert-provisioner
     pub name: LogStorageKibanaSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Kibana Deployment init container's resources. If omitted, the Kibana Deployment will use its default value for this init container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -471,7 +471,7 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpec {
 /// LinseedDeploymentContainer is a linseed Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the linseed Deployment container by name.
+    /// Name is an enum which identifies the linseed Deployment container by name. Supported values are: tigera-linseed
     pub name: LogStorageLinseedDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment container's resources. If omitted, the linseed Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -511,7 +511,7 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpecContainersResourcesClaims 
 /// LinseedDeploymentInitContainer is a linseed Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the linseed Deployment init container by name.
+    /// Name is an enum which identifies the linseed Deployment init container by name. Supported values are: tigera-secure-linseed-token-tls-key-cert-provisioner,tigera-secure-linseed-cert-key-cert-provisioner
     pub name: LogStorageLinseedDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment init container's resources. If omitted, the linseed Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

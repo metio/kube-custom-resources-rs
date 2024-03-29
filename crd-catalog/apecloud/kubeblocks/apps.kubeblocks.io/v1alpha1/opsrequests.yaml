@@ -158,6 +158,16 @@ spec:
                                 type: "string"
                               description: "Contains cloud provider related parameters if ServiceType is LoadBalancer. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer."
                               type: "object"
+                            ipFamilies:
+                              description: "IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this service. This field is usually assigned automatically based on cluster configuration and the ipFamilyPolicy field. If this field is specified manually, the requested family is available in the cluster, and ipFamilyPolicy allows it, it will be used; otherwise creation of the service will fail. This field is conditionally mutable: it allows for adding or removing a secondary IP family, but it does not allow changing the primary IP family of the Service. Valid values are \"IPv4\" and \"IPv6\".  This field only applies to Services of types ClusterIP, NodePort, and LoadBalancer, and does apply to \"headless\" services. This field will be wiped when updating a Service to type ExternalName. \n This field may hold a maximum of two entries (dual-stack families, in either order).  These families must correspond to the values of the clusterIPs field, if specified. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field."
+                              items:
+                                description: "IPFamily represents the IP Family (IPv4 or IPv6). This type is used to express the family of an IP expressed by a type (e.g. service.spec.ipFamilies)."
+                                type: "string"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                            ipFamilyPolicy:
+                              description: "IPFamilyPolicy represents the dual-stack-ness requested or required by this Service. If there is no value provided, then this field will be set to SingleStack. Services can be \"SingleStack\" (a single IP family), \"PreferDualStack\" (two IP families on dual-stack configured clusters or a single IP family on single-stack clusters), or \"RequireDualStack\" (two IP families on dual-stack configured clusters, otherwise fail). The ipFamilies and clusterIPs fields depend on the value of this field. This field will be wiped when updating a service to type ExternalName."
+                              type: "string"
                             name:
                               description: "Specifies the name of the service. This name is used by others to refer to this service (e.g., connection credential). Note: This field cannot be updated."
                               type: "string"
@@ -229,8 +239,11 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "componentName"
                   x-kubernetes-list-type: "map"
+                force:
+                  description: "Indicates if pre-checks should be bypassed, allowing the opsRequest to execute immediately. If set to true, pre-checks are skipped except for 'Start' type. Particularly useful when concurrent execution of VerticalScaling and HorizontalScaling opsRequests is required, achievable through the use of the Force flag."
+                  type: "boolean"
                   x-kubernetes-validations:
-                    - message: "forbidden to update spec.expose"
+                    - message: "forbidden to update spec.force"
                       rule: "self == oldSelf"
                 horizontalScaling:
                   description: "Defines what component need to horizontal scale the specified replicas."
@@ -240,17 +253,6 @@ spec:
                       componentName:
                         description: "Specifies the name of the cluster component."
                         type: "string"
-                      instances:
-                        description: "Defines the names of instances that the rsm should prioritize for scale-down operations. If the RsmTransformPolicy is set to ToPod and the expected number of replicas is less than the current number, the list of Instances will be used. \n - `current replicas - expected replicas > len(Instances)`: Scale down from the list of Instances priorly, the others will select from NodeAssignment. - `current replicas - expected replicas < len(Instances)`: Scale down from the list of Instances. - `current replicas - expected replicas < len(Instances)`: Scale down from a part of Instances."
-                        items:
-                          type: "string"
-                        type: "array"
-                      nodes:
-                        description: "Defines the list of nodes where pods can be scheduled during a scale-up operation. If the RsmTransformPolicy is set to ToPod and the expected number of replicas is greater than the current number, the list of Nodes will be used. If the list of Nodes is empty, pods will not be assigned to any specific node. However, if the list of Nodes is populated, pods will be evenly distributed across the nodes in the list during scale-up."
-                        items:
-                          description: "NodeName is a type that holds a api.Node's Name identifier. Being a type captures intent and helps make sure that the node name is not confused with similar concepts (the hostname, the cloud provider id, the cloud provider name etc) \n To clarify the various types: \n - Node.Name is the Name field of the Node in the API.  This should be stored in a NodeName. Unfortunately, because Name is part of ObjectMeta, we can't store it as a NodeName at the API level. \n - Hostname is the hostname of the local machine (from uname -n). However, some components allow the user to pass in a --hostname-override flag, which will override this in most places. In the absence of anything more meaningful, kubelet will use Hostname as the Node.Name when it creates the Node. \n * The cloudproviders have the own names: GCE has InstanceName, AWS has InstanceId. \n For GCE, InstanceName is the Name of an Instance object in the GCE API.  On GCE, Instance.Name becomes the Hostname, and thus it makes sense also to use it as the Node.Name.  But that is GCE specific, and it is up to the cloudprovider how to do this mapping. \n For AWS, the InstanceID is not yet suitable for use as a Node.Name, so we actually use the PrivateDnsName for the Node.Name.  And this is _not_ always the same as the hostname: if we are using a custom DHCP domain it won't be."
-                          type: "string"
-                        type: "array"
                       replicas:
                         description: "Specifies the number of replicas for the workloads."
                         format: "int32"
@@ -266,6 +268,126 @@ spec:
                   x-kubernetes-list-type: "map"
                   x-kubernetes-validations:
                     - message: "forbidden to update spec.horizontalScaling"
+                      rule: "self == oldSelf"
+                rebuildFrom:
+                  description: "Specifies the instances that require re-creation."
+                  items:
+                    properties:
+                      backupName:
+                        description: "Indicates the name of the backup from which to recover. Currently, only a full physical backup is supported unless your component only has one replica. Such as 'xtrabackup' is full physical backup for mysql and 'mysqldump' is not. And if no specified backupName, the instance will be recreated with empty 'PersistentVolumes'."
+                        type: "string"
+                      componentName:
+                        description: "Specifies the name of the cluster component."
+                        type: "string"
+                      envForRestore:
+                        description: "List of environment variables to set in the container for restore. These will be merged with the env of Backup and ActionSet. \n The priority of merging is as follows: `Restore env > Backup env > ActionSet env`."
+                        items:
+                          description: "EnvVar represents an environment variable present in a Container."
+                          properties:
+                            name:
+                              description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                              type: "string"
+                            value:
+                              description: "Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to \"\"."
+                              type: "string"
+                            valueFrom:
+                              description: "Source for the environment variable's value. Cannot be used if value is not empty."
+                              properties:
+                                configMapKeyRef:
+                                  description: "Selects a key of a ConfigMap."
+                                  properties:
+                                    key:
+                                      description: "The key to select."
+                                      type: "string"
+                                    name:
+                                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                      type: "string"
+                                    optional:
+                                      description: "Specify whether the ConfigMap or its key must be defined"
+                                      type: "boolean"
+                                  required:
+                                    - "key"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                                fieldRef:
+                                  description: "Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+                                  properties:
+                                    apiVersion:
+                                      description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
+                                      type: "string"
+                                    fieldPath:
+                                      description: "Path of the field to select in the specified API version."
+                                      type: "string"
+                                  required:
+                                    - "fieldPath"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                                resourceFieldRef:
+                                  description: "Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported."
+                                  properties:
+                                    containerName:
+                                      description: "Container name: required for volumes, optional for env vars"
+                                      type: "string"
+                                    divisor:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      description: "Specifies the output format of the exposed resources, defaults to \"1\""
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    resource:
+                                      description: "Required: resource to select"
+                                      type: "string"
+                                  required:
+                                    - "resource"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                                secretKeyRef:
+                                  description: "Selects a key of a secret in the pod's namespace"
+                                  properties:
+                                    key:
+                                      description: "The key of the secret to select from.  Must be a valid secret key."
+                                      type: "string"
+                                    name:
+                                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                      type: "string"
+                                    optional:
+                                      description: "Specify whether the Secret or its key must be defined"
+                                      type: "boolean"
+                                  required:
+                                    - "key"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                              type: "object"
+                          required:
+                            - "name"
+                          type: "object"
+                        type: "array"
+                        x-kubernetes-preserve-unknown-fields: true
+                      instances:
+                        description: "Defines the instances that need to be rebuilt."
+                        items:
+                          properties:
+                            name:
+                              description: "Pod name of the instance."
+                              type: "string"
+                            targetNodeName:
+                              description: "The instance will rebuild on the specified node when the instance uses local PersistentVolume as the storage disk. If not set, it will rebuild on a random node."
+                              type: "string"
+                          required:
+                            - "name"
+                          type: "object"
+                        type: "array"
+                    required:
+                      - "componentName"
+                      - "instances"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "componentName"
+                  x-kubernetes-list-type: "map"
+                  x-kubernetes-validations:
+                    - message: "forbidden to update spec.rebuildFrom"
                       rule: "self == oldSelf"
                 reconfigure:
                   description: "Deprecated: replace by reconfigures. Defines the variables that need to input when updating configuration."
@@ -669,6 +791,7 @@ spec:
                     - "DataScript"
                     - "Backup"
                     - "Restore"
+                    - "RebuildInstance"
                     - "Custom"
                   type: "string"
                   x-kubernetes-validations:
@@ -820,6 +943,117 @@ spec:
                         description: "Provides a human-readable message indicating details about this operation."
                         maxLength: 32768
                         type: "string"
+                      overrideBy:
+                        description: "Describes the configuration covered by the latest OpsRequest of the same kind. when reconciling, this information will be used as a benchmark rather than the 'spec', such as 'Spec.HorizontalScaling'."
+                        properties:
+                          claims:
+                            description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
+                            items:
+                              description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                              properties:
+                                name:
+                                  description: "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container."
+                                  type: "string"
+                              required:
+                                - "name"
+                              type: "object"
+                            type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "name"
+                            x-kubernetes-list-type: "map"
+                          classDefRef:
+                            description: "References a class defined in ComponentClassDefinition."
+                            properties:
+                              class:
+                                description: "Defines the name of the class that is defined in the ComponentClassDefinition."
+                                type: "string"
+                              name:
+                                description: "Specifies the name of the ComponentClassDefinition."
+                                maxLength: 63
+                                pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
+                                type: "string"
+                            required:
+                              - "class"
+                            type: "object"
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                              x-kubernetes-int-or-string: true
+                            description: "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                            type: "object"
+                          opsName:
+                            description: "Indicates the opsRequest name."
+                            type: "string"
+                          replicas:
+                            description: "Represents the last replicas of the component."
+                            format: "int32"
+                            type: "integer"
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                              x-kubernetes-int-or-string: true
+                            description: "Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                            type: "object"
+                          services:
+                            description: "Records the last services of the component."
+                            items:
+                              properties:
+                                annotations:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer."
+                                  type: "object"
+                                name:
+                                  description: "The name of the service."
+                                  maxLength: 15
+                                  type: "string"
+                                serviceType:
+                                  default: "ClusterIP"
+                                  description: "Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. \n - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. \n More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
+                                  enum:
+                                    - "ClusterIP"
+                                    - "NodePort"
+                                    - "LoadBalancer"
+                                  type: "string"
+                                  x-kubernetes-preserve-unknown-fields: true
+                              required:
+                                - "name"
+                              type: "object"
+                            type: "array"
+                          targetResources:
+                            additionalProperties:
+                              items:
+                                type: "string"
+                              type: "array"
+                            description: "Records the information about the target resources affected by the component. The resource key is in the list of [pods]."
+                            type: "object"
+                          volumeClaimTemplates:
+                            description: "Records the last volumeClaimTemplates of the component."
+                            items:
+                              properties:
+                                name:
+                                  description: "A reference to the volumeClaimTemplate name from the cluster components."
+                                  type: "string"
+                                storage:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  description: "Specifies the requested storage size for the volume."
+                                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                  x-kubernetes-int-or-string: true
+                              required:
+                                - "name"
+                                - "storage"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                        x-kubernetes-preserve-unknown-fields: true
                       phase:
                         description: "Describes the component phase, referencing Cluster.status.component.phase."
                         enum:

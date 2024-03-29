@@ -25,10 +25,17 @@ pub struct IBMPowerVSImageSpec {
     pub object: String,
     /// Cloud Object Storage region.
     pub region: String,
-    /// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created. Power VS workspace is a container for all Power VS instances at a specific geographic region. serviceInstance can be created via IBM Cloud catalog or CLI. supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli. More detail about Power VS service instance. https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server when omitted system will dynamically create the service instance
+    /// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created.
+    /// Power VS workspace is a container for all Power VS instances at a specific geographic region.
+    /// serviceInstance can be created via IBM Cloud catalog or CLI.
+    /// supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
+    /// More detail about Power VS service instance.
+    /// https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server
+    /// when omitted system will dynamically create the service instance
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSImageServiceInstance>,
-    /// ServiceInstanceID is the id of the power cloud instance where the image will get imported. Deprecated: use ServiceInstance instead
+    /// ServiceInstanceID is the id of the power cloud instance where the image will get imported.
+    /// Deprecated: use ServiceInstance instead
     #[serde(rename = "serviceInstanceID")]
     pub service_instance_id: String,
     /// Type of storage, storage pool with the most available space will be selected.
@@ -45,7 +52,13 @@ pub enum IBMPowerVSImageDeletePolicy {
     Retain,
 }
 
-/// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created. Power VS workspace is a container for all Power VS instances at a specific geographic region. serviceInstance can be created via IBM Cloud catalog or CLI. supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli. More detail about Power VS service instance. https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server when omitted system will dynamically create the service instance
+/// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created.
+/// Power VS workspace is a container for all Power VS instances at a specific geographic region.
+/// serviceInstance can be created via IBM Cloud catalog or CLI.
+/// supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
+/// More detail about Power VS service instance.
+/// https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server
+/// when omitted system will dynamically create the service instance
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSImageServiceInstance {
     /// ID of resource
@@ -54,7 +67,8 @@ pub struct IBMPowerVSImageServiceInstance {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }

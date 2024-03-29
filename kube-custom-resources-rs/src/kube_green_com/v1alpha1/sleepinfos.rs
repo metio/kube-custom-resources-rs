@@ -19,8 +19,11 @@ pub struct SleepInfoSpec {
     /// Patches is a list of json 6902 patches to apply to the target resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patches: Option<Vec<SleepInfoPatches>>,
-    /// Hours:Minutes 
-    ///  Accept cron schedule for both hour and minute. For example, *:*/2 is set to configure a run every even minute.
+    /// Hours:Minutes
+    /// 
+    /// 
+    /// Accept cron schedule for both hour and minute.
+    /// For example, *:*/2 is set to configure a run every even minute.
     #[serde(rename = "sleepAt")]
     pub sleep_at: String,
     /// If SuspendCronjobs is set to true, on sleep the cronjobs of the namespace will be suspended.
@@ -29,24 +32,34 @@ pub struct SleepInfoSpec {
     /// If SuspendDeployments is set to false, on sleep the deployment of the namespace will not be suspended. By default Deployment will be suspended.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "suspendDeployments")]
     pub suspend_deployments: Option<bool>,
-    /// Time zone to set the schedule, in IANA time zone identifier. It is not required, default to UTC. For example, for the Italy time zone set Europe/Rome.
+    /// Time zone to set the schedule, in IANA time zone identifier.
+    /// It is not required, default to UTC.
+    /// For example, for the Italy time zone set Europe/Rome.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
     pub time_zone: Option<String>,
-    /// Hours:Minutes 
-    ///  Accept cron schedule for both hour and minute. For example, *:*/2 is set to configure a run every even minute. It is not required.
+    /// Hours:Minutes
+    /// 
+    /// 
+    /// Accept cron schedule for both hour and minute.
+    /// For example, *:*/2 is set to configure a run every even minute.
+    /// It is not required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "wakeUpAt")]
     pub wake_up_at: Option<String>,
-    /// Weekdays are in cron notation. 
-    ///  For example, to configure a schedule from monday to friday, set it to "1-5"
+    /// Weekdays are in cron notation.
+    /// 
+    /// 
+    /// For example, to configure a schedule from monday to friday, set it to "1-5"
     pub weekdays: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SleepInfoExcludeRef {
-    /// ApiVersion of the kubernetes resources. Supported api version is "apps/v1".
+    /// ApiVersion of the kubernetes resources.
+    /// Supported api version is "apps/v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Kind of the kubernetes resources of the specific version. Supported kind are "Deployment" and "CronJob".
+    /// Kind of the kubernetes resources of the specific version.
+    /// Supported kind are "Deployment" and "CronJob".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     /// MatchLabels which identify the kubernetes resource by labels
@@ -80,7 +93,8 @@ pub struct SleepInfoStatus {
     /// Information when was the last time the run was successfully scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScheduleTime")]
     pub last_schedule_time: Option<String>,
-    /// The operation type handled in last schedule. SLEEP or WAKE_UP are the possibilities
+    /// The operation type handled in last schedule. SLEEP or WAKE_UP are the
+    /// possibilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operation: Option<String>,
 }

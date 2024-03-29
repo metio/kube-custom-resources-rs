@@ -110,6 +110,8 @@ pub enum ReceiverType {
     Nexus,
     #[serde(rename = "acr")]
     Acr,
+    #[serde(rename = "cdevents")]
+    Cdevents,
 }
 
 /// ReceiverStatus defines the observed state of the Receiver.

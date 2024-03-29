@@ -593,7 +593,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// CalicoKubeControllersDeploymentContainer is a calico-kube-controllers Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the calico-kube-controllers Deployment container by name.
+    /// Name is an enum which identifies the calico-kube-controllers Deployment container by name. Supported values are: calico-kube-controllers
     pub name: InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-kube-controllers Deployment container's resources. If omitted, the calico-kube-controllers Deployment will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -717,6 +717,9 @@ pub enum InstallationCalicoNetworkHostPorts {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoNetworkIpPools {
+    /// AllowedUse controls what the IP pool will be used for.  If not specified or empty, defaults to ["Tunnel", "Workload"] for back-compatibility
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUses")]
+    pub allowed_uses: Option<Vec<String>>,
     /// BlockSize specifies the CIDR prefex length to use when allocating per-node IP blocks from the main IP pool CIDR. Default: 26 (IPv4), 122 (IPv6)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockSize")]
     pub block_size: Option<i32>,
@@ -728,6 +731,9 @@ pub struct InstallationCalicoNetworkIpPools {
     /// Encapsulation specifies the encapsulation type that will be used with the IP Pool. Default: IPIP
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encapsulation: Option<InstallationCalicoNetworkIpPoolsEncapsulation>,
+    /// Name is the name of the IP pool. If omitted, this will be generated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// NATOutgoing specifies if NAT will be enabled or disabled for outgoing traffic. Default: Enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "natOutgoing")]
     pub nat_outgoing: Option<InstallationCalicoNetworkIpPoolsNatOutgoing>,
@@ -1340,7 +1346,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 /// CalicoNodeDaemonSetContainer is a calico-node DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the calico-node DaemonSet container by name.
+    /// Name is an enum which identifies the calico-node DaemonSet container by name. Supported values are: calico-node
     pub name: InstallationCalicoNodeDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-node DaemonSet container's resources. If omitted, the calico-node DaemonSet will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1380,7 +1386,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecContainersResourcesCla
 /// CalicoNodeDaemonSetInitContainer is a calico-node DaemonSet init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the calico-node DaemonSet init container by name.
+    /// Name is an enum which identifies the calico-node DaemonSet init container by name. Supported values are: install-cni, hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner
     pub name: InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-node DaemonSet init container's resources. If omitted, the calico-node DaemonSet will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1931,7 +1937,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 /// CalicoNodeWindowsDaemonSetContainer is a calico-node-windows DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the calico-node-windows DaemonSet container by name.
+    /// Name is an enum which identifies the calico-node-windows DaemonSet container by name. Supported values are: calico-node-windows
     pub name: InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-node-windows DaemonSet container's resources. If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1971,7 +1977,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResou
 /// CalicoNodeWindowsDaemonSetInitContainer is a calico-node-windows DaemonSet init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the calico-node-windows DaemonSet init container by name.
+    /// Name is an enum which identifies the calico-node-windows DaemonSet init container by name. Supported values are: install-cni;hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner
     pub name: InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-node-windows DaemonSet init container's resources. If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3220,7 +3226,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 /// CSINodeDriverDaemonSetContainer is a csi-node-driver DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the csi-node-driver DaemonSet container by name.
+    /// Name is an enum which identifies the csi-node-driver DaemonSet container by name. Supported values are: calico-csi, csi-node-driver-registrar.
     pub name: InstallationCsiNodeDriverDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named csi-node-driver DaemonSet container's resources. If omitted, the csi-node-driver DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3230,6 +3236,10 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecContainers {
 /// CSINodeDriverDaemonSetContainer is a csi-node-driver DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum InstallationCsiNodeDriverDaemonSetSpecTemplateSpecContainersName {
+    #[serde(rename = "calico-csi")]
+    CalicoCsi,
+    #[serde(rename = "csi-node-driver-registrar")]
+    CsiNodeDriverRegistrar,
     #[serde(rename = "csi-node-driver")]
     CsiNodeDriver,
 }
@@ -3985,7 +3995,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityReq
 /// TyphaDeploymentContainer is a typha Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the typha Deployment container by name.
+    /// Name is an enum which identifies the typha Deployment container by name. Supported values are: calico-typha
     pub name: InstallationTyphaDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named typha Deployment container's resources. If omitted, the typha Deployment will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4025,7 +4035,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecContainersResourcesClaims 
 /// TyphaDeploymentInitContainer is a typha Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the typha Deployment init container by name.
+    /// Name is an enum which identifies the typha Deployment init container by name. Supported values are: typha-certs-key-cert-provisioner
     pub name: InstallationTyphaDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named typha Deployment init container's resources. If omitted, the typha Deployment will use its default value for this init container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4771,7 +4781,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// CalicoKubeControllersDeploymentContainer is a calico-kube-controllers Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the calico-kube-controllers Deployment container by name.
+    /// Name is an enum which identifies the calico-kube-controllers Deployment container by name. Supported values are: calico-kube-controllers
     pub name: InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-kube-controllers Deployment container's resources. If omitted, the calico-kube-controllers Deployment will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4895,6 +4905,9 @@ pub enum InstallationStatusComputedCalicoNetworkHostPorts {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoNetworkIpPools {
+    /// AllowedUse controls what the IP pool will be used for.  If not specified or empty, defaults to ["Tunnel", "Workload"] for back-compatibility
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUses")]
+    pub allowed_uses: Option<Vec<String>>,
     /// BlockSize specifies the CIDR prefex length to use when allocating per-node IP blocks from the main IP pool CIDR. Default: 26 (IPv4), 122 (IPv6)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockSize")]
     pub block_size: Option<i32>,
@@ -4906,6 +4919,9 @@ pub struct InstallationStatusComputedCalicoNetworkIpPools {
     /// Encapsulation specifies the encapsulation type that will be used with the IP Pool. Default: IPIP
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encapsulation: Option<InstallationStatusComputedCalicoNetworkIpPoolsEncapsulation>,
+    /// Name is the name of the IP pool. If omitted, this will be generated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// NATOutgoing specifies if NAT will be enabled or disabled for outgoing traffic. Default: Enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "natOutgoing")]
     pub nat_outgoing: Option<InstallationStatusComputedCalicoNetworkIpPoolsNatOutgoing>,
@@ -5518,7 +5534,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// CalicoNodeDaemonSetContainer is a calico-node DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the calico-node DaemonSet container by name.
+    /// Name is an enum which identifies the calico-node DaemonSet container by name. Supported values are: calico-node
     pub name: InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-node DaemonSet container's resources. If omitted, the calico-node DaemonSet will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5558,7 +5574,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContaine
 /// CalicoNodeDaemonSetInitContainer is a calico-node DaemonSet init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the calico-node DaemonSet init container by name.
+    /// Name is an enum which identifies the calico-node DaemonSet init container by name. Supported values are: install-cni, hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner
     pub name: InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-node DaemonSet init container's resources. If omitted, the calico-node DaemonSet will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6109,7 +6125,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// CalicoNodeWindowsDaemonSetContainer is a calico-node-windows DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the calico-node-windows DaemonSet container by name.
+    /// Name is an enum which identifies the calico-node-windows DaemonSet container by name. Supported values are: calico-node-windows
     pub name: InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-node-windows DaemonSet container's resources. If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6149,7 +6165,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecC
 /// CalicoNodeWindowsDaemonSetInitContainer is a calico-node-windows DaemonSet init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the calico-node-windows DaemonSet init container by name.
+    /// Name is an enum which identifies the calico-node-windows DaemonSet init container by name. Supported values are: install-cni;hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner
     pub name: InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named calico-node-windows DaemonSet init container's resources. If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7398,7 +7414,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// CSINodeDriverDaemonSetContainer is a csi-node-driver DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the csi-node-driver DaemonSet container by name.
+    /// Name is an enum which identifies the csi-node-driver DaemonSet container by name. Supported values are: calico-csi, csi-node-driver-registrar.
     pub name: InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named csi-node-driver DaemonSet container's resources. If omitted, the csi-node-driver DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7408,6 +7424,10 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecConta
 /// CSINodeDriverDaemonSetContainer is a csi-node-driver DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainersName {
+    #[serde(rename = "calico-csi")]
+    CalicoCsi,
+    #[serde(rename = "csi-node-driver-registrar")]
+    CsiNodeDriverRegistrar,
     #[serde(rename = "csi-node-driver")]
     CsiNodeDriver,
 }
@@ -8163,7 +8183,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// TyphaDeploymentContainer is a typha Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the typha Deployment container by name.
+    /// Name is an enum which identifies the typha Deployment container by name. Supported values are: calico-typha
     pub name: InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named typha Deployment container's resources. If omitted, the typha Deployment will use its default value for this container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8203,7 +8223,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainersRe
 /// TyphaDeploymentInitContainer is a typha Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the typha Deployment init container by name.
+    /// Name is an enum which identifies the typha Deployment init container by name. Supported values are: typha-certs-key-cert-provisioner
     pub name: InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named typha Deployment init container's resources. If omitted, the typha Deployment will use its default value for this init container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]

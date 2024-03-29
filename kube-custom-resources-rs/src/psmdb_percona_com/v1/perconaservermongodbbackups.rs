@@ -69,6 +69,8 @@ pub struct PerconaServerMongoDBBackupStatusAzure {
     pub container: Option<String>,
     #[serde(rename = "credentialsSecret")]
     pub credentials_secret: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
+    pub endpoint_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
 }

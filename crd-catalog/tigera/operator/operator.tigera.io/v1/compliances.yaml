@@ -47,7 +47,7 @@ spec:
                                     description: "ComplianceBenchmarkerDaemonSetContainer is a Compliance Benchmarker DaemonSet container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the Compliance Benchmarker DaemonSet container by name."
+                                        description: "Name is an enum which identifies the Compliance Benchmarker DaemonSet container by name. Supported values are: compliance-benchmarker"
                                         enum:
                                           - "compliance-benchmarker"
                                         type: "string"
@@ -98,7 +98,7 @@ spec:
                                     description: "ComplianceBenchmarkerDaemonSetInitContainer is a Compliance Benchmarker DaemonSet init container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the Compliance Benchmarker DaemonSet init container by name."
+                                        description: "Name is an enum which identifies the Compliance Benchmarker DaemonSet init container by name. Supported values are: tigera-compliance-benchmarker-tls-key-cert-provisioner"
                                         enum:
                                           - "tigera-compliance-benchmarker-tls-key-cert-provisioner"
                                         type: "string"
@@ -165,7 +165,7 @@ spec:
                                     description: "ComplianceControllerDeploymentContainer is a compliance controller Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the compliance controller Deployment container by name."
+                                        description: "Name is an enum which identifies the compliance controller Deployment container by name. Supported values are: compliance-controller"
                                         enum:
                                           - "compliance-controller"
                                         type: "string"
@@ -216,7 +216,7 @@ spec:
                                     description: "ComplianceControllerDeploymentInitContainer is a compliance controller Deployment init container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the compliance controller Deployment init container by name."
+                                        description: "Name is an enum which identifies the compliance controller Deployment init container by name. Supported values are: tigera-compliance-controller-tls-key-cert-provisioner"
                                         enum:
                                           - "tigera-compliance-controller-tls-key-cert-provisioner"
                                         type: "string"
@@ -280,7 +280,7 @@ spec:
                                 description: "ComplianceReporterPodTemplateContainer is a ComplianceServer Deployment container."
                                 properties:
                                   name:
-                                    description: "Name is an enum which identifies the ComplianceServer Deployment container by name."
+                                    description: "Name is an enum which identifies the ComplianceServer Deployment container by name. Supported values are: reporter"
                                     enum:
                                       - "reporter"
                                     type: "string"
@@ -331,7 +331,7 @@ spec:
                                 description: "ComplianceReporterPodTemplateInitContainer is a ComplianceServer Deployment init container."
                                 properties:
                                   name:
-                                    description: "Name is an enum which identifies the ComplianceReporter PodSpec init container by name."
+                                    description: "Name is an enum which identifies the ComplianceReporter PodSpec init container by name. Supported values are: tigera-compliance-reporter-tls-key-cert-provisioner"
                                     enum:
                                       - "tigera-compliance-reporter-tls-key-cert-provisioner"
                                     type: "string"
@@ -397,7 +397,7 @@ spec:
                                     description: "ComplianceServerDeploymentContainer is a ComplianceServer Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the ComplianceServer Deployment container by name."
+                                        description: "Name is an enum which identifies the ComplianceServer Deployment container by name. Supported values are: compliance-server"
                                         enum:
                                           - "compliance-server"
                                         type: "string"
@@ -448,7 +448,7 @@ spec:
                                     description: "ComplianceServerDeploymentInitContainer is a ComplianceServer Deployment init container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the ComplianceServer Deployment init container by name."
+                                        description: "Name is an enum which identifies the ComplianceServer Deployment init container by name. Supported values are: tigera-compliance-server-tls-key-cert-provisioner"
                                         enum:
                                           - "tigera-compliance-server-tls-key-cert-provisioner"
                                         type: "string"
@@ -515,7 +515,7 @@ spec:
                                     description: "ComplianceSnapshotterDeploymentContainer is a compliance snapshotter Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the compliance snapshotter Deployment container by name."
+                                        description: "Name is an enum which identifies the compliance snapshotter Deployment container by name. Supported values are: compliance-snapshotter"
                                         enum:
                                           - "compliance-snapshotter"
                                         type: "string"
@@ -566,7 +566,7 @@ spec:
                                     description: "ComplianceSnapshotterDeploymentInitContainer is a compliance snapshotter Deployment init container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the compliance snapshotter Deployment init container by name."
+                                        description: "Name is an enum which identifies the compliance snapshotter Deployment init container by name. Supported values are: tigera-compliance-snapshotter-tls-key-cert-provisioner"
                                         enum:
                                           - "tigera-compliance-snapshotter-tls-key-cert-provisioner"
                                         type: "string"

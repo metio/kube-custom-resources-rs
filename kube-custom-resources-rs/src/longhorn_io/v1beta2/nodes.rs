@@ -33,6 +33,8 @@ pub struct NodeSpec {
 pub struct NodeDisks {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowScheduling")]
     pub allow_scheduling: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskDriver")]
+    pub disk_driver: Option<NodeDisksDiskDriver>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskType")]
     pub disk_type: Option<NodeDisksDiskType>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
@@ -43,6 +45,16 @@ pub struct NodeDisks {
     pub storage_reserved: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NodeDisksDiskDriver {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "auto")]
+    Auto,
+    #[serde(rename = "aio")]
+    Aio,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -79,6 +91,12 @@ pub struct NodeStatus {
 pub struct NodeStatusDiskStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskDriver")]
+    pub disk_driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskName")]
+    pub disk_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskPath")]
+    pub disk_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskType")]
     pub disk_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskUUID")]

@@ -57,7 +57,7 @@ pub struct ManagerManagerDeploymentSpecTemplateSpec {
 /// ManagerDeploymentContainer is a Manager Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagerManagerDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Manager Deployment container by name.
+    /// Name is an enum which identifies the Manager Deployment container by name. Supported values are: tigera-voltron, tigera-manager, tigera-es-proxy
     pub name: ManagerManagerDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Manager Deployment container's resources. If omitted, the Manager Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -101,7 +101,7 @@ pub struct ManagerManagerDeploymentSpecTemplateSpecContainersResourcesClaims {
 /// ManagerDeploymentInitContainer is a Manager Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagerManagerDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the Manager Deployment init container by name.
+    /// Name is an enum which identifies the Manager Deployment init container by name. Supported values are: manager-tls-key-cert-provisioner, internal-manager-tls-key-cert-provisioner, tigera-voltron-linseed-tls-key-cert-provisioner
     pub name: ManagerManagerDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Manager Deployment init container's resources. If omitted, the Manager Deployment will use its default value for this init container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]

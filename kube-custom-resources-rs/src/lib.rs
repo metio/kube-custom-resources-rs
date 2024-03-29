@@ -1230,6 +1230,9 @@ apiVersion `fluentd.fluent.io/v1alpha1`:
 apiVersion `flux-framework.org/v1alpha1`:
 - `MiniCluster`
 
+apiVersion `flux-framework.org/v1alpha2`:
+- `MiniCluster`
+
 ## forklift_konveyor_io
 
 apiVersion `forklift.konveyor.io/v1beta1`:
@@ -2190,6 +2193,15 @@ apiVersion `networking.gke.io/v1`:
 - `ManagedCertificate`
 
 ## networking_istio_io
+
+apiVersion `networking.istio.io/v1`:
+- `DestinationRule`
+- `Gateway`
+- `ServiceEntry`
+- `Sidecar`
+- `VirtualService`
+- `WorkloadEntry`
+- `WorkloadGroup`
 
 apiVersion `networking.istio.io/v1alpha3`:
 - `DestinationRule`

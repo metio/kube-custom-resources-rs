@@ -28,10 +28,12 @@ pub struct CephNFSSpec {
 /// RADOS is the Ganesha RADOS specification
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSRados {
-    /// The namespace inside the Ceph pool (set by 'pool') where shared NFS-Ganesha config is stored. This setting is deprecated as it is internally set to the name of the CephNFS.
+    /// The namespace inside the Ceph pool (set by 'pool') where shared NFS-Ganesha config is stored.
+    /// This setting is deprecated as it is internally set to the name of the CephNFS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// The Ceph pool used store the shared configuration for NFS-Ganesha daemons. This setting is deprecated, as it is internally required to be ".nfs".
+    /// The Ceph pool used store the shared configuration for NFS-Ganesha daemons.
+    /// This setting is deprecated, as it is internally required to be ".nfs".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pool: Option<String>,
 }
@@ -42,7 +44,9 @@ pub struct CephNFSSecurity {
     /// Kerberos configures NFS-Ganesha to secure NFS client connections with Kerberos.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kerberos: Option<CephNFSSecurityKerberos>,
-    /// SSSD enables integration with System Security Services Daemon (SSSD). SSSD can be used to provide user ID mapping from a number of sources. See https://sssd.io for more information about the SSSD project.
+    /// SSSD enables integration with System Security Services Daemon (SSSD). SSSD can be used to
+    /// provide user ID mapping from a number of sources. See https://sssd.io for more information
+    /// about the SSSD project.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sssd: Option<CephNFSSecuritySssd>,
 }
@@ -50,25 +54,52 @@ pub struct CephNFSSecurity {
 /// Kerberos configures NFS-Ganesha to secure NFS client connections with Kerberos.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberos {
-    /// ConfigFiles defines where the Kerberos configuration should be sourced from. Config files will be placed into the `/etc/krb5.conf.rook/` directory. 
-    ///  If this is left empty, Rook will not add any files. This allows you to manage the files yourself however you wish. For example, you may build them into your custom Ceph container image or use the Vault agent injector to securely add the files via annotations on the CephNFS spec (passed to the NFS server pods). 
-    ///  Rook configures Kerberos to log to stderr. We suggest removing logging sections from config files to avoid consuming unnecessary disk space from logging to files.
+    /// ConfigFiles defines where the Kerberos configuration should be sourced from. Config files
+    /// will be placed into the `/etc/krb5.conf.rook/` directory.
+    /// 
+    /// 
+    /// If this is left empty, Rook will not add any files. This allows you to manage the files
+    /// yourself however you wish. For example, you may build them into your custom Ceph container
+    /// image or use the Vault agent injector to securely add the files via annotations on the
+    /// CephNFS spec (passed to the NFS server pods).
+    /// 
+    /// 
+    /// Rook configures Kerberos to log to stderr. We suggest removing logging sections from config
+    /// files to avoid consuming unnecessary disk space from logging to files.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFiles")]
     pub config_files: Option<CephNFSSecurityKerberosConfigFiles>,
     /// DomainName should be set to the Kerberos Realm.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
-    /// KeytabFile defines where the Kerberos keytab should be sourced from. The keytab file will be placed into `/etc/krb5.keytab`. If this is left empty, Rook will not add the file. This allows you to manage the `krb5.keytab` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
+    /// KeytabFile defines where the Kerberos keytab should be sourced from. The keytab file will be
+    /// placed into `/etc/krb5.keytab`. If this is left empty, Rook will not add the file.
+    /// This allows you to manage the `krb5.keytab` file yourself however you wish. For example, you
+    /// may build it into your custom Ceph container image or use the Vault agent injector to
+    /// securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keytabFile")]
     pub keytab_file: Option<CephNFSSecurityKerberosKeytabFile>,
-    /// PrincipalName corresponds directly to NFS-Ganesha's NFS_KRB5:PrincipalName config. In practice, this is the service prefix of the principal name. The default is "nfs". This value is combined with (a) the namespace and name of the CephNFS (with a hyphen between) and (b) the Realm configured in the user-provided krb5.conf to determine the full principal name: <principalName>/<namespace>-<name>@<realm>. e.g., nfs/rook-ceph-my-nfs@example.net. See https://github.com/nfs-ganesha/nfs-ganesha/wiki/RPCSEC_GSS for more detail.
+    /// PrincipalName corresponds directly to NFS-Ganesha's NFS_KRB5:PrincipalName config. In
+    /// practice, this is the service prefix of the principal name. The default is "nfs".
+    /// This value is combined with (a) the namespace and name of the CephNFS (with a hyphen between)
+    /// and (b) the Realm configured in the user-provided krb5.conf to determine the full principal
+    /// name: <principalName>/<namespace>-<name>@<realm>. e.g., nfs/rook-ceph-my-nfs@example.net.
+    /// See https://github.com/nfs-ganesha/nfs-ganesha/wiki/RPCSEC_GSS for more detail.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "principalName")]
     pub principal_name: Option<String>,
 }
 
-/// ConfigFiles defines where the Kerberos configuration should be sourced from. Config files will be placed into the `/etc/krb5.conf.rook/` directory. 
-///  If this is left empty, Rook will not add any files. This allows you to manage the files yourself however you wish. For example, you may build them into your custom Ceph container image or use the Vault agent injector to securely add the files via annotations on the CephNFS spec (passed to the NFS server pods). 
-///  Rook configures Kerberos to log to stderr. We suggest removing logging sections from config files to avoid consuming unnecessary disk space from logging to files.
+/// ConfigFiles defines where the Kerberos configuration should be sourced from. Config files
+/// will be placed into the `/etc/krb5.conf.rook/` directory.
+/// 
+/// 
+/// If this is left empty, Rook will not add any files. This allows you to manage the files
+/// yourself however you wish. For example, you may build them into your custom Ceph container
+/// image or use the Vault agent injector to securely add the files via annotations on the
+/// CephNFS spec (passed to the NFS server pods).
+/// 
+/// 
+/// Rook configures Kerberos to log to stderr. We suggest removing logging sections from config
+/// files to avoid consuming unnecessary disk space from logging to files.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFiles {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
@@ -284,7 +315,11 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceSecretItems {
     pub path: String,
 }
 
-/// KeytabFile defines where the Kerberos keytab should be sourced from. The keytab file will be placed into `/etc/krb5.keytab`. If this is left empty, Rook will not add the file. This allows you to manage the `krb5.keytab` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
+/// KeytabFile defines where the Kerberos keytab should be sourced from. The keytab file will be
+/// placed into `/etc/krb5.keytab`. If this is left empty, Rook will not add the file.
+/// This allows you to manage the `krb5.keytab` file yourself however you wish. For example, you
+/// may build it into your custom Ceph container image or use the Vault agent injector to
+/// securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFile {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
@@ -500,7 +535,9 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceSecretItems {
     pub path: String,
 }
 
-/// SSSD enables integration with System Security Services Daemon (SSSD). SSSD can be used to provide user ID mapping from a number of sources. See https://sssd.io for more information about the SSSD project.
+/// SSSD enables integration with System Security Services Daemon (SSSD). SSSD can be used to
+/// provide user ID mapping from a number of sources. See https://sssd.io for more information
+/// about the SSSD project.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssd {
     /// Sidecar tells Rook to run SSSD in a sidecar alongside the NFS-Ganesha server in each NFS pod.
@@ -511,10 +548,13 @@ pub struct CephNFSSecuritySssd {
 /// Sidecar tells Rook to run SSSD in a sidecar alongside the NFS-Ganesha server in each NFS pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecar {
-    /// AdditionalFiles defines any number of additional files that should be mounted into the SSSD sidecar. These files may be referenced by the sssd.conf config file.
+    /// AdditionalFiles defines any number of additional files that should be mounted into the SSSD
+    /// sidecar. These files may be referenced by the sssd.conf config file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalFiles")]
     pub additional_files: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFiles>>,
-    /// DebugLevel sets the debug level for SSSD. If unset or set to 0, Rook does nothing. Otherwise, this may be a value between 1 and 10. See SSSD docs for more info: https://sssd.io/troubleshooting/basics.html#sssd-debug-logs
+    /// DebugLevel sets the debug level for SSSD. If unset or set to 0, Rook does nothing. Otherwise,
+    /// this may be a value between 1 and 10. See SSSD docs for more info:
+    /// https://sssd.io/troubleshooting/basics.html#sssd-debug-logs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugLevel")]
     pub debug_level: Option<i64>,
     /// Image defines the container image that should be used for the SSSD sidecar.
@@ -522,15 +562,21 @@ pub struct CephNFSSecuritySssdSidecar {
     /// Resources allow specifying resource requests/limits on the SSSD sidecar container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<CephNFSSecuritySssdSidecarResources>,
-    /// SSSDConfigFile defines where the SSSD configuration should be sourced from. The config file will be placed into `/etc/sssd/sssd.conf`. If this is left empty, Rook will not add the file. This allows you to manage the `sssd.conf` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
+    /// SSSDConfigFile defines where the SSSD configuration should be sourced from. The config file
+    /// will be placed into `/etc/sssd/sssd.conf`. If this is left empty, Rook will not add the file.
+    /// This allows you to manage the `sssd.conf` file yourself however you wish. For example, you
+    /// may build it into your custom Ceph container image or use the Vault agent injector to
+    /// securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sssdConfigFile")]
     pub sssd_config_file: Option<CephNFSSecuritySssdSidecarSssdConfigFile>,
 }
 
-/// SSSDSidecarAdditionalFile represents the source from where additional files for the the SSSD configuration should come from and are made available.
+/// SSSDSidecarAdditionalFile represents the source from where additional files for the the SSSD
+/// configuration should come from and are made available.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFiles {
-    /// SubPath defines the sub-path in `/etc/sssd/rook-additional/` where the additional file(s) will be placed. Each subPath definition must be unique and must not contain ':'.
+    /// SubPath defines the sub-path in `/etc/sssd/rook-additional/` where the additional file(s)
+    /// will be placed. Each subPath definition must be unique and must not contain ':'.
     #[serde(rename = "subPath")]
     pub sub_path: String,
     #[serde(rename = "volumeSource")]
@@ -749,15 +795,25 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceSecretItems {
 /// Resources allow specifying resource requests/limits on the SSSD sidecar container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephNFSSecuritySssdSidecarResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -765,11 +821,17 @@ pub struct CephNFSSecuritySssdSidecarResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// SSSDConfigFile defines where the SSSD configuration should be sourced from. The config file will be placed into `/etc/sssd/sssd.conf`. If this is left empty, Rook will not add the file. This allows you to manage the `sssd.conf` file yourself however you wish. For example, you may build it into your custom Ceph container image or use the Vault agent injector to securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
+/// SSSDConfigFile defines where the SSSD configuration should be sourced from. The config file
+/// will be placed into `/etc/sssd/sssd.conf`. If this is left empty, Rook will not add the file.
+/// This allows you to manage the `sssd.conf` file yourself however you wish. For example, you
+/// may build it into your custom Ceph container image or use the Vault agent injector to
+/// securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFile {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
@@ -999,7 +1061,8 @@ pub struct CephNFSServer {
     /// The labels-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// A liveness-probe to verify that Ganesha server has valid run-time state. If LivenessProbe.Disabled is false and LivenessProbe.Probe is nil uses default probe.
+    /// A liveness-probe to verify that Ganesha server has valid run-time state.
+    /// If LivenessProbe.Disabled is false and LivenessProbe.Probe is nil uses default probe.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<CephNFSServerLivenessProbe>,
     /// LogLevel set logging level
@@ -1015,24 +1078,28 @@ pub struct CephNFSServer {
     pub resources: Option<CephNFSServerResources>,
 }
 
-/// A liveness-probe to verify that Ganesha server has valid run-time state. If LivenessProbe.Disabled is false and LivenessProbe.Probe is nil uses default probe.
+/// A liveness-probe to verify that Ganesha server has valid run-time state.
+/// If LivenessProbe.Disabled is false and LivenessProbe.Probe is nil uses default probe.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbe {
     /// Disabled determines whether probe is disable or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+    /// Probe describes a health check to be performed against a container to determine whether it is
+    /// alive or ready to receive traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probe: Option<CephNFSServerLivenessProbeProbe>,
 }
 
-/// Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.
+/// Probe describes a health check to be performed against a container to determine whether it is
+/// alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephNFSServerLivenessProbeProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
@@ -1041,13 +1108,16 @@ pub struct CephNFSServerLivenessProbeProbe {
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephNFSServerLivenessProbeProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
@@ -1055,7 +1125,9 @@ pub struct CephNFSServerLivenessProbeProbe {
     pub tcp_socket: Option<CephNFSServerLivenessProbeProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1063,7 +1135,11 @@ pub struct CephNFSServerLivenessProbeProbe {
 /// Exec specifies the action to take.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1073,8 +1149,11 @@ pub struct CephNFSServerLivenessProbeProbeExec {
 pub struct CephNFSServerLivenessProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
-    ///  If this is not specified, the default behavior is defined by gRPC.
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// 
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
@@ -1082,7 +1161,8 @@ pub struct CephNFSServerLivenessProbeProbeGrpc {
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
@@ -1091,9 +1171,12 @@ pub struct CephNFSServerLivenessProbeProbeHttpGet {
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
-    /// Scheme to use for connecting to the host. Defaults to HTTP.
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
 }
@@ -1101,7 +1184,8 @@ pub struct CephNFSServerLivenessProbeProbeHttpGet {
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeHttpGetHttpHeaders {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
     /// The header field value
     pub value: String,
@@ -1113,7 +1197,9 @@ pub struct CephNFSServerLivenessProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
     pub port: IntOrString,
 }
 
@@ -1474,15 +1560,25 @@ pub struct CephNFSServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpr
 /// Resources set resource requests and limits
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephNFSServerResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1490,7 +1586,9 @@ pub struct CephNFSServerResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 

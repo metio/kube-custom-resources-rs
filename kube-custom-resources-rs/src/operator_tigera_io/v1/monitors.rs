@@ -283,7 +283,7 @@ pub struct MonitorPrometheusSpecCommonPrometheusFields {
 /// PrometheusContainer is a Prometheus container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MonitorPrometheusSpecCommonPrometheusFieldsContainers {
-    /// Name is an enum which identifies the Prometheus Deployment container by name.
+    /// Name is an enum which identifies the Prometheus Deployment container by name. Supported values are: authn-proxy
     pub name: MonitorPrometheusSpecCommonPrometheusFieldsContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Prometheus container's resources. If omitted, the Prometheus will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

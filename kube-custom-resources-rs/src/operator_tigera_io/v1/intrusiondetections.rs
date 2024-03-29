@@ -111,7 +111,7 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 /// IntrusionDetectionControllerDeploymentContainer is a IntrusionDetectionController Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the IntrusionDetectionController Deployment container by name.
+    /// Name is an enum which identifies the IntrusionDetectionController Deployment container by name. Supported values are: controller, webhooks-processor
     pub name: IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named IntrusionDetectionController Deployment container's resources. If omitted, the IntrusionDetection Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -153,7 +153,7 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 /// IntrusionDetectionControllerDeploymentInitContainer is a IntrusionDetectionController Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the IntrusionDetectionController Deployment init container by name.
+    /// Name is an enum which identifies the IntrusionDetectionController Deployment init container by name. Supported values are: intrusion-detection-tls-key-cert-provisioner
     pub name: IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named IntrusionDetectionController Deployment init container's resources. If omitted, the IntrusionDetectionController Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]

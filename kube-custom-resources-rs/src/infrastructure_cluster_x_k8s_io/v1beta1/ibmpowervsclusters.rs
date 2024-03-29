@@ -40,7 +40,8 @@ pub struct IBMPowerVSClusterNetwork {
     /// Name of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Regular expression to match resource, In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// Regular expression to match resource,
+    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
@@ -48,7 +49,8 @@ pub struct IBMPowerVSClusterNetwork {
 /// IBMPowerVSClusterStatus defines the observed state of IBMPowerVSCluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatus {
-    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file
+    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+    /// Important: Run "make" to regenerate code after modifying this file
     pub ready: bool,
 }
 

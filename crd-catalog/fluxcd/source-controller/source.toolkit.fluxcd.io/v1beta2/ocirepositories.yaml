@@ -94,6 +94,9 @@ spec:
                     semver:
                       description: "SemVer is the range of tags to pull selecting the latest within\nthe range, takes precedence over Tag."
                       type: "string"
+                    semverFilter:
+                      description: "SemverFilter is a regex pattern to filter the tags within the SemVer range."
+                      type: "string"
                     tag:
                       description: "Tag is the image tag to pull, defaults to latest."
                       type: "string"
@@ -146,6 +149,7 @@ spec:
                       description: "Provider specifies the technology used to sign the OCI Artifact."
                       enum:
                         - "cosign"
+                        - "notation"
                       type: "string"
                     secretRef:
                       description: "SecretRef specifies the Kubernetes Secret containing the\ntrusted public keys."

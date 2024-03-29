@@ -203,9 +203,6 @@ pub struct HazelcastCpSubsystem {
     /// GroupSize is the number of CP members to participate in each CP group. Allowed values are 3, 5, and 7.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupSize")]
     pub group_size: Option<i32>,
-    /// MemberCount is the number of CP members to initialize the CP Subsystem.
-    #[serde(rename = "memberCount")]
-    pub member_count: i32,
     /// MissingCpMemberAutoRemovalSeconds is the duration in seconds to wait before automatically removing a missing CP member from the CP Subsystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "missingCpMemberAutoRemovalSeconds")]
     pub missing_cp_member_auto_removal_seconds: Option<i32>,
@@ -533,6 +530,9 @@ pub enum HazelcastNativeMemoryAllocatorType {
 /// Persistence configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastPersistence {
+    /// BaseDir is deprecated. Use restore.localConfig to restore from a local backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseDir")]
+    pub base_dir: Option<String>,
     /// Configuration of the cluster recovery strategy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDataRecoveryPolicy")]
     pub cluster_data_recovery_policy: Option<HazelcastPersistenceClusterDataRecoveryPolicy>,
@@ -581,6 +581,9 @@ pub struct HazelcastPersistenceRestore {
     /// Name of the HotBackup resource from which backup will be fetched.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotBackupResourceName")]
     pub hot_backup_resource_name: Option<String>,
+    /// Configuration to restore from local backup
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localConfig")]
+    pub local_config: Option<HazelcastPersistenceRestoreLocalConfig>,
 }
 
 /// Bucket Configuration from which the backup will be downloaded.
@@ -595,6 +598,32 @@ pub struct HazelcastPersistenceRestoreBucketConfig {
     /// Name of the secret with credentials for cloud providers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
+}
+
+/// Configuration to restore from local backup
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HazelcastPersistenceRestoreLocalConfig {
+    /// Local backup base directory
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupDir")]
+    pub backup_dir: Option<String>,
+    /// Backup directory
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupFolder")]
+    pub backup_folder: Option<String>,
+    /// Persistence base directory
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseDir")]
+    pub base_dir: Option<String>,
+    /// PVC name prefix used in existing PVCs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcNamePrefix")]
+    pub pvc_name_prefix: Option<HazelcastPersistenceRestoreLocalConfigPvcNamePrefix>,
+}
+
+/// Configuration to restore from local backup
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HazelcastPersistenceRestoreLocalConfigPvcNamePrefix {
+    #[serde(rename = "persistence")]
+    Persistence,
+    #[serde(rename = "hot-restart-persistence")]
+    HotRestartPersistence,
 }
 
 /// Persistence configuration
