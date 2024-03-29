@@ -36,3 +36,8 @@ jobs:
           fi
         env:
           RUSTFLAGS: "--deny warnings"
+      - name: Check Dependency Updates
+        run: ./code-generator/test-custom-resources.sh about_k8s_io
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        env:
+          RUSTFLAGS: "--deny warnings"
