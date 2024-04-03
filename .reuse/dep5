@@ -1059,6 +1059,10 @@ Files: crd-catalog/smartxworks/virtink/*
 Copyright: The smartxworks/virtink Authors
 License: Apache-2.0
 
+Files: crd-catalog/snapp-incubator/ceph-s3-operator/*
+Copyright: The snapp-incubator/ceph-s3-operator Authors
+License: GPL-3.0-or-later
+
 Files: crd-catalog/snyk/kubernetes-monitor/*
 Copyright: The snyk/kubernetes-monitor Authors
 License: Apache-2.0

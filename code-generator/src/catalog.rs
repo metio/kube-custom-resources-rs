@@ -2733,6 +2733,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "snapp-incubator/ceph-s3-operator",
+        license: GPL_V3_OR_LATER,
+        urls: &[
+            "https://github.com/snapp-incubator/ceph-s3-operator/blob/main/config/crd/bases/s3.snappcloud.io_s3buckets.yaml",
+            "https://github.com/snapp-incubator/ceph-s3-operator/blob/main/config/crd/bases/s3.snappcloud.io_s3userclaims.yaml",
+            "https://github.com/snapp-incubator/ceph-s3-operator/blob/main/config/crd/bases/s3.snappcloud.io_s3users.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "snyk/kubernetes-monitor",
         license: APACHE_V2,
         urls: &[

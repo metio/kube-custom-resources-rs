@@ -2688,6 +2688,13 @@ apiVersion `runtime.cluster.x-k8s.io/v1alpha1`:
 apiVersion `s3.services.k8s.aws/v1alpha1`:
 - `Bucket`
 
+## s3_snappcloud_io
+
+apiVersion `s3.snappcloud.io/v1alpha1`:
+- `S3Bucket`
+- `S3UserClaim`
+- `S3User`
+
 ## sagemaker_services_k8s_aws
 
 apiVersion `sagemaker.services.k8s.aws/v1alpha1`:
@@ -3817,6 +3824,8 @@ pub mod rules_kubeedge_io;
 pub mod runtime_cluster_x_k8s_io;
 #[cfg(feature = "s3_services_k8s_aws")]
 pub mod s3_services_k8s_aws;
+#[cfg(feature = "s3_snappcloud_io")]
+pub mod s3_snappcloud_io;
 #[cfg(feature = "sagemaker_services_k8s_aws")]
 pub mod sagemaker_services_k8s_aws;
 #[cfg(feature = "samples_operator_openshift_io")]
