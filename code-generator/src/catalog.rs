@@ -767,6 +767,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "banzaicloud/istio-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/banzaicloud/istio-operator/blob/release-1.17/config/crd/bases/istio-operator-crds.gen.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "berops/claudie",
         license: APACHE_V2,
         urls: &[
