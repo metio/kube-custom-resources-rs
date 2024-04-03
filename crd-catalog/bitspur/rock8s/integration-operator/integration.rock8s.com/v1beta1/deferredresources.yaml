@@ -1,0 +1,139 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.11.1"
+  name: "deferredresources.integration.rock8s.com"
+spec:
+  group: "integration.rock8s.com"
+  names:
+    kind: "DeferredResource"
+    listKind: "DeferredResourceList"
+    plural: "deferredresources"
+    singular: "deferredresource"
+  scope: "Namespaced"
+  versions:
+    - name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          description: "DeferredResource is the Schema for the deferredresources API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "DeferredResourceSpec defines the desired state of DeferredResource"
+              properties:
+                resource:
+                  description: "Resource is the resource to create after the defer is resolved"
+                  x-kubernetes-preserve-unknown-fields: true
+                serviceAccountName:
+                  description: "ServiceAccountName is the name of the ServiceAccount to use to create deferred resources from. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/"
+                  type: "string"
+                timeout:
+                  description: "Timeout is the maximum time to wait before creating the resource"
+                  format: "int64"
+                  type: "integer"
+                waitFor:
+                  description: "WaitFor is a list of resources to wait for before creating the resource"
+                  items:
+                    description: "Target refers to a kubernetes object by Group, Version, Kind and Name gvk.Gvk contains Group, Version and Kind APIVersion is added to keep the backward compatibility of using ObjectReference for Var.ObjRef"
+                    properties:
+                      apiVersion:
+                        type: "string"
+                      group:
+                        type: "string"
+                      kind:
+                        type: "string"
+                      name:
+                        type: "string"
+                      version:
+                        type: "string"
+                    type: "object"
+                  type: "array"
+              type: "object"
+            status:
+              description: "DeferredResourceStatus defines the observed state of DeferredResource"
+              properties:
+                conditions:
+                  items:
+                    description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition. This may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "message"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                ownerReferences:
+                  description: "OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field."
+                  properties:
+                    apiVersion:
+                      description: "API version of the referent."
+                      type: "string"
+                    blockOwnerDeletion:
+                      description: "If true, AND if the owner has the \"foregroundDeletion\" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs \"delete\" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned."
+                      type: "boolean"
+                    controller:
+                      description: "If true, this reference points to the managing controller."
+                      type: "boolean"
+                    kind:
+                      description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                      type: "string"
+                    name:
+                      description: "Name of the referent. More info: http://kubernetes.io/docs/user-guide/identifiers#names"
+                      type: "string"
+                    uid:
+                      description: "UID of the referent. More info: http://kubernetes.io/docs/user-guide/identifiers#uids"
+                      type: "string"
+                  required:
+                    - "apiVersion"
+                    - "kind"
+                    - "name"
+                    - "uid"
+                  type: "object"
+                  x-kubernetes-map-type: "atomic"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
