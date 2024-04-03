@@ -1484,8 +1484,6 @@ apiVersion `integration.rock8s.com/v1beta1`:
 - `DeferredResource`
 - `Plug`
 - `Socket`
-- `Plug`
-- `Socket`
 
 ## iot_eclipse_org
 
@@ -2715,6 +2713,14 @@ apiVersion `servicebinding.io/v1beta1`:
 - `ClusterWorkloadResourceMapping`
 - `ServiceBinding`
 
+## servicemesh_cisco_com
+
+apiVersion `servicemesh.cisco.com/v1alpha1`:
+- `IstioControlPlane`
+- `IstioMesh`
+- `IstioMeshGateway`
+- `PeerIstioControlPlane`
+
 ## services_k8s_aws
 
 apiVersion `services.k8s.aws/v1alpha1`:
@@ -3682,6 +3688,8 @@ pub mod security_istio_io;
 pub mod sematext_com;
 #[cfg(feature = "servicebinding_io")]
 pub mod servicebinding_io;
+#[cfg(feature = "servicemesh_cisco_com")]
+pub mod servicemesh_cisco_com;
 #[cfg(feature = "services_k8s_aws")]
 pub mod services_k8s_aws;
 #[cfg(feature = "serving_kubedl_io")]

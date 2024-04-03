@@ -291,6 +291,10 @@ Files: crd-catalog/backube/volsync/*
 Copyright: The backube/volsync Authors
 License: AGPL-3.0-or-later
 
+Files: crd-catalog/banzaicloud/istio-operator/*
+Copyright: The banzaicloud/istio-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/berops/claudie/*
 Copyright: The berops/claudie Authors
 License: Apache-2.0
