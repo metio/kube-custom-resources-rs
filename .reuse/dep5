@@ -595,6 +595,10 @@ Files: crd-catalog/infinispan/infinispan-operator/*
 Copyright: The infinispan/infinispan-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/instana/instana-agent-operator/*
+Copyright: The instana/instana-agent-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/ipfs-cluster/ipfs-operator/*
 Copyright: The ipfs-cluster/ipfs-operator Authors
 License: Apache-2.0
