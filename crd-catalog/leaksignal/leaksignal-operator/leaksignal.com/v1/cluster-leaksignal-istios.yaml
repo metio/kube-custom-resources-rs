@@ -1,0 +1,92 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "cluster-leaksignal-istios.leaksignal.com"
+spec:
+  group: "leaksignal.com"
+  names:
+    kind: "ClusterLeaksignalIstio"
+    plural: "cluster-leaksignal-istios"
+    shortNames:
+      - "cluster-leaksignal-istio"
+    singular: "cluster-leaksignal-istio"
+  scope: "Cluster"
+  versions:
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "Deploy LeakSignal Proxy in all istio-enabled namespaces, can be overriden by local LeaksignalIstios."
+          properties:
+            spec:
+              properties:
+                apiKey:
+                  description: "API Key from the LeakSignal Command dashboard. Alternatively, the deployment name from LeakAgent."
+                  type: "string"
+                caBundle:
+                  description: "Location of CA bundle in istio-proxy. Default is `/etc/ssl/certs/ca-certificates.crt` which is suitable for Istio. OpenShift Service Mesh requires `/etc/ssl/certs/ca-bundle.crt`."
+                  type: "string"
+                enableStreaming:
+                  description: "If `true` (default), then L4 streams are also scanned by LeakSignal Proxy."
+                  type: "boolean"
+                failOpen:
+                  description: "If `true` (default), if LeakSignal Proxy has a failure, then all traffic is routed around it."
+                  type: "boolean"
+                grpcMode:
+                  description: "Whether to use Google GRPC or Envoy GRPC for WASM deployments."
+                  enum:
+                    - "default"
+                    - "envoy"
+                  type: "string"
+                native:
+                  description: "If `true` (not default), istio-proxy containers are updated to a corresponding image with support for dynamic plugins, and the native LeakSignal Proxy module is installed."
+                  type: "boolean"
+                nativeProxyMemoryLimit:
+                  description: "Alternative memory limit for Istio sidecars running native modules. Useful to mitigate a surge of memory usage when loading the proxy."
+                  type: "string"
+                nativeRepo:
+                  description: "Default is `leaksignal/istio-proxy`. If no tag is specified, it is inferred from the existing proxy image on each given pod."
+                  type: "string"
+                proxyHash:
+                  description: "Hash of the downloaded bundle for LeakSignal Proxy. Will depend on your version and deployment mechanism (nginx, envoy, WASM)."
+                  type: "string"
+                proxyPrefix:
+                  description: "Prefix of binary to pull. Defaults to `s3/leakproxy`. For LeakAgent deployments, use `proxy`."
+                  type: "string"
+                proxyPullLocation:
+                  description: "Format `https?://domain(:port)?/`. Defaults to `https://leakproxy.s3.us-west-2.amazonaws.com/`."
+                  type: "string"
+                proxyVersion:
+                  description: "Version string for LeakSignal Proxy deployment."
+                  type: "string"
+                refreshPodsOnStale:
+                  description: "Detects pods that should have leaksignal deployed, but dont, and restarts them."
+                  type: "boolean"
+                refreshPodsOnUpdate:
+                  description: "For WASM mode, redeploys all pods with Istio sidecars affected by a LeakSignal Proxy upgrade. This provides more consistent behavior. Default is `true`."
+                  type: "boolean"
+                tls:
+                  description: "If `true` (default), TLS/HTTPS is used for telemetry upload and downloading LeakSignal Proxy. LeakAgent is usually `false`."
+                  type: "boolean"
+                upstreamLocation:
+                  description: "Hostname of upstream location to send metrics to. Default is `ingestion.app.leaksignal.com`."
+                  type: "string"
+                upstreamPort:
+                  description: "Port of upstream ingestion. Defaults to 80/443 depending on `tls`. Recommended 8121 for LeakAgent."
+                  type: "integer"
+                workloadSelector:
+                  description: "Pod selector for workloads."
+                  properties:
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels to match any pod before deploying LeakSignal."
+                      type: "object"
+                  type: "object"
+              required:
+                - "proxyVersion"
+                - "proxyHash"
+                - "apiKey"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
