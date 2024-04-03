@@ -975,6 +975,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "confidential-containers/operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/confidential-containers/operator/blob/main/config/crd/bases/confidentialcontainers.org_ccruntimes.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "couchbase-partners/helm-charts",
         license: APACHE_V2,
         urls: &[

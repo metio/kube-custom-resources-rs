@@ -765,6 +765,11 @@ apiVersion `clustertemplate.openshift.io/v1alpha1`:
 - `ClusterTemplateSetup`
 - `Config`
 
+## confidentialcontainers_org
+
+apiVersion `confidentialcontainers.org/v1beta1`:
+- `CcRuntime`
+
 ## config_gatekeeper_sh
 
 apiVersion `config.gatekeeper.sh/v1alpha1`:
@@ -3424,6 +3429,8 @@ pub mod cluster_x_k8s_io;
 pub mod clusters_clusternet_io;
 #[cfg(feature = "clustertemplate_openshift_io")]
 pub mod clustertemplate_openshift_io;
+#[cfg(feature = "confidentialcontainers_org")]
+pub mod confidentialcontainers_org;
 #[cfg(feature = "config_gatekeeper_sh")]
 pub mod config_gatekeeper_sh;
 #[cfg(feature = "config_grafana_com")]
