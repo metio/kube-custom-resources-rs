@@ -847,6 +847,10 @@ Files: crd-catalog/l7mp/stunner/*
 Copyright: The l7mp/stunner Authors
 License: MIT
 
+Files: crd-catalog/leaksignal/leaksignal-operator/*
+Copyright: The leaksignal/leaksignal-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/Lerentis/bitwarden-crd-operator/*
 Copyright: The Lerentis/bitwarden-crd-operator Authors
 License: MIT

@@ -2174,6 +2174,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "leaksignal/leaksignal-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/leaksignal/leaksignal-operator/blob/master/crds/leaksignal-cluster-crd.yaml",
+            "https://github.com/leaksignal/leaksignal-operator/blob/master/crds/leaksignal-crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "Lerentis/bitwarden-crd-operator",
         license: MIT,
         urls: &[

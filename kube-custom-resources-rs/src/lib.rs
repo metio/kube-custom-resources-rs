@@ -1827,6 +1827,12 @@ apiVersion `lambda.services.k8s.aws/v1alpha1`:
 - `LayerVersion`
 - `Version`
 
+## leaksignal_com
+
+apiVersion `leaksignal.com/v1`:
+- `ClusterLeaksignalIstio`
+- `LeaksignalIstio`
+
 ## lerentis_uploadfilter24_eu
 
 apiVersion `lerentis.uploadfilter24.eu/v1beta4`:
@@ -3493,6 +3499,8 @@ pub mod kustomize_toolkit_fluxcd_io;
 pub mod kyverno_io;
 #[cfg(feature = "lambda_services_k8s_aws")]
 pub mod lambda_services_k8s_aws;
+#[cfg(feature = "leaksignal_com")]
+pub mod leaksignal_com;
 #[cfg(feature = "lerentis_uploadfilter24_eu")]
 pub mod lerentis_uploadfilter24_eu;
 #[cfg(feature = "limitador_kuadrant_io")]
