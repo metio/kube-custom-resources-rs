@@ -337,11 +337,6 @@ apiVersion `atlasmap.io/v1alpha1`:
 apiVersion `auth.ops42.org/v1alpha1`:
 - `AwsAuthSyncConfig`
 
-## authorization_openshift_io
-
-apiVersion `authorization.openshift.io/v1`:
-- `RoleBindingRestriction`
-
 ## authzed_com
 
 apiVersion `authzed.com/v1alpha1`:
@@ -669,11 +664,6 @@ apiVersion `cilium.io/v2alpha1`:
 apiVersion `claudie.io/v1beta1`:
 - `InputManifest`
 
-## cloud_network_openshift_io
-
-apiVersion `cloud.network.openshift.io/v1`:
-- `CloudPrivateIPConfig`
-
 ## cloudformation_linki_space
 
 apiVersion `cloudformation.linki.space/v1alpha1`:
@@ -791,55 +781,10 @@ apiVersion `config.karmada.io/v1alpha1`:
 apiVersion `config.koordinator.sh/v1alpha1`:
 - `ClusterColocationProfile`
 
-## config_openshift_io
-
-apiVersion `config.openshift.io/v1`:
-- `APIServer`
-- `Authentication`
-- `Build`
-- `ClusterOperator`
-- `ClusterVersion`
-- `Console`
-- `DNS`
-- `FeatureGate`
-- `ImageContentPolicy`
-- `ImageDigestMirrorSet`
-- `Image`
-- `ImageTagMirrorSet`
-- `Infrastructure`
-- `Ingress`
-- `Network`
-- `Node`
-- `OAuth`
-- `OperatorHub`
-- `Project`
-- `Proxy`
-- `Scheduler`
-
-## console_openshift_io
-
-apiVersion `console.openshift.io/v1`:
-- `ConsoleCLIDownload`
-- `ConsoleExternalLogLink`
-- `ConsoleLink`
-- `ConsoleNotification`
-- `ConsolePlugin`
-- `ConsoleQuickStart`
-- `ConsoleSample`
-- `ConsoleYAMLSample`
-
-apiVersion `console.openshift.io/v1alpha1`:
-- `ConsolePlugin`
-
 ## control_k8ssandra_io
 
 apiVersion `control.k8ssandra.io/v1alpha1`:
 - `CassandraTask`
-
-## controlplane_operator_openshift_io
-
-apiVersion `controlplane.operator.openshift.io/v1alpha1`:
-- `PodNetworkConnectivityCheck`
 
 ## core_kubeadmiral_io
 
@@ -1122,11 +1067,6 @@ apiVersion `everest.percona.com/v1alpha1`:
 - `DatabaseCluster`
 - `MonitoringConfig`
 
-## example_openshift_io
-
-apiVersion `example.openshift.io/v1`:
-- `StableConfigType`
-
 ## execution_furiko_io
 
 apiVersion `execution.furiko.io/v1alpha1`:
@@ -1348,12 +1288,6 @@ apiVersion `hazelcast.com/v1alpha1`:
 - `Map`
 - `WanReplication`
 
-## helm_openshift_io
-
-apiVersion `helm.openshift.io/v1beta1`:
-- `HelmChartRepository`
-- `ProjectHelmChartRepository`
-
 ## helm_sigstore_dev
 
 apiVersion `helm.sigstore.dev/v1alpha1`:
@@ -1435,12 +1369,6 @@ apiVersion `image.toolkit.fluxcd.io/v1beta1`:
 apiVersion `image.toolkit.fluxcd.io/v1beta2`:
 - `ImagePolicy`
 - `ImageRepository`
-
-## imageregistry_operator_openshift_io
-
-apiVersion `imageregistry.operator.openshift.io/v1`:
-- `Config`
-- `ImagePruner`
 
 ## imaging_ingestion_alvearie_org
 
@@ -1535,16 +1463,6 @@ apiVersion `infrastructure.cluster.x-k8s.io/v1beta2`:
 - `IBMVPCMachine`
 - `IBMVPCMachineTemplate`
 
-## ingress_operator_openshift_io
-
-apiVersion `ingress.operator.openshift.io/v1`:
-- `DNSRecord`
-
-## insights_openshift_io
-
-apiVersion `insights.openshift.io/v1alpha1`:
-- `DataGather`
-
 ## install_istio_io
 
 apiVersion `install.istio.io/v1alpha1`:
@@ -1554,6 +1472,11 @@ apiVersion `install.istio.io/v1alpha1`:
 
 apiVersion `installation.mattermost.com/v1beta1`:
 - `Mattermost`
+
+## instana_io
+
+apiVersion `instana.io/v1`:
+- `InstanaAgent`
 
 ## integration_rock8s_com
 
@@ -2011,28 +1934,6 @@ apiVersion `m4e.krestomat.io/v1alpha1`:
 - `Phpfpm`
 - `Routine`
 
-## machine_openshift_io
-
-apiVersion `machine.openshift.io/v1`:
-- `ControlPlaneMachineSet`
-
-apiVersion `machine.openshift.io/v1beta1`:
-- `MachineHealthCheck`
-- `Machine`
-- `MachineSet`
-
-## machineconfiguration_openshift_io
-
-apiVersion `machineconfiguration.openshift.io/v1`:
-- `ContainerRuntimeConfig`
-- `ControllerConfig`
-- `KubeletConfig`
-- `MachineConfigPool`
-- `MachineConfig`
-
-apiVersion `machineconfiguration.openshift.io/v1alpha1`:
-- `MachineConfigNode`
-
 ## maps_k8s_elastic_co
 
 apiVersion `maps.k8s.elastic.co/v1alpha1`:
@@ -2125,12 +2026,6 @@ apiVersion `monitoring.coreos.com/v1alpha1`:
 apiVersion `monitoring.coreos.com/v1beta1`:
 - `AlertmanagerConfig`
 
-## monitoring_openshift_io
-
-apiVersion `monitoring.openshift.io/v1`:
-- `AlertingRule`
-- `AlertRelabelConfig`
-
 ## monocle_monocle_change_metrics_io
 
 apiVersion `monocle.monocle.change-metrics.io/v1alpha1`:
@@ -2191,19 +2086,6 @@ apiVersion `nativestor.alauda.io/v1`:
 
 apiVersion `netchecks.io/v1`:
 - `NetworkAssertion`
-
-## network_openshift_io
-
-apiVersion `network.openshift.io/v1`:
-- `ClusterNetwork`
-- `EgressNetworkPolicy`
-- `HostSubnet`
-- `NetNamespace`
-
-## network_operator_openshift_io
-
-apiVersion `network.operator.openshift.io/v1`:
-- `EgressRouter`
 
 ## networkfirewall_services_k8s_aws
 
@@ -2374,30 +2256,6 @@ apiVersion `operator.open-cluster-management.io/v1`:
 - `ClusterManager`
 - `Klusterlet`
 
-## operator_openshift_io
-
-apiVersion `operator.openshift.io/v1`:
-- `Authentication`
-- `CloudCredential`
-- `ClusterCSIDriver`
-- `Config`
-- `Console`
-- `CSISnapshotController`
-- `DNS`
-- `Etcd`
-- `IngressController`
-- `InsightsOperator`
-- `KubeAPIServer`
-- `KubeControllerManager`
-- `KubeScheduler`
-- `KubeStorageVersionMigrator`
-- `MachineConfiguration`
-- `Network`
-- `OpenShiftAPIServer`
-- `OpenShiftControllerManager`
-- `ServiceCA`
-- `Storage`
-
 ## operator_shipwright_io
 
 apiVersion `operator.shipwright.io/v1alpha1`:
@@ -2502,11 +2360,6 @@ apiVersion `pkg.crossplane.io/v1alpha1`:
 apiVersion `pkg.crossplane.io/v1beta1`:
 - `Lock`
 
-## platform_openshift_io
-
-apiVersion `platform.openshift.io/v1alpha1`:
-- `PlatformOperator`
-
 ## policy_clusterpedia_io
 
 apiVersion `policy.clusterpedia.io/v1alpha1`:
@@ -2584,11 +2437,6 @@ apiVersion `quay.redhat.com/v1`:
 
 apiVersion `quota.codeflare.dev/v1alpha1`:
 - `QuotaSubtree`
-
-## quota_openshift_io
-
-apiVersion `quota.openshift.io/v1`:
-- `ClusterResourceQuota`
 
 ## ray_io
 
@@ -2680,11 +2528,6 @@ apiVersion `rocketmq.apache.org/v1alpha1`:
 - `NameService`
 - `TopicTransfer`
 
-## route_openshift_io
-
-apiVersion `route.openshift.io/v1`:
-- `Route`
-
 ## route53_services_k8s_aws
 
 apiVersion `route53.services.k8s.aws/v1alpha1`:
@@ -2743,11 +2586,6 @@ apiVersion `sagemaker.services.k8s.aws/v1alpha1`:
 - `TrainingJob`
 - `TransformJob`
 - `UserProfile`
-
-## samples_operator_openshift_io
-
-apiVersion `samples.operator.openshift.io/v1`:
-- `Config`
 
 ## scheduling_koordinator_sh
 
@@ -2847,11 +2685,6 @@ apiVersion `security-profiles-operator.x-k8s.io/v1alpha2`:
 apiVersion `security-profiles-operator.x-k8s.io/v1beta1`:
 - `SeccompProfile`
 
-## security_internal_openshift_io
-
-apiVersion `security.internal.openshift.io/v1`:
-- `RangeAllocation`
-
 ## security_istio_io
 
 apiVersion `security.istio.io/v1`:
@@ -2863,11 +2696,6 @@ apiVersion `security.istio.io/v1beta1`:
 - `AuthorizationPolicy`
 - `PeerAuthentication`
 - `RequestAuthentication`
-
-## security_openshift_io
-
-apiVersion `security.openshift.io/v1`:
-- `SecurityContextConstraints`
 
 ## sematext_com
 
@@ -2900,12 +2728,6 @@ apiVersion `serving.kubedl.io/v1alpha1`:
 apiVersion `sfn.services.k8s.aws/v1alpha1`:
 - `Activity`
 - `StateMachine`
-
-## sharedresource_openshift_io
-
-apiVersion `sharedresource.openshift.io/v1alpha1`:
-- `SharedConfigMap`
-- `SharedSecret`
 
 ## site_superedge_io
 
@@ -3333,8 +3155,6 @@ pub mod asdb_aerospike_com;
 pub mod atlasmap_io;
 #[cfg(feature = "auth_ops42_org")]
 pub mod auth_ops42_org;
-#[cfg(feature = "authorization_openshift_io")]
-pub mod authorization_openshift_io;
 #[cfg(feature = "authzed_com")]
 pub mod authzed_com;
 #[cfg(feature = "autoscaling_k8s_io")]
@@ -3405,8 +3225,6 @@ pub mod chisel_operator_io;
 pub mod cilium_io;
 #[cfg(feature = "claudie_io")]
 pub mod claudie_io;
-#[cfg(feature = "cloud_network_openshift_io")]
-pub mod cloud_network_openshift_io;
 #[cfg(feature = "cloudformation_linki_space")]
 pub mod cloudformation_linki_space;
 #[cfg(feature = "cloudfront_services_k8s_aws")]
@@ -3439,14 +3257,8 @@ pub mod config_grafana_com;
 pub mod config_karmada_io;
 #[cfg(feature = "config_koordinator_sh")]
 pub mod config_koordinator_sh;
-#[cfg(feature = "config_openshift_io")]
-pub mod config_openshift_io;
-#[cfg(feature = "console_openshift_io")]
-pub mod console_openshift_io;
 #[cfg(feature = "control_k8ssandra_io")]
 pub mod control_k8ssandra_io;
-#[cfg(feature = "controlplane_operator_openshift_io")]
-pub mod controlplane_operator_openshift_io;
 #[cfg(feature = "core_kubeadmiral_io")]
 pub mod core_kubeadmiral_io;
 #[cfg(feature = "core_linuxsuren_github_com")]
@@ -3511,8 +3323,6 @@ pub mod ensembleoss_io;
 pub mod enterprisesearch_k8s_elastic_co;
 #[cfg(feature = "everest_percona_com")]
 pub mod everest_percona_com;
-#[cfg(feature = "example_openshift_io")]
-pub mod example_openshift_io;
 #[cfg(feature = "execution_furiko_io")]
 pub mod execution_furiko_io;
 #[cfg(feature = "executor_testkube_io")]
@@ -3563,8 +3373,6 @@ pub mod grafana_integreatly_org;
 pub mod groupsnapshot_storage_k8s_io;
 #[cfg(feature = "hazelcast_com")]
 pub mod hazelcast_com;
-#[cfg(feature = "helm_openshift_io")]
-pub mod helm_openshift_io;
 #[cfg(feature = "helm_sigstore_dev")]
 pub mod helm_sigstore_dev;
 #[cfg(feature = "helm_toolkit_fluxcd_io")]
@@ -3583,8 +3391,6 @@ pub mod iam_services_k8s_aws;
 pub mod ibmcloud_ibm_com;
 #[cfg(feature = "image_toolkit_fluxcd_io")]
 pub mod image_toolkit_fluxcd_io;
-#[cfg(feature = "imageregistry_operator_openshift_io")]
-pub mod imageregistry_operator_openshift_io;
 #[cfg(feature = "imaging_ingestion_alvearie_org")]
 pub mod imaging_ingestion_alvearie_org;
 #[cfg(feature = "inference_kubedl_io")]
@@ -3595,14 +3401,12 @@ pub mod infinispan_org;
 pub mod infra_contrib_fluxcd_io;
 #[cfg(feature = "infrastructure_cluster_x_k8s_io")]
 pub mod infrastructure_cluster_x_k8s_io;
-#[cfg(feature = "ingress_operator_openshift_io")]
-pub mod ingress_operator_openshift_io;
-#[cfg(feature = "insights_openshift_io")]
-pub mod insights_openshift_io;
 #[cfg(feature = "install_istio_io")]
 pub mod install_istio_io;
 #[cfg(feature = "installation_mattermost_com")]
 pub mod installation_mattermost_com;
+#[cfg(feature = "instana_io")]
+pub mod instana_io;
 #[cfg(feature = "integration_rock8s_com")]
 pub mod integration_rock8s_com;
 #[cfg(feature = "iot_eclipse_org")]
@@ -3689,10 +3493,6 @@ pub mod loki_grafana_com;
 pub mod longhorn_io;
 #[cfg(feature = "m4e_krestomat_io")]
 pub mod m4e_krestomat_io;
-#[cfg(feature = "machine_openshift_io")]
-pub mod machine_openshift_io;
-#[cfg(feature = "machineconfiguration_openshift_io")]
-pub mod machineconfiguration_openshift_io;
 #[cfg(feature = "maps_k8s_elastic_co")]
 pub mod maps_k8s_elastic_co;
 #[cfg(feature = "mariadb_mmontes_io")]
@@ -3715,8 +3515,6 @@ pub mod mirrors_kts_studio;
 pub mod model_kubedl_io;
 #[cfg(feature = "monitoring_coreos_com")]
 pub mod monitoring_coreos_com;
-#[cfg(feature = "monitoring_openshift_io")]
-pub mod monitoring_openshift_io;
 #[cfg(feature = "monocle_monocle_change_metrics_io")]
 pub mod monocle_monocle_change_metrics_io;
 #[cfg(feature = "mq_services_k8s_aws")]
@@ -3731,10 +3529,6 @@ pub mod mutations_gatekeeper_sh;
 pub mod nativestor_alauda_io;
 #[cfg(feature = "netchecks_io")]
 pub mod netchecks_io;
-#[cfg(feature = "network_openshift_io")]
-pub mod network_openshift_io;
-#[cfg(feature = "network_operator_openshift_io")]
-pub mod network_operator_openshift_io;
 #[cfg(feature = "networkfirewall_services_k8s_aws")]
 pub mod networkfirewall_services_k8s_aws;
 #[cfg(feature = "networking_gke_io")]
@@ -3775,8 +3569,6 @@ pub mod operator_cluster_x_k8s_io;
 pub mod operator_cryostat_io;
 #[cfg(feature = "operator_open_cluster_management_io")]
 pub mod operator_open_cluster_management_io;
-#[cfg(feature = "operator_openshift_io")]
-pub mod operator_openshift_io;
 #[cfg(feature = "operator_shipwright_io")]
 pub mod operator_shipwright_io;
 #[cfg(feature = "operator_tekton_dev")]
@@ -3797,8 +3589,6 @@ pub mod pgv2_percona_com;
 pub mod pipes_services_k8s_aws;
 #[cfg(feature = "pkg_crossplane_io")]
 pub mod pkg_crossplane_io;
-#[cfg(feature = "platform_openshift_io")]
-pub mod platform_openshift_io;
 #[cfg(feature = "policy_clusterpedia_io")]
 pub mod policy_clusterpedia_io;
 #[cfg(feature = "policy_karmada_io")]
@@ -3821,8 +3611,6 @@ pub mod pxc_percona_com;
 pub mod quay_redhat_com;
 #[cfg(feature = "quota_codeflare_dev")]
 pub mod quota_codeflare_dev;
-#[cfg(feature = "quota_openshift_io")]
-pub mod quota_openshift_io;
 #[cfg(feature = "ray_io")]
 pub mod ray_io;
 #[cfg(feature = "rbacmanager_reactiveops_io")]
@@ -3845,8 +3633,6 @@ pub mod repo_manager_pulpproject_org;
 pub mod resources_teleport_dev;
 #[cfg(feature = "rocketmq_apache_org")]
 pub mod rocketmq_apache_org;
-#[cfg(feature = "route_openshift_io")]
-pub mod route_openshift_io;
 #[cfg(feature = "route53_services_k8s_aws")]
 pub mod route53_services_k8s_aws;
 #[cfg(feature = "route53resolver_services_k8s_aws")]
@@ -3861,8 +3647,6 @@ pub mod s3_services_k8s_aws;
 pub mod s3_snappcloud_io;
 #[cfg(feature = "sagemaker_services_k8s_aws")]
 pub mod sagemaker_services_k8s_aws;
-#[cfg(feature = "samples_operator_openshift_io")]
-pub mod samples_operator_openshift_io;
 #[cfg(feature = "scheduling_koordinator_sh")]
 pub mod scheduling_koordinator_sh;
 #[cfg(feature = "scheduling_sigs_k8s_io")]
@@ -3889,12 +3673,8 @@ pub mod secretsmanager_services_k8s_aws;
 pub mod secscan_quay_redhat_com;
 #[cfg(feature = "security_profiles_operator_x_k8s_io")]
 pub mod security_profiles_operator_x_k8s_io;
-#[cfg(feature = "security_internal_openshift_io")]
-pub mod security_internal_openshift_io;
 #[cfg(feature = "security_istio_io")]
 pub mod security_istio_io;
-#[cfg(feature = "security_openshift_io")]
-pub mod security_openshift_io;
 #[cfg(feature = "sematext_com")]
 pub mod sematext_com;
 #[cfg(feature = "servicebinding_io")]
@@ -3905,8 +3685,6 @@ pub mod services_k8s_aws;
 pub mod serving_kubedl_io;
 #[cfg(feature = "sfn_services_k8s_aws")]
 pub mod sfn_services_k8s_aws;
-#[cfg(feature = "sharedresource_openshift_io")]
-pub mod sharedresource_openshift_io;
 #[cfg(feature = "site_superedge_io")]
 pub mod site_superedge_io;
 #[cfg(feature = "slo_koordinator_sh")]

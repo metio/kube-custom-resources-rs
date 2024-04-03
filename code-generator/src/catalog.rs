@@ -1494,6 +1494,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "instana/instana-agent-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/instana/instana-agent-operator/blob/main/config/crd/bases/instana.io_agents.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "ipfs-cluster/ipfs-operator",
         license: APACHE_V2,
         urls: &[
