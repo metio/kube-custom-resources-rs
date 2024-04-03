@@ -1524,6 +1524,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "k8ssandra/cass-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/k8ssandra/cass-operator/blob/master/config/crd/bases/cassandra.datastax.com_cassandradatacenters.yaml",
+            "https://github.com/k8ssandra/cass-operator/blob/master/config/crd/bases/control.k8ssandra.io_cassandratasks.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "k8up-io/k8up",
         license: APACHE_V2,
         urls: &[

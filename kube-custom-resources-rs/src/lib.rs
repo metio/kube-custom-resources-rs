@@ -542,6 +542,11 @@ apiVersion `capsule.clastix.io/v1beta2`:
 - `CapsuleConfiguration`
 - `Tenant`
 
+## cassandra_datastax_com
+
+apiVersion `cassandra.datastax.com/v1beta1`:
+- `CassandraDatacenter`
+
 ## ceph_rook_io
 
 apiVersion `ceph.rook.io/v1`:
@@ -820,6 +825,11 @@ apiVersion `console.openshift.io/v1`:
 
 apiVersion `console.openshift.io/v1alpha1`:
 - `ConsolePlugin`
+
+## control_k8ssandra_io
+
+apiVersion `control.k8ssandra.io/v1alpha1`:
+- `CassandraTask`
 
 ## controlplane_operator_openshift_io
 
@@ -3352,6 +3362,8 @@ pub mod canaries_flanksource_com;
 pub mod capabilities_3scale_net;
 #[cfg(feature = "capsule_clastix_io")]
 pub mod capsule_clastix_io;
+#[cfg(feature = "cassandra_datastax_com")]
+pub mod cassandra_datastax_com;
 #[cfg(feature = "ceph_rook_io")]
 pub mod ceph_rook_io;
 #[cfg(feature = "cert_manager_io")]
@@ -3414,6 +3426,8 @@ pub mod config_koordinator_sh;
 pub mod config_openshift_io;
 #[cfg(feature = "console_openshift_io")]
 pub mod console_openshift_io;
+#[cfg(feature = "control_k8ssandra_io")]
+pub mod control_k8ssandra_io;
 #[cfg(feature = "controlplane_operator_openshift_io")]
 pub mod controlplane_operator_openshift_io;
 #[cfg(feature = "core_kubeadmiral_io")]
