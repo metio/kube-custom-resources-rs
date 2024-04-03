@@ -971,6 +971,12 @@ apiVersion `devices.kubeedge.io/v1alpha2`:
 - `DeviceModel`
 - `Device`
 
+## devops_kubesphere_io
+
+apiVersion `devops.kubesphere.io/v1alpha1`:
+- `ReleaserController`
+- `Releaser`
+
 ## dex_coreos_com
 
 apiVersion `dex.coreos.com/v1`:
@@ -3462,6 +3468,8 @@ pub mod dataprotection_kubeblocks_io;
 pub mod designer_kaoto_io;
 #[cfg(feature = "devices_kubeedge_io")]
 pub mod devices_kubeedge_io;
+#[cfg(feature = "devops_kubesphere_io")]
+pub mod devops_kubesphere_io;
 #[cfg(feature = "dex_coreos_com")]
 pub mod dex_coreos_com;
 #[cfg(feature = "dex_gpu_ninja_com")]
