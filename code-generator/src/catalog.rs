@@ -1153,6 +1153,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "eryalito/kubensync-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/eryalito/kubensync-operator/blob/master/config/crd/bases/automation.kubensync.com_managedresources.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "external-secrets/external-secrets",
         license: APACHE_V2,
         urls: &[
