@@ -19,6 +19,10 @@ Files: crd-catalog/3scale/apicast-operator/*
 Copyright: The 3scale/apicast-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/3scale-ops/marin3r/*
+Copyright: The 3scale-ops/marin3r Authors
+License: Apache-2.0
+
 Files: crd-catalog/actions/actions-runner-controller/*
 Copyright: The actions/actions-runner-controller Authors
 License: Apache-2.0

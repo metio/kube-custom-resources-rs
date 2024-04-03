@@ -1963,6 +1963,12 @@ apiVersion `mariadb.mmontes.io/v1alpha1`:
 - `SqlJob`
 - `User`
 
+## marin3r_3scale_net
+
+apiVersion `marin3r.3scale.net/v1alpha1`:
+- `EnvoyConfigRevision`
+- `EnvoyConfig`
+
 ## mattermost_com
 
 apiVersion `mattermost.com/v1alpha1`:
@@ -2261,6 +2267,13 @@ apiVersion `operator.cluster.x-k8s.io/v1alpha2`:
 
 apiVersion `operator.cryostat.io/v1beta1`:
 - `Cryostat`
+
+## operator_marin3r_3scale_net
+
+apiVersion `operator.marin3r.3scale.net/v1alpha1`:
+- `DiscoveryServiceCertificate`
+- `DiscoveryService`
+- `EnvoyDeployment`
 
 ## operator_open_cluster_management_io
 
@@ -3521,6 +3534,8 @@ pub mod m4e_krestomat_io;
 pub mod maps_k8s_elastic_co;
 #[cfg(feature = "mariadb_mmontes_io")]
 pub mod mariadb_mmontes_io;
+#[cfg(feature = "marin3r_3scale_net")]
+pub mod marin3r_3scale_net;
 #[cfg(feature = "mattermost_com")]
 pub mod mattermost_com;
 #[cfg(feature = "memorydb_services_k8s_aws")]
@@ -3591,6 +3606,8 @@ pub mod operator_authorino_kuadrant_io;
 pub mod operator_cluster_x_k8s_io;
 #[cfg(feature = "operator_cryostat_io")]
 pub mod operator_cryostat_io;
+#[cfg(feature = "operator_marin3r_3scale_net")]
+pub mod operator_marin3r_3scale_net;
 #[cfg(feature = "operator_open_cluster_management_io")]
 pub mod operator_open_cluster_management_io;
 #[cfg(feature = "operator_shipwright_io")]

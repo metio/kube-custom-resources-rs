@@ -36,6 +36,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "3scale-ops/marin3r",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/3scale-ops/marin3r/blob/main/config/crd/bases/marin3r.3scale.net_envoyconfigrevisions.yaml",
+            "https://github.com/3scale-ops/marin3r/blob/main/config/crd/bases/marin3r.3scale.net_envoyconfigs.yaml",
+            "https://github.com/3scale-ops/marin3r/blob/main/config/crd/bases/operator.marin3r.3scale.net_discoveryservicecertificates.yaml",
+            "https://github.com/3scale-ops/marin3r/blob/main/config/crd/bases/operator.marin3r.3scale.net_discoveryservices.yaml",
+            "https://github.com/3scale-ops/marin3r/blob/main/config/crd/bases/operator.marin3r.3scale.net_envoydeployments.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "actions/actions-runner-controller",
         license: APACHE_V2,
         urls: &[
