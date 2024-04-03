@@ -2815,6 +2815,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "storageos/operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/storageos/operator/blob/main/config/crd/bases/config.storageos.com_operatorconfigs.yaml",
+            "https://github.com/storageos/operator/blob/main/config/crd/bases/storageos.com_storageosclusters.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "tektoncd/operator",
         license: APACHE_V2,
         urls: &[

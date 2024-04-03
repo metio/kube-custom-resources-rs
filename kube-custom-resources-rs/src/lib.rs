@@ -786,6 +786,11 @@ apiVersion `config.karmada.io/v1alpha1`:
 apiVersion `config.koordinator.sh/v1alpha1`:
 - `ClusterColocationProfile`
 
+## config_storageos_com
+
+apiVersion `config.storageos.com/v1`:
+- `OperatorConfig`
+
 ## control_k8ssandra_io
 
 apiVersion `control.k8ssandra.io/v1alpha1`:
@@ -2868,6 +2873,11 @@ apiVersion `status.gatekeeper.sh/v1beta1`:
 apiVersion `storage.kubeblocks.io/v1alpha1`:
 - `StorageProvider`
 
+## storageos_com
+
+apiVersion `storageos.com/v1`:
+- `StorageOSCluster`
+
 ## sts_min_io
 
 apiVersion `sts.min.io/v1alpha1`:
@@ -3309,6 +3319,8 @@ pub mod config_grafana_com;
 pub mod config_karmada_io;
 #[cfg(feature = "config_koordinator_sh")]
 pub mod config_koordinator_sh;
+#[cfg(feature = "config_storageos_com")]
+pub mod config_storageos_com;
 #[cfg(feature = "control_k8ssandra_io")]
 pub mod control_k8ssandra_io;
 #[cfg(feature = "core_kubeadmiral_io")]
@@ -3771,6 +3783,8 @@ pub mod sqs_services_k8s_aws;
 pub mod status_gatekeeper_sh;
 #[cfg(feature = "storage_kubeblocks_io")]
 pub mod storage_kubeblocks_io;
+#[cfg(feature = "storageos_com")]
+pub mod storageos_com;
 #[cfg(feature = "sts_min_io")]
 pub mod sts_min_io;
 #[cfg(feature = "stunner_l7mp_io")]
