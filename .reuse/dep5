@@ -371,6 +371,10 @@ Files: crd-catalog/composable-operator/composable/*
 Copyright: The composable-operator/composable Authors
 License: Apache-2.0
 
+Files: crd-catalog/confidential-containers/operator/*
+Copyright: The confidential-containers/operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/couchbase-partners/helm-charts/*
 Copyright: The couchbase-partners/helm-charts Authors
 License: Apache-2.0
@@ -929,10 +933,6 @@ License: Apache-2.0
 
 Files: crd-catalog/open-telemetry/opentelemetry-operator/*
 Copyright: The open-telemetry/opentelemetry-operator Authors
-License: Apache-2.0
-
-Files: crd-catalog/openshift/api/*
-Copyright: The openshift/api Authors
 License: Apache-2.0
 
 Files: crd-catalog/openshift/hive/*
