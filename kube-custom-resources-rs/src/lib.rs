@@ -2942,6 +2942,23 @@ apiVersion `tests.testkube.io/v3`:
 - `Test`
 - `TestSuite`
 
+## tf_tungsten_io
+
+apiVersion `tf.tungsten.io/v1alpha1`:
+- `Analytics`
+- `AnalyticsAlarm`
+- `AnalyticsSnmp`
+- `Cassandra`
+- `Config`
+- `Control`
+- `Kubemanager`
+- `Manager`
+- `QueryEngine`
+- `Rabbitmq`
+- `Redis`
+- `Vrouter`
+- `Zookeeper`
+
 ## theketch_io
 
 apiVersion `theketch.io/v1beta1`:
@@ -3770,6 +3787,8 @@ pub mod tempo_grafana_com;
 pub mod temporal_io;
 #[cfg(feature = "tests_testkube_io")]
 pub mod tests_testkube_io;
+#[cfg(feature = "tf_tungsten_io")]
+pub mod tf_tungsten_io;
 #[cfg(feature = "theketch_io")]
 pub mod theketch_io;
 #[cfg(feature = "tinkerbell_org")]
