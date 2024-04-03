@@ -671,6 +671,10 @@ Files: crd-catalog/Kuadrant/authorino-operator/*
 Copyright: The Kuadrant/authorino-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/Kuadrant/dns-operator/*
+Copyright: The Kuadrant/dns-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/Kuadrant/kuadrant-operator/*
 Copyright: The Kuadrant/kuadrant-operator Authors
 License: Apache-2.0

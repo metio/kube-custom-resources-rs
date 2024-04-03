@@ -1674,6 +1674,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "Kuadrant/dns-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/Kuadrant/dns-operator/blob/main/config/crd/bases/kuadrant.io_dnsrecords.yaml",
+            "https://github.com/Kuadrant/dns-operator/blob/main/config/crd/bases/kuadrant.io_managedzones.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "Kuadrant/kuadrant-operator",
         license: APACHE_V2,
         urls: &[
