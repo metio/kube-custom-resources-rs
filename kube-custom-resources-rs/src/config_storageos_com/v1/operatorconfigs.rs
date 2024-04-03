@@ -2,7 +2,7 @@
 // kopium command: kopium --docs --filename=./crd-catalog/storageos/operator/config.storageos.com/v1/operatorconfigs.yaml --derive=Default --derive=PartialEq
 // kopium version: 0.17.2
 
-use kube::CustomResource;
+
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
