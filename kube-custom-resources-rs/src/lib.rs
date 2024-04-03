@@ -1481,6 +1481,9 @@ apiVersion `instana.io/v1`:
 ## integration_rock8s_com
 
 apiVersion `integration.rock8s.com/v1beta1`:
+- `DeferredResource`
+- `Plug`
+- `Socket`
 - `Plug`
 - `Socket`
 

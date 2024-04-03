@@ -781,6 +781,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "bitspur/rock8s/integration-operator",
+        license: AGPL_V3_OR_LATER,
+        urls: &[
+            "https://gitlab.com/bitspur/rock8s/integration-operator/-/blob/main/config/crd/bases/integration.rock8s.com_deferredresources.yaml?ref_type=heads",
+            "https://gitlab.com/bitspur/rock8s/integration-operator/-/blob/main/config/crd/bases/integration.rock8s.com_plugs.yaml?ref_type=heads",
+            "https://gitlab.com/bitspur/rock8s/integration-operator/-/blob/main/config/crd/bases/integration.rock8s.com_sockets.yaml?ref_type=heads",
+        ],
+    },
+    UpstreamSource {
         project_name: "bpfd-dev/bpfd",
         license: APACHE_V2,
         urls: &[
@@ -889,14 +898,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/cilium/cilium/blob/main/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumloadbalancerippools.yaml",
             "https://github.com/cilium/cilium/blob/main/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumnodeconfigs.yaml",
             "https://github.com/cilium/cilium/blob/main/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumpodippools.yaml",
-        ],
-    },
-    UpstreamSource {
-        project_name: "clayrisser/integration-operator",
-        license: AGPL_V3_OR_LATER,
-        urls: &[
-            "https://github.com/clayrisser/integration-operator/blob/main/config/crd/bases/integration.rock8s.com_plugs.yaml",
-            "https://github.com/clayrisser/integration-operator/blob/main/config/crd/bases/integration.rock8s.com_sockets.yaml",
         ],
     },
     UpstreamSource {

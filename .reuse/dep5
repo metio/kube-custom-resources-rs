@@ -299,6 +299,10 @@ Files: crd-catalog/bitnami-labs/sealed-secrets/*
 Copyright: The bitnami-labs/sealed-secrets Authors
 License: Apache-2.0
 
+Files: crd-catalog/bitspur/rock8s/integration-operator/*
+Copyright: The bitspur/rock8s/integration-operator Authors
+License: AGPL-3.0-or-later
+
 Files: crd-catalog/bpfd-dev/bpfd/*
 Copyright: The bpfd-dev/bpfd Authors
 License: Apache-2.0
@@ -334,10 +338,6 @@ License: EPL-2.0
 Files: crd-catalog/cilium/cilium/*
 Copyright: The cilium/cilium Authors
 License: Apache-2.0
-
-Files: crd-catalog/clayrisser/integration-operator/*
-Copyright: The clayrisser/integration-operator Authors
-License: AGPL-3.0-or-later
 
 Files: crd-catalog/clastix/capsule/*
 Copyright: The clastix/capsule Authors
