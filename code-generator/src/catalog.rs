@@ -2022,6 +2022,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kubesphere-sigs/ks-releaser-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubesphere-sigs/ks-releaser-operator/blob/master/config/crd/bases/devops.kubesphere.io_releasercontrollers.yaml",
+            "https://github.com/kubesphere-sigs/ks-releaser-operator/blob/master/config/crd/bases/devops.kubesphere.io_releasers.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kubev2v/forklift",
         license: APACHE_V2,
         urls: &[
