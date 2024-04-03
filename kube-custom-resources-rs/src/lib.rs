@@ -1740,6 +1740,10 @@ apiVersion `kms.services.k8s.aws/v1alpha1`:
 
 ## kuadrant_io
 
+apiVersion `kuadrant.io/v1alpha1`:
+- `DNSRecord`
+- `ManagedZone`
+
 apiVersion `kuadrant.io/v1beta1`:
 - `Kuadrant`
 
