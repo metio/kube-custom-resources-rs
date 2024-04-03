@@ -2925,6 +2925,26 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "tungstenfabric/tf-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_analytics_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_analyticsalarm_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_analyticssnmp_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_cassandras_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_configs_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_controls_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_kubemanagers_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_managers_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_queryengine_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_rabbitmqs_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_redis_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_vrouters_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_webuis_crd.yaml",
+            "https://github.com/tungstenfabric/tf-operator/blob/master/deploy/crds/tf.tungsten.io_zookeepers_crd.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "validatedpatterns/patterns-operator",
         license: APACHE_V2,
         urls: &[

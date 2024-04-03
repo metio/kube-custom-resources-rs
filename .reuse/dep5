@@ -1171,6 +1171,10 @@ Files: crd-catalog/traefik/traefik/*
 Copyright: The traefik/traefik Authors
 License: MIT
 
+Files: crd-catalog/tungstenfabric/tf-operator/*
+Copyright: The tungstenfabric/tf-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/validatedpatterns/patterns-operator/*
 Copyright: The validatedpatterns/patterns-operator Authors
 License: Apache-2.0
