@@ -91,6 +91,10 @@ Files: crd-catalog/argoproj-labs/argocd-operator/*
 Copyright: The argoproj-labs/argocd-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/arsenalzp/apch-operator/*
+Copyright: The arsenalzp/apch-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/atlasmap/atlasmap-operator/*
 Copyright: The atlasmap/atlasmap-operator Authors
 License: Apache-2.0
