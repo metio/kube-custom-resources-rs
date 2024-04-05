@@ -903,6 +903,10 @@ Files: crd-catalog/medik8s/fence-agents-remediation/*
 Copyright: The medik8s/fence-agents-remediation Authors
 License: Apache-2.0
 
+Files: crd-catalog/medik8s/machine-deletion-remediation/*
+Copyright: The medik8s/machine-deletion-remediation Authors
+License: Apache-2.0
+
 Files: crd-catalog/medik8s/node-healthcheck-operator/*
 Copyright: The medik8s/node-healthcheck-operator Authors
 License: Apache-2.0
