@@ -907,6 +907,10 @@ Files: crd-catalog/medik8s/node-healthcheck-operator/*
 Copyright: The medik8s/node-healthcheck-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/medik8s/self-node-remediation/*
+Copyright: The medik8s/self-node-remediation Authors
+License: Apache-2.0
+
 Files: crd-catalog/metacontroller/metacontroller/*
 Copyright: The metacontroller/metacontroller Authors
 License: Apache-2.0
