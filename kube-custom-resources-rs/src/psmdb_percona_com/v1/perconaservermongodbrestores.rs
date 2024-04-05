@@ -37,6 +37,8 @@ pub struct PerconaServerMongoDBRestoreBackupSource {
     pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransition")]
     pub last_transition: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
+    pub latest_restorable_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmName")]
     pub pbm_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmPod")]

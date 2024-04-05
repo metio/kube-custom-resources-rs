@@ -1707,7 +1707,7 @@ pub struct FlowCollectorLokiLokiStack {
     /// Name of an existing LokiStack resource to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace where this `LokiStack` resource is located. If omited, it is assumed to be the same as `spec.namespace`.
+    /// Namespace where this `LokiStack` resource is located. If omitted, it is assumed to be the same as `spec.namespace`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -2128,6 +2128,9 @@ pub struct FlowCollectorProcessor {
     /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorProcessorResources>,
+    /// `SubnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetLabels")]
+    pub subnet_labels: Option<FlowCollectorProcessorSubnetLabels>,
 }
 
 /// `advanced` allows setting some aspects of the internal configuration of the flow processor. This section is aimed mostly for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
@@ -2844,6 +2847,28 @@ pub struct FlowCollectorProcessorResources {
 pub struct FlowCollectorProcessorResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
+}
+
+/// `SubnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorProcessorSubnetLabels {
+    /// `customLabels` allows to customize subnets and IPs labelling, such as to identify cluster-external workloads or web services. If you enable `openShiftAutoDetect`, `customLabels` can override the detected subnets in case they overlap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabels")]
+    pub custom_labels: Option<Vec<FlowCollectorProcessorSubnetLabelsCustomLabels>>,
+    /// `openShiftAutoDetect` allows, when set to `true`, to detect automatically the machines, pods and services subnets based on the OpenShift install configuration and the Cluster Network Operator configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openShiftAutoDetect")]
+    pub open_shift_auto_detect: Option<bool>,
+}
+
+/// SubnetLabel allows to label subnets and IPs, such as to identify cluster-external workloads or web services.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorProcessorSubnetLabelsCustomLabels {
+    /// List of CIDRs, such as `["1.2.3.4/32"]`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidrs: Option<Vec<String>>,
+    /// Label name, used to flag matching flows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// `FlowCollectorStatus` defines the observed state of FlowCollector

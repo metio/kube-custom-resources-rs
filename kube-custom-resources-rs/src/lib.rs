@@ -281,6 +281,9 @@ apiVersion `apps.kubeblocks.io/v1alpha1`:
 - `OpsRequest`
 - `ServiceDescriptor`
 
+apiVersion `apps.kubeblocks.io/v1beta1`:
+- `ConfigConstraint`
+
 ## apps_kubedl_io
 
 apiVersion `apps.kubedl.io/v1alpha1`:
@@ -2904,6 +2907,9 @@ apiVersion `submariner.io/v1alpha1`:
 - `Submariner`
 
 ## telemetry_istio_io
+
+apiVersion `telemetry.istio.io/v1`:
+- `Telemetry`
 
 apiVersion `telemetry.istio.io/v1alpha1`:
 - `Telemetry`

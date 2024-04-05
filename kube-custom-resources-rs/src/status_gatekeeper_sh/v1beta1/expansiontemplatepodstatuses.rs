@@ -17,7 +17,9 @@ pub struct ExpansionTemplatePodStatusStatus {
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// UID is a type that holds unique ID values, including UUIDs.  Because we don't ONLY use UUIDs, this is an alias to string.  Being a type captures intent and helps make sure that UIDs and names do not get conflated.
+    /// UID is a type that holds unique ID values, including UUIDs.  Because we
+    /// don't ONLY use UUIDs, this is an alias to string.  Being a type captures
+    /// intent and helps make sure that UIDs and names do not get conflated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateUID")]
     pub template_uid: Option<String>,
 }

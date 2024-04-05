@@ -30,7 +30,7 @@ spec:
       name: "v1"
       schema:
         openAPIV3Schema:
-          description: "A Composition specifies how a composite resource should be composed."
+          description: "A Composition defines a collection of managed resources or functions that\nCrossplane uses to create and manage new composite resources.\n\n\nRead the Crossplane documentation for\n[more information about Compositions](https://docs.crossplane.io/latest/concepts/compositions)."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

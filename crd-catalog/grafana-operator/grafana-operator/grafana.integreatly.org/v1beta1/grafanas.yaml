@@ -14,6 +14,9 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
+        - jsonPath: ".status.version"
+          name: "Version"
+          type: "string"
         - jsonPath: ".status.stage"
           name: "Stage"
           type: "string"
@@ -3975,6 +3978,8 @@ spec:
                         x-kubernetes-map-type: "atomic"
                       type: "array"
                   type: "object"
+                version:
+                  type: "string"
               type: "object"
             status:
               properties:
@@ -3997,6 +4002,8 @@ spec:
                 stage:
                   type: "string"
                 stageStatus:
+                  type: "string"
+                version:
                   type: "string"
               type: "object"
           type: "object"

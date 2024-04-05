@@ -18,7 +18,8 @@ pub struct ClusterSetSpec {
     pub cluster_id: String,
     /// Leaders include leader clusters known to the member clusters.
     pub leaders: Vec<ClusterSetLeaders>,
-    /// The leader cluster Namespace in which the ClusterSet is defined. Used in a member cluster.
+    /// The leader cluster Namespace in which the ClusterSet is defined.
+    /// Used in a member cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -29,10 +30,12 @@ pub struct ClusterSetLeaders {
     /// Identify a leader cluster in the ClusterSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterID")]
     pub cluster_id: Option<String>,
-    /// Name of the Secret resource in the member cluster, which stores the token to access the leader cluster's API server.
+    /// Name of the Secret resource in the member cluster, which stores
+    /// the token to access the leader cluster's API server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
-    /// API server endpoint of the leader cluster. E.g. "https://172.18.0.1:6443", "https://example.com:6443".
+    /// API server endpoint of the leader cluster.
+    /// E.g. "https://172.18.0.1:6443", "https://example.com:6443".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
 }

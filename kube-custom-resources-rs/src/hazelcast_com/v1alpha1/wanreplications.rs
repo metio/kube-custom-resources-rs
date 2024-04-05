@@ -26,6 +26,9 @@ pub struct WanReplicationSpec {
     pub queue: Option<WanReplicationQueue>,
     /// Resources is the list of custom resources to which WAN replication applies.
     pub resources: Vec<WanReplicationResources>,
+    /// SyncConsistencyCheckStrategy is the strategy for checking the consistency of data between replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncConsistencyCheckStrategy")]
+    pub sync_consistency_check_strategy: Option<String>,
     /// ClusterName is the clusterName field of the target Hazelcast resource.
     #[serde(rename = "targetClusterName")]
     pub target_cluster_name: String,

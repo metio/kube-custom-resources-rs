@@ -97,6 +97,8 @@ pub struct ClusterOutputAwsElasticsearch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_key_pass: Option<ClusterOutputAwsElasticsearchClientKeyPass>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compression_level: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_headers: Option<String>,
@@ -1600,6 +1602,8 @@ pub struct ClusterOutputElasticsearch {
     pub client_key: Option<ClusterOutputElasticsearchClientKey>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_key_pass: Option<ClusterOutputElasticsearchClientKeyPass>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compression_level: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

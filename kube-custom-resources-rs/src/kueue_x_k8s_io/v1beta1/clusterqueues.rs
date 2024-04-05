@@ -69,7 +69,7 @@ pub struct ClusterQueueSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preemption: Option<ClusterQueuePreemption>,
     /// QueueingStrategy indicates the queueing strategy of the workloads
-    /// across the queues in this ClusterQueue. This field is immutable.
+    /// across the queues in this ClusterQueue.
     /// Current Supported Strategies:
     /// 
     /// 

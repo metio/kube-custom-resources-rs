@@ -296,7 +296,7 @@ pub struct CephObjectStoreGatewayExternalRgwEndpoints {
     /// The DNS-addressable Hostname of this endpoint. This field will be preferred over IP if both are given.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// The IP of this endpoint. As a legacy behavior, this supports being given a DNS-adressable hostname as well.
+    /// The IP of this endpoint. As a legacy behavior, this supports being given a DNS-addressable hostname as well.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
 }

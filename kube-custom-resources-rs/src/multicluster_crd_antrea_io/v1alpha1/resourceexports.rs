@@ -88,18 +88,28 @@ pub struct ResourceExportClusterInfoWireGuard {
 /// If exported resource is AntreaClusterNetworkPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicy {
-    /// Select workloads on which the rules will be applied to. Cannot be set in conjunction with AppliedTo in each rule.
+    /// Select workloads on which the rules will be applied to. Cannot be set in
+    /// conjunction with AppliedTo in each rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedTo")]
     pub applied_to: Option<Vec<ResourceExportClusterNetworkPolicyAppliedTo>>,
-    /// Set of egress rules evaluated based on the order in which they are set. Currently Egress rule supports setting the `To` field but not the `From` field within a Rule.
+    /// Set of egress rules evaluated based on the order in which they are set.
+    /// Currently Egress rule supports setting the `To` field but not the `From`
+    /// field within a Rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub egress: Option<Vec<ResourceExportClusterNetworkPolicyEgress>>,
-    /// Set of ingress rules evaluated based on the order in which they are set. Currently Ingress rule supports setting the `From` field but not the `To` field within a Rule.
+    /// Set of ingress rules evaluated based on the order in which they are set.
+    /// Currently Ingress rule supports setting the `From` field but not the `To`
+    /// field within a Rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<ResourceExportClusterNetworkPolicyIngress>>,
-    /// Priority specfies the order of the ClusterNetworkPolicy relative to other AntreaClusterNetworkPolicies.
+    /// Priority specfies the order of the ClusterNetworkPolicy relative to
+    /// other AntreaClusterNetworkPolicies.
     pub priority: f64,
-    /// Tier specifies the tier to which this ClusterNetworkPolicy belongs to. The ClusterNetworkPolicy order will be determined based on the combination of the Tier's Priority and the ClusterNetworkPolicy's own Priority. If not specified, this policy will be created in the Application Tier right above the K8s NetworkPolicy which resides at the bottom.
+    /// Tier specifies the tier to which this ClusterNetworkPolicy belongs to.
+    /// The ClusterNetworkPolicy order will be determined based on the
+    /// combination of the Tier's Priority and the ClusterNetworkPolicy's own
+    /// Priority. If not specified, this policy will be created in the Application
+    /// Tier right above the K8s NetworkPolicy which resides at the bottom.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tier: Option<String>,
 }
@@ -107,122 +117,186 @@ pub struct ResourceExportClusterNetworkPolicy {
 /// AppliedTo describes the grouping selector of workloads in AppliedTo field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedTo {
-    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+    /// in AppliedTo fields. If set with NamespaceSelector,
+    /// ExternalEntities are matched from Namespaces matched by the
+    /// NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyAppliedToExternalEntitySelector>,
-    /// Group is the name of the ClusterGroup which can be set as an AppliedTo in place of a stand-alone selector. A Group cannot be set with any other selector.
+    /// Group is the name of the ClusterGroup which can be set as an
+    /// AppliedTo in place of a stand-alone selector. A Group cannot
+    /// be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+    /// Select all Pods from Namespaces matched by this selector, as
+    /// workloads in AppliedTo fields. If set with PodSelector,
+    /// Pods are matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyAppliedToNamespaceSelector>,
-    /// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+    /// Select Nodes in cluster as workloads in AppliedTo fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyAppliedToNodeSelector>,
-    /// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select Pods from NetworkPolicy's Namespace as workloads in
+    /// AppliedTo fields. If set with NamespaceSelector, Pods are
+    /// matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyAppliedToPodSelector>,
-    /// Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector.
+    /// Select a certain Service which matches the NamespacedName.
+    /// A Service can only be set in either policy level AppliedTo field in a policy
+    /// that only has ingress rules or rule level AppliedTo field in an ingress rule.
+    /// Only a NodePort Service can be referred by this field.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ResourceExportClusterNetworkPolicyAppliedToService>,
-    /// Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector.
+    /// Select all Pods with the ServiceAccount matched by this field, as
+    /// workloads in AppliedTo fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ResourceExportClusterNetworkPolicyAppliedToServiceAccount>,
 }
 
-/// Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+/// in AppliedTo fields. If set with NamespaceSelector,
+/// ExternalEntities are matched from Namespaces matched by the
+/// NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToExternalEntitySelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyAppliedToExternalEntitySelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToExternalEntitySelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+/// Select all Pods from Namespaces matched by this selector, as
+/// workloads in AppliedTo fields. If set with PodSelector,
+/// Pods are matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. Cannot be set with Namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyAppliedToNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+/// Select Nodes in cluster as workloads in AppliedTo fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyAppliedToNodeSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select Pods from NetworkPolicy's Namespace as workloads in
+/// AppliedTo fields. If set with NamespaceSelector, Pods are
+/// matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyAppliedToPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector.
+/// Select a certain Service which matches the NamespacedName.
+/// A Service can only be set in either policy level AppliedTo field in a policy
+/// that only has ingress rules or rule level AppliedTo field in an ingress rule.
+/// Only a NodePort Service can be referred by this field.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -231,7 +305,9 @@ pub struct ResourceExportClusterNetworkPolicyAppliedToService {
     pub namespace: Option<String>,
 }
 
-/// Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector.
+/// Select all Pods with the ServiceAccount matched by this field, as
+/// workloads in AppliedTo fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyAppliedToServiceAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -240,39 +316,60 @@ pub struct ResourceExportClusterNetworkPolicyAppliedToServiceAccount {
     pub namespace: Option<String>,
 }
 
-/// Rule describes the traffic allowed to/from the workloads selected by Spec.AppliedTo. Based on the action specified in the rule, traffic is either allowed or denied which exactly match the specified ports and protocol.
+/// Rule describes the traffic allowed to/from the workloads selected by
+/// Spec.AppliedTo. Based on the action specified in the rule, traffic is either
+/// allowed or denied which exactly match the specified ports and protocol.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgress {
     /// Action specifies the action to be applied on the rule.
     pub action: String,
-    /// Select workloads on which this rule will be applied to. Cannot be set in conjunction with NetworkPolicySpec/ClusterNetworkPolicySpec.AppliedTo.
+    /// Select workloads on which this rule will be applied to. Cannot be set in
+    /// conjunction with NetworkPolicySpec/ClusterNetworkPolicySpec.AppliedTo.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedTo")]
     pub applied_to: Option<Vec<ResourceExportClusterNetworkPolicyEgressAppliedTo>>,
-    /// EnableLogging is used to indicate if agent should generate logs when rules are matched. Should be default to false.
+    /// EnableLogging is used to indicate if agent should generate logs
+    /// when rules are matched. Should be default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableLogging")]
     pub enable_logging: Option<bool>,
-    /// Rule is matched if traffic originates from workloads selected by this field. If this field is empty, this rule matches all sources.
+    /// Rule is matched if traffic originates from workloads selected by
+    /// this field. If this field is empty, this rule matches all sources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<ResourceExportClusterNetworkPolicyEgressFrom>>,
-    /// Set of layer 7 protocols matched by the rule. If this field is set, action can only be Allow. When this field is used in a rule, any traffic matching the other layer 3/4 criteria of the rule (typically the 5-tuple) will be forwarded to an application-aware engine for protocol detection and rule enforcement, and the traffic will be allowed if the layer 7 criteria is also matched, otherwise it will be dropped. Therefore, any rules after a layer 7 rule will not be enforced for the traffic.
+    /// Set of layer 7 protocols matched by the rule. If this field is set, action can only be Allow.
+    /// When this field is used in a rule, any traffic matching the other layer 3/4 criteria of the rule (typically the
+    /// 5-tuple) will be forwarded to an application-aware engine for protocol detection and rule enforcement, and the
+    /// traffic will be allowed if the layer 7 criteria is also matched, otherwise it will be dropped. Therefore, any
+    /// rules after a layer 7 rule will not be enforced for the traffic.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "l7Protocols")]
     pub l7_protocols: Option<Vec<ResourceExportClusterNetworkPolicyEgressL7Protocols>>,
     /// LogLabel is a user-defined arbitrary string which will be printed in the NetworkPolicy logs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLabel")]
     pub log_label: Option<String>,
-    /// Name describes the intention of this rule. Name should be unique within the policy.
+    /// Name describes the intention of this rule.
+    /// Name should be unique within the policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Set of ports and protocols matched by the rule. If this field and Protocols are unset or empty, this rule matches all ports.
+    /// Set of ports and protocols matched by the rule. If this field and Protocols
+    /// are unset or empty, this rule matches all ports.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ResourceExportClusterNetworkPolicyEgressPorts>>,
-    /// Set of protocols matched by the rule. If this field and Ports are unset or empty, this rule matches all protocols supported.
+    /// Set of protocols matched by the rule. If this field and Ports are unset or
+    /// empty, this rule matches all protocols supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<Vec<ResourceExportClusterNetworkPolicyEgressProtocols>>,
-    /// Rule is matched if traffic is intended for workloads selected by this field. This field can't be used with ToServices. If this field and ToServices are both empty or missing this rule matches all destinations.
+    /// Rule is matched if traffic is intended for workloads selected by
+    /// this field. This field can't be used with ToServices. If this field
+    /// and ToServices are both empty or missing this rule matches all destinations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub to: Option<Vec<ResourceExportClusterNetworkPolicyEgressTo>>,
-    /// Rule is matched if traffic is intended for a Service listed in this field. Currently, only ClusterIP types Services are supported in this field. When scope is set to ClusterSet, it matches traffic intended for a multi-cluster Service listed in this field. Service name and Namespace provided should match the original exported Service. This field can only be used when AntreaProxy is enabled. This field can't be used with To or Ports. If this field and To are both empty or missing, this rule matches all destinations.
+    /// Rule is matched if traffic is intended for a Service listed in this field.
+    /// Currently, only ClusterIP types Services are supported in this field.
+    /// When scope is set to ClusterSet, it matches traffic intended for a multi-cluster
+    /// Service listed in this field. Service name and Namespace provided should match
+    /// the original exported Service.
+    /// This field can only be used when AntreaProxy is enabled. This field can't be used
+    /// with To or Ports. If this field and To are both empty or missing, this rule matches
+    /// all destinations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toServices")]
     pub to_services: Option<Vec<ResourceExportClusterNetworkPolicyEgressToServices>>,
 }
@@ -280,122 +377,186 @@ pub struct ResourceExportClusterNetworkPolicyEgress {
 /// AppliedTo describes the grouping selector of workloads in AppliedTo field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedTo {
-    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+    /// in AppliedTo fields. If set with NamespaceSelector,
+    /// ExternalEntities are matched from Namespaces matched by the
+    /// NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyEgressAppliedToExternalEntitySelector>,
-    /// Group is the name of the ClusterGroup which can be set as an AppliedTo in place of a stand-alone selector. A Group cannot be set with any other selector.
+    /// Group is the name of the ClusterGroup which can be set as an
+    /// AppliedTo in place of a stand-alone selector. A Group cannot
+    /// be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+    /// Select all Pods from Namespaces matched by this selector, as
+    /// workloads in AppliedTo fields. If set with PodSelector,
+    /// Pods are matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyEgressAppliedToNamespaceSelector>,
-    /// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+    /// Select Nodes in cluster as workloads in AppliedTo fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyEgressAppliedToNodeSelector>,
-    /// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select Pods from NetworkPolicy's Namespace as workloads in
+    /// AppliedTo fields. If set with NamespaceSelector, Pods are
+    /// matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyEgressAppliedToPodSelector>,
-    /// Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector.
+    /// Select a certain Service which matches the NamespacedName.
+    /// A Service can only be set in either policy level AppliedTo field in a policy
+    /// that only has ingress rules or rule level AppliedTo field in an ingress rule.
+    /// Only a NodePort Service can be referred by this field.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ResourceExportClusterNetworkPolicyEgressAppliedToService>,
-    /// Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector.
+    /// Select all Pods with the ServiceAccount matched by this field, as
+    /// workloads in AppliedTo fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ResourceExportClusterNetworkPolicyEgressAppliedToServiceAccount>,
 }
 
-/// Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+/// in AppliedTo fields. If set with NamespaceSelector,
+/// ExternalEntities are matched from Namespaces matched by the
+/// NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToExternalEntitySelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressAppliedToExternalEntitySelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToExternalEntitySelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+/// Select all Pods from Namespaces matched by this selector, as
+/// workloads in AppliedTo fields. If set with PodSelector,
+/// Pods are matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. Cannot be set with Namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressAppliedToNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+/// Select Nodes in cluster as workloads in AppliedTo fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressAppliedToNodeSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select Pods from NetworkPolicy's Namespace as workloads in
+/// AppliedTo fields. If set with NamespaceSelector, Pods are
+/// matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressAppliedToPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector.
+/// Select a certain Service which matches the NamespacedName.
+/// A Service can only be set in either policy level AppliedTo field in a policy
+/// that only has ingress rules or rule level AppliedTo field in an ingress rule.
+/// Only a NodePort Service can be referred by this field.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -404,7 +565,9 @@ pub struct ResourceExportClusterNetworkPolicyEgressAppliedToService {
     pub namespace: Option<String>,
 }
 
-/// Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector.
+/// Select all Pods with the ServiceAccount matched by this field, as
+/// workloads in AppliedTo fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressAppliedToServiceAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -416,149 +579,232 @@ pub struct ResourceExportClusterNetworkPolicyEgressAppliedToServiceAccount {
 /// NetworkPolicyPeer describes the grouping selector of workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFrom {
-    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+    /// in To/From fields. If set with NamespaceSelector,
+    /// ExternalEntities are matched from Namespaces matched by the
+    /// NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyEgressFromExternalEntitySelector>,
-    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as "google.com". Wildcard expressions such as "*wayfair.com".
+    /// Restrict egress access to the Fully Qualified Domain Names prescribed
+    /// by name or by wildcard match patterns. This field can only be set for
+    /// NetworkPolicyPeer of egress rules.
+    /// Supported formats are:
+    ///  Exact FQDNs such as "google.com".
+    ///  Wildcard expressions such as "*wayfair.com".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fqdn: Option<String>,
-    /// Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector.
+    /// Group is the name of the ClusterGroup which can be set within
+    /// an Ingress or Egress rule in place of a stand-alone selector.
+    /// A Group cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector.
+    /// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.
+    /// IPBlock cannot be set as part of the AppliedTo field.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<ResourceExportClusterNetworkPolicyEgressFromIpBlock>,
-    /// Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+    /// Select all Pods from Namespaces matched by this selector, as
+    /// workloads in To/From fields. If set with PodSelector,
+    /// Pods are matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyEgressFromNamespaceSelector>,
-    /// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
+    /// Select Pod/ExternalEntity from Namespaces matched by specific criteria.
+    /// Current supported criteria is match: Self, which selects from the same
+    /// Namespace of the appliedTo workloads.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. This field can only be set when NetworkPolicyPeer
+    /// is created for ClusterNetworkPolicy ingress/egress rules.
+    /// Cannot be set with NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ResourceExportClusterNetworkPolicyEgressFromNamespaces>,
-    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
+    /// Select certain Nodes which match the label selector.
+    /// A NodeSelector cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyEgressFromNodeSelector>,
-    /// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select Pods from NetworkPolicy's Namespace as workloads in
+    /// To/From fields. If set with NamespaceSelector, Pods are
+    /// matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyEgressFromPodSelector>,
-    /// Define scope of the Pod/NamespaceSelector(s) of this peer. Can only be used in ingress NetworkPolicyPeers. Defaults to "Cluster".
+    /// Define scope of the Pod/NamespaceSelector(s) of this peer.
+    /// Can only be used in ingress NetworkPolicyPeers.
+    /// Defaults to "Cluster".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
-    /// Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector.
+    /// Select all Pods with the ServiceAccount matched by this field, as
+    /// workloads in To/From fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ResourceExportClusterNetworkPolicyEgressFromServiceAccount>,
 }
 
-/// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+/// in To/From fields. If set with NamespaceSelector,
+/// ExternalEntities are matched from Namespaces matched by the
+/// NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromExternalEntitySelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressFromExternalEntitySelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromExternalEntitySelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector.
+/// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.
+/// IPBlock cannot be set as part of the AppliedTo field.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromIpBlock {
-    /// CIDR is a string representing the IP Block Valid examples are "192.168.1.1/24".
+    /// CIDR is a string representing the IP Block
+    /// Valid examples are "192.168.1.1/24".
     pub cidr: String,
 }
 
-/// Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+/// Select all Pods from Namespaces matched by this selector, as
+/// workloads in To/From fields. If set with PodSelector,
+/// Pods are matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. Cannot be set with Namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressFromNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
+/// Select Pod/ExternalEntity from Namespaces matched by specific criteria.
+/// Current supported criteria is match: Self, which selects from the same
+/// Namespace of the appliedTo workloads.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. This field can only be set when NetworkPolicyPeer
+/// is created for ClusterNetworkPolicy ingress/egress rules.
+/// Cannot be set with NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromNamespaces {
     /// Selects from the same Namespace of the appliedTo workloads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<String>,
-    /// Selects Namespaces that share the same values for the given set of label keys with the appliedTo Namespace. Namespaces must have all the label keys.
+    /// Selects Namespaces that share the same values for the given set of label keys
+    /// with the appliedTo Namespace. Namespaces must have all the label keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameLabels")]
     pub same_labels: Option<Vec<String>>,
 }
 
-/// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
+/// Select certain Nodes which match the label selector.
+/// A NodeSelector cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressFromNodeSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select Pods from NetworkPolicy's Namespace as workloads in
+/// To/From fields. If set with NamespaceSelector, Pods are
+/// matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressFromPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector.
+/// Select all Pods with the ServiceAccount matched by this field, as
+/// workloads in To/From fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressFromServiceAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -569,21 +815,26 @@ pub struct ResourceExportClusterNetworkPolicyEgressFromServiceAccount {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressL7Protocols {
-    /// HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together. If all fields are not provided, it matches all HTTP requests.
+    /// HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together.
+    /// If all fields are not provided, it matches all HTTP requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ResourceExportClusterNetworkPolicyEgressL7ProtocolsHttp>,
-    /// TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this matches all TLS handshake packets.
+    /// TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this
+    /// matches all TLS handshake packets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ResourceExportClusterNetworkPolicyEgressL7ProtocolsTls>,
 }
 
-/// HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together. If all fields are not provided, it matches all HTTP requests.
+/// HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together.
+/// If all fields are not provided, it matches all HTTP requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressL7ProtocolsHttp {
-    /// Host represents the hostname present in the URI or the HTTP Host header to match. It does not contain the port associated with the host.
+    /// Host represents the hostname present in the URI or the HTTP Host header to match.
+    /// It does not contain the port associated with the host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Method represents the HTTP method to match. It could be GET, POST, PUT, HEAD, DELETE, TRACE, OPTIONS, CONNECT and PATCH.
+    /// Method represents the HTTP method to match.
+    /// It could be GET, POST, PUT, HEAD, DELETE, TRACE, OPTIONS, CONNECT and PATCH.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
     /// Path represents the URI path to match (Ex. "/index.html", "/admin").
@@ -591,7 +842,8 @@ pub struct ResourceExportClusterNetworkPolicyEgressL7ProtocolsHttp {
     pub path: Option<String>,
 }
 
-/// TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this matches all TLS handshake packets.
+/// TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this
+/// matches all TLS handshake packets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressL7ProtocolsTls {
     /// SNI (Server Name Indication) indicates the server domain name in the TLS/SSL hello message.
@@ -602,35 +854,52 @@ pub struct ResourceExportClusterNetworkPolicyEgressL7ProtocolsTls {
 /// NetworkPolicyPort describes the port and protocol to match in a rule.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressPorts {
-    /// EndPort defines the end of the port range, inclusive. It can only be specified when a numerical `port` is specified.
+    /// EndPort defines the end of the port range, inclusive.
+    /// It can only be specified when a numerical `port` is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endPort")]
     pub end_port: Option<i32>,
-    /// The port on the given protocol. This can be either a numerical or named port on a Pod. If this field is not provided, this matches all port names and numbers.
+    /// The port on the given protocol. This can be either a numerical
+    /// or named port on a Pod. If this field is not provided, this
+    /// matches all port names and numbers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
-    /// The protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP.
+    /// The protocol (TCP, UDP, or SCTP) which traffic must match.
+    /// If not specified, this field defaults to TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// SourceEndPort defines the end of the source port range, inclusive. It can only be specified when `sourcePort` is specified.
+    /// SourceEndPort defines the end of the source port range, inclusive.
+    /// It can only be specified when `sourcePort` is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceEndPort")]
     pub source_end_port: Option<i32>,
-    /// The source port on the given protocol. This can only be a numerical port. If this field is not provided, rule matches all source ports.
+    /// The source port on the given protocol. This can only be a numerical port.
+    /// If this field is not provided, rule matches all source ports.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourcePort")]
     pub source_port: Option<i32>,
 }
 
-/// NetworkPolicyProtocol defines additional protocols that are not supported by `ports`. All fields should be used as a standalone field.
+/// NetworkPolicyProtocol defines additional protocols that are not supported by
+/// `ports`. All fields should be used as a standalone field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressProtocols {
-    /// ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All fields could be used alone or together. If all fields are not provided, this matches all ICMP traffic.
+    /// ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All
+    /// fields could be used alone or together. If all fields are not provided, this
+    /// matches all ICMP traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icmp: Option<ResourceExportClusterNetworkPolicyEgressProtocolsIcmp>,
-    /// IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must be filled with: IGMPQuery    int32 = 0x11 IGMPReportV1 int32 = 0x12 IGMPReportV2 int32 = 0x16 IGMPReportV3 int32 = 0x22 If groupAddress is empty, all groupAddresses will be matched.
+    /// IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must
+    /// be filled with:
+    /// IGMPQuery    int32 = 0x11
+    /// IGMPReportV1 int32 = 0x12
+    /// IGMPReportV2 int32 = 0x16
+    /// IGMPReportV3 int32 = 0x22
+    /// If groupAddress is empty, all groupAddresses will be matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub igmp: Option<ResourceExportClusterNetworkPolicyEgressProtocolsIgmp>,
 }
 
-/// ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All fields could be used alone or together. If all fields are not provided, this matches all ICMP traffic.
+/// ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All
+/// fields could be used alone or together. If all fields are not provided, this
+/// matches all ICMP traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressProtocolsIcmp {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpCode")]
@@ -639,7 +908,13 @@ pub struct ResourceExportClusterNetworkPolicyEgressProtocolsIcmp {
     pub icmp_type: Option<i32>,
 }
 
-/// IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must be filled with: IGMPQuery    int32 = 0x11 IGMPReportV1 int32 = 0x12 IGMPReportV2 int32 = 0x16 IGMPReportV3 int32 = 0x22 If groupAddress is empty, all groupAddresses will be matched.
+/// IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must
+/// be filled with:
+/// IGMPQuery    int32 = 0x11
+/// IGMPReportV1 int32 = 0x12
+/// IGMPReportV2 int32 = 0x16
+/// IGMPReportV3 int32 = 0x22
+/// If groupAddress is empty, all groupAddresses will be matched.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressProtocolsIgmp {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupAddress")]
@@ -651,149 +926,232 @@ pub struct ResourceExportClusterNetworkPolicyEgressProtocolsIgmp {
 /// NetworkPolicyPeer describes the grouping selector of workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressTo {
-    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+    /// in To/From fields. If set with NamespaceSelector,
+    /// ExternalEntities are matched from Namespaces matched by the
+    /// NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyEgressToExternalEntitySelector>,
-    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as "google.com". Wildcard expressions such as "*wayfair.com".
+    /// Restrict egress access to the Fully Qualified Domain Names prescribed
+    /// by name or by wildcard match patterns. This field can only be set for
+    /// NetworkPolicyPeer of egress rules.
+    /// Supported formats are:
+    ///  Exact FQDNs such as "google.com".
+    ///  Wildcard expressions such as "*wayfair.com".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fqdn: Option<String>,
-    /// Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector.
+    /// Group is the name of the ClusterGroup which can be set within
+    /// an Ingress or Egress rule in place of a stand-alone selector.
+    /// A Group cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector.
+    /// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.
+    /// IPBlock cannot be set as part of the AppliedTo field.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<ResourceExportClusterNetworkPolicyEgressToIpBlock>,
-    /// Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+    /// Select all Pods from Namespaces matched by this selector, as
+    /// workloads in To/From fields. If set with PodSelector,
+    /// Pods are matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyEgressToNamespaceSelector>,
-    /// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
+    /// Select Pod/ExternalEntity from Namespaces matched by specific criteria.
+    /// Current supported criteria is match: Self, which selects from the same
+    /// Namespace of the appliedTo workloads.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. This field can only be set when NetworkPolicyPeer
+    /// is created for ClusterNetworkPolicy ingress/egress rules.
+    /// Cannot be set with NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ResourceExportClusterNetworkPolicyEgressToNamespaces>,
-    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
+    /// Select certain Nodes which match the label selector.
+    /// A NodeSelector cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyEgressToNodeSelector>,
-    /// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select Pods from NetworkPolicy's Namespace as workloads in
+    /// To/From fields. If set with NamespaceSelector, Pods are
+    /// matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyEgressToPodSelector>,
-    /// Define scope of the Pod/NamespaceSelector(s) of this peer. Can only be used in ingress NetworkPolicyPeers. Defaults to "Cluster".
+    /// Define scope of the Pod/NamespaceSelector(s) of this peer.
+    /// Can only be used in ingress NetworkPolicyPeers.
+    /// Defaults to "Cluster".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
-    /// Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector.
+    /// Select all Pods with the ServiceAccount matched by this field, as
+    /// workloads in To/From fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ResourceExportClusterNetworkPolicyEgressToServiceAccount>,
 }
 
-/// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+/// in To/From fields. If set with NamespaceSelector,
+/// ExternalEntities are matched from Namespaces matched by the
+/// NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToExternalEntitySelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressToExternalEntitySelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToExternalEntitySelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector.
+/// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.
+/// IPBlock cannot be set as part of the AppliedTo field.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToIpBlock {
-    /// CIDR is a string representing the IP Block Valid examples are "192.168.1.1/24".
+    /// CIDR is a string representing the IP Block
+    /// Valid examples are "192.168.1.1/24".
     pub cidr: String,
 }
 
-/// Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+/// Select all Pods from Namespaces matched by this selector, as
+/// workloads in To/From fields. If set with PodSelector,
+/// Pods are matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. Cannot be set with Namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressToNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
+/// Select Pod/ExternalEntity from Namespaces matched by specific criteria.
+/// Current supported criteria is match: Self, which selects from the same
+/// Namespace of the appliedTo workloads.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. This field can only be set when NetworkPolicyPeer
+/// is created for ClusterNetworkPolicy ingress/egress rules.
+/// Cannot be set with NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToNamespaces {
     /// Selects from the same Namespace of the appliedTo workloads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<String>,
-    /// Selects Namespaces that share the same values for the given set of label keys with the appliedTo Namespace. Namespaces must have all the label keys.
+    /// Selects Namespaces that share the same values for the given set of label keys
+    /// with the appliedTo Namespace. Namespaces must have all the label keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameLabels")]
     pub same_labels: Option<Vec<String>>,
 }
 
-/// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
+/// Select certain Nodes which match the label selector.
+/// A NodeSelector cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressToNodeSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select Pods from NetworkPolicy's Namespace as workloads in
+/// To/From fields. If set with NamespaceSelector, Pods are
+/// matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyEgressToPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector.
+/// Select all Pods with the ServiceAccount matched by this field, as
+/// workloads in To/From fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToServiceAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -802,7 +1160,8 @@ pub struct ResourceExportClusterNetworkPolicyEgressToServiceAccount {
     pub namespace: Option<String>,
 }
 
-/// PeerService refers to a Service, which can be a in-cluster Service or imported multi-cluster service.
+/// PeerService refers to a Service, which can be a in-cluster Service or
+/// imported multi-cluster service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyEgressToServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -813,39 +1172,60 @@ pub struct ResourceExportClusterNetworkPolicyEgressToServices {
     pub scope: Option<String>,
 }
 
-/// Rule describes the traffic allowed to/from the workloads selected by Spec.AppliedTo. Based on the action specified in the rule, traffic is either allowed or denied which exactly match the specified ports and protocol.
+/// Rule describes the traffic allowed to/from the workloads selected by
+/// Spec.AppliedTo. Based on the action specified in the rule, traffic is either
+/// allowed or denied which exactly match the specified ports and protocol.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngress {
     /// Action specifies the action to be applied on the rule.
     pub action: String,
-    /// Select workloads on which this rule will be applied to. Cannot be set in conjunction with NetworkPolicySpec/ClusterNetworkPolicySpec.AppliedTo.
+    /// Select workloads on which this rule will be applied to. Cannot be set in
+    /// conjunction with NetworkPolicySpec/ClusterNetworkPolicySpec.AppliedTo.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedTo")]
     pub applied_to: Option<Vec<ResourceExportClusterNetworkPolicyIngressAppliedTo>>,
-    /// EnableLogging is used to indicate if agent should generate logs when rules are matched. Should be default to false.
+    /// EnableLogging is used to indicate if agent should generate logs
+    /// when rules are matched. Should be default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableLogging")]
     pub enable_logging: Option<bool>,
-    /// Rule is matched if traffic originates from workloads selected by this field. If this field is empty, this rule matches all sources.
+    /// Rule is matched if traffic originates from workloads selected by
+    /// this field. If this field is empty, this rule matches all sources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<ResourceExportClusterNetworkPolicyIngressFrom>>,
-    /// Set of layer 7 protocols matched by the rule. If this field is set, action can only be Allow. When this field is used in a rule, any traffic matching the other layer 3/4 criteria of the rule (typically the 5-tuple) will be forwarded to an application-aware engine for protocol detection and rule enforcement, and the traffic will be allowed if the layer 7 criteria is also matched, otherwise it will be dropped. Therefore, any rules after a layer 7 rule will not be enforced for the traffic.
+    /// Set of layer 7 protocols matched by the rule. If this field is set, action can only be Allow.
+    /// When this field is used in a rule, any traffic matching the other layer 3/4 criteria of the rule (typically the
+    /// 5-tuple) will be forwarded to an application-aware engine for protocol detection and rule enforcement, and the
+    /// traffic will be allowed if the layer 7 criteria is also matched, otherwise it will be dropped. Therefore, any
+    /// rules after a layer 7 rule will not be enforced for the traffic.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "l7Protocols")]
     pub l7_protocols: Option<Vec<ResourceExportClusterNetworkPolicyIngressL7Protocols>>,
     /// LogLabel is a user-defined arbitrary string which will be printed in the NetworkPolicy logs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLabel")]
     pub log_label: Option<String>,
-    /// Name describes the intention of this rule. Name should be unique within the policy.
+    /// Name describes the intention of this rule.
+    /// Name should be unique within the policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Set of ports and protocols matched by the rule. If this field and Protocols are unset or empty, this rule matches all ports.
+    /// Set of ports and protocols matched by the rule. If this field and Protocols
+    /// are unset or empty, this rule matches all ports.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ResourceExportClusterNetworkPolicyIngressPorts>>,
-    /// Set of protocols matched by the rule. If this field and Ports are unset or empty, this rule matches all protocols supported.
+    /// Set of protocols matched by the rule. If this field and Ports are unset or
+    /// empty, this rule matches all protocols supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<Vec<ResourceExportClusterNetworkPolicyIngressProtocols>>,
-    /// Rule is matched if traffic is intended for workloads selected by this field. This field can't be used with ToServices. If this field and ToServices are both empty or missing this rule matches all destinations.
+    /// Rule is matched if traffic is intended for workloads selected by
+    /// this field. This field can't be used with ToServices. If this field
+    /// and ToServices are both empty or missing this rule matches all destinations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub to: Option<Vec<ResourceExportClusterNetworkPolicyIngressTo>>,
-    /// Rule is matched if traffic is intended for a Service listed in this field. Currently, only ClusterIP types Services are supported in this field. When scope is set to ClusterSet, it matches traffic intended for a multi-cluster Service listed in this field. Service name and Namespace provided should match the original exported Service. This field can only be used when AntreaProxy is enabled. This field can't be used with To or Ports. If this field and To are both empty or missing, this rule matches all destinations.
+    /// Rule is matched if traffic is intended for a Service listed in this field.
+    /// Currently, only ClusterIP types Services are supported in this field.
+    /// When scope is set to ClusterSet, it matches traffic intended for a multi-cluster
+    /// Service listed in this field. Service name and Namespace provided should match
+    /// the original exported Service.
+    /// This field can only be used when AntreaProxy is enabled. This field can't be used
+    /// with To or Ports. If this field and To are both empty or missing, this rule matches
+    /// all destinations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toServices")]
     pub to_services: Option<Vec<ResourceExportClusterNetworkPolicyIngressToServices>>,
 }
@@ -853,122 +1233,186 @@ pub struct ResourceExportClusterNetworkPolicyIngress {
 /// AppliedTo describes the grouping selector of workloads in AppliedTo field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedTo {
-    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+    /// in AppliedTo fields. If set with NamespaceSelector,
+    /// ExternalEntities are matched from Namespaces matched by the
+    /// NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyIngressAppliedToExternalEntitySelector>,
-    /// Group is the name of the ClusterGroup which can be set as an AppliedTo in place of a stand-alone selector. A Group cannot be set with any other selector.
+    /// Group is the name of the ClusterGroup which can be set as an
+    /// AppliedTo in place of a stand-alone selector. A Group cannot
+    /// be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+    /// Select all Pods from Namespaces matched by this selector, as
+    /// workloads in AppliedTo fields. If set with PodSelector,
+    /// Pods are matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyIngressAppliedToNamespaceSelector>,
-    /// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+    /// Select Nodes in cluster as workloads in AppliedTo fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyIngressAppliedToNodeSelector>,
-    /// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select Pods from NetworkPolicy's Namespace as workloads in
+    /// AppliedTo fields. If set with NamespaceSelector, Pods are
+    /// matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyIngressAppliedToPodSelector>,
-    /// Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector.
+    /// Select a certain Service which matches the NamespacedName.
+    /// A Service can only be set in either policy level AppliedTo field in a policy
+    /// that only has ingress rules or rule level AppliedTo field in an ingress rule.
+    /// Only a NodePort Service can be referred by this field.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ResourceExportClusterNetworkPolicyIngressAppliedToService>,
-    /// Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector.
+    /// Select all Pods with the ServiceAccount matched by this field, as
+    /// workloads in AppliedTo fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ResourceExportClusterNetworkPolicyIngressAppliedToServiceAccount>,
 }
 
-/// Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+/// in AppliedTo fields. If set with NamespaceSelector,
+/// ExternalEntities are matched from Namespaces matched by the
+/// NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToExternalEntitySelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressAppliedToExternalEntitySelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToExternalEntitySelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+/// Select all Pods from Namespaces matched by this selector, as
+/// workloads in AppliedTo fields. If set with PodSelector,
+/// Pods are matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. Cannot be set with Namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressAppliedToNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector.
+/// Select Nodes in cluster as workloads in AppliedTo fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressAppliedToNodeSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select Pods from NetworkPolicy's Namespace as workloads in
+/// AppliedTo fields. If set with NamespaceSelector, Pods are
+/// matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressAppliedToPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector.
+/// Select a certain Service which matches the NamespacedName.
+/// A Service can only be set in either policy level AppliedTo field in a policy
+/// that only has ingress rules or rule level AppliedTo field in an ingress rule.
+/// Only a NodePort Service can be referred by this field.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -977,7 +1421,9 @@ pub struct ResourceExportClusterNetworkPolicyIngressAppliedToService {
     pub namespace: Option<String>,
 }
 
-/// Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector.
+/// Select all Pods with the ServiceAccount matched by this field, as
+/// workloads in AppliedTo fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressAppliedToServiceAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -989,149 +1435,232 @@ pub struct ResourceExportClusterNetworkPolicyIngressAppliedToServiceAccount {
 /// NetworkPolicyPeer describes the grouping selector of workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFrom {
-    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+    /// in To/From fields. If set with NamespaceSelector,
+    /// ExternalEntities are matched from Namespaces matched by the
+    /// NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyIngressFromExternalEntitySelector>,
-    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as "google.com". Wildcard expressions such as "*wayfair.com".
+    /// Restrict egress access to the Fully Qualified Domain Names prescribed
+    /// by name or by wildcard match patterns. This field can only be set for
+    /// NetworkPolicyPeer of egress rules.
+    /// Supported formats are:
+    ///  Exact FQDNs such as "google.com".
+    ///  Wildcard expressions such as "*wayfair.com".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fqdn: Option<String>,
-    /// Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector.
+    /// Group is the name of the ClusterGroup which can be set within
+    /// an Ingress or Egress rule in place of a stand-alone selector.
+    /// A Group cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector.
+    /// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.
+    /// IPBlock cannot be set as part of the AppliedTo field.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<ResourceExportClusterNetworkPolicyIngressFromIpBlock>,
-    /// Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+    /// Select all Pods from Namespaces matched by this selector, as
+    /// workloads in To/From fields. If set with PodSelector,
+    /// Pods are matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyIngressFromNamespaceSelector>,
-    /// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
+    /// Select Pod/ExternalEntity from Namespaces matched by specific criteria.
+    /// Current supported criteria is match: Self, which selects from the same
+    /// Namespace of the appliedTo workloads.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. This field can only be set when NetworkPolicyPeer
+    /// is created for ClusterNetworkPolicy ingress/egress rules.
+    /// Cannot be set with NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ResourceExportClusterNetworkPolicyIngressFromNamespaces>,
-    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
+    /// Select certain Nodes which match the label selector.
+    /// A NodeSelector cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyIngressFromNodeSelector>,
-    /// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select Pods from NetworkPolicy's Namespace as workloads in
+    /// To/From fields. If set with NamespaceSelector, Pods are
+    /// matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyIngressFromPodSelector>,
-    /// Define scope of the Pod/NamespaceSelector(s) of this peer. Can only be used in ingress NetworkPolicyPeers. Defaults to "Cluster".
+    /// Define scope of the Pod/NamespaceSelector(s) of this peer.
+    /// Can only be used in ingress NetworkPolicyPeers.
+    /// Defaults to "Cluster".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
-    /// Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector.
+    /// Select all Pods with the ServiceAccount matched by this field, as
+    /// workloads in To/From fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ResourceExportClusterNetworkPolicyIngressFromServiceAccount>,
 }
 
-/// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+/// in To/From fields. If set with NamespaceSelector,
+/// ExternalEntities are matched from Namespaces matched by the
+/// NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromExternalEntitySelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressFromExternalEntitySelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromExternalEntitySelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector.
+/// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.
+/// IPBlock cannot be set as part of the AppliedTo field.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromIpBlock {
-    /// CIDR is a string representing the IP Block Valid examples are "192.168.1.1/24".
+    /// CIDR is a string representing the IP Block
+    /// Valid examples are "192.168.1.1/24".
     pub cidr: String,
 }
 
-/// Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+/// Select all Pods from Namespaces matched by this selector, as
+/// workloads in To/From fields. If set with PodSelector,
+/// Pods are matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. Cannot be set with Namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressFromNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
+/// Select Pod/ExternalEntity from Namespaces matched by specific criteria.
+/// Current supported criteria is match: Self, which selects from the same
+/// Namespace of the appliedTo workloads.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. This field can only be set when NetworkPolicyPeer
+/// is created for ClusterNetworkPolicy ingress/egress rules.
+/// Cannot be set with NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromNamespaces {
     /// Selects from the same Namespace of the appliedTo workloads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<String>,
-    /// Selects Namespaces that share the same values for the given set of label keys with the appliedTo Namespace. Namespaces must have all the label keys.
+    /// Selects Namespaces that share the same values for the given set of label keys
+    /// with the appliedTo Namespace. Namespaces must have all the label keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameLabels")]
     pub same_labels: Option<Vec<String>>,
 }
 
-/// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
+/// Select certain Nodes which match the label selector.
+/// A NodeSelector cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressFromNodeSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select Pods from NetworkPolicy's Namespace as workloads in
+/// To/From fields. If set with NamespaceSelector, Pods are
+/// matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressFromPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector.
+/// Select all Pods with the ServiceAccount matched by this field, as
+/// workloads in To/From fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressFromServiceAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1142,21 +1671,26 @@ pub struct ResourceExportClusterNetworkPolicyIngressFromServiceAccount {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressL7Protocols {
-    /// HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together. If all fields are not provided, it matches all HTTP requests.
+    /// HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together.
+    /// If all fields are not provided, it matches all HTTP requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ResourceExportClusterNetworkPolicyIngressL7ProtocolsHttp>,
-    /// TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this matches all TLS handshake packets.
+    /// TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this
+    /// matches all TLS handshake packets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ResourceExportClusterNetworkPolicyIngressL7ProtocolsTls>,
 }
 
-/// HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together. If all fields are not provided, it matches all HTTP requests.
+/// HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together.
+/// If all fields are not provided, it matches all HTTP requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressL7ProtocolsHttp {
-    /// Host represents the hostname present in the URI or the HTTP Host header to match. It does not contain the port associated with the host.
+    /// Host represents the hostname present in the URI or the HTTP Host header to match.
+    /// It does not contain the port associated with the host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Method represents the HTTP method to match. It could be GET, POST, PUT, HEAD, DELETE, TRACE, OPTIONS, CONNECT and PATCH.
+    /// Method represents the HTTP method to match.
+    /// It could be GET, POST, PUT, HEAD, DELETE, TRACE, OPTIONS, CONNECT and PATCH.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
     /// Path represents the URI path to match (Ex. "/index.html", "/admin").
@@ -1164,7 +1698,8 @@ pub struct ResourceExportClusterNetworkPolicyIngressL7ProtocolsHttp {
     pub path: Option<String>,
 }
 
-/// TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this matches all TLS handshake packets.
+/// TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this
+/// matches all TLS handshake packets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressL7ProtocolsTls {
     /// SNI (Server Name Indication) indicates the server domain name in the TLS/SSL hello message.
@@ -1175,35 +1710,52 @@ pub struct ResourceExportClusterNetworkPolicyIngressL7ProtocolsTls {
 /// NetworkPolicyPort describes the port and protocol to match in a rule.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressPorts {
-    /// EndPort defines the end of the port range, inclusive. It can only be specified when a numerical `port` is specified.
+    /// EndPort defines the end of the port range, inclusive.
+    /// It can only be specified when a numerical `port` is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endPort")]
     pub end_port: Option<i32>,
-    /// The port on the given protocol. This can be either a numerical or named port on a Pod. If this field is not provided, this matches all port names and numbers.
+    /// The port on the given protocol. This can be either a numerical
+    /// or named port on a Pod. If this field is not provided, this
+    /// matches all port names and numbers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
-    /// The protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP.
+    /// The protocol (TCP, UDP, or SCTP) which traffic must match.
+    /// If not specified, this field defaults to TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// SourceEndPort defines the end of the source port range, inclusive. It can only be specified when `sourcePort` is specified.
+    /// SourceEndPort defines the end of the source port range, inclusive.
+    /// It can only be specified when `sourcePort` is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceEndPort")]
     pub source_end_port: Option<i32>,
-    /// The source port on the given protocol. This can only be a numerical port. If this field is not provided, rule matches all source ports.
+    /// The source port on the given protocol. This can only be a numerical port.
+    /// If this field is not provided, rule matches all source ports.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourcePort")]
     pub source_port: Option<i32>,
 }
 
-/// NetworkPolicyProtocol defines additional protocols that are not supported by `ports`. All fields should be used as a standalone field.
+/// NetworkPolicyProtocol defines additional protocols that are not supported by
+/// `ports`. All fields should be used as a standalone field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressProtocols {
-    /// ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All fields could be used alone or together. If all fields are not provided, this matches all ICMP traffic.
+    /// ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All
+    /// fields could be used alone or together. If all fields are not provided, this
+    /// matches all ICMP traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icmp: Option<ResourceExportClusterNetworkPolicyIngressProtocolsIcmp>,
-    /// IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must be filled with: IGMPQuery    int32 = 0x11 IGMPReportV1 int32 = 0x12 IGMPReportV2 int32 = 0x16 IGMPReportV3 int32 = 0x22 If groupAddress is empty, all groupAddresses will be matched.
+    /// IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must
+    /// be filled with:
+    /// IGMPQuery    int32 = 0x11
+    /// IGMPReportV1 int32 = 0x12
+    /// IGMPReportV2 int32 = 0x16
+    /// IGMPReportV3 int32 = 0x22
+    /// If groupAddress is empty, all groupAddresses will be matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub igmp: Option<ResourceExportClusterNetworkPolicyIngressProtocolsIgmp>,
 }
 
-/// ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All fields could be used alone or together. If all fields are not provided, this matches all ICMP traffic.
+/// ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All
+/// fields could be used alone or together. If all fields are not provided, this
+/// matches all ICMP traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressProtocolsIcmp {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpCode")]
@@ -1212,7 +1764,13 @@ pub struct ResourceExportClusterNetworkPolicyIngressProtocolsIcmp {
     pub icmp_type: Option<i32>,
 }
 
-/// IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must be filled with: IGMPQuery    int32 = 0x11 IGMPReportV1 int32 = 0x12 IGMPReportV2 int32 = 0x16 IGMPReportV3 int32 = 0x22 If groupAddress is empty, all groupAddresses will be matched.
+/// IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must
+/// be filled with:
+/// IGMPQuery    int32 = 0x11
+/// IGMPReportV1 int32 = 0x12
+/// IGMPReportV2 int32 = 0x16
+/// IGMPReportV3 int32 = 0x22
+/// If groupAddress is empty, all groupAddresses will be matched.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressProtocolsIgmp {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupAddress")]
@@ -1224,149 +1782,232 @@ pub struct ResourceExportClusterNetworkPolicyIngressProtocolsIgmp {
 /// NetworkPolicyPeer describes the grouping selector of workloads.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressTo {
-    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+    /// in To/From fields. If set with NamespaceSelector,
+    /// ExternalEntities are matched from Namespaces matched by the
+    /// NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEntitySelector")]
     pub external_entity_selector: Option<ResourceExportClusterNetworkPolicyIngressToExternalEntitySelector>,
-    /// Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as "google.com". Wildcard expressions such as "*wayfair.com".
+    /// Restrict egress access to the Fully Qualified Domain Names prescribed
+    /// by name or by wildcard match patterns. This field can only be set for
+    /// NetworkPolicyPeer of egress rules.
+    /// Supported formats are:
+    ///  Exact FQDNs such as "google.com".
+    ///  Wildcard expressions such as "*wayfair.com".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fqdn: Option<String>,
-    /// Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector.
+    /// Group is the name of the ClusterGroup which can be set within
+    /// an Ingress or Egress rule in place of a stand-alone selector.
+    /// A Group cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector.
+    /// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.
+    /// IPBlock cannot be set as part of the AppliedTo field.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<ResourceExportClusterNetworkPolicyIngressToIpBlock>,
-    /// Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+    /// Select all Pods from Namespaces matched by this selector, as
+    /// workloads in To/From fields. If set with PodSelector,
+    /// Pods are matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. Cannot be set with Namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ResourceExportClusterNetworkPolicyIngressToNamespaceSelector>,
-    /// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
+    /// Select Pod/ExternalEntity from Namespaces matched by specific criteria.
+    /// Current supported criteria is match: Self, which selects from the same
+    /// Namespace of the appliedTo workloads.
+    /// Cannot be set with any other selector except PodSelector or
+    /// ExternalEntitySelector. This field can only be set when NetworkPolicyPeer
+    /// is created for ClusterNetworkPolicy ingress/egress rules.
+    /// Cannot be set with NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ResourceExportClusterNetworkPolicyIngressToNamespaces>,
-    /// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
+    /// Select certain Nodes which match the label selector.
+    /// A NodeSelector cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ResourceExportClusterNetworkPolicyIngressToNodeSelector>,
-    /// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+    /// Select Pods from NetworkPolicy's Namespace as workloads in
+    /// To/From fields. If set with NamespaceSelector, Pods are
+    /// matched from Namespaces matched by the NamespaceSelector.
+    /// Cannot be set with any other selector except NamespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<ResourceExportClusterNetworkPolicyIngressToPodSelector>,
-    /// Define scope of the Pod/NamespaceSelector(s) of this peer. Can only be used in ingress NetworkPolicyPeers. Defaults to "Cluster".
+    /// Define scope of the Pod/NamespaceSelector(s) of this peer.
+    /// Can only be used in ingress NetworkPolicyPeers.
+    /// Defaults to "Cluster".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
-    /// Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector.
+    /// Select all Pods with the ServiceAccount matched by this field, as
+    /// workloads in To/From fields.
+    /// Cannot be set with any other selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ResourceExportClusterNetworkPolicyIngressToServiceAccount>,
 }
 
-/// Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select ExternalEntities from NetworkPolicy's Namespace as workloads
+/// in To/From fields. If set with NamespaceSelector,
+/// ExternalEntities are matched from Namespaces matched by the
+/// NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToExternalEntitySelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressToExternalEntitySelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToExternalEntitySelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector.
+/// IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.
+/// IPBlock cannot be set as part of the AppliedTo field.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToIpBlock {
-    /// CIDR is a string representing the IP Block Valid examples are "192.168.1.1/24".
+    /// CIDR is a string representing the IP Block
+    /// Valid examples are "192.168.1.1/24".
     pub cidr: String,
 }
 
-/// Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces.
+/// Select all Pods from Namespaces matched by this selector, as
+/// workloads in To/From fields. If set with PodSelector,
+/// Pods are matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. Cannot be set with Namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressToNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector.
+/// Select Pod/ExternalEntity from Namespaces matched by specific criteria.
+/// Current supported criteria is match: Self, which selects from the same
+/// Namespace of the appliedTo workloads.
+/// Cannot be set with any other selector except PodSelector or
+/// ExternalEntitySelector. This field can only be set when NetworkPolicyPeer
+/// is created for ClusterNetworkPolicy ingress/egress rules.
+/// Cannot be set with NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToNamespaces {
     /// Selects from the same Namespace of the appliedTo workloads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<String>,
-    /// Selects Namespaces that share the same values for the given set of label keys with the appliedTo Namespace. Namespaces must have all the label keys.
+    /// Selects Namespaces that share the same values for the given set of label keys
+    /// with the appliedTo Namespace. Namespaces must have all the label keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameLabels")]
     pub same_labels: Option<Vec<String>>,
 }
 
-/// Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector.
+/// Select certain Nodes which match the label selector.
+/// A NodeSelector cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressToNodeSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToNodeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector.
+/// Select Pods from NetworkPolicy's Namespace as workloads in
+/// To/From fields. If set with NamespaceSelector, Pods are
+/// matched from Namespaces matched by the NamespaceSelector.
+/// Cannot be set with any other selector except NamespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ResourceExportClusterNetworkPolicyIngressToPodSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToPodSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector.
+/// Select all Pods with the ServiceAccount matched by this field, as
+/// workloads in To/From fields.
+/// Cannot be set with any other selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToServiceAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1375,7 +2016,8 @@ pub struct ResourceExportClusterNetworkPolicyIngressToServiceAccount {
     pub namespace: Option<String>,
 }
 
-/// PeerService refers to a Service, which can be a in-cluster Service or imported multi-cluster service.
+/// PeerService refers to a Service, which can be a in-cluster Service or
+/// imported multi-cluster service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportClusterNetworkPolicyIngressToServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1393,16 +2035,31 @@ pub struct ResourceExportEndpoints {
     pub subsets: Option<Vec<ResourceExportEndpointsSubsets>>,
 }
 
-/// EndpointSubset is a group of addresses with a common set of ports. The expanded set of endpoints is the Cartesian product of Addresses x Ports. For example, given: 
-///  { Addresses: [{"ip": "10.10.1.1"}, {"ip": "10.10.2.2"}], Ports:     [{"name": "a", "port": 8675}, {"name": "b", "port": 309}] } 
-///  The resulting set of endpoints can be viewed as: 
-///  a: [ 10.10.1.1:8675, 10.10.2.2:8675 ], b: [ 10.10.1.1:309, 10.10.2.2:309 ]
+/// EndpointSubset is a group of addresses with a common set of ports. The
+/// expanded set of endpoints is the Cartesian product of Addresses x Ports.
+/// For example, given:
+/// 
+/// 
+/// 	{
+/// 	  Addresses: [{"ip": "10.10.1.1"}, {"ip": "10.10.2.2"}],
+/// 	  Ports:     [{"name": "a", "port": 8675}, {"name": "b", "port": 309}]
+/// 	}
+/// 
+/// 
+/// The resulting set of endpoints can be viewed as:
+/// 
+/// 
+/// 	a: [ 10.10.1.1:8675, 10.10.2.2:8675 ],
+/// 	b: [ 10.10.1.1:309, 10.10.2.2:309 ]
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportEndpointsSubsets {
-    /// IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.
+    /// IP addresses which offer the related ports that are marked as ready. These endpoints
+    /// should be considered safe for load balancers and clients to utilize.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<ResourceExportEndpointsSubsetsAddresses>>,
-    /// IP addresses which offer the related ports but are not currently marked as ready because they have not yet finished starting, have recently failed a readiness check, or have recently failed a liveness check.
+    /// IP addresses which offer the related ports but are not currently marked as ready
+    /// because they have not yet finished starting, have recently failed a readiness check,
+    /// or have recently failed a liveness check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notReadyAddresses")]
     pub not_ready_addresses: Option<Vec<ResourceExportEndpointsSubsetsNotReadyAddresses>>,
     /// Port numbers available on the related IP addresses.
@@ -1416,7 +2073,9 @@ pub struct ResourceExportEndpointsSubsetsAddresses {
     /// The Hostname of this endpoint
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// The IP of this endpoint. May not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10), or link-local multicast (224.0.0.0/24 or ff02::/16).
+    /// The IP of this endpoint.
+    /// May not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10),
+    /// or link-local multicast (224.0.0.0/24 or ff02::/16).
     pub ip: String,
     /// Optional: Node hosting this endpoint. This can be used to determine endpoints local to a node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
@@ -1432,22 +2091,34 @@ pub struct ResourceExportEndpointsSubsetsAddressesTargetRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
@@ -1458,7 +2129,9 @@ pub struct ResourceExportEndpointsSubsetsNotReadyAddresses {
     /// The Hostname of this endpoint
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// The IP of this endpoint. May not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10), or link-local multicast (224.0.0.0/24 or ff02::/16).
+    /// The IP of this endpoint.
+    /// May not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10),
+    /// or link-local multicast (224.0.0.0/24 or ff02::/16).
     pub ip: String,
     /// Optional: Node hosting this endpoint. This can be used to determine endpoints local to a node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
@@ -1474,22 +2147,34 @@ pub struct ResourceExportEndpointsSubsetsNotReadyAddressesTargetRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
@@ -1497,18 +2182,37 @@ pub struct ResourceExportEndpointsSubsetsNotReadyAddressesTargetRef {
 /// EndpointPort is a tuple that describes a single port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportEndpointsSubsetsPorts {
-    /// The application protocol for this port. This is used as a hint for implementations to offer richer behavior for protocols that they understand. This field follows standard Kubernetes label syntax. Valid values are either: 
-    ///  * Un-prefixed protocol names - reserved for IANA standard service names (as per RFC-6335 and https://www.iana.org/assignments/service-names). 
-    ///  * Kubernetes-defined prefixed names: * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior- * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455 * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455 
-    ///  * Other protocols should use implementation-defined prefixed names such as mycompany.com/my-custom-protocol.
+    /// The application protocol for this port.
+    /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
+    /// This field follows standard Kubernetes label syntax.
+    /// Valid values are either:
+    /// 
+    /// 
+    /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
+    /// RFC-6335 and https://www.iana.org/assignments/service-names).
+    /// 
+    /// 
+    /// * Kubernetes-defined prefixed names:
+    ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
+    ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
+    ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
+    /// 
+    /// 
+    /// * Other protocols should use implementation-defined prefixed names such as
+    /// mycompany.com/my-custom-protocol.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
-    /// The name of this port.  This must match the 'name' field in the corresponding ServicePort. Must be a DNS_LABEL. Optional only if one port is defined.
+    /// The name of this port.  This must match the 'name' field in the
+    /// corresponding ServicePort.
+    /// Must be a DNS_LABEL.
+    /// Optional only if one port is defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The port number of the endpoint.
     pub port: i32,
-    /// The IP protocol for this port. Must be UDP, TCP, or SCTP. Default is TCP.
+    /// The IP protocol for this port.
+    /// Must be UDP, TCP, or SCTP.
+    /// Default is TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
@@ -1527,7 +2231,8 @@ pub struct ResourceExportExternalEntityExternalEntitySpec {
     /// Endpoints is a list of external endpoints associated with this entity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<ResourceExportExternalEntityExternalEntitySpecEndpoints>>,
-    /// ExternalNode is the opaque identifier of the agent/controller responsible for additional processing or handling of this external entity.
+    /// ExternalNode is the opaque identifier of the agent/controller responsible
+    /// for additional processing or handling of this external entity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalNode")]
     pub external_node: Option<String>,
     /// Ports maintain the list of named ports.
@@ -1555,7 +2260,8 @@ pub struct ResourceExportExternalEntityExternalEntitySpecPorts {
     /// The port on the given protocol.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    /// The protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP.
+    /// The protocol (TCP, UDP, or SCTP) which traffic must match.
+    /// If not specified, this field defaults to TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
@@ -1585,63 +2291,210 @@ pub struct ResourceExportService {
 /// ServiceSpec describes the attributes that a user creates on a service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportServiceServiceSpec {
-    /// allocateLoadBalancerNodePorts defines if NodePorts will be automatically allocated for services with type LoadBalancer.  Default is "true". It may be set to "false" if the cluster load-balancer does not rely on NodePorts.  If the caller requests specific NodePorts (by specifying a value), those requests will be respected, regardless of this field. This field may only be set for services with type LoadBalancer and will be cleared if the type is changed to any other type.
+    /// allocateLoadBalancerNodePorts defines if NodePorts will be automatically
+    /// allocated for services with type LoadBalancer.  Default is "true". It
+    /// may be set to "false" if the cluster load-balancer does not rely on
+    /// NodePorts.  If the caller requests specific NodePorts (by specifying a
+    /// value), those requests will be respected, regardless of this field.
+    /// This field may only be set for services with type LoadBalancer and will
+    /// be cleared if the type is changed to any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
-    /// clusterIP is the IP address of the service and is usually assigned randomly. If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail. This field may not be changed through updates unless the type field is also being changed to ExternalName (which requires this field to be blank) or the type field is being changed from ExternalName (in which case this field may optionally be specified, as describe above).  Valid values are "None", empty string (""), or a valid IP address. Setting this to "None" makes a "headless service" (no virtual IP), which is useful when direct endpoint connections are preferred and proxying is not required.  Only applies to types ClusterIP, NodePort, and LoadBalancer. If this field is specified when creating a Service of type ExternalName, creation will fail. This field will be wiped when updating a Service to type ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// clusterIP is the IP address of the service and is usually assigned
+    /// randomly. If an address is specified manually, is in-range (as per
+    /// system configuration), and is not in use, it will be allocated to the
+    /// service; otherwise creation of the service will fail. This field may not
+    /// be changed through updates unless the type field is also being changed
+    /// to ExternalName (which requires this field to be blank) or the type
+    /// field is being changed from ExternalName (in which case this field may
+    /// optionally be specified, as describe above).  Valid values are "None",
+    /// empty string (""), or a valid IP address. Setting this to "None" makes a
+    /// "headless service" (no virtual IP), which is useful when direct endpoint
+    /// connections are preferred and proxying is not required.  Only applies to
+    /// types ClusterIP, NodePort, and LoadBalancer. If this field is specified
+    /// when creating a Service of type ExternalName, creation will fail. This
+    /// field will be wiped when updating a Service to type ExternalName.
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIP")]
     pub cluster_ip: Option<String>,
-    /// ClusterIPs is a list of IP addresses assigned to this service, and are usually assigned randomly.  If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail. This field may not be changed through updates unless the type field is also being changed to ExternalName (which requires this field to be empty) or the type field is being changed from ExternalName (in which case this field may optionally be specified, as describe above).  Valid values are "None", empty string (""), or a valid IP address.  Setting this to "None" makes a "headless service" (no virtual IP), which is useful when direct endpoint connections are preferred and proxying is not required.  Only applies to types ClusterIP, NodePort, and LoadBalancer. If this field is specified when creating a Service of type ExternalName, creation will fail. This field will be wiped when updating a Service to type ExternalName.  If this field is not specified, it will be initialized from the clusterIP field.  If this field is specified, clients must ensure that clusterIPs[0] and clusterIP have the same value. 
-    ///  This field may hold a maximum of two entries (dual-stack IPs, in either order). These IPs must correspond to the values of the ipFamilies field. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// ClusterIPs is a list of IP addresses assigned to this service, and are
+    /// usually assigned randomly.  If an address is specified manually, is
+    /// in-range (as per system configuration), and is not in use, it will be
+    /// allocated to the service; otherwise creation of the service will fail.
+    /// This field may not be changed through updates unless the type field is
+    /// also being changed to ExternalName (which requires this field to be
+    /// empty) or the type field is being changed from ExternalName (in which
+    /// case this field may optionally be specified, as describe above).  Valid
+    /// values are "None", empty string (""), or a valid IP address.  Setting
+    /// this to "None" makes a "headless service" (no virtual IP), which is
+    /// useful when direct endpoint connections are preferred and proxying is
+    /// not required.  Only applies to types ClusterIP, NodePort, and
+    /// LoadBalancer. If this field is specified when creating a Service of type
+    /// ExternalName, creation will fail. This field will be wiped when updating
+    /// a Service to type ExternalName.  If this field is not specified, it will
+    /// be initialized from the clusterIP field.  If this field is specified,
+    /// clients must ensure that clusterIPs[0] and clusterIP have the same
+    /// value.
+    /// 
+    /// 
+    /// This field may hold a maximum of two entries (dual-stack IPs, in either order).
+    /// These IPs must correspond to the values of the ipFamilies field. Both
+    /// clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIPs")]
     pub cluster_i_ps: Option<Vec<String>>,
-    /// externalIPs is a list of IP addresses for which nodes in the cluster will also accept traffic for this service.  These IPs are not managed by Kubernetes.  The user is responsible for ensuring that traffic arrives at a node with this IP.  A common example is external load-balancers that are not part of the Kubernetes system.
+    /// externalIPs is a list of IP addresses for which nodes in the cluster
+    /// will also accept traffic for this service.  These IPs are not managed by
+    /// Kubernetes.  The user is responsible for ensuring that traffic arrives
+    /// at a node with this IP.  A common example is external load-balancers
+    /// that are not part of the Kubernetes system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
-    /// externalName is the external reference that discovery mechanisms will return as an alias for this service (e.g. a DNS CNAME record). No proxying will be involved.  Must be a lowercase RFC-1123 hostname (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
+    /// externalName is the external reference that discovery mechanisms will
+    /// return as an alias for this service (e.g. a DNS CNAME record). No
+    /// proxying will be involved.  Must be a lowercase RFC-1123 hostname
+    /// (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
-    /// externalTrafficPolicy describes how nodes distribute service traffic they receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs, and LoadBalancer IPs). If set to "Local", the proxy will configure the service in a way that assumes that external load balancers will take care of balancing the service traffic between nodes, and so each node will deliver traffic only to the node-local endpoints of the service, without masquerading the client source IP. (Traffic mistakenly sent to a node with no endpoints will be dropped.) The default value, "Cluster", uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features). Note that traffic sent to an External IP or LoadBalancer IP from within the cluster will always get "Cluster" semantics, but clients sending to a NodePort from within the cluster may need to take traffic policy into account when picking a node.
+    /// externalTrafficPolicy describes how nodes distribute service traffic they
+    /// receive on one of the Service's "externally-facing" addresses (NodePorts,
+    /// ExternalIPs, and LoadBalancer IPs). If set to "Local", the proxy will configure
+    /// the service in a way that assumes that external load balancers will take care
+    /// of balancing the service traffic between nodes, and so each node will deliver
+    /// traffic only to the node-local endpoints of the service, without masquerading
+    /// the client source IP. (Traffic mistakenly sent to a node with no endpoints will
+    /// be dropped.) The default value, "Cluster", uses the standard behavior of
+    /// routing to all endpoints evenly (possibly modified by topology and other
+    /// features). Note that traffic sent to an External IP or LoadBalancer IP from
+    /// within the cluster will always get "Cluster" semantics, but clients sending to
+    /// a NodePort from within the cluster may need to take traffic policy into account
+    /// when picking a node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
-    /// healthCheckNodePort specifies the healthcheck nodePort for the service. This only applies when type is set to LoadBalancer and externalTrafficPolicy is set to Local. If a value is specified, is in-range, and is not in use, it will be used.  If not specified, a value will be automatically allocated.  External systems (e.g. load-balancers) can use this port to determine if a given node holds endpoints for this service or not.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type). This field cannot be updated once set.
+    /// healthCheckNodePort specifies the healthcheck nodePort for the service.
+    /// This only applies when type is set to LoadBalancer and
+    /// externalTrafficPolicy is set to Local. If a value is specified, is
+    /// in-range, and is not in use, it will be used.  If not specified, a value
+    /// will be automatically allocated.  External systems (e.g. load-balancers)
+    /// can use this port to determine if a given node holds endpoints for this
+    /// service or not.  If this field is specified when creating a Service
+    /// which does not need it, creation will fail. This field will be wiped
+    /// when updating a Service to no longer need it (e.g. changing type).
+    /// This field cannot be updated once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
-    /// InternalTrafficPolicy describes how nodes distribute service traffic they receive on the ClusterIP. If set to "Local", the proxy will assume that pods only want to talk to endpoints of the service on the same node as the pod, dropping the traffic if there are no local endpoints. The default value, "Cluster", uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features).
+    /// InternalTrafficPolicy describes how nodes distribute service traffic they
+    /// receive on the ClusterIP. If set to "Local", the proxy will assume that pods
+    /// only want to talk to endpoints of the service on the same node as the pod,
+    /// dropping the traffic if there are no local endpoints. The default value,
+    /// "Cluster", uses the standard behavior of routing to all endpoints evenly
+    /// (possibly modified by topology and other features).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
     pub internal_traffic_policy: Option<String>,
-    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this service. This field is usually assigned automatically based on cluster configuration and the ipFamilyPolicy field. If this field is specified manually, the requested family is available in the cluster, and ipFamilyPolicy allows it, it will be used; otherwise creation of the service will fail. This field is conditionally mutable: it allows for adding or removing a secondary IP family, but it does not allow changing the primary IP family of the Service. Valid values are "IPv4" and "IPv6".  This field only applies to Services of types ClusterIP, NodePort, and LoadBalancer, and does apply to "headless" services. This field will be wiped when updating a Service to type ExternalName. 
-    ///  This field may hold a maximum of two entries (dual-stack families, in either order).  These families must correspond to the values of the clusterIPs field, if specified. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
+    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this
+    /// service. This field is usually assigned automatically based on cluster
+    /// configuration and the ipFamilyPolicy field. If this field is specified
+    /// manually, the requested family is available in the cluster,
+    /// and ipFamilyPolicy allows it, it will be used; otherwise creation of
+    /// the service will fail. This field is conditionally mutable: it allows
+    /// for adding or removing a secondary IP family, but it does not allow
+    /// changing the primary IP family of the Service. Valid values are "IPv4"
+    /// and "IPv6".  This field only applies to Services of types ClusterIP,
+    /// NodePort, and LoadBalancer, and does apply to "headless" services.
+    /// This field will be wiped when updating a Service to type ExternalName.
+    /// 
+    /// 
+    /// This field may hold a maximum of two entries (dual-stack families, in
+    /// either order).  These families must correspond to the values of the
+    /// clusterIPs field, if specified. Both clusterIPs and ipFamilies are
+    /// governed by the ipFamilyPolicy field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// IPFamilyPolicy represents the dual-stack-ness requested or required by this Service. If there is no value provided, then this field will be set to SingleStack. Services can be "SingleStack" (a single IP family), "PreferDualStack" (two IP families on dual-stack configured clusters or a single IP family on single-stack clusters), or "RequireDualStack" (two IP families on dual-stack configured clusters, otherwise fail). The ipFamilies and clusterIPs fields depend on the value of this field. This field will be wiped when updating a service to type ExternalName.
+    /// IPFamilyPolicy represents the dual-stack-ness requested or required by
+    /// this Service. If there is no value provided, then this field will be set
+    /// to SingleStack. Services can be "SingleStack" (a single IP family),
+    /// "PreferDualStack" (two IP families on dual-stack configured clusters or
+    /// a single IP family on single-stack clusters), or "RequireDualStack"
+    /// (two IP families on dual-stack configured clusters, otherwise fail). The
+    /// ipFamilies and clusterIPs fields depend on the value of this field. This
+    /// field will be wiped when updating a service to type ExternalName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<String>,
-    /// loadBalancerClass is the class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix, e.g. "internal-vip" or "example.com/internal-vip". Unprefixed names are reserved for end-users. This field can only be set when the Service type is 'LoadBalancer'. If not set, the default load balancer implementation is used, today this is typically done through the cloud provider integration, but should apply for any default implementation. If set, it is assumed that a load balancer implementation is watching for Services with a matching class. Any default load balancer implementation (e.g. cloud providers) should ignore Services that set this field. This field can only be set when creating or updating a Service to type 'LoadBalancer'. Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
+    /// loadBalancerClass is the class of the load balancer implementation this Service belongs to.
+    /// If specified, the value of this field must be a label-style identifier, with an optional prefix,
+    /// e.g. "internal-vip" or "example.com/internal-vip". Unprefixed names are reserved for end-users.
+    /// This field can only be set when the Service type is 'LoadBalancer'. If not set, the default load
+    /// balancer implementation is used, today this is typically done through the cloud provider integration,
+    /// but should apply for any default implementation. If set, it is assumed that a load balancer
+    /// implementation is watching for Services with a matching class. Any default load balancer
+    /// implementation (e.g. cloud providers) should ignore Services that set this field.
+    /// This field can only be set when creating or updating a Service to type 'LoadBalancer'.
+    /// Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
-    /// Only applies to Service Type: LoadBalancer. This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created. This field will be ignored if the cloud-provider does not support the feature. Deprecated: This field was under-specified and its meaning varies across implementations. Using it is non-portable and it may not support dual-stack. Users are encouraged to use implementation-specific annotations when available.
+    /// Only applies to Service Type: LoadBalancer.
+    /// This feature depends on whether the underlying cloud-provider supports specifying
+    /// the loadBalancerIP when a load balancer is created.
+    /// This field will be ignored if the cloud-provider does not support the feature.
+    /// Deprecated: This field was under-specified and its meaning varies across implementations.
+    /// Using it is non-portable and it may not support dual-stack.
+    /// Users are encouraged to use implementation-specific annotations when available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
-    /// If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature." More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
+    /// If specified and supported by the platform, this will restrict traffic through the cloud-provider
+    /// load-balancer will be restricted to the specified client IPs. This field will be ignored if the
+    /// cloud-provider does not support the feature."
+    /// More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
-    /// The list of ports that are exposed by this service. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// The list of ports that are exposed by this service.
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ResourceExportServiceServiceSpecPorts>>,
-    /// publishNotReadyAddresses indicates that any agent which deals with endpoints for this Service should disregard any indications of ready/not-ready. The primary use case for setting this field is for a StatefulSet's Headless Service to propagate SRV DNS records for its Pods for the purpose of peer discovery. The Kubernetes controllers that generate Endpoints and EndpointSlice resources for Services interpret this to mean that all endpoints are considered "ready" even if the Pods themselves are not. Agents which consume only Kubernetes generated endpoints through the Endpoints or EndpointSlice resources can safely assume this behavior.
+    /// publishNotReadyAddresses indicates that any agent which deals with endpoints for this
+    /// Service should disregard any indications of ready/not-ready.
+    /// The primary use case for setting this field is for a StatefulSet's Headless Service to
+    /// propagate SRV DNS records for its Pods for the purpose of peer discovery.
+    /// The Kubernetes controllers that generate Endpoints and EndpointSlice resources for
+    /// Services interpret this to mean that all endpoints are considered "ready" even if the
+    /// Pods themselves are not. Agents which consume only Kubernetes generated endpoints
+    /// through the Endpoints or EndpointSlice resources can safely assume this behavior.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
-    /// Route service traffic to pods with label keys and values matching this selector. If empty or not present, the service is assumed to have an external process managing its endpoints, which Kubernetes will not modify. Only applies to types ClusterIP, NodePort, and LoadBalancer. Ignored if type is ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/
+    /// Route service traffic to pods with label keys and values matching this
+    /// selector. If empty or not present, the service is assumed to have an
+    /// external process managing its endpoints, which Kubernetes will not
+    /// modify. Only applies to types ClusterIP, NodePort, and LoadBalancer.
+    /// Ignored if type is ExternalName.
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    /// Supports "ClientIP" and "None". Used to maintain session affinity. Enable client IP based session affinity. Must be ClientIP or None. Defaults to None. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// Supports "ClientIP" and "None". Used to maintain session affinity.
+    /// Enable client IP based session affinity.
+    /// Must be ClientIP or None.
+    /// Defaults to None.
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// sessionAffinityConfig contains the configurations of session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ResourceExportServiceServiceSpecSessionAffinityConfig>,
-    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. "ExternalName" aliases this service to the specified externalName. Several other fields do not apply to ExternalName services. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
+    /// options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
+    /// "ClusterIP" allocates a cluster-internal IP address for load-balancing
+    /// to endpoints. Endpoints are determined by the selector or if that is not
+    /// specified, by manual construction of an Endpoints object or
+    /// EndpointSlice objects. If clusterIP is "None", no virtual IP is
+    /// allocated and the endpoints are published as a set of endpoints rather
+    /// than a virtual IP.
+    /// "NodePort" builds on ClusterIP and allocates a port on every node which
+    /// routes to the same endpoints as the clusterIP.
+    /// "LoadBalancer" builds on NodePort and creates an external load-balancer
+    /// (if supported in the current cloud) which routes to the same endpoints
+    /// as the clusterIP.
+    /// "ExternalName" aliases this service to the specified externalName.
+    /// Several other fields do not apply to ExternalName services.
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -1649,24 +2502,58 @@ pub struct ResourceExportServiceServiceSpec {
 /// ServicePort contains information on service's port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportServiceServiceSpecPorts {
-    /// The application protocol for this port. This is used as a hint for implementations to offer richer behavior for protocols that they understand. This field follows standard Kubernetes label syntax. Valid values are either: 
-    ///  * Un-prefixed protocol names - reserved for IANA standard service names (as per RFC-6335 and https://www.iana.org/assignments/service-names). 
-    ///  * Kubernetes-defined prefixed names: * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior- * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455 * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455 
-    ///  * Other protocols should use implementation-defined prefixed names such as mycompany.com/my-custom-protocol.
+    /// The application protocol for this port.
+    /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
+    /// This field follows standard Kubernetes label syntax.
+    /// Valid values are either:
+    /// 
+    /// 
+    /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
+    /// RFC-6335 and https://www.iana.org/assignments/service-names).
+    /// 
+    /// 
+    /// * Kubernetes-defined prefixed names:
+    ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
+    ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
+    ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
+    /// 
+    /// 
+    /// * Other protocols should use implementation-defined prefixed names such as
+    /// mycompany.com/my-custom-protocol.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
-    /// The name of this port within the service. This must be a DNS_LABEL. All ports within a ServiceSpec must have unique names. When considering the endpoints for a Service, this must match the 'name' field in the EndpointPort. Optional if only one ServicePort is defined on this service.
+    /// The name of this port within the service. This must be a DNS_LABEL.
+    /// All ports within a ServiceSpec must have unique names. When considering
+    /// the endpoints for a Service, this must match the 'name' field in the
+    /// EndpointPort.
+    /// Optional if only one ServicePort is defined on this service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The port on each node on which this service is exposed when type is NodePort or LoadBalancer.  Usually assigned by the system. If a value is specified, in-range, and not in use it will be used, otherwise the operation will fail.  If not specified, a port will be allocated if this Service requires one.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type from NodePort to ClusterIP). More info: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    /// The port on each node on which this service is exposed when type is
+    /// NodePort or LoadBalancer.  Usually assigned by the system. If a value is
+    /// specified, in-range, and not in use it will be used, otherwise the
+    /// operation will fail.  If not specified, a port will be allocated if this
+    /// Service requires one.  If this field is specified when creating a
+    /// Service which does not need it, creation will fail. This field will be
+    /// wiped when updating a Service to no longer need it (e.g. changing type
+    /// from NodePort to ClusterIP).
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<i32>,
     /// The port that will be exposed by this service.
     pub port: i32,
-    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
+    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP".
+    /// Default is TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// Number or name of the port to access on the pods targeted by the service. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME. If this is a string, it will be looked up as a named port in the target Pod's container ports. If this is not specified, the value of the 'port' field is used (an identity map). This field is ignored for services with clusterIP=None, and should be omitted or set equal to the 'port' field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+    /// Number or name of the port to access on the pods targeted by the service.
+    /// Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
+    /// If this is a string, it will be looked up as a named port in the
+    /// target Pod's container ports. If this is not specified, the value
+    /// of the 'port' field is used (an identity map).
+    /// This field is ignored for services with clusterIP=None, and should be
+    /// omitted or set equal to the 'port' field.
+    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
@@ -1682,7 +2569,9 @@ pub struct ResourceExportServiceServiceSpecSessionAffinityConfig {
 /// clientIP contains the configurations of Client IP based session affinity.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportServiceServiceSpecSessionAffinityConfigClientIp {
-    /// timeoutSeconds specifies the seconds of ClientIP type session sticky time. The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP". Default value is 10800(for 3 hours).
+    /// timeoutSeconds specifies the seconds of ClientIP type session sticky time.
+    /// The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP".
+    /// Default value is 10800(for 3 hours).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }

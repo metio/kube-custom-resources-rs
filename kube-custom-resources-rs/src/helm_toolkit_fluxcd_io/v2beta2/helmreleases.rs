@@ -238,6 +238,8 @@ pub struct HelmReleaseChartSpecVerify {
 pub enum HelmReleaseChartSpecVerifyProvider {
     #[serde(rename = "cosign")]
     Cosign,
+    #[serde(rename = "notation")]
+    Notation,
 }
 
 /// SecretRef specifies the Kubernetes Secret containing the

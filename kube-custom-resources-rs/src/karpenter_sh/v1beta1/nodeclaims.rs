@@ -78,7 +78,7 @@ pub struct NodeClaimKubelet {
     pub image_gc_low_threshold_percent: Option<i32>,
     /// KubeReserved contains resources reserved for Kubernetes system components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeReserved")]
-    pub kube_reserved: Option<BTreeMap<String, IntOrString>>,
+    pub kube_reserved: Option<BTreeMap<String, String>>,
     /// MaxPods is an override for the maximum number of pods that can run on
     /// a worker node instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPods")]
@@ -90,7 +90,7 @@ pub struct NodeClaimKubelet {
     pub pods_per_core: Option<i32>,
     /// SystemReserved contains resources reserved for OS system daemons and kernel memory.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemReserved")]
-    pub system_reserved: Option<BTreeMap<String, IntOrString>>,
+    pub system_reserved: Option<BTreeMap<String, String>>,
 }
 
 /// NodeClassRef is a reference to an object that defines provider specific configuration

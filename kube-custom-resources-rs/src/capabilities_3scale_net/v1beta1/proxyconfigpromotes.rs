@@ -27,7 +27,7 @@ pub struct ProxyConfigPromoteSpec {
 /// ProxyConfigPromoteStatus defines the observed state of ProxyConfigPromote
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProxyConfigPromoteStatus {
-    /// Current state of the activedoc resource. Conditions represent the latest available observations of an object's state
+    /// Current state of the ProxyConfigPromote resource. Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The latest Version in production

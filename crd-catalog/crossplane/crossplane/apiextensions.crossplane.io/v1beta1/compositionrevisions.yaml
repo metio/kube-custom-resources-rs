@@ -33,7 +33,7 @@ spec:
       name: "v1beta1"
       schema:
         openAPIV3Schema:
-          description: "A CompositionRevision represents a revision in time of a Composition.\nRevisions are created by Crossplane; they should be treated as immutable."
+          description: "A CompositionRevision represents a revision of a Composition. Crossplane\ncreates new revisions when there are changes to the Composition.\n\n\nCrossplane creates and manages CompositionRevisions. Don't directly edit\nCompositionRevisions."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

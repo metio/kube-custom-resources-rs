@@ -8,7 +8,9 @@ use serde::{Serialize, Deserialize};
 /// ConstraintPodStatusStatus defines the observed state of ConstraintPodStatus.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConstraintPodStatusStatus {
-    /// Storing the constraint UID allows us to detect drift, such as when a constraint has been recreated after its CRD was deleted out from under it, interrupting the watch
+    /// Storing the constraint UID allows us to detect drift, such as
+    /// when a constraint has been recreated after its CRD was deleted
+    /// out from under it, interrupting the watch
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintUID")]
     pub constraint_uid: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

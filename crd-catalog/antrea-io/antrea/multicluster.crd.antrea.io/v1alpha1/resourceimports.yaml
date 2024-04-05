@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.9.0"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "resourceimports.multicluster.crd.antrea.io"
 spec:
   group: "multicluster.crd.antrea.io"
@@ -35,10 +35,10 @@ spec:
           description: "ResourceImport is the Schema for the resourceimports API."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -46,7 +46,7 @@ spec:
               description: "ResourceImportSpec defines the desired state of ResourceImport."
               properties:
                 clusterID:
-                  description: "ClusterIDs specifies the member clusters this resource to import to. When not specified, import to all member clusters."
+                  description: "ClusterIDs specifies the member clusters this resource to import to.\nWhen not specified, import to all member clusters."
                   items:
                     type: "string"
                   type: "array"
@@ -85,26 +85,26 @@ spec:
                   description: "If imported resource is AntreaClusterNetworkPolicy."
                   properties:
                     appliedTo:
-                      description: "Select workloads on which the rules will be applied to. Cannot be set in conjunction with AppliedTo in each rule."
+                      description: "Select workloads on which the rules will be applied to. Cannot be set in\nconjunction with AppliedTo in each rule."
                       items:
                         description: "AppliedTo describes the grouping selector of workloads in AppliedTo field."
                         properties:
                           externalEntitySelector:
-                            description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                            description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads\nin AppliedTo fields. If set with NamespaceSelector,\nExternalEntities are matched from Namespaces matched by the\nNamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                             properties:
                               matchExpressions:
                                 description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                 items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                   properties:
                                     key:
                                       description: "key is the label key that the selector applies to."
                                       type: "string"
                                     operator:
-                                      description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                       type: "string"
                                     values:
-                                      description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -116,28 +116,29 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                 type: "object"
                             type: "object"
+                            x-kubernetes-map-type: "atomic"
                           group:
-                            description: "Group is the name of the ClusterGroup which can be set as an AppliedTo in place of a stand-alone selector. A Group cannot be set with any other selector."
+                            description: "Group is the name of the ClusterGroup which can be set as an\nAppliedTo in place of a stand-alone selector. A Group cannot\nbe set with any other selector."
                             type: "string"
                           namespaceSelector:
-                            description: "Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces."
+                            description: "Select all Pods from Namespaces matched by this selector, as\nworkloads in AppliedTo fields. If set with PodSelector,\nPods are matched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. Cannot be set with Namespaces."
                             properties:
                               matchExpressions:
                                 description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                 items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                   properties:
                                     key:
                                       description: "key is the label key that the selector applies to."
                                       type: "string"
                                     operator:
-                                      description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                       type: "string"
                                     values:
-                                      description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -149,25 +150,26 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                 type: "object"
                             type: "object"
+                            x-kubernetes-map-type: "atomic"
                           nodeSelector:
-                            description: "Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector."
+                            description: "Select Nodes in cluster as workloads in AppliedTo fields.\nCannot be set with any other selector."
                             properties:
                               matchExpressions:
                                 description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                 items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                   properties:
                                     key:
                                       description: "key is the label key that the selector applies to."
                                       type: "string"
                                     operator:
-                                      description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                       type: "string"
                                     values:
-                                      description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -179,25 +181,26 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                 type: "object"
                             type: "object"
+                            x-kubernetes-map-type: "atomic"
                           podSelector:
-                            description: "Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                            description: "Select Pods from NetworkPolicy's Namespace as workloads in\nAppliedTo fields. If set with NamespaceSelector, Pods are\nmatched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                             properties:
                               matchExpressions:
                                 description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                 items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                   properties:
                                     key:
                                       description: "key is the label key that the selector applies to."
                                       type: "string"
                                     operator:
-                                      description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                       type: "string"
                                     values:
-                                      description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -209,11 +212,12 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                 type: "object"
                             type: "object"
+                            x-kubernetes-map-type: "atomic"
                           service:
-                            description: "Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector."
+                            description: "Select a certain Service which matches the NamespacedName.\nA Service can only be set in either policy level AppliedTo field in a policy\nthat only has ingress rules or rule level AppliedTo field in an ingress rule.\nOnly a NodePort Service can be referred by this field.\nCannot be set with any other selector."
                             properties:
                               name:
                                 type: "string"
@@ -221,7 +225,7 @@ spec:
                                 type: "string"
                             type: "object"
                           serviceAccount:
-                            description: "Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector."
+                            description: "Select all Pods with the ServiceAccount matched by this field, as\nworkloads in AppliedTo fields.\nCannot be set with any other selector."
                             properties:
                               name:
                                 type: "string"
@@ -231,34 +235,34 @@ spec:
                         type: "object"
                       type: "array"
                     egress:
-                      description: "Set of egress rules evaluated based on the order in which they are set. Currently Egress rule supports setting the `To` field but not the `From` field within a Rule."
+                      description: "Set of egress rules evaluated based on the order in which they are set.\nCurrently Egress rule supports setting the `To` field but not the `From`\nfield within a Rule."
                       items:
-                        description: "Rule describes the traffic allowed to/from the workloads selected by Spec.AppliedTo. Based on the action specified in the rule, traffic is either allowed or denied which exactly match the specified ports and protocol."
+                        description: "Rule describes the traffic allowed to/from the workloads selected by\nSpec.AppliedTo. Based on the action specified in the rule, traffic is either\nallowed or denied which exactly match the specified ports and protocol."
                         properties:
                           action:
                             description: "Action specifies the action to be applied on the rule."
                             type: "string"
                           appliedTo:
-                            description: "Select workloads on which this rule will be applied to. Cannot be set in conjunction with NetworkPolicySpec/ClusterNetworkPolicySpec.AppliedTo."
+                            description: "Select workloads on which this rule will be applied to. Cannot be set in\nconjunction with NetworkPolicySpec/ClusterNetworkPolicySpec.AppliedTo."
                             items:
                               description: "AppliedTo describes the grouping selector of workloads in AppliedTo field."
                               properties:
                                 externalEntitySelector:
-                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads\nin AppliedTo fields. If set with NamespaceSelector,\nExternalEntities are matched from Namespaces matched by the\nNamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -270,28 +274,29 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 group:
-                                  description: "Group is the name of the ClusterGroup which can be set as an AppliedTo in place of a stand-alone selector. A Group cannot be set with any other selector."
+                                  description: "Group is the name of the ClusterGroup which can be set as an\nAppliedTo in place of a stand-alone selector. A Group cannot\nbe set with any other selector."
                                   type: "string"
                                 namespaceSelector:
-                                  description: "Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces."
+                                  description: "Select all Pods from Namespaces matched by this selector, as\nworkloads in AppliedTo fields. If set with PodSelector,\nPods are matched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. Cannot be set with Namespaces."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -303,25 +308,26 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 nodeSelector:
-                                  description: "Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector."
+                                  description: "Select Nodes in cluster as workloads in AppliedTo fields.\nCannot be set with any other selector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -333,25 +339,26 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 podSelector:
-                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in\nAppliedTo fields. If set with NamespaceSelector, Pods are\nmatched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -363,11 +370,12 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 service:
-                                  description: "Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector."
+                                  description: "Select a certain Service which matches the NamespacedName.\nA Service can only be set in either policy level AppliedTo field in a policy\nthat only has ingress rules or rule level AppliedTo field in an ingress rule.\nOnly a NodePort Service can be referred by this field.\nCannot be set with any other selector."
                                   properties:
                                     name:
                                       type: "string"
@@ -375,7 +383,7 @@ spec:
                                       type: "string"
                                   type: "object"
                                 serviceAccount:
-                                  description: "Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector."
+                                  description: "Select all Pods with the ServiceAccount matched by this field, as\nworkloads in AppliedTo fields.\nCannot be set with any other selector."
                                   properties:
                                     name:
                                       type: "string"
@@ -385,29 +393,29 @@ spec:
                               type: "object"
                             type: "array"
                           enableLogging:
-                            description: "EnableLogging is used to indicate if agent should generate logs when rules are matched. Should be default to false."
+                            description: "EnableLogging is used to indicate if agent should generate logs\nwhen rules are matched. Should be default to false."
                             type: "boolean"
                           from:
-                            description: "Rule is matched if traffic originates from workloads selected by this field. If this field is empty, this rule matches all sources."
+                            description: "Rule is matched if traffic originates from workloads selected by\nthis field. If this field is empty, this rule matches all sources."
                             items:
                               description: "NetworkPolicyPeer describes the grouping selector of workloads."
                               properties:
                                 externalEntitySelector:
-                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads\nin To/From fields. If set with NamespaceSelector,\nExternalEntities are matched from Namespaces matched by the\nNamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -419,40 +427,41 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 fqdn:
-                                  description: "Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as \"google.com\". Wildcard expressions such as \"*wayfair.com\"."
+                                  description: "Restrict egress access to the Fully Qualified Domain Names prescribed\nby name or by wildcard match patterns. This field can only be set for\nNetworkPolicyPeer of egress rules.\nSupported formats are:\n Exact FQDNs such as \"google.com\".\n Wildcard expressions such as \"*wayfair.com\"."
                                   type: "string"
                                 group:
-                                  description: "Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector."
+                                  description: "Group is the name of the ClusterGroup which can be set within\nan Ingress or Egress rule in place of a stand-alone selector.\nA Group cannot be set with any other selector."
                                   type: "string"
                                 ipBlock:
-                                  description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector."
+                                  description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.\nIPBlock cannot be set as part of the AppliedTo field.\nCannot be set with any other selector."
                                   properties:
                                     cidr:
-                                      description: "CIDR is a string representing the IP Block Valid examples are \"192.168.1.1/24\"."
+                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.1/24\"."
                                       type: "string"
                                   required:
                                     - "cidr"
                                   type: "object"
                                 namespaceSelector:
-                                  description: "Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces."
+                                  description: "Select all Pods from Namespaces matched by this selector, as\nworkloads in To/From fields. If set with PodSelector,\nPods are matched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. Cannot be set with Namespaces."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -464,37 +473,38 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 namespaces:
-                                  description: "Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector."
+                                  description: "Select Pod/ExternalEntity from Namespaces matched by specific criteria.\nCurrent supported criteria is match: Self, which selects from the same\nNamespace of the appliedTo workloads.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. This field can only be set when NetworkPolicyPeer\nis created for ClusterNetworkPolicy ingress/egress rules.\nCannot be set with NamespaceSelector."
                                   properties:
                                     match:
                                       description: "Selects from the same Namespace of the appliedTo workloads."
                                       type: "string"
                                     sameLabels:
-                                      description: "Selects Namespaces that share the same values for the given set of label keys with the appliedTo Namespace. Namespaces must have all the label keys."
+                                      description: "Selects Namespaces that share the same values for the given set of label keys\nwith the appliedTo Namespace. Namespaces must have all the label keys."
                                       items:
                                         type: "string"
                                       type: "array"
                                   type: "object"
                                 nodeSelector:
-                                  description: "Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector."
+                                  description: "Select certain Nodes which match the label selector.\nA NodeSelector cannot be set with any other selector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -506,25 +516,26 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 podSelector:
-                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in\nTo/From fields. If set with NamespaceSelector, Pods are\nmatched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -536,14 +547,15 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 scope:
-                                  description: "Define scope of the Pod/NamespaceSelector(s) of this peer. Can only be used in ingress NetworkPolicyPeers. Defaults to \"Cluster\"."
+                                  description: "Define scope of the Pod/NamespaceSelector(s) of this peer.\nCan only be used in ingress NetworkPolicyPeers.\nDefaults to \"Cluster\"."
                                   type: "string"
                                 serviceAccount:
-                                  description: "Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector."
+                                  description: "Select all Pods with the ServiceAccount matched by this field, as\nworkloads in To/From fields.\nCannot be set with any other selector."
                                   properties:
                                     name:
                                       type: "string"
@@ -553,24 +565,24 @@ spec:
                               type: "object"
                             type: "array"
                           l7Protocols:
-                            description: "Set of layer 7 protocols matched by the rule. If this field is set, action can only be Allow. When this field is used in a rule, any traffic matching the other layer 3/4 criteria of the rule (typically the 5-tuple) will be forwarded to an application-aware engine for protocol detection and rule enforcement, and the traffic will be allowed if the layer 7 criteria is also matched, otherwise it will be dropped. Therefore, any rules after a layer 7 rule will not be enforced for the traffic."
+                            description: "Set of layer 7 protocols matched by the rule. If this field is set, action can only be Allow.\nWhen this field is used in a rule, any traffic matching the other layer 3/4 criteria of the rule (typically the\n5-tuple) will be forwarded to an application-aware engine for protocol detection and rule enforcement, and the\ntraffic will be allowed if the layer 7 criteria is also matched, otherwise it will be dropped. Therefore, any\nrules after a layer 7 rule will not be enforced for the traffic."
                             items:
                               properties:
                                 http:
-                                  description: "HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together. If all fields are not provided, it matches all HTTP requests."
+                                  description: "HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together.\nIf all fields are not provided, it matches all HTTP requests."
                                   properties:
                                     host:
-                                      description: "Host represents the hostname present in the URI or the HTTP Host header to match. It does not contain the port associated with the host."
+                                      description: "Host represents the hostname present in the URI or the HTTP Host header to match.\nIt does not contain the port associated with the host."
                                       type: "string"
                                     method:
-                                      description: "Method represents the HTTP method to match. It could be GET, POST, PUT, HEAD, DELETE, TRACE, OPTIONS, CONNECT and PATCH."
+                                      description: "Method represents the HTTP method to match.\nIt could be GET, POST, PUT, HEAD, DELETE, TRACE, OPTIONS, CONNECT and PATCH."
                                       type: "string"
                                     path:
                                       description: "Path represents the URI path to match (Ex. \"/index.html\", \"/admin\")."
                                       type: "string"
                                   type: "object"
                                 tls:
-                                  description: "TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this matches all TLS handshake packets."
+                                  description: "TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this\nmatches all TLS handshake packets."
                                   properties:
                                     sni:
                                       description: "SNI (Server Name Indication) indicates the server domain name in the TLS/SSL hello message."
@@ -582,44 +594,44 @@ spec:
                             description: "LogLabel is a user-defined arbitrary string which will be printed in the NetworkPolicy logs."
                             type: "string"
                           name:
-                            description: "Name describes the intention of this rule. Name should be unique within the policy."
+                            description: "Name describes the intention of this rule.\nName should be unique within the policy."
                             type: "string"
                           ports:
-                            description: "Set of ports and protocols matched by the rule. If this field and Protocols are unset or empty, this rule matches all ports."
+                            description: "Set of ports and protocols matched by the rule. If this field and Protocols\nare unset or empty, this rule matches all ports."
                             items:
                               description: "NetworkPolicyPort describes the port and protocol to match in a rule."
                               properties:
                                 endPort:
-                                  description: "EndPort defines the end of the port range, inclusive. It can only be specified when a numerical `port` is specified."
+                                  description: "EndPort defines the end of the port range, inclusive.\nIt can only be specified when a numerical `port` is specified."
                                   format: "int32"
                                   type: "integer"
                                 port:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "The port on the given protocol. This can be either a numerical or named port on a Pod. If this field is not provided, this matches all port names and numbers."
+                                  description: "The port on the given protocol. This can be either a numerical\nor named port on a Pod. If this field is not provided, this\nmatches all port names and numbers."
                                   x-kubernetes-int-or-string: true
                                 protocol:
                                   default: "TCP"
-                                  description: "The protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP."
+                                  description: "The protocol (TCP, UDP, or SCTP) which traffic must match.\nIf not specified, this field defaults to TCP."
                                   type: "string"
                                 sourceEndPort:
-                                  description: "SourceEndPort defines the end of the source port range, inclusive. It can only be specified when `sourcePort` is specified."
+                                  description: "SourceEndPort defines the end of the source port range, inclusive.\nIt can only be specified when `sourcePort` is specified."
                                   format: "int32"
                                   type: "integer"
                                 sourcePort:
-                                  description: "The source port on the given protocol. This can only be a numerical port. If this field is not provided, rule matches all source ports."
+                                  description: "The source port on the given protocol. This can only be a numerical port.\nIf this field is not provided, rule matches all source ports."
                                   format: "int32"
                                   type: "integer"
                               type: "object"
                             type: "array"
                           protocols:
-                            description: "Set of protocols matched by the rule. If this field and Ports are unset or empty, this rule matches all protocols supported."
+                            description: "Set of protocols matched by the rule. If this field and Ports are unset or\nempty, this rule matches all protocols supported."
                             items:
-                              description: "NetworkPolicyProtocol defines additional protocols that are not supported by `ports`. All fields should be used as a standalone field."
+                              description: "NetworkPolicyProtocol defines additional protocols that are not supported by\n`ports`. All fields should be used as a standalone field."
                               properties:
                                 icmp:
-                                  description: "ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All fields could be used alone or together. If all fields are not provided, this matches all ICMP traffic."
+                                  description: "ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All\nfields could be used alone or together. If all fields are not provided, this\nmatches all ICMP traffic."
                                   properties:
                                     icmpCode:
                                       format: "int32"
@@ -629,7 +641,7 @@ spec:
                                       type: "integer"
                                   type: "object"
                                 igmp:
-                                  description: "IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must be filled with: IGMPQuery    int32 = 0x11 IGMPReportV1 int32 = 0x12 IGMPReportV2 int32 = 0x16 IGMPReportV3 int32 = 0x22 If groupAddress is empty, all groupAddresses will be matched."
+                                  description: "IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must\nbe filled with:\nIGMPQuery    int32 = 0x11\nIGMPReportV1 int32 = 0x12\nIGMPReportV2 int32 = 0x16\nIGMPReportV3 int32 = 0x22\nIf groupAddress is empty, all groupAddresses will be matched."
                                   properties:
                                     groupAddress:
                                       type: "string"
@@ -640,26 +652,26 @@ spec:
                               type: "object"
                             type: "array"
                           to:
-                            description: "Rule is matched if traffic is intended for workloads selected by this field. This field can't be used with ToServices. If this field and ToServices are both empty or missing this rule matches all destinations."
+                            description: "Rule is matched if traffic is intended for workloads selected by\nthis field. This field can't be used with ToServices. If this field\nand ToServices are both empty or missing this rule matches all destinations."
                             items:
                               description: "NetworkPolicyPeer describes the grouping selector of workloads."
                               properties:
                                 externalEntitySelector:
-                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads\nin To/From fields. If set with NamespaceSelector,\nExternalEntities are matched from Namespaces matched by the\nNamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -671,40 +683,41 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 fqdn:
-                                  description: "Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as \"google.com\". Wildcard expressions such as \"*wayfair.com\"."
+                                  description: "Restrict egress access to the Fully Qualified Domain Names prescribed\nby name or by wildcard match patterns. This field can only be set for\nNetworkPolicyPeer of egress rules.\nSupported formats are:\n Exact FQDNs such as \"google.com\".\n Wildcard expressions such as \"*wayfair.com\"."
                                   type: "string"
                                 group:
-                                  description: "Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector."
+                                  description: "Group is the name of the ClusterGroup which can be set within\nan Ingress or Egress rule in place of a stand-alone selector.\nA Group cannot be set with any other selector."
                                   type: "string"
                                 ipBlock:
-                                  description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector."
+                                  description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.\nIPBlock cannot be set as part of the AppliedTo field.\nCannot be set with any other selector."
                                   properties:
                                     cidr:
-                                      description: "CIDR is a string representing the IP Block Valid examples are \"192.168.1.1/24\"."
+                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.1/24\"."
                                       type: "string"
                                   required:
                                     - "cidr"
                                   type: "object"
                                 namespaceSelector:
-                                  description: "Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces."
+                                  description: "Select all Pods from Namespaces matched by this selector, as\nworkloads in To/From fields. If set with PodSelector,\nPods are matched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. Cannot be set with Namespaces."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -716,37 +729,38 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 namespaces:
-                                  description: "Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector."
+                                  description: "Select Pod/ExternalEntity from Namespaces matched by specific criteria.\nCurrent supported criteria is match: Self, which selects from the same\nNamespace of the appliedTo workloads.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. This field can only be set when NetworkPolicyPeer\nis created for ClusterNetworkPolicy ingress/egress rules.\nCannot be set with NamespaceSelector."
                                   properties:
                                     match:
                                       description: "Selects from the same Namespace of the appliedTo workloads."
                                       type: "string"
                                     sameLabels:
-                                      description: "Selects Namespaces that share the same values for the given set of label keys with the appliedTo Namespace. Namespaces must have all the label keys."
+                                      description: "Selects Namespaces that share the same values for the given set of label keys\nwith the appliedTo Namespace. Namespaces must have all the label keys."
                                       items:
                                         type: "string"
                                       type: "array"
                                   type: "object"
                                 nodeSelector:
-                                  description: "Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector."
+                                  description: "Select certain Nodes which match the label selector.\nA NodeSelector cannot be set with any other selector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -758,25 +772,26 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 podSelector:
-                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in\nTo/From fields. If set with NamespaceSelector, Pods are\nmatched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -788,14 +803,15 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 scope:
-                                  description: "Define scope of the Pod/NamespaceSelector(s) of this peer. Can only be used in ingress NetworkPolicyPeers. Defaults to \"Cluster\"."
+                                  description: "Define scope of the Pod/NamespaceSelector(s) of this peer.\nCan only be used in ingress NetworkPolicyPeers.\nDefaults to \"Cluster\"."
                                   type: "string"
                                 serviceAccount:
-                                  description: "Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector."
+                                  description: "Select all Pods with the ServiceAccount matched by this field, as\nworkloads in To/From fields.\nCannot be set with any other selector."
                                   properties:
                                     name:
                                       type: "string"
@@ -805,9 +821,9 @@ spec:
                               type: "object"
                             type: "array"
                           toServices:
-                            description: "Rule is matched if traffic is intended for a Service listed in this field. Currently, only ClusterIP types Services are supported in this field. When scope is set to ClusterSet, it matches traffic intended for a multi-cluster Service listed in this field. Service name and Namespace provided should match the original exported Service. This field can only be used when AntreaProxy is enabled. This field can't be used with To or Ports. If this field and To are both empty or missing, this rule matches all destinations."
+                            description: "Rule is matched if traffic is intended for a Service listed in this field.\nCurrently, only ClusterIP types Services are supported in this field.\nWhen scope is set to ClusterSet, it matches traffic intended for a multi-cluster\nService listed in this field. Service name and Namespace provided should match\nthe original exported Service.\nThis field can only be used when AntreaProxy is enabled. This field can't be used\nwith To or Ports. If this field and To are both empty or missing, this rule matches\nall destinations."
                             items:
-                              description: "PeerService refers to a Service, which can be a in-cluster Service or imported multi-cluster service."
+                              description: "PeerService refers to a Service, which can be a in-cluster Service or\nimported multi-cluster service."
                               properties:
                                 name:
                                   type: "string"
@@ -822,34 +838,34 @@ spec:
                         type: "object"
                       type: "array"
                     ingress:
-                      description: "Set of ingress rules evaluated based on the order in which they are set. Currently Ingress rule supports setting the `From` field but not the `To` field within a Rule."
+                      description: "Set of ingress rules evaluated based on the order in which they are set.\nCurrently Ingress rule supports setting the `From` field but not the `To`\nfield within a Rule."
                       items:
-                        description: "Rule describes the traffic allowed to/from the workloads selected by Spec.AppliedTo. Based on the action specified in the rule, traffic is either allowed or denied which exactly match the specified ports and protocol."
+                        description: "Rule describes the traffic allowed to/from the workloads selected by\nSpec.AppliedTo. Based on the action specified in the rule, traffic is either\nallowed or denied which exactly match the specified ports and protocol."
                         properties:
                           action:
                             description: "Action specifies the action to be applied on the rule."
                             type: "string"
                           appliedTo:
-                            description: "Select workloads on which this rule will be applied to. Cannot be set in conjunction with NetworkPolicySpec/ClusterNetworkPolicySpec.AppliedTo."
+                            description: "Select workloads on which this rule will be applied to. Cannot be set in\nconjunction with NetworkPolicySpec/ClusterNetworkPolicySpec.AppliedTo."
                             items:
                               description: "AppliedTo describes the grouping selector of workloads in AppliedTo field."
                               properties:
                                 externalEntitySelector:
-                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads\nin AppliedTo fields. If set with NamespaceSelector,\nExternalEntities are matched from Namespaces matched by the\nNamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -861,28 +877,29 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 group:
-                                  description: "Group is the name of the ClusterGroup which can be set as an AppliedTo in place of a stand-alone selector. A Group cannot be set with any other selector."
+                                  description: "Group is the name of the ClusterGroup which can be set as an\nAppliedTo in place of a stand-alone selector. A Group cannot\nbe set with any other selector."
                                   type: "string"
                                 namespaceSelector:
-                                  description: "Select all Pods from Namespaces matched by this selector, as workloads in AppliedTo fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces."
+                                  description: "Select all Pods from Namespaces matched by this selector, as\nworkloads in AppliedTo fields. If set with PodSelector,\nPods are matched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. Cannot be set with Namespaces."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -894,25 +911,26 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 nodeSelector:
-                                  description: "Select Nodes in cluster as workloads in AppliedTo fields. Cannot be set with any other selector."
+                                  description: "Select Nodes in cluster as workloads in AppliedTo fields.\nCannot be set with any other selector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -924,25 +942,26 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 podSelector:
-                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in AppliedTo fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in\nAppliedTo fields. If set with NamespaceSelector, Pods are\nmatched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -954,11 +973,12 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 service:
-                                  description: "Select a certain Service which matches the NamespacedName. A Service can only be set in either policy level AppliedTo field in a policy that only has ingress rules or rule level AppliedTo field in an ingress rule. Only a NodePort Service can be referred by this field. Cannot be set with any other selector."
+                                  description: "Select a certain Service which matches the NamespacedName.\nA Service can only be set in either policy level AppliedTo field in a policy\nthat only has ingress rules or rule level AppliedTo field in an ingress rule.\nOnly a NodePort Service can be referred by this field.\nCannot be set with any other selector."
                                   properties:
                                     name:
                                       type: "string"
@@ -966,7 +986,7 @@ spec:
                                       type: "string"
                                   type: "object"
                                 serviceAccount:
-                                  description: "Select all Pods with the ServiceAccount matched by this field, as workloads in AppliedTo fields. Cannot be set with any other selector."
+                                  description: "Select all Pods with the ServiceAccount matched by this field, as\nworkloads in AppliedTo fields.\nCannot be set with any other selector."
                                   properties:
                                     name:
                                       type: "string"
@@ -976,29 +996,29 @@ spec:
                               type: "object"
                             type: "array"
                           enableLogging:
-                            description: "EnableLogging is used to indicate if agent should generate logs when rules are matched. Should be default to false."
+                            description: "EnableLogging is used to indicate if agent should generate logs\nwhen rules are matched. Should be default to false."
                             type: "boolean"
                           from:
-                            description: "Rule is matched if traffic originates from workloads selected by this field. If this field is empty, this rule matches all sources."
+                            description: "Rule is matched if traffic originates from workloads selected by\nthis field. If this field is empty, this rule matches all sources."
                             items:
                               description: "NetworkPolicyPeer describes the grouping selector of workloads."
                               properties:
                                 externalEntitySelector:
-                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads\nin To/From fields. If set with NamespaceSelector,\nExternalEntities are matched from Namespaces matched by the\nNamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1010,40 +1030,41 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 fqdn:
-                                  description: "Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as \"google.com\". Wildcard expressions such as \"*wayfair.com\"."
+                                  description: "Restrict egress access to the Fully Qualified Domain Names prescribed\nby name or by wildcard match patterns. This field can only be set for\nNetworkPolicyPeer of egress rules.\nSupported formats are:\n Exact FQDNs such as \"google.com\".\n Wildcard expressions such as \"*wayfair.com\"."
                                   type: "string"
                                 group:
-                                  description: "Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector."
+                                  description: "Group is the name of the ClusterGroup which can be set within\nan Ingress or Egress rule in place of a stand-alone selector.\nA Group cannot be set with any other selector."
                                   type: "string"
                                 ipBlock:
-                                  description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector."
+                                  description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.\nIPBlock cannot be set as part of the AppliedTo field.\nCannot be set with any other selector."
                                   properties:
                                     cidr:
-                                      description: "CIDR is a string representing the IP Block Valid examples are \"192.168.1.1/24\"."
+                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.1/24\"."
                                       type: "string"
                                   required:
                                     - "cidr"
                                   type: "object"
                                 namespaceSelector:
-                                  description: "Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces."
+                                  description: "Select all Pods from Namespaces matched by this selector, as\nworkloads in To/From fields. If set with PodSelector,\nPods are matched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. Cannot be set with Namespaces."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1055,37 +1076,38 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 namespaces:
-                                  description: "Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector."
+                                  description: "Select Pod/ExternalEntity from Namespaces matched by specific criteria.\nCurrent supported criteria is match: Self, which selects from the same\nNamespace of the appliedTo workloads.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. This field can only be set when NetworkPolicyPeer\nis created for ClusterNetworkPolicy ingress/egress rules.\nCannot be set with NamespaceSelector."
                                   properties:
                                     match:
                                       description: "Selects from the same Namespace of the appliedTo workloads."
                                       type: "string"
                                     sameLabels:
-                                      description: "Selects Namespaces that share the same values for the given set of label keys with the appliedTo Namespace. Namespaces must have all the label keys."
+                                      description: "Selects Namespaces that share the same values for the given set of label keys\nwith the appliedTo Namespace. Namespaces must have all the label keys."
                                       items:
                                         type: "string"
                                       type: "array"
                                   type: "object"
                                 nodeSelector:
-                                  description: "Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector."
+                                  description: "Select certain Nodes which match the label selector.\nA NodeSelector cannot be set with any other selector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1097,25 +1119,26 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 podSelector:
-                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in\nTo/From fields. If set with NamespaceSelector, Pods are\nmatched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1127,14 +1150,15 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 scope:
-                                  description: "Define scope of the Pod/NamespaceSelector(s) of this peer. Can only be used in ingress NetworkPolicyPeers. Defaults to \"Cluster\"."
+                                  description: "Define scope of the Pod/NamespaceSelector(s) of this peer.\nCan only be used in ingress NetworkPolicyPeers.\nDefaults to \"Cluster\"."
                                   type: "string"
                                 serviceAccount:
-                                  description: "Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector."
+                                  description: "Select all Pods with the ServiceAccount matched by this field, as\nworkloads in To/From fields.\nCannot be set with any other selector."
                                   properties:
                                     name:
                                       type: "string"
@@ -1144,24 +1168,24 @@ spec:
                               type: "object"
                             type: "array"
                           l7Protocols:
-                            description: "Set of layer 7 protocols matched by the rule. If this field is set, action can only be Allow. When this field is used in a rule, any traffic matching the other layer 3/4 criteria of the rule (typically the 5-tuple) will be forwarded to an application-aware engine for protocol detection and rule enforcement, and the traffic will be allowed if the layer 7 criteria is also matched, otherwise it will be dropped. Therefore, any rules after a layer 7 rule will not be enforced for the traffic."
+                            description: "Set of layer 7 protocols matched by the rule. If this field is set, action can only be Allow.\nWhen this field is used in a rule, any traffic matching the other layer 3/4 criteria of the rule (typically the\n5-tuple) will be forwarded to an application-aware engine for protocol detection and rule enforcement, and the\ntraffic will be allowed if the layer 7 criteria is also matched, otherwise it will be dropped. Therefore, any\nrules after a layer 7 rule will not be enforced for the traffic."
                             items:
                               properties:
                                 http:
-                                  description: "HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together. If all fields are not provided, it matches all HTTP requests."
+                                  description: "HTTPProtocol matches HTTP requests with specific host, method, and path. All fields could be used alone or together.\nIf all fields are not provided, it matches all HTTP requests."
                                   properties:
                                     host:
-                                      description: "Host represents the hostname present in the URI or the HTTP Host header to match. It does not contain the port associated with the host."
+                                      description: "Host represents the hostname present in the URI or the HTTP Host header to match.\nIt does not contain the port associated with the host."
                                       type: "string"
                                     method:
-                                      description: "Method represents the HTTP method to match. It could be GET, POST, PUT, HEAD, DELETE, TRACE, OPTIONS, CONNECT and PATCH."
+                                      description: "Method represents the HTTP method to match.\nIt could be GET, POST, PUT, HEAD, DELETE, TRACE, OPTIONS, CONNECT and PATCH."
                                       type: "string"
                                     path:
                                       description: "Path represents the URI path to match (Ex. \"/index.html\", \"/admin\")."
                                       type: "string"
                                   type: "object"
                                 tls:
-                                  description: "TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this matches all TLS handshake packets."
+                                  description: "TLSProtocol matches TLS handshake packets with specific SNI. If the field is not provided, this\nmatches all TLS handshake packets."
                                   properties:
                                     sni:
                                       description: "SNI (Server Name Indication) indicates the server domain name in the TLS/SSL hello message."
@@ -1173,44 +1197,44 @@ spec:
                             description: "LogLabel is a user-defined arbitrary string which will be printed in the NetworkPolicy logs."
                             type: "string"
                           name:
-                            description: "Name describes the intention of this rule. Name should be unique within the policy."
+                            description: "Name describes the intention of this rule.\nName should be unique within the policy."
                             type: "string"
                           ports:
-                            description: "Set of ports and protocols matched by the rule. If this field and Protocols are unset or empty, this rule matches all ports."
+                            description: "Set of ports and protocols matched by the rule. If this field and Protocols\nare unset or empty, this rule matches all ports."
                             items:
                               description: "NetworkPolicyPort describes the port and protocol to match in a rule."
                               properties:
                                 endPort:
-                                  description: "EndPort defines the end of the port range, inclusive. It can only be specified when a numerical `port` is specified."
+                                  description: "EndPort defines the end of the port range, inclusive.\nIt can only be specified when a numerical `port` is specified."
                                   format: "int32"
                                   type: "integer"
                                 port:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "The port on the given protocol. This can be either a numerical or named port on a Pod. If this field is not provided, this matches all port names and numbers."
+                                  description: "The port on the given protocol. This can be either a numerical\nor named port on a Pod. If this field is not provided, this\nmatches all port names and numbers."
                                   x-kubernetes-int-or-string: true
                                 protocol:
                                   default: "TCP"
-                                  description: "The protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP."
+                                  description: "The protocol (TCP, UDP, or SCTP) which traffic must match.\nIf not specified, this field defaults to TCP."
                                   type: "string"
                                 sourceEndPort:
-                                  description: "SourceEndPort defines the end of the source port range, inclusive. It can only be specified when `sourcePort` is specified."
+                                  description: "SourceEndPort defines the end of the source port range, inclusive.\nIt can only be specified when `sourcePort` is specified."
                                   format: "int32"
                                   type: "integer"
                                 sourcePort:
-                                  description: "The source port on the given protocol. This can only be a numerical port. If this field is not provided, rule matches all source ports."
+                                  description: "The source port on the given protocol. This can only be a numerical port.\nIf this field is not provided, rule matches all source ports."
                                   format: "int32"
                                   type: "integer"
                               type: "object"
                             type: "array"
                           protocols:
-                            description: "Set of protocols matched by the rule. If this field and Ports are unset or empty, this rule matches all protocols supported."
+                            description: "Set of protocols matched by the rule. If this field and Ports are unset or\nempty, this rule matches all protocols supported."
                             items:
-                              description: "NetworkPolicyProtocol defines additional protocols that are not supported by `ports`. All fields should be used as a standalone field."
+                              description: "NetworkPolicyProtocol defines additional protocols that are not supported by\n`ports`. All fields should be used as a standalone field."
                               properties:
                                 icmp:
-                                  description: "ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All fields could be used alone or together. If all fields are not provided, this matches all ICMP traffic."
+                                  description: "ICMPProtocol matches ICMP traffic with specific ICMPType and/or ICMPCode. All\nfields could be used alone or together. If all fields are not provided, this\nmatches all ICMP traffic."
                                   properties:
                                     icmpCode:
                                       format: "int32"
@@ -1220,7 +1244,7 @@ spec:
                                       type: "integer"
                                   type: "object"
                                 igmp:
-                                  description: "IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must be filled with: IGMPQuery    int32 = 0x11 IGMPReportV1 int32 = 0x12 IGMPReportV2 int32 = 0x16 IGMPReportV3 int32 = 0x22 If groupAddress is empty, all groupAddresses will be matched."
+                                  description: "IGMPProtocol matches IGMP traffic with IGMPType and GroupAddress. IGMPType must\nbe filled with:\nIGMPQuery    int32 = 0x11\nIGMPReportV1 int32 = 0x12\nIGMPReportV2 int32 = 0x16\nIGMPReportV3 int32 = 0x22\nIf groupAddress is empty, all groupAddresses will be matched."
                                   properties:
                                     groupAddress:
                                       type: "string"
@@ -1231,26 +1255,26 @@ spec:
                               type: "object"
                             type: "array"
                           to:
-                            description: "Rule is matched if traffic is intended for workloads selected by this field. This field can't be used with ToServices. If this field and ToServices are both empty or missing this rule matches all destinations."
+                            description: "Rule is matched if traffic is intended for workloads selected by\nthis field. This field can't be used with ToServices. If this field\nand ToServices are both empty or missing this rule matches all destinations."
                             items:
                               description: "NetworkPolicyPeer describes the grouping selector of workloads."
                               properties:
                                 externalEntitySelector:
-                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, ExternalEntities are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select ExternalEntities from NetworkPolicy's Namespace as workloads\nin To/From fields. If set with NamespaceSelector,\nExternalEntities are matched from Namespaces matched by the\nNamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1262,40 +1286,41 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 fqdn:
-                                  description: "Restrict egress access to the Fully Qualified Domain Names prescribed by name or by wildcard match patterns. This field can only be set for NetworkPolicyPeer of egress rules. Supported formats are: Exact FQDNs such as \"google.com\". Wildcard expressions such as \"*wayfair.com\"."
+                                  description: "Restrict egress access to the Fully Qualified Domain Names prescribed\nby name or by wildcard match patterns. This field can only be set for\nNetworkPolicyPeer of egress rules.\nSupported formats are:\n Exact FQDNs such as \"google.com\".\n Wildcard expressions such as \"*wayfair.com\"."
                                   type: "string"
                                 group:
-                                  description: "Group is the name of the ClusterGroup which can be set within an Ingress or Egress rule in place of a stand-alone selector. A Group cannot be set with any other selector."
+                                  description: "Group is the name of the ClusterGroup which can be set within\nan Ingress or Egress rule in place of a stand-alone selector.\nA Group cannot be set with any other selector."
                                   type: "string"
                                 ipBlock:
-                                  description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from. IPBlock cannot be set as part of the AppliedTo field. Cannot be set with any other selector."
+                                  description: "IPBlock describes the IPAddresses/IPBlocks that is matched in to/from.\nIPBlock cannot be set as part of the AppliedTo field.\nCannot be set with any other selector."
                                   properties:
                                     cidr:
-                                      description: "CIDR is a string representing the IP Block Valid examples are \"192.168.1.1/24\"."
+                                      description: "CIDR is a string representing the IP Block\nValid examples are \"192.168.1.1/24\"."
                                       type: "string"
                                   required:
                                     - "cidr"
                                   type: "object"
                                 namespaceSelector:
-                                  description: "Select all Pods from Namespaces matched by this selector, as workloads in To/From fields. If set with PodSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. Cannot be set with Namespaces."
+                                  description: "Select all Pods from Namespaces matched by this selector, as\nworkloads in To/From fields. If set with PodSelector,\nPods are matched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. Cannot be set with Namespaces."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1307,37 +1332,38 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 namespaces:
-                                  description: "Select Pod/ExternalEntity from Namespaces matched by specific criteria. Current supported criteria is match: Self, which selects from the same Namespace of the appliedTo workloads. Cannot be set with any other selector except PodSelector or ExternalEntitySelector. This field can only be set when NetworkPolicyPeer is created for ClusterNetworkPolicy ingress/egress rules. Cannot be set with NamespaceSelector."
+                                  description: "Select Pod/ExternalEntity from Namespaces matched by specific criteria.\nCurrent supported criteria is match: Self, which selects from the same\nNamespace of the appliedTo workloads.\nCannot be set with any other selector except PodSelector or\nExternalEntitySelector. This field can only be set when NetworkPolicyPeer\nis created for ClusterNetworkPolicy ingress/egress rules.\nCannot be set with NamespaceSelector."
                                   properties:
                                     match:
                                       description: "Selects from the same Namespace of the appliedTo workloads."
                                       type: "string"
                                     sameLabels:
-                                      description: "Selects Namespaces that share the same values for the given set of label keys with the appliedTo Namespace. Namespaces must have all the label keys."
+                                      description: "Selects Namespaces that share the same values for the given set of label keys\nwith the appliedTo Namespace. Namespaces must have all the label keys."
                                       items:
                                         type: "string"
                                       type: "array"
                                   type: "object"
                                 nodeSelector:
-                                  description: "Select certain Nodes which match the label selector. A NodeSelector cannot be set with any other selector."
+                                  description: "Select certain Nodes which match the label selector.\nA NodeSelector cannot be set with any other selector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1349,25 +1375,26 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 podSelector:
-                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in To/From fields. If set with NamespaceSelector, Pods are matched from Namespaces matched by the NamespaceSelector. Cannot be set with any other selector except NamespaceSelector."
+                                  description: "Select Pods from NetworkPolicy's Namespace as workloads in\nTo/From fields. If set with NamespaceSelector, Pods are\nmatched from Namespaces matched by the NamespaceSelector.\nCannot be set with any other selector except NamespaceSelector."
                                   properties:
                                     matchExpressions:
                                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                       items:
-                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                                         properties:
                                           key:
                                             description: "key is the label key that the selector applies to."
                                             type: "string"
                                           operator:
-                                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                                             type: "string"
                                           values:
-                                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1379,14 +1406,15 @@ spec:
                                     matchLabels:
                                       additionalProperties:
                                         type: "string"
-                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                       type: "object"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                                 scope:
-                                  description: "Define scope of the Pod/NamespaceSelector(s) of this peer. Can only be used in ingress NetworkPolicyPeers. Defaults to \"Cluster\"."
+                                  description: "Define scope of the Pod/NamespaceSelector(s) of this peer.\nCan only be used in ingress NetworkPolicyPeers.\nDefaults to \"Cluster\"."
                                   type: "string"
                                 serviceAccount:
-                                  description: "Select all Pods with the ServiceAccount matched by this field, as workloads in To/From fields. Cannot be set with any other selector."
+                                  description: "Select all Pods with the ServiceAccount matched by this field, as\nworkloads in To/From fields.\nCannot be set with any other selector."
                                   properties:
                                     name:
                                       type: "string"
@@ -1396,9 +1424,9 @@ spec:
                               type: "object"
                             type: "array"
                           toServices:
-                            description: "Rule is matched if traffic is intended for a Service listed in this field. Currently, only ClusterIP types Services are supported in this field. When scope is set to ClusterSet, it matches traffic intended for a multi-cluster Service listed in this field. Service name and Namespace provided should match the original exported Service. This field can only be used when AntreaProxy is enabled. This field can't be used with To or Ports. If this field and To are both empty or missing, this rule matches all destinations."
+                            description: "Rule is matched if traffic is intended for a Service listed in this field.\nCurrently, only ClusterIP types Services are supported in this field.\nWhen scope is set to ClusterSet, it matches traffic intended for a multi-cluster\nService listed in this field. Service name and Namespace provided should match\nthe original exported Service.\nThis field can only be used when AntreaProxy is enabled. This field can't be used\nwith To or Ports. If this field and To are both empty or missing, this rule matches\nall destinations."
                             items:
-                              description: "PeerService refers to a Service, which can be a in-cluster Service or imported multi-cluster service."
+                              description: "PeerService refers to a Service, which can be a in-cluster Service or\nimported multi-cluster service."
                               properties:
                                 name:
                                   type: "string"
@@ -1413,10 +1441,10 @@ spec:
                         type: "object"
                       type: "array"
                     priority:
-                      description: "Priority specfies the order of the ClusterNetworkPolicy relative to other AntreaClusterNetworkPolicies."
+                      description: "Priority specfies the order of the ClusterNetworkPolicy relative to\nother AntreaClusterNetworkPolicies."
                       type: "number"
                     tier:
-                      description: "Tier specifies the tier to which this ClusterNetworkPolicy belongs to. The ClusterNetworkPolicy order will be determined based on the combination of the Tier's Priority and the ClusterNetworkPolicy's own Priority. If not specified, this policy will be created in the Application Tier right above the K8s NetworkPolicy which resides at the bottom."
+                      description: "Tier specifies the tier to which this ClusterNetworkPolicy belongs to.\nThe ClusterNetworkPolicy order will be determined based on the\ncombination of the Tier's Priority and the ClusterNetworkPolicy's own\nPriority. If not specified, this policy will be created in the Application\nTier right above the K8s NetworkPolicy which resides at the bottom."
                       type: "string"
                   required:
                     - "priority"
@@ -1426,10 +1454,10 @@ spec:
                   properties:
                     subsets:
                       items:
-                        description: "EndpointSubset is a group of addresses with a common set of ports. The expanded set of endpoints is the Cartesian product of Addresses x Ports. For example, given: \n { Addresses: [{\"ip\": \"10.10.1.1\"}, {\"ip\": \"10.10.2.2\"}], Ports:     [{\"name\": \"a\", \"port\": 8675}, {\"name\": \"b\", \"port\": 309}] } \n The resulting set of endpoints can be viewed as: \n a: [ 10.10.1.1:8675, 10.10.2.2:8675 ], b: [ 10.10.1.1:309, 10.10.2.2:309 ]"
+                        description: "EndpointSubset is a group of addresses with a common set of ports. The\nexpanded set of endpoints is the Cartesian product of Addresses x Ports.\nFor example, given:\n\n\n\t{\n\t  Addresses: [{\"ip\": \"10.10.1.1\"}, {\"ip\": \"10.10.2.2\"}],\n\t  Ports:     [{\"name\": \"a\", \"port\": 8675}, {\"name\": \"b\", \"port\": 309}]\n\t}\n\n\nThe resulting set of endpoints can be viewed as:\n\n\n\ta: [ 10.10.1.1:8675, 10.10.2.2:8675 ],\n\tb: [ 10.10.1.1:309, 10.10.2.2:309 ]"
                         properties:
                           addresses:
-                            description: "IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize."
+                            description: "IP addresses which offer the related ports that are marked as ready. These endpoints\nshould be considered safe for load balancers and clients to utilize."
                             items:
                               description: "EndpointAddress is a tuple that describes single IP address."
                               properties:
@@ -1437,7 +1465,7 @@ spec:
                                   description: "The Hostname of this endpoint"
                                   type: "string"
                                 ip:
-                                  description: "The IP of this endpoint. May not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10), or link-local multicast (224.0.0.0/24 or ff02::/16)."
+                                  description: "The IP of this endpoint.\nMay not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10),\nor link-local multicast (224.0.0.0/24 or ff02::/16)."
                                   type: "string"
                                 nodeName:
                                   description: "Optional: Node hosting this endpoint. This can be used to determine endpoints local to a node."
@@ -1449,30 +1477,32 @@ spec:
                                       description: "API version of the referent."
                                       type: "string"
                                     fieldPath:
-                                      description: "If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: \"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered the event) or if no container name is specified \"spec.containers[2]\" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future."
+                                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
                                       type: "string"
                                     kind:
-                                      description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                      description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                       type: "string"
                                     name:
-                                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     namespace:
-                                      description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                       type: "string"
                                     resourceVersion:
-                                      description: "Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency"
+                                      description: "Specific resourceVersion to which this reference is made, if any.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency"
                                       type: "string"
                                     uid:
-                                      description: "UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
+                                      description: "UID of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
                                       type: "string"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               required:
                                 - "ip"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                             type: "array"
                           notReadyAddresses:
-                            description: "IP addresses which offer the related ports but are not currently marked as ready because they have not yet finished starting, have recently failed a readiness check, or have recently failed a liveness check."
+                            description: "IP addresses which offer the related ports but are not currently marked as ready\nbecause they have not yet finished starting, have recently failed a readiness check,\nor have recently failed a liveness check."
                             items:
                               description: "EndpointAddress is a tuple that describes single IP address."
                               properties:
@@ -1480,7 +1510,7 @@ spec:
                                   description: "The Hostname of this endpoint"
                                   type: "string"
                                 ip:
-                                  description: "The IP of this endpoint. May not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10), or link-local multicast (224.0.0.0/24 or ff02::/16)."
+                                  description: "The IP of this endpoint.\nMay not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10),\nor link-local multicast (224.0.0.0/24 or ff02::/16)."
                                   type: "string"
                                 nodeName:
                                   description: "Optional: Node hosting this endpoint. This can be used to determine endpoints local to a node."
@@ -1492,27 +1522,29 @@ spec:
                                       description: "API version of the referent."
                                       type: "string"
                                     fieldPath:
-                                      description: "If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: \"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered the event) or if no container name is specified \"spec.containers[2]\" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future."
+                                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
                                       type: "string"
                                     kind:
-                                      description: "Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                                      description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                                       type: "string"
                                     name:
-                                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     namespace:
-                                      description: "Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
                                       type: "string"
                                     resourceVersion:
-                                      description: "Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency"
+                                      description: "Specific resourceVersion to which this reference is made, if any.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency"
                                       type: "string"
                                     uid:
-                                      description: "UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
+                                      description: "UID of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
                                       type: "string"
                                   type: "object"
+                                  x-kubernetes-map-type: "atomic"
                               required:
                                 - "ip"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                             type: "array"
                           ports:
                             description: "Port numbers available on the related IP addresses."
@@ -1520,10 +1552,10 @@ spec:
                               description: "EndpointPort is a tuple that describes a single port."
                               properties:
                                 appProtocol:
-                                  description: "The application protocol for this port. This is used as a hint for implementations to offer richer behavior for protocols that they understand. This field follows standard Kubernetes label syntax. Valid values are either: \n * Un-prefixed protocol names - reserved for IANA standard service names (as per RFC-6335 and https://www.iana.org/assignments/service-names). \n * Kubernetes-defined prefixed names: * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior- * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455 * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455 \n * Other protocols should use implementation-defined prefixed names such as mycompany.com/my-custom-protocol."
+                                  description: "The application protocol for this port.\nThis is used as a hint for implementations to offer richer behavior for protocols that they understand.\nThis field follows standard Kubernetes label syntax.\nValid values are either:\n\n\n* Un-prefixed protocol names - reserved for IANA standard service names (as per\nRFC-6335 and https://www.iana.org/assignments/service-names).\n\n\n* Kubernetes-defined prefixed names:\n  * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-\n  * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455\n  * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455\n\n\n* Other protocols should use implementation-defined prefixed names such as\nmycompany.com/my-custom-protocol."
                                   type: "string"
                                 name:
-                                  description: "The name of this port.  This must match the 'name' field in the corresponding ServicePort. Must be a DNS_LABEL. Optional only if one port is defined."
+                                  description: "The name of this port.  This must match the 'name' field in the\ncorresponding ServicePort.\nMust be a DNS_LABEL.\nOptional only if one port is defined."
                                   type: "string"
                                 port:
                                   description: "The port number of the endpoint."
@@ -1531,11 +1563,12 @@ spec:
                                   type: "integer"
                                 protocol:
                                   default: "TCP"
-                                  description: "The IP protocol for this port. Must be UDP, TCP, or SCTP. Default is TCP."
+                                  description: "The IP protocol for this port.\nMust be UDP, TCP, or SCTP.\nDefault is TCP."
                                   type: "string"
                               required:
                                 - "port"
                               type: "object"
+                              x-kubernetes-map-type: "atomic"
                             type: "array"
                         type: "object"
                       type: "array"
@@ -1560,7 +1593,7 @@ spec:
                             type: "object"
                           type: "array"
                         externalNode:
-                          description: "ExternalNode is the opaque identifier of the agent/controller responsible for additional processing or handling of this external entity."
+                          description: "ExternalNode is the opaque identifier of the agent/controller responsible\nfor additional processing or handling of this external entity."
                           type: "string"
                         ports:
                           description: "Ports maintain the list of named ports."
@@ -1576,7 +1609,7 @@ spec:
                                 type: "integer"
                               protocol:
                                 default: "TCP"
-                                description: "The protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP."
+                                description: "The protocol (TCP, UDP, or SCTP) which traffic must match.\nIf not specified, this field defaults to TCP."
                                 type: "string"
                             type: "object"
                           type: "array"
@@ -1593,7 +1626,7 @@ spec:
                       format: "int32"
                       type: "integer"
                     label:
-                      description: "Label is the normalized string of a label identity. The format of normalized label identity is `ns:(?P<nslabels>(.)*)&pod:(?P<podlabels>(.)*)` E.g., `ns:kubernetes.io/metadata.name=kube-system&pod:app=db`"
+                      description: "Label is the normalized string of a label identity.\nThe format of normalized label identity is `ns:(?P<nslabels>(.)*)&pod:(?P<podlabels>(.)*)`\nE.g., `ns:kubernetes.io/metadata.name=kube-system&pod:app=db`"
                       type: "string"
                   type: "object"
                 name:
@@ -1613,10 +1646,10 @@ spec:
                   description: "If imported resource is ServiceImport."
                   properties:
                     apiVersion:
-                      description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+                      description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
                       type: "string"
                     kind:
-                      description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                      description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
                       type: "string"
                     metadata:
                       type: "object"
@@ -1634,10 +1667,10 @@ spec:
                             description: "ServicePort represents the port on which the service is exposed"
                             properties:
                               appProtocol:
-                                description: "The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. Field can be enabled with ServiceAppProtocol feature gate."
+                                description: "The application protocol for this port.\nThis field follows standard Kubernetes label syntax.\nUn-prefixed names are reserved for IANA standard service names (as per\nRFC-6335 and http://www.iana.org/assignments/service-names).\nNon-standard protocols should use prefixed names such as\nmycompany.com/my-custom-protocol.\nField can be enabled with ServiceAppProtocol feature gate."
                                 type: "string"
                               name:
-                                description: "The name of this port within the service. This must be a DNS_LABEL. All ports within a ServiceSpec must have unique names. When considering the endpoints for a Service, this must match the 'name' field in the EndpointPort. Optional if only one ServicePort is defined on this service."
+                                description: "The name of this port within the service. This must be a DNS_LABEL.\nAll ports within a ServiceSpec must have unique names. When considering\nthe endpoints for a Service, this must match the 'name' field in the\nEndpointPort.\nOptional if only one ServicePort is defined on this service."
                                 type: "string"
                               port:
                                 description: "The port that will be exposed by this service."
@@ -1645,7 +1678,7 @@ spec:
                                 type: "integer"
                               protocol:
                                 default: "TCP"
-                                description: "The IP protocol for this port. Supports \"TCP\", \"UDP\", and \"SCTP\". Default is TCP."
+                                description: "The IP protocol for this port. Supports \"TCP\", \"UDP\", and \"SCTP\".\nDefault is TCP."
                                 type: "string"
                             required:
                               - "port"
@@ -1653,7 +1686,7 @@ spec:
                           type: "array"
                           x-kubernetes-list-type: "atomic"
                         sessionAffinity:
-                          description: "Supports \"ClientIP\" and \"None\". Used to maintain session affinity. Enable client IP based session affinity. Must be ClientIP or None. Defaults to None. Ignored when type is Headless More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies"
+                          description: "Supports \"ClientIP\" and \"None\". Used to maintain session affinity.\nEnable client IP based session affinity.\nMust be ClientIP or None.\nDefaults to None.\nIgnored when type is Headless\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies"
                           type: "string"
                         sessionAffinityConfig:
                           description: "sessionAffinityConfig contains session affinity configuration."
@@ -1662,13 +1695,13 @@ spec:
                               description: "clientIP contains the configurations of Client IP based session affinity."
                               properties:
                                 timeoutSeconds:
-                                  description: "timeoutSeconds specifies the seconds of ClientIP type session sticky time. The value must be >0 && <=86400(for 1 day) if ServiceAffinity == \"ClientIP\". Default value is 10800(for 3 hours)."
+                                  description: "timeoutSeconds specifies the seconds of ClientIP type session sticky time.\nThe value must be >0 && <=86400(for 1 day) if ServiceAffinity == \"ClientIP\".\nDefault value is 10800(for 3 hours)."
                                   format: "int32"
                                   type: "integer"
                               type: "object"
                           type: "object"
                         type:
-                          description: "type defines the type of this service. Must be ClusterSetIP or Headless."
+                          description: "type defines the type of this service.\nMust be ClusterSetIP or Headless."
                           enum:
                             - "ClusterSetIP"
                             - "Headless"
@@ -1678,15 +1711,15 @@ spec:
                         - "type"
                       type: "object"
                     status:
-                      description: "status contains information about the exported services that form the multi-cluster service referenced by this ServiceImport."
+                      description: "status contains information about the exported services that form\nthe multi-cluster service referenced by this ServiceImport."
                       properties:
                         clusters:
-                          description: "clusters is the list of exporting clusters from which this service was derived."
+                          description: "clusters is the list of exporting clusters from which this service\nwas derived."
                           items:
                             description: "ClusterStatus contains service configuration mapped to a specific source cluster"
                             properties:
                               cluster:
-                                description: "cluster is the name of the exporting cluster. Must be a valid RFC-1123 DNS label."
+                                description: "cluster is the name of the exporting cluster. Must be a valid RFC-1123 DNS\nlabel."
                                 type: "string"
                             required:
                               - "cluster"

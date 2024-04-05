@@ -102,6 +102,9 @@ spec:
                         type: "string"
                       uuid:
                         type: "string"
+                      virtualSize:
+                        format: "int64"
+                        type: "integer"
                     type: "object"
                   nullable: true
                   type: "object"
