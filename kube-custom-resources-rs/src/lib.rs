@@ -583,6 +583,11 @@ apiVersion `cert-manager.io/v1`:
 - `ClusterIssuer`
 - `Issuer`
 
+## chainsaw_kyverno_io
+
+apiVersion `chainsaw.kyverno.io/v1alpha1`:
+- `Test`
+
 ## chaos_mesh_org
 
 apiVersion `chaos-mesh.org/v1alpha1`:
@@ -3321,6 +3326,8 @@ pub mod cassandra_datastax_com;
 pub mod ceph_rook_io;
 #[cfg(feature = "cert_manager_io")]
 pub mod cert_manager_io;
+#[cfg(feature = "chainsaw_kyverno_io")]
+pub mod chainsaw_kyverno_io;
 #[cfg(feature = "chaos_mesh_org")]
 pub mod chaos_mesh_org;
 #[cfg(feature = "chaosblade_io")]

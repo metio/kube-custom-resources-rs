@@ -855,6 +855,10 @@ Files: crd-catalog/kumahq/kuma/*
 Copyright: The kumahq/kuma Authors
 License: Apache-2.0
 
+Files: crd-catalog/kyverno/chainsaw/*
+Copyright: The kyverno/chainsaw Authors
+License: Apache-2.0
+
 Files: crd-catalog/kyverno/kyverno/*
 Copyright: The kyverno/kyverno Authors
 License: Apache-2.0

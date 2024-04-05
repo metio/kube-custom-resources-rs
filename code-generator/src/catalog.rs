@@ -2188,6 +2188,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kyverno/chainsaw",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kyverno/chainsaw/blob/main/.crds/chainsaw.kyverno.io_configurations.yaml",
+            "https://github.com/kyverno/chainsaw/blob/main/.crds/chainsaw.kyverno.io_tests.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kyverno/kyverno",
         license: APACHE_V2,
         urls: &[
