@@ -243,6 +243,13 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "arsenalzp/apch-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/arsenalzp/apch-operator/blob/master/config/crd/bases/apacheweb.arsenal.dev_apachewebs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "atlasmap/atlasmap-operator",
         license: APACHE_V2,
         urls: &[

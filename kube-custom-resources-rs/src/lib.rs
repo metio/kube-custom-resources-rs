@@ -91,6 +91,11 @@ apiVersion `anywhere.eks.amazonaws.com/v1alpha1`:
 - `VSphereDatacenterConfig`
 - `VSphereMachineConfig`
 
+## apacheweb_arsenal_dev
+
+apiVersion `apacheweb.arsenal.dev/v1alpha1`:
+- `Apacheweb`
+
 ## api_clever_cloud_com
 
 apiVersion `api.clever-cloud.com/v1`:
@@ -3194,6 +3199,8 @@ pub mod addons_cluster_x_k8s_io;
 pub mod agent_k8s_elastic_co;
 #[cfg(feature = "anywhere_eks_amazonaws_com")]
 pub mod anywhere_eks_amazonaws_com;
+#[cfg(feature = "apacheweb_arsenal_dev")]
+pub mod apacheweb_arsenal_dev;
 #[cfg(feature = "api_clever_cloud_com")]
 pub mod api_clever_cloud_com;
 #[cfg(feature = "api_kubemod_io")]
