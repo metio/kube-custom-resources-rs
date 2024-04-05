@@ -2454,6 +2454,11 @@ apiVersion `psmdb.percona.com/v1`:
 - `PerconaServerMongoDBBackup`
 - `PerconaServerMongoDBRestore`
 
+## ptp_openshift_io
+
+apiVersion `ptp.openshift.io/v1`:
+- `NodePtpDevice`
+
 ## pxc_percona_com
 
 apiVersion `pxc.percona.com/v1`:
@@ -3681,6 +3686,8 @@ pub mod prometheusservice_services_k8s_aws;
 pub mod ps_percona_com;
 #[cfg(feature = "psmdb_percona_com")]
 pub mod psmdb_percona_com;
+#[cfg(feature = "ptp_openshift_io")]
+pub mod ptp_openshift_io;
 #[cfg(feature = "pxc_percona_com")]
 pub mod pxc_percona_com;
 #[cfg(feature = "quay_redhat_com")]

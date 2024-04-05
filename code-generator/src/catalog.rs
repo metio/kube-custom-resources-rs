@@ -2448,6 +2448,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "openshift/ptp-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/openshift/ptp-operator/blob/master/config/crd/bases/ptp.openshift.io_nodeptpdevices.yaml",
+            "https://github.com/openshift/ptp-operator/blob/master/config/crd/bases/ptp.openshift.io_ptpconfigs.yaml",
+            "https://github.com/openshift/ptp-operator/blob/master/config/crd/bases/ptp.openshift.io_ptpoperatorconfigs.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "otterize/helm-charts",
         license: APACHE_V2,
         urls: &[
