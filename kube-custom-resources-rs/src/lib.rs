@@ -2547,6 +2547,11 @@ apiVersion `reliablesyncs.kubeedge.io/v1alpha1`:
 - `ClusterObjectSync`
 - `ObjectSync`
 
+## remediation_medik8s_io
+
+apiVersion `remediation.medik8s.io/v1alpha1`:
+- `NodeHealthCheck`
+
 ## repo_manager_pulpproject_org
 
 apiVersion `repo-manager.pulpproject.org/v1beta2`:
@@ -3722,6 +3727,8 @@ pub mod registry_apicur_io;
 pub mod registry_devfile_io;
 #[cfg(feature = "reliablesyncs_kubeedge_io")]
 pub mod reliablesyncs_kubeedge_io;
+#[cfg(feature = "remediation_medik8s_io")]
+pub mod remediation_medik8s_io;
 #[cfg(feature = "repo_manager_pulpproject_org")]
 pub mod repo_manager_pulpproject_org;
 #[cfg(feature = "resources_teleport_dev")]
