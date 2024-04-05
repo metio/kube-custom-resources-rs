@@ -785,6 +785,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "banzaicloud/koperator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/banzaicloud/koperator/blob/master/config/base/crds/kafka.banzaicloud.io_cruisecontroloperations.yaml",
+            "https://github.com/banzaicloud/koperator/blob/master/config/base/crds/kafka.banzaicloud.io_kafkaclusters.yaml",
+            "https://github.com/banzaicloud/koperator/blob/master/config/base/crds/kafka.banzaicloud.io_kafkatopics.yaml",
+            "https://github.com/banzaicloud/koperator/blob/master/config/base/crds/kafka.banzaicloud.io_kafkausers.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "berops/claudie",
         license: APACHE_V2,
         urls: &[
