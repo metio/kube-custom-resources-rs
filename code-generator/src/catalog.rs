@@ -2286,6 +2286,21 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "medik8s/fence-agents-remediation",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/medik8s/fence-agents-remediation/blob/main/config/crd/bases/fence-agents-remediation.medik8s.io_fenceagentsremediations.yaml",
+            "https://github.com/medik8s/fence-agents-remediation/blob/main/config/crd/bases/fence-agents-remediation.medik8s.io_fenceagentsremediationtemplates.yaml",
+        ],
+    },
+    UpstreamSource {
+        project_name: "medik8s/node-healthcheck-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/medik8s/node-healthcheck-operator/blob/main/config/crd/bases/remediation.medik8s.io_nodehealthchecks.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "metacontroller/metacontroller",
         license: APACHE_V2,
         urls: &[
