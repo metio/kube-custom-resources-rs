@@ -1694,6 +1694,16 @@ apiVersion `kibana.k8s.elastic.co/v1beta1`:
 apiVersion `kinesis.services.k8s.aws/v1alpha1`:
 - `Stream`
 
+## kmm_sigs_x_k8s_io
+
+apiVersion `kmm.sigs.x-k8s.io/v1beta1`:
+- `Module`
+- `NodeModulesConfig`
+- `PreflightValidation`
+
+apiVersion `kmm.sigs.x-k8s.io/v1beta2`:
+- `PreflightValidation`
+
 ## kms_services_k8s_aws
 
 apiVersion `kms.services.k8s.aws/v1alpha1`:
@@ -3567,6 +3577,8 @@ pub mod keyspaces_services_k8s_aws;
 pub mod kibana_k8s_elastic_co;
 #[cfg(feature = "kinesis_services_k8s_aws")]
 pub mod kinesis_services_k8s_aws;
+#[cfg(feature = "kmm_sigs_x_k8s_io")]
+pub mod kmm_sigs_x_k8s_io;
 #[cfg(feature = "kms_services_k8s_aws")]
 pub mod kms_services_k8s_aws;
 #[cfg(feature = "kuadrant_io")]

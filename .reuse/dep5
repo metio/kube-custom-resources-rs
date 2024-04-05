@@ -791,6 +791,10 @@ Files: crd-catalog/kubernetes-sigs/jobset/*
 Copyright: The kubernetes-sigs/jobset Authors
 License: Apache-2.0
 
+Files: crd-catalog/kubernetes-sigs/kernel-module-management/*
+Copyright: The kubernetes-sigs/kernel-module-management Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubernetes-sigs/kueue/*
 Copyright: The kubernetes-sigs/kueue Authors
 License: Apache-2.0

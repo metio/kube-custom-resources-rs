@@ -1980,6 +1980,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "kubernetes-sigs/kernel-module-management",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubernetes-sigs/kernel-module-management/blob/main/config/crd/bases/kmm.sigs.x-k8s.io_modules.yaml",
+            "https://github.com/kubernetes-sigs/kernel-module-management/blob/main/config/crd/bases/kmm.sigs.x-k8s.io_nodemodulesconfigs.yaml",
+            "https://github.com/kubernetes-sigs/kernel-module-management/blob/main/config/crd/bases/kmm.sigs.x-k8s.io_preflightvalidations.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "kubernetes-sigs/kueue",
         license: APACHE_V2,
         urls: &[
