@@ -25,6 +25,9 @@ pub struct QueueSpec {
     /// Guarantee indicate configuration about resource reservation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guarantee: Option<QueueGuarantee>,
+    /// Parent define the parent of queue
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parent: Option<String>,
     /// Reclaimable indicate whether the queue can be reclaimed by other queue
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reclaimable: Option<bool>,

@@ -51,6 +51,9 @@ pub struct BackingImageStatus {
     pub size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
+    /// Virtual size of image, which may be larger than physical size. Will be zero until known (e.g. while a backing image is uploading)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualSize")]
+    pub virtual_size: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

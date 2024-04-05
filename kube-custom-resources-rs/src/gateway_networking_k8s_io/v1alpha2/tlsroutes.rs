@@ -246,9 +246,6 @@ pub struct TLSRouteParentRefs {
     /// 
     /// 
     /// Support: Extended
-    /// 
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SectionName is the name of a section within the target resource. In the
@@ -586,9 +583,6 @@ pub struct TLSRouteStatusParentsParentRef {
     /// 
     /// 
     /// Support: Extended
-    /// 
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SectionName is the name of a section within the target resource. In the

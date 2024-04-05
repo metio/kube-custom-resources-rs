@@ -41,6 +41,9 @@ pub struct PerconaPGClusterSpec {
     pub image_pull_secrets: Option<Vec<PerconaPGClusterImagePullSecrets>>,
     /// Specifies one or more sets of PostgreSQL pods that replicate data for this cluster.
     pub instances: Vec<PerconaPGClusterInstances>,
+    /// Metadata contains metadata for custom resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<PerconaPGClusterMetadata>,
     /// Whether or not the PostgreSQL cluster is being deployed to an OpenShift environment. If the field is unset, the operator will automatically detect the environment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openshift: Option<bool>,
@@ -6127,6 +6130,15 @@ pub struct PerconaPGClusterInstancesWalVolumeClaimSpecSelectorMatchExpressions {
     /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Metadata contains metadata for custom resources
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PerconaPGClusterMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

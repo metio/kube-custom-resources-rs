@@ -64,5 +64,7 @@ pub struct BackingImageManagerStatusBackingImageFileMap {
     pub state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualSize")]
+    pub virtual_size: Option<i64>,
 }
 

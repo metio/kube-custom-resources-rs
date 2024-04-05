@@ -6,21 +6,18 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
-/// JobFlowSpec defines the desired state of JobFlow
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "flow.volcano.sh", version = "v1alpha1", kind = "JobFlow", plural = "jobflows")]
 #[kube(namespaced)]
 #[kube(status = "JobFlowStatus")]
 #[kube(schema = "disabled")]
 pub struct JobFlowSpec {
-    /// Foo is an example field of JobFlow. Edit jobflow_types.go to remove/update
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flows: Option<Vec<JobFlowFlows>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobRetainPolicy")]
     pub job_retain_policy: Option<String>,
 }
 
-/// Flow defines the dependent of jobs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowFlows {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
@@ -48,7 +45,6 @@ pub struct JobFlowFlowsDependsOnProbe {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowFlowsDependsOnProbeHttpGetList {
-    /// HTTPHeader describes a custom header to be used in HTTP probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeader")]
     pub http_header: Option<JobFlowFlowsDependsOnProbeHttpGetListHttpHeader>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -59,12 +55,9 @@ pub struct JobFlowFlowsDependsOnProbeHttpGetList {
     pub task_name: Option<String>,
 }
 
-/// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowFlowsDependsOnProbeHttpGetListHttpHeader {
-    /// The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
-    /// The header field value
     pub value: String,
 }
 
@@ -83,7 +76,6 @@ pub struct JobFlowFlowsDependsOnProbeTcpSocketList {
     pub task_name: Option<String>,
 }
 
-/// JobFlowStatus defines the observed state of JobFlow
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "completedJobs")]
@@ -110,7 +102,6 @@ pub struct JobFlowStatus {
 pub struct JobFlowStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createTime")]
     pub create_time: Option<String>,
-    /// JobPhase defines the phase of the job.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningDuration")]
@@ -121,7 +112,6 @@ pub struct JobFlowStatusConditions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowStatusConditionsTaskStatusCount {
-    /// The phase of Task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<BTreeMap<String, i32>>,
 }
@@ -138,7 +128,6 @@ pub struct JobFlowStatusJobStatusList {
     pub running_histories: Option<Vec<JobFlowStatusJobStatusListRunningHistories>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
-    /// JobPhase defines the phase of the job.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -149,7 +138,6 @@ pub struct JobFlowStatusJobStatusListRunningHistories {
     pub end_timestamp: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
-    /// JobPhase defines the phase of the job.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }

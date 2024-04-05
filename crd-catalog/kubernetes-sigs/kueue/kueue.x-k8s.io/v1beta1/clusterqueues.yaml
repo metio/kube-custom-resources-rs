@@ -142,7 +142,7 @@ spec:
                   type: "object"
                 queueingStrategy:
                   default: "BestEffortFIFO"
-                  description: "QueueingStrategy indicates the queueing strategy of the workloads\nacross the queues in this ClusterQueue. This field is immutable.\nCurrent Supported Strategies:\n\n\n- StrictFIFO: workloads are ordered strictly by creation time.\nOlder workloads that can't be admitted will block admitting newer\nworkloads even if they fit available quota.\n- BestEffortFIFO: workloads are ordered by creation time,\nhowever older workloads that can't be admitted will not block\nadmitting newer workloads that fit existing quota."
+                  description: "QueueingStrategy indicates the queueing strategy of the workloads\nacross the queues in this ClusterQueue.\nCurrent Supported Strategies:\n\n\n- StrictFIFO: workloads are ordered strictly by creation time.\nOlder workloads that can't be admitted will block admitting newer\nworkloads even if they fit available quota.\n- BestEffortFIFO: workloads are ordered by creation time,\nhowever older workloads that can't be admitted will not block\nadmitting newer workloads that fit existing quota."
                   enum:
                     - "StrictFIFO"
                     - "BestEffortFIFO"

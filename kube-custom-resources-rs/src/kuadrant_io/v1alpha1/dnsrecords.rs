@@ -16,6 +16,9 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 pub struct DNSRecordSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSRecordEndpoints>>,
+    /// HealthCheckSpec configures health checks in the DNS provider. By default this health check will be applied to each unique DNS A Record for the listeners assigned to the target gateway
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
+    pub health_check: Option<DNSRecordHealthCheck>,
     /// ManagedZoneReference holds a reference to a ManagedZone
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedZone")]
     pub managed_zone: Option<DNSRecordManagedZone>,
@@ -62,6 +65,19 @@ pub struct DNSRecordEndpointsProviderSpecific {
     pub value: Option<String>,
 }
 
+/// HealthCheckSpec configures health checks in the DNS provider. By default this health check will be applied to each unique DNS A Record for the listeners assigned to the target gateway
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DNSRecordHealthCheck {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+}
+
 /// ManagedZoneReference holds a reference to a ManagedZone
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordManagedZone {
@@ -81,6 +97,8 @@ pub struct DNSRecordStatus {
     ///  Note: This will not be required if/when we switch to using external-dns since when running with a "sync" policy it will clean up unused records automatically.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSRecordStatusEndpoints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
+    pub health_check: Option<DNSRecordStatusHealthCheck>,
     /// observedGeneration is the most recently observed generation of the DNSRecord.  When the DNSRecord is updated, the controller updates the corresponding record in each managed zone.  If an update for a particular zone fails, that failure is recorded in the status condition for the zone so that the controller can determine that it needs to retry the update for that specific zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
@@ -119,5 +137,11 @@ pub struct DNSRecordStatusEndpointsProviderSpecific {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DNSRecordStatusHealthCheck {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

@@ -276,6 +276,8 @@ spec:
                               type: "object"
                           type: "object"
                       type: "object"
+                    compression_level:
+                      type: "string"
                     content_type:
                       type: "string"
                     custom_headers:
@@ -1566,6 +1568,8 @@ spec:
                               type: "object"
                           type: "object"
                       type: "object"
+                    compression_level:
+                      type: "string"
                     content_type:
                       type: "string"
                     custom_headers:

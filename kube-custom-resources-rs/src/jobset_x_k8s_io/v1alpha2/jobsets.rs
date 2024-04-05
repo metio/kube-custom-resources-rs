@@ -21,6 +21,9 @@ pub struct JobSetSpec {
     /// finished with status failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<JobSetFailurePolicy>,
+    /// ManagedBy is used to indicate the controller or entity that manages a JobSet
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
+    pub managed_by: Option<String>,
     /// Network defines the networking options for the jobset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<JobSetNetwork>,

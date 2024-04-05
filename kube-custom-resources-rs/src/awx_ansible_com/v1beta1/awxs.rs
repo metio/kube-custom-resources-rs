@@ -234,9 +234,9 @@ pub struct AWXSpec {
     /// Secret where the database configuration can be found
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_configuration_secret: Option<String>,
-    /// Path where the PostgreSQL data are located
+    /// Sets permissions on the /var/lib/pgdata/data for postgres container using an init container (not Openshift)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub postgres_data_path: Option<String>,
+    pub postgres_data_volume_init: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_extra_args: Option<Vec<String>>,
     /// Specify volume mounts to be added to Postgres container
@@ -251,7 +251,10 @@ pub struct AWXSpec {
     /// PostgreSQL container image version to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_image_version: Option<String>,
-    /// Resource requirements for the postgres init container
+    /// Customize the postgres init container commands (Non Openshift)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub postgres_init_container_commands: Option<String>,
+    /// (Deprecated, use postgres_resource_requirements parameter) Resource requirements for the postgres init container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_init_container_resource_requirements: Option<AWXPostgresInitContainerResourceRequirements>,
     /// Specify whether or not to keep the old PVC after PostgreSQL upgrades
@@ -923,7 +926,7 @@ pub enum AWXLoadbalancerProtocol {
     Https,
 }
 
-/// Resource requirements for the postgres init container
+/// (Deprecated, use postgres_resource_requirements parameter) Resource requirements for the postgres init container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXPostgresInitContainerResourceRequirements {
     #[serde(default, skip_serializing_if = "Option::is_none")]

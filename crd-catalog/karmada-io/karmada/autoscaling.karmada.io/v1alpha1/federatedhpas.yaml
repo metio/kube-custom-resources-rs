@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.8.0"
+    controller-gen.kubebuilder.io/version: "v0.13.0"
   name: "federatedhpas.autoscaling.karmada.io"
 spec:
   group: "autoscaling.karmada.io"
@@ -213,6 +213,7 @@ spec:
                                     description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                     type: "object"
                                 type: "object"
+                                x-kubernetes-map-type: "atomic"
                             required:
                               - "name"
                             type: "object"
@@ -302,6 +303,7 @@ spec:
                                     description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                     type: "object"
                                 type: "object"
+                                x-kubernetes-map-type: "atomic"
                             required:
                               - "name"
                             type: "object"
@@ -376,6 +378,7 @@ spec:
                                     description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                     type: "object"
                                 type: "object"
+                                x-kubernetes-map-type: "atomic"
                             required:
                               - "name"
                             type: "object"
@@ -612,6 +615,7 @@ spec:
                                     description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                     type: "object"
                                 type: "object"
+                                x-kubernetes-map-type: "atomic"
                             required:
                               - "name"
                             type: "object"
@@ -696,6 +700,7 @@ spec:
                                     description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                     type: "object"
                                 type: "object"
+                                x-kubernetes-map-type: "atomic"
                             required:
                               - "name"
                             type: "object"
@@ -765,6 +770,7 @@ spec:
                                     description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                     type: "object"
                                 type: "object"
+                                x-kubernetes-map-type: "atomic"
                             required:
                               - "name"
                             type: "object"
@@ -838,9 +844,3 @@ spec:
       storage: true
       subresources:
         status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

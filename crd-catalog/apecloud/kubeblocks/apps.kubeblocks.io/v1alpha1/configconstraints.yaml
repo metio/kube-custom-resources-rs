@@ -44,20 +44,20 @@ spec:
               description: "ConfigConstraintSpec defines the desired state of ConfigConstraint"
               properties:
                 cfgSchemaTopLevelName:
-                  description: "Top level key used to get the cue rules to validate the config file. It must exist in 'ConfigSchema' TODO (refactored to ConfigSchemaTopLevelKey)"
+                  description: "Top level key used to get the cue rules to validate the config file. It must exist in 'ConfigSchema'"
                   type: "string"
                 configurationSchema:
-                  description: "List constraints rules for each config parameters. TODO (refactored to ConfigSchema)"
+                  description: "List constraints rules for each config parameters."
                   properties:
                     cue:
                       description: "Enables providers to verify user configurations using the CUE language."
                       type: "string"
                     schema:
-                      description: "Transforms the schema from CUE to json for further OpenAPI validation TODO (refactored to SchemaInJson)"
+                      description: "Transforms the schema from CUE to json for further OpenAPI validation"
                       x-kubernetes-preserve-unknown-fields: true
                   type: "object"
                 downwardAPIOptions:
-                  description: "A set of actions for regenerating local configs. \n It works when: - different engine roles have different config, such as redis primary & secondary - after a role switch, the local config will be regenerated with the help of DownwardActions TODO (refactored to DownwardActions)"
+                  description: "A set of actions for regenerating local configs. \n It works when: - different engine roles have different config, such as redis primary & secondary - after a role switch, the local config will be regenerated with the help of DownwardActions"
                   items:
                     properties:
                       command:
@@ -178,7 +178,7 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "set"
                 reloadOptions:
-                  description: "Specifies the dynamic reload actions supported by the engine. If set, the controller call the scripts defined in the actions for a dynamic parameter upgrade. The actions are called only when the modified parameter is defined in dynamicParameters part && DynamicReloadActions != nil TODO (refactored to DynamicReloadActions)"
+                  description: "Specifies the dynamic reload actions supported by the engine. If set, the controller call the scripts defined in the actions for a dynamic parameter upgrade. The actions are called only when the modified parameter is defined in dynamicParameters part && ReloadOptions != nil"
                   properties:
                     autoTrigger:
                       description: "Used to automatically perform the reload command when conditions are met."
@@ -190,8 +190,8 @@ spec:
                     shellTrigger:
                       description: "Used to perform the reload command in shell script."
                       properties:
-                        batchInputTemplate:
-                          description: "When `batchReload` is set to 'True', this parameter allows for the optional specification of the batch input format that is passed into the STDIN of the script. The format should be provided as a Go template string. In the template, the updated parameters' key-value map can be referenced using the dollar sign ('$') variable. Here's an example of an input template: \n ```yaml \n batchInputTemplate: |- \n {{- range $pKey, $pValue := $ }} \n {{ printf \"%s:%s\" $pKey $pValue }} \n {{- end }} \n ``` \n In this example, each updated parameter is iterated over in a sorted order by keys to generate the batch input data as follows: \n ``` \n key1:value1 \n key2:value2 \n key3:value3 \n ``` \n If this parameter is not specified, the default format used for STDIN is as follows: Each updated parameter generates a line that concatenates the parameter's key and value with a equal sign ('='). These lines are then sorted by their keys and inserted accordingly. Here's an example of the batch input data using the default template: \n ``` \n key1=value1 \n key2=value2 \n key3=value3 \n ```"
+                        batchParametersTemplate:
+                          description: "When `batchReload` is set to 'True', this parameter allows for the optional specification of the batch input format that is passed into the STDIN of the script. The format should be provided as a Go template string. In the template, the updated parameters' key-value map can be referenced using the dollar sign ('$') variable. Here's an example of an input template: \n ```yaml \n batchParametersTemplate: |- \n {{- range $pKey, $pValue := $ }} \n {{ printf \"%s:%s\" $pKey $pValue }} \n {{- end }} \n ``` \n In this example, each updated parameter is iterated over in a sorted order by keys to generate the batch input data as follows: \n ``` \n key1:value1 \n key2:value2 \n key3:value3 \n ``` \n If this parameter is not specified, the default format used for STDIN is as follows: Each updated parameter generates a line that concatenates the parameter's key and value with a equal sign ('='). These lines are then sorted by their keys and inserted accordingly. Here's an example of the batch input data using the default template: \n ``` \n key1=value1 \n key2=value2 \n key3=value3 \n ```"
                           type: "string"
                         batchReload:
                           description: "Specifies whether to reconfigure dynamic parameters individually or in a batch. - Set to 'True' to execute the reload action in a batch, incorporating all parameter changes. - Set to 'False' to execute the reload action for each parameter change individually. The default value is 'False'."
@@ -292,7 +292,7 @@ spec:
                     - "scriptConfigMapRef"
                   x-kubernetes-list-type: "map"
                 selector:
-                  description: "Used to match labels on the pod to do a dynamic reload TODO (refactored to DynamicReloadSelector)"
+                  description: "Used to match labels on the pod to do a dynamic reload"
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -329,7 +329,7 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "set"
                 toolsImageSpec:
-                  description: "Tools used by the dynamic reload actions. Usually it is referenced by the 'init container' for 'cp' it to a binary volume. TODO (refactored to ReloadToolsImage)"
+                  description: "Tools used by the dynamic reload actions. Usually it is referenced by the 'init container' for 'cp' it to a binary volume."
                   properties:
                     mountPoint:
                       description: "Represents the point where the scripts file will be mounted."
@@ -381,6 +381,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

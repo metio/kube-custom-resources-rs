@@ -15,10 +15,12 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 pub struct ClusterSetSpec {
     /// Leaders include leader clusters known to the member clusters.
     pub leaders: Vec<ClusterSetLeaders>,
-    /// Members include member clusters known to the leader clusters. Used in leader cluster.
+    /// Members include member clusters known to the leader clusters.
+    /// Used in leader cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub members: Option<Vec<ClusterSetMembers>>,
-    /// The leader cluster Namespace in which the ClusterSet is defined. Used in member cluster.
+    /// The leader cluster Namespace in which the ClusterSet is defined.
+    /// Used in member cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }

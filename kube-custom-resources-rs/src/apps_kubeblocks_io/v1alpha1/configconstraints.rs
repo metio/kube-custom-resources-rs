@@ -14,14 +14,14 @@ use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 #[kube(status = "ConfigConstraintStatus")]
 #[kube(schema = "disabled")]
 pub struct ConfigConstraintSpec {
-    /// Top level key used to get the cue rules to validate the config file. It must exist in 'ConfigSchema' TODO (refactored to ConfigSchemaTopLevelKey)
+    /// Top level key used to get the cue rules to validate the config file. It must exist in 'ConfigSchema'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cfgSchemaTopLevelName")]
     pub cfg_schema_top_level_name: Option<String>,
-    /// List constraints rules for each config parameters. TODO (refactored to ConfigSchema)
+    /// List constraints rules for each config parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationSchema")]
     pub configuration_schema: Option<ConfigConstraintConfigurationSchema>,
     /// A set of actions for regenerating local configs. 
-    ///  It works when: - different engine roles have different config, such as redis primary & secondary - after a role switch, the local config will be regenerated with the help of DownwardActions TODO (refactored to DownwardActions)
+    ///  It works when: - different engine roles have different config, such as redis primary & secondary - after a role switch, the local config will be regenerated with the help of DownwardActions
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPIOptions")]
     pub downward_api_options: Option<Vec<ConfigConstraintDownwardApiOptions>>,
     /// Indicates the dynamic reload action and restart action can be merged to a restart action. 
@@ -40,30 +40,30 @@ pub struct ConfigConstraintSpec {
     /// Describes parameters that are prohibited to do any modifications.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "immutableParameters")]
     pub immutable_parameters: Option<Vec<String>>,
-    /// Specifies the dynamic reload actions supported by the engine. If set, the controller call the scripts defined in the actions for a dynamic parameter upgrade. The actions are called only when the modified parameter is defined in dynamicParameters part && DynamicReloadActions != nil TODO (refactored to DynamicReloadActions)
+    /// Specifies the dynamic reload actions supported by the engine. If set, the controller call the scripts defined in the actions for a dynamic parameter upgrade. The actions are called only when the modified parameter is defined in dynamicParameters part && ReloadOptions != nil
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadOptions")]
     pub reload_options: Option<ConfigConstraintReloadOptions>,
     /// A list of ScriptConfig used by the actions defined in dynamic reload and downward actions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptConfigs")]
     pub script_configs: Option<Vec<ConfigConstraintScriptConfigs>>,
-    /// Used to match labels on the pod to do a dynamic reload TODO (refactored to DynamicReloadSelector)
+    /// Used to match labels on the pod to do a dynamic reload
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ConfigConstraintSelector>,
     /// A list of StaticParameter. Modifications of static parameters trigger a process restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticParameters")]
     pub static_parameters: Option<Vec<String>>,
-    /// Tools used by the dynamic reload actions. Usually it is referenced by the 'init container' for 'cp' it to a binary volume. TODO (refactored to ReloadToolsImage)
+    /// Tools used by the dynamic reload actions. Usually it is referenced by the 'init container' for 'cp' it to a binary volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toolsImageSpec")]
     pub tools_image_spec: Option<ConfigConstraintToolsImageSpec>,
 }
 
-/// List constraints rules for each config parameters. TODO (refactored to ConfigSchema)
+/// List constraints rules for each config parameters.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintConfigurationSchema {
     /// Enables providers to verify user configurations using the CUE language.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cue: Option<String>,
-    /// Transforms the schema from CUE to json for further OpenAPI validation TODO (refactored to SchemaInJson)
+    /// Transforms the schema from CUE to json for further OpenAPI validation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<HashMap<String, serde_json::Value>>,
 }
@@ -175,7 +175,7 @@ pub struct ConfigConstraintFormatterConfigIniConfig {
     pub section_name: Option<String>,
 }
 
-/// Specifies the dynamic reload actions supported by the engine. If set, the controller call the scripts defined in the actions for a dynamic parameter upgrade. The actions are called only when the modified parameter is defined in dynamicParameters part && DynamicReloadActions != nil TODO (refactored to DynamicReloadActions)
+/// Specifies the dynamic reload actions supported by the engine. If set, the controller call the scripts defined in the actions for a dynamic parameter upgrade. The actions are called only when the modified parameter is defined in dynamicParameters part && ReloadOptions != nil
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintReloadOptions {
     /// Used to automatically perform the reload command when conditions are met.
@@ -205,7 +205,7 @@ pub struct ConfigConstraintReloadOptionsAutoTrigger {
 pub struct ConfigConstraintReloadOptionsShellTrigger {
     /// When `batchReload` is set to 'True', this parameter allows for the optional specification of the batch input format that is passed into the STDIN of the script. The format should be provided as a Go template string. In the template, the updated parameters' key-value map can be referenced using the dollar sign ('$') variable. Here's an example of an input template: 
     ///  ```yaml 
-    ///  batchInputTemplate: |- 
+    ///  batchParametersTemplate: |- 
     ///  {{- range $pKey, $pValue := $ }} 
     ///  {{ printf "%s:%s" $pKey $pValue }} 
     ///  {{- end }} 
@@ -222,8 +222,8 @@ pub struct ConfigConstraintReloadOptionsShellTrigger {
     ///  key2=value2 
     ///  key3=value3 
     ///  ```
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchInputTemplate")]
-    pub batch_input_template: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchParametersTemplate")]
+    pub batch_parameters_template: Option<String>,
     /// Specifies whether to reconfigure dynamic parameters individually or in a batch. - Set to 'True' to execute the reload action in a batch, incorporating all parameter changes. - Set to 'False' to execute the reload action for each parameter change individually. The default value is 'False'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchReload")]
     pub batch_reload: Option<bool>,
@@ -335,7 +335,7 @@ pub struct ConfigConstraintScriptConfigs {
     pub script_config_map_ref: String,
 }
 
-/// Used to match labels on the pod to do a dynamic reload TODO (refactored to DynamicReloadSelector)
+/// Used to match labels on the pod to do a dynamic reload
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -358,7 +358,7 @@ pub struct ConfigConstraintSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// Tools used by the dynamic reload actions. Usually it is referenced by the 'init container' for 'cp' it to a binary volume. TODO (refactored to ReloadToolsImage)
+/// Tools used by the dynamic reload actions. Usually it is referenced by the 'init container' for 'cp' it to a binary volume.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigConstraintToolsImageSpec {
     /// Represents the point where the scripts file will be mounted.

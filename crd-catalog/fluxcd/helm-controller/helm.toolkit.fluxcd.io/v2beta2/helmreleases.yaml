@@ -119,6 +119,7 @@ spec:
                               description: "Provider specifies the technology used to sign the OCI Helm chart."
                               enum:
                                 - "cosign"
+                                - "notation"
                               type: "string"
                             secretRef:
                               description: "SecretRef specifies the Kubernetes Secret containing the\ntrusted public keys."

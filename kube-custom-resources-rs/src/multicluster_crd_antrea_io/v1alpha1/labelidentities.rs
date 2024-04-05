@@ -12,7 +12,9 @@ pub struct LabelIdentitySpec {
     /// ID is the ID allocated for the label identity by the leader cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<i32>,
-    /// Label is the normalized string of a label identity. The format of normalized label identity is `ns:(?P<nslabels>(.)*)&pod:(?P<podlabels>(.)*)` E.g., `ns:kubernetes.io/metadata.name=kube-system&pod:app=db`
+    /// Label is the normalized string of a label identity.
+    /// The format of normalized label identity is `ns:(?P<nslabels>(.)*)&pod:(?P<podlabels>(.)*)`
+    /// E.g., `ns:kubernetes.io/metadata.name=kube-system&pod:app=db`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
 }

@@ -209,10 +209,10 @@ pub struct HazelcastCpSubsystem {
     /// PVC is the configuration of PersistenceVolumeClaim.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pvc: Option<HazelcastCpSubsystemPvc>,
-    /// SessionHeartbeatIntervalSeconds Interval in seconds for the periodically committed CP session heartbeats. Must be greater than or equal to SessionTTLSeconds.
+    /// SessionHeartbeatIntervalSeconds Interval in seconds for the periodically committed CP session heartbeats. Must be smaller than SessionTTLSeconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionHeartbeatIntervalSeconds")]
     pub session_heartbeat_interval_seconds: Option<i32>,
-    /// SessionTTLSeconds is the duration for a CP session to be kept alive after the last received heartbeat. Must be greater than or equal to SessionTTLSeconds.
+    /// SessionTTLSeconds is the duration for a CP session to be kept alive after the last received heartbeat. Must be greater than or equal to SessionHeartbeatIntervalSeconds and smaller than or equal to MissingCpMemberAutoRemovalSeconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTTLSeconds")]
     pub session_ttl_seconds: Option<i32>,
 }
