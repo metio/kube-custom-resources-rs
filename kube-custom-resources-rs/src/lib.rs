@@ -1964,6 +1964,12 @@ apiVersion `m4e.krestomat.io/v1alpha1`:
 - `Phpfpm`
 - `Routine`
 
+## machine_deletion_remediation_medik8s_io
+
+apiVersion `machine-deletion-remediation.medik8s.io/v1alpha1`:
+- `MachineDeletionRemediation`
+- `MachineDeletionRemediationTemplate`
+
 ## maps_k8s_elastic_co
 
 apiVersion `maps.k8s.elastic.co/v1alpha1`:
@@ -3594,6 +3600,8 @@ pub mod loki_grafana_com;
 pub mod longhorn_io;
 #[cfg(feature = "m4e_krestomat_io")]
 pub mod m4e_krestomat_io;
+#[cfg(feature = "machine_deletion_remediation_medik8s_io")]
+pub mod machine_deletion_remediation_medik8s_io;
 #[cfg(feature = "maps_k8s_elastic_co")]
 pub mod maps_k8s_elastic_co;
 #[cfg(feature = "mariadb_mmontes_io")]

@@ -2294,6 +2294,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "medik8s/machine-deletion-remediation",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/medik8s/machine-deletion-remediation/blob/main/config/crd/bases/machine-deletion-remediation.medik8s.io_machinedeletionremediations.yaml",
+            "https://github.com/medik8s/machine-deletion-remediation/blob/main/config/crd/bases/machine-deletion-remediation.medik8s.io_machinedeletionremediationtemplates.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "medik8s/node-healthcheck-operator",
         license: APACHE_V2,
         urls: &[
