@@ -2750,6 +2750,13 @@ apiVersion `security.istio.io/v1beta1`:
 - `PeerAuthentication`
 - `RequestAuthentication`
 
+## self_node_remediation_medik8s_io
+
+apiVersion `self-node-remediation.medik8s.io/v1alpha1`:
+- `SelfNodeRemediationConfig`
+- `SelfNodeRemediation`
+- `SelfNodeRemediationTemplate`
+
 ## sematext_com
 
 apiVersion `sematext.com/v1`:
@@ -3777,6 +3784,8 @@ pub mod secscan_quay_redhat_com;
 pub mod security_profiles_operator_x_k8s_io;
 #[cfg(feature = "security_istio_io")]
 pub mod security_istio_io;
+#[cfg(feature = "self_node_remediation_medik8s_io")]
+pub mod self_node_remediation_medik8s_io;
 #[cfg(feature = "sematext_com")]
 pub mod sematext_com;
 #[cfg(feature = "servicebinding_io")]

@@ -2301,6 +2301,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ],
     },
     UpstreamSource {
+        project_name: "medik8s/self-node-remediation",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/medik8s/self-node-remediation/blob/main/config/crd/bases/self-node-remediation.medik8s.io_selfnoderemediationconfigs.yaml",
+            "https://github.com/medik8s/self-node-remediation/blob/main/config/crd/bases/self-node-remediation.medik8s.io_selfnoderemediations.yaml",
+            "https://github.com/medik8s/self-node-remediation/blob/main/config/crd/bases/self-node-remediation.medik8s.io_selfnoderemediationtemplates.yaml",
+        ],
+    },
+    UpstreamSource {
         project_name: "metacontroller/metacontroller",
         license: APACHE_V2,
         urls: &[
