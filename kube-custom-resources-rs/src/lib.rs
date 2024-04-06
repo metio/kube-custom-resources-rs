@@ -581,6 +581,7 @@ apiVersion `cert-manager.io/v1`:
 ## chainsaw_kyverno_io
 
 apiVersion `chainsaw.kyverno.io/v1alpha1`:
+- `Configuration`
 - `Test`
 
 ## chaos_mesh_org
