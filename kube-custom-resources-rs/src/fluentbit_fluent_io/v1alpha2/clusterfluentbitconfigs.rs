@@ -17,6 +17,9 @@ pub struct ClusterFluentBitConfigSpec {
     /// Select input plugins
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputSelector")]
     pub input_selector: Option<ClusterFluentBitConfigInputSelector>,
+    /// Select multiline parser plugins
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multilineParserSelector")]
+    pub multiline_parser_selector: Option<ClusterFluentBitConfigMultilineParserSelector>,
     /// If namespace is defined, then the configmap and secret for fluent-bit is in this namespace. If it is not defined, it is in the namespace of the fluentd-operator
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -68,6 +71,29 @@ pub struct ClusterFluentBitConfigInputSelector {
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFluentBitConfigInputSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Select multiline parser plugins
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterFluentBitConfigMultilineParserSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterFluentBitConfigMultilineParserSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterFluentBitConfigMultilineParserSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -129,6 +155,13 @@ pub struct ClusterFluentBitConfigService {
     /// If true go to background on start
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub daemon: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterMemBufLimit")]
+    pub emitter_mem_buf_limit: Option<String>,
+    /// Per-namespace re-emitter configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterName")]
+    pub emitter_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterStorageType")]
+    pub emitter_storage_type: Option<String>,
     /// Interval to flush output
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushSeconds")]
     pub flush_seconds: Option<i64>,
@@ -165,6 +198,9 @@ pub struct ClusterFluentBitConfigService {
     /// Optional 'parsers' config file (can be multiple)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parsersFile")]
     pub parsers_file: Option<String>,
+    /// backward compatible
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parsersFiles")]
+    pub parsers_files: Option<Vec<String>>,
     /// Configure a global environment for the storage layer in Service. It is recommended to configure the volume and volumeMount separately for this storage. The hostPath type should be used for that Volume in Fluentbit daemon set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<ClusterFluentBitConfigServiceStorage>,

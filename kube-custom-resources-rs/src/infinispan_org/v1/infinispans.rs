@@ -1401,6 +1401,9 @@ pub struct InfinispanStatus {
     /// The Operand status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operand: Option<InfinispanStatusOperand>,
+    /// The Operator status
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<InfinispanStatusOperator>,
     /// The Pod's currently in the cluster
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podStatus")]
     pub pod_status: Option<InfinispanStatusPodStatus>,
@@ -1452,6 +1455,14 @@ pub struct InfinispanStatusOperand {
     /// The Operand version to be reconciled
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// The Operator status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct InfinispanStatusOperator {
+    /// The name of the pod reconciling this resource
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod: Option<String>,
 }
 
 /// The Pod's currently in the cluster

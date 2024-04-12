@@ -126,8 +126,48 @@ spec:
                         type: "object"
                       type: "object"
                   type: "object"
+                operatorUpgrade:
+                  description: "OperatorUpgrade contains the status of the operator upgrade.\nThis is set only if the `everest.percona.com/upgrade-operator-to` annotation is present."
+                  properties:
+                    installPlanRef:
+                      description: "InstallPlanRef is a reference to the InstallPlan object created for the operator upgrade."
+                      properties:
+                        name:
+                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          type: "string"
+                      type: "object"
+                      x-kubernetes-map-type: "atomic"
+                    message:
+                      type: "string"
+                    phase:
+                      description: "UpgradePhase represents the phase of the operator upgrade."
+                      type: "string"
+                    startedAt:
+                      format: "date-time"
+                      type: "string"
+                    targetVersion:
+                      description: "TargetVersion is the version to which the operator should be upgraded."
+                      type: "string"
+                  type: "object"
                 operatorVersion:
                   type: "string"
+                pendingOperatorUpgrades:
+                  items:
+                    description: "OperatorUpgrade contains the information about the operator upgrade."
+                    properties:
+                      installPlanRef:
+                        description: "InstallPlanRef is a reference to the InstallPlan object created for the operator upgrade."
+                        properties:
+                          name:
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            type: "string"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      targetVersion:
+                        description: "TargetVersion is the version to which the operator should be upgraded."
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 status:
                   description: "EngineState represents state of engine in a k8s cluster."
                   type: "string"

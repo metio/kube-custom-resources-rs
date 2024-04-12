@@ -7780,7 +7780,6 @@ pub struct PostgresClusterStatus {
     /// Current state of the PostgreSQL proxy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<PostgresClusterStatusProxy>,
-    /// Version information for installations with a registration requirement.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationRequired")]
     pub registration_required: Option<PostgresClusterStatusRegistrationRequired>,
     /// The instance that should be started first when bootstrapping and/or starting a PostgresCluster.
@@ -7789,7 +7788,6 @@ pub struct PostgresClusterStatus {
     /// The instance set associated with the startupInstance
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupInstanceSet")]
     pub startup_instance_set: Option<String>,
-    /// Signals the need for a token to be applied when registration is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenRequired")]
     pub token_required: Option<String>,
     /// Current state of the PostgreSQL user interface.
@@ -7986,7 +7984,6 @@ pub struct PostgresClusterStatusProxyPgBouncer {
     pub replicas: Option<i32>,
 }
 
-/// Version information for installations with a registration requirement.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PostgresClusterStatusRegistrationRequired {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pgoVersion")]

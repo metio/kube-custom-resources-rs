@@ -286,6 +286,9 @@ pub struct TestExecutionRequestArtifactRequest {
     /// artifact storage class name for container executor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// whether to use default storage class name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDefaultStorageClassName")]
+    pub use_default_storage_class_name: Option<bool>,
     /// artifact volume mount path for container executor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMountPath")]
     pub volume_mount_path: Option<String>,

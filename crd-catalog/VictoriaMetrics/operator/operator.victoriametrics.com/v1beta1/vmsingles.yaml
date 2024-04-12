@@ -359,6 +359,9 @@ spec:
                       description: "ServiceSpec describes the attributes that a user creates on a service.\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
+                    useAsDefault:
+                      description: "UseAsDefault applies changes from given service definition to the main object Service\nChaning from headless service to clusterIP or loadbalancer may break cross-component communication"
+                      type: "boolean"
                   required:
                     - "spec"
                   type: "object"

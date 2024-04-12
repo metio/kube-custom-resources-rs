@@ -36,9 +36,13 @@ pub struct ScrapeConfigSpec {
     /// EC2SDConfigs defines a list of EC2 service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2SDConfigs")]
     pub ec2_sd_configs: Option<Vec<ScrapeConfigEc2SdConfigs>>,
-    /// When false, Prometheus will request uncompressed response from the scraped target. 
-    ///  It requires Prometheus >= v2.49.0. 
-    ///  If unset, Prometheus uses true by default.
+    /// When false, Prometheus will request uncompressed response from the scraped target.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.49.0.
+    /// 
+    /// 
+    /// If unset, Prometheus uses true by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCompression")]
     pub enable_compression: Option<bool>,
     /// EurekaSDConfigs defines a list of Eureka service discovery configurations.
@@ -62,8 +66,11 @@ pub struct ScrapeConfigSpec {
     /// HTTPSDConfigs defines a list of HTTP service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSDConfigs")]
     pub http_sd_configs: Option<Vec<ScrapeConfigHttpSdConfigs>>,
-    /// Per-scrape limit on the number of targets dropped by relabeling that will be kept in memory. 0 means no limit. 
-    ///  It requires Prometheus >= v2.47.0.
+    /// Per-scrape limit on the number of targets dropped by relabeling
+    /// that will be kept in memory. 0 means no limit.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.47.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDroppedTargets")]
     pub keep_dropped_targets: Option<i64>,
     /// KubernetesSDConfigs defines a list of Kubernetes service discovery configurations.
@@ -72,13 +79,16 @@ pub struct ScrapeConfigSpec {
     /// KumaSDConfigs defines a list of Kuma service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kumaSDConfigs")]
     pub kuma_sd_configs: Option<Vec<ScrapeConfigKumaSdConfigs>>,
-    /// Per-scrape limit on number of labels that will be accepted for a sample. Only valid in Prometheus versions 2.27.0 and newer.
+    /// Per-scrape limit on number of labels that will be accepted for a sample.
+    /// Only valid in Prometheus versions 2.27.0 and newer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelLimit")]
     pub label_limit: Option<i64>,
-    /// Per-scrape limit on length of labels name that will be accepted for a sample. Only valid in Prometheus versions 2.27.0 and newer.
+    /// Per-scrape limit on length of labels name that will be accepted for a sample.
+    /// Only valid in Prometheus versions 2.27.0 and newer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelNameLengthLimit")]
     pub label_name_length_limit: Option<i64>,
-    /// Per-scrape limit on length of labels value that will be accepted for a sample. Only valid in Prometheus versions 2.27.0 and newer.
+    /// Per-scrape limit on length of labels value that will be accepted for a sample.
+    /// Only valid in Prometheus versions 2.27.0 and newer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
     pub label_value_length_limit: Option<i64>,
     /// MetricRelabelConfigs to apply to samples before ingestion.
@@ -87,8 +97,12 @@ pub struct ScrapeConfigSpec {
     /// MetricsPath HTTP path to scrape for metrics. If empty, Prometheus uses the default value (e.g. /metrics).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPath")]
     pub metrics_path: Option<String>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// OpenStackSDConfigs defines a list of OpenStack service discovery configurations.
@@ -97,25 +111,37 @@ pub struct ScrapeConfigSpec {
     /// Optional HTTP URL parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
-    /// RelabelConfigs defines how to rewrite the target's labels before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. The original scrape job's name is available via the `__tmp_prometheus_job_name` label. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+    /// RelabelConfigs defines how to rewrite the target's labels before scraping.
+    /// Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields.
+    /// The original scrape job's name is available via the `__tmp_prometheus_job_name` label.
+    /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<ScrapeConfigRelabelings>>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
-    /// Configures the protocol scheme used for requests. If empty, Prometheus uses HTTP by default.
+    /// Configures the protocol scheme used for requests.
+    /// If empty, Prometheus uses HTTP by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ScrapeConfigScheme>,
     /// The scrape class to apply.
@@ -124,9 +150,14 @@ pub struct ScrapeConfigSpec {
     /// ScrapeInterval is the interval between consecutive scrapes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
-    /// The protocols to negotiate during a scrape. It tells clients the protocols supported by Prometheus in order of preference (from most to least preferred). 
-    ///  If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.49.0.
+    /// The protocols to negotiate during a scrape. It tells clients the
+    /// protocols supported by Prometheus in order of preference (from most to least preferred).
+    /// 
+    /// 
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.49.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
     /// ScrapeTimeout is the number of seconds to wait until a scrape request times out.
@@ -141,7 +172,10 @@ pub struct ScrapeConfigSpec {
     /// TLS configuration to use on every scrape request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<ScrapeConfigTlsConfig>,
-    /// TrackTimestampsStaleness whether Prometheus tracks staleness of the metrics that have an explicit timestamp present in scraped data. Has no effect if `honorTimestamps` is false. It requires Prometheus >= v2.48.0.
+    /// TrackTimestampsStaleness whether Prometheus tracks staleness of
+    /// the metrics that have an explicit timestamp present in scraped data.
+    /// Has no effect if `honorTimestamps` is false.
+    /// It requires Prometheus >= v2.48.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackTimestampsStaleness")]
     pub track_timestamps_staleness: Option<bool>,
 }
@@ -152,9 +186,13 @@ pub struct ScrapeConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -164,7 +202,9 @@ pub struct ScrapeConfigAuthorization {
 pub struct ScrapeConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -172,10 +212,12 @@ pub struct ScrapeConfigAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// AzureSDConfig allow retrieving scrape targets from Azure VMs. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config
+/// AzureSDConfig allow retrieving scrape targets from Azure VMs.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigAzureSdConfigs {
-    /// # The authentication method, either OAuth or ManagedIdentity. See https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
+    /// # The authentication method, either OAuth or ManagedIdentity.
+    /// See https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationMethod")]
     pub authentication_method: Option<ScrapeConfigAzureSdConfigsAuthenticationMethod>,
     /// Optional client ID. Only required with the OAuth authentication method.
@@ -187,7 +229,8 @@ pub struct ScrapeConfigAzureSdConfigs {
     /// The Azure environment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<String>,
-    /// The port to scrape metrics from. If using the public IP address, this must instead be specified in the relabeling rule.
+    /// The port to scrape metrics from. If using the public IP address, this must
+    /// instead be specified in the relabeling rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// RefreshInterval configures the refresh interval at which Prometheus will re-read the instance list.
@@ -204,7 +247,8 @@ pub struct ScrapeConfigAzureSdConfigs {
     pub tenant_id: Option<String>,
 }
 
-/// AzureSDConfig allow retrieving scrape targets from Azure VMs. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config
+/// AzureSDConfig allow retrieving scrape targets from Azure VMs.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigAzureSdConfigsAuthenticationMethod {
     OAuth,
@@ -216,7 +260,9 @@ pub enum ScrapeConfigAzureSdConfigsAuthenticationMethod {
 pub struct ScrapeConfigAzureSdConfigsClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -227,20 +273,25 @@ pub struct ScrapeConfigAzureSdConfigsClientSecret {
 /// BasicAuth information to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -248,12 +299,15 @@ pub struct ScrapeConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -261,32 +315,41 @@ pub struct ScrapeConfigBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// ConsulSDConfig defines a Consul service discovery configuration See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#consul_sd_config
+/// ConsulSDConfig defines a Consul service discovery configuration
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#consul_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigs {
-    /// Allow stale Consul results (see https://www.consul.io/api/features/consistency.html). Will reduce load on Consul. If unset, Prometheus uses its default value.
+    /// Allow stale Consul results (see https://www.consul.io/api/features/consistency.html). Will reduce load on Consul.
+    /// If unset, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
     pub allow_stale: Option<bool>,
     /// Authorization header configuration to authenticate against the Consul Server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigConsulSdConfigsAuthorization>,
-    /// BasicAuth information to authenticate against the Consul Server. More info: https://prometheus.io/docs/operating/configuration/#endpoints
+    /// BasicAuth information to authenticate against the Consul Server.
+    /// More info: https://prometheus.io/docs/operating/configuration/#endpoints
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigConsulSdConfigsBasicAuth>,
     /// Consul Datacenter name, if not provided it will use the local Consul Agent Datacenter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datacenter: Option<String>,
-    /// Whether to enable HTTP2. If unset, Prometheus uses its default value.
+    /// Whether to enable HTTP2.
+    /// If unset, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
-    /// Configure whether HTTP requests follow HTTP 3xx redirects. If unset, Prometheus uses its default value.
+    /// Configure whether HTTP requests follow HTTP 3xx redirects.
+    /// If unset, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Namespaces are only supported in Consul Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Node metadata key/value pairs to filter nodes for a given service.
@@ -298,19 +361,29 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// Admin Partitions are only supported in Consul Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<String>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigConsulSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
-    /// The time after which the provided names are refreshed. On large setup it might be a good idea to increase this value because the catalog will change all the time. If unset, Prometheus uses its default value.
+    /// The time after which the provided names are refreshed.
+    /// On large setup it might be a good idea to increase this value because the catalog will change all the time.
+    /// If unset, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// HTTP Scheme default "http"
@@ -321,7 +394,8 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// A list of services for which targets are retrieved. If omitted, all services are scraped.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
-    /// The string by which Consul tags are joined into the tag label. If unset, Prometheus uses its default value.
+    /// The string by which Consul tags are joined into the tag label.
+    /// If unset, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// An optional list of tags used to filter nodes for a given service. Services must contain all tags in the list.
@@ -341,9 +415,13 @@ pub struct ScrapeConfigConsulSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigConsulSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -353,7 +431,9 @@ pub struct ScrapeConfigConsulSdConfigsAuthorization {
 pub struct ScrapeConfigConsulSdConfigsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -361,23 +441,29 @@ pub struct ScrapeConfigConsulSdConfigsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// BasicAuth information to authenticate against the Consul Server. More info: https://prometheus.io/docs/operating/configuration/#endpoints
+/// BasicAuth information to authenticate against the Consul Server.
+/// More info: https://prometheus.io/docs/operating/configuration/#endpoints
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigConsulSdConfigsBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigConsulSdConfigsBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -385,12 +471,15 @@ pub struct ScrapeConfigConsulSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -401,13 +490,16 @@ pub struct ScrapeConfigConsulSdConfigsBasicAuthUsername {
 /// Optional OAuth 2.0 configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ScrapeConfigConsulSdConfigsOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ScrapeConfigConsulSdConfigsOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -418,7 +510,8 @@ pub struct ScrapeConfigConsulSdConfigsOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -434,7 +527,9 @@ pub struct ScrapeConfigConsulSdConfigsOauth2ClientId {
 pub struct ScrapeConfigConsulSdConfigsOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -447,7 +542,9 @@ pub struct ScrapeConfigConsulSdConfigsOauth2ClientIdConfigMap {
 pub struct ScrapeConfigConsulSdConfigsOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -455,12 +552,15 @@ pub struct ScrapeConfigConsulSdConfigsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -468,14 +568,19 @@ pub struct ScrapeConfigConsulSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -483,7 +588,8 @@ pub struct ScrapeConfigConsulSdConfigsProxyConnectHeader {
     pub optional: Option<bool>,
 }
 
-/// ConsulSDConfig defines a Consul service discovery configuration See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#consul_sd_config
+/// ConsulSDConfig defines a Consul service discovery configuration
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#consul_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigConsulSdConfigsScheme {
     #[serde(rename = "HTTP")]
@@ -528,7 +634,9 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfigCa {
 pub struct ScrapeConfigConsulSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -541,7 +649,9 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigConsulSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -565,7 +675,9 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfigCert {
 pub struct ScrapeConfigConsulSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -578,7 +690,9 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigConsulSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -591,7 +705,9 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigConsulSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -604,7 +720,9 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfigKeySecret {
 pub struct ScrapeConfigConsulSdConfigsTokenRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -612,10 +730,13 @@ pub struct ScrapeConfigConsulSdConfigsTokenRef {
     pub optional: Option<bool>,
 }
 
-/// DigitalOceanSDConfig allow retrieving scrape targets from DigitalOcean's Droplets API. This service discovery uses the public IPv4 address by default, by that can be changed with relabeling See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#digitalocean_sd_config
+/// DigitalOceanSDConfig allow retrieving scrape targets from DigitalOcean's Droplets API.
+/// This service discovery uses the public IPv4 address by default, by that can be changed with relabeling
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#digitalocean_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDigitalOceanSdConfigs {
-    /// Authorization header configuration to authenticate against the DigitalOcean API. Cannot be set at the same time as `oauth2`.
+    /// Authorization header configuration to authenticate against the DigitalOcean API.
+    /// Cannot be set at the same time as `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigDigitalOceanSdConfigsAuthorization>,
     /// Whether to enable HTTP2.
@@ -624,26 +745,39 @@ pub struct ScrapeConfigDigitalOceanSdConfigs {
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`.
+    /// Optional OAuth 2.0 configuration.
+    /// Cannot be set at the same time as `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigDigitalOceanSdConfigsOauth2>,
     /// The port to scrape metrics from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDigitalOceanSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Refresh interval to re-read the instance list.
@@ -654,15 +788,20 @@ pub struct ScrapeConfigDigitalOceanSdConfigs {
     pub tls_config: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfig>,
 }
 
-/// Authorization header configuration to authenticate against the DigitalOcean API. Cannot be set at the same time as `oauth2`.
+/// Authorization header configuration to authenticate against the DigitalOcean API.
+/// Cannot be set at the same time as `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDigitalOceanSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -672,7 +811,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsAuthorization {
 pub struct ScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -680,16 +821,20 @@ pub struct ScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`.
+/// Optional OAuth 2.0 configuration.
+/// Cannot be set at the same time as `authorization`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDigitalOceanSdConfigsOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ScrapeConfigDigitalOceanSdConfigsOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -700,7 +845,8 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -716,7 +862,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientId {
 pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -729,7 +877,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientIdConfigMap {
 pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -737,12 +887,15 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -750,14 +903,19 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDigitalOceanSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -801,7 +959,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCa {
 pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -814,7 +974,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -838,7 +1000,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCert {
 pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -851,7 +1015,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -864,7 +1030,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -872,24 +1040,33 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets. The DNS servers to be contacted are read from /etc/resolv.conf. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#dns_sd_config
+/// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets.
+/// The DNS servers to be contacted are read from /etc/resolv.conf.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#dns_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDnsSdConfigs {
     /// A list of DNS domain names to be queried.
     pub names: Vec<String>,
-    /// The port number used if the query type is not SRV Ignored for SRV records
+    /// The port number used if the query type is not SRV
+    /// Ignored for SRV records
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// RefreshInterval configures the time after which the provided names are refreshed. If not set, Prometheus uses its default value.
+    /// RefreshInterval configures the time after which the provided names are refreshed.
+    /// If not set, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
-    /// The type of DNS query to perform. One of SRV, A, AAAA, MX or NS. If not set, Prometheus uses its default value. 
-    ///  When set to NS, It requires Prometheus >= 2.49.0.
+    /// The type of DNS query to perform. One of SRV, A, AAAA, MX or NS.
+    /// If not set, Prometheus uses its default value.
+    /// 
+    /// 
+    /// When set to NS, It requires Prometheus >= 2.49.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ScrapeConfigDnsSdConfigsType>,
 }
 
-/// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets. The DNS servers to be contacted are read from /etc/resolv.conf. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#dns_sd_config
+/// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets.
+/// The DNS servers to be contacted are read from /etc/resolv.conf.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#dns_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigDnsSdConfigsType {
     #[serde(rename = "SRV")]
@@ -903,10 +1080,14 @@ pub enum ScrapeConfigDnsSdConfigsType {
     Ns,
 }
 
-/// Docker SD configurations allow retrieving scrape targets from Docker Engine hosts. This SD discovers "containers" and will create a target for each network IP and port the container is configured to expose. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#docker_sd_config
+/// Docker SD configurations allow retrieving scrape targets from Docker Engine hosts.
+/// This SD discovers "containers" and will create a target for each network IP and
+/// port the container is configured to expose.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#docker_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigs {
-    /// Authorization header configuration to authenticate against the Docker API. Cannot be set at the same time as `oauth2`.
+    /// Authorization header configuration to authenticate against the Docker API.
+    /// Cannot be set at the same time as `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigDockerSdConfigsAuthorization>,
     /// BasicAuth information to use on every scrape request.
@@ -926,26 +1107,39 @@ pub struct ScrapeConfigDockerSdConfigs {
     /// The host to use if the container is in host networking mode.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworkingHost")]
     pub host_networking_host: Option<String>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`.
+    /// Optional OAuth 2.0 configuration.
+    /// Cannot be set at the same time as `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigDockerSdConfigsOauth2>,
     /// The port to scrape metrics from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Time after which the container is refreshed.
@@ -956,15 +1150,20 @@ pub struct ScrapeConfigDockerSdConfigs {
     pub tls_config: Option<ScrapeConfigDockerSdConfigsTlsConfig>,
 }
 
-/// Authorization header configuration to authenticate against the Docker API. Cannot be set at the same time as `oauth2`.
+/// Authorization header configuration to authenticate against the Docker API.
+/// Cannot be set at the same time as `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigDockerSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -974,7 +1173,9 @@ pub struct ScrapeConfigDockerSdConfigsAuthorization {
 pub struct ScrapeConfigDockerSdConfigsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -985,20 +1186,25 @@ pub struct ScrapeConfigDockerSdConfigsAuthorizationCredentials {
 /// BasicAuth information to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigDockerSdConfigsBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigDockerSdConfigsBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1006,12 +1212,15 @@ pub struct ScrapeConfigDockerSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1026,16 +1235,20 @@ pub struct ScrapeConfigDockerSdConfigsFilters {
     pub values: Vec<String>,
 }
 
-/// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`.
+/// Optional OAuth 2.0 configuration.
+/// Cannot be set at the same time as `authorization`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ScrapeConfigDockerSdConfigsOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ScrapeConfigDockerSdConfigsOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -1046,7 +1259,8 @@ pub struct ScrapeConfigDockerSdConfigsOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1062,7 +1276,9 @@ pub struct ScrapeConfigDockerSdConfigsOauth2ClientId {
 pub struct ScrapeConfigDockerSdConfigsOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1075,7 +1291,9 @@ pub struct ScrapeConfigDockerSdConfigsOauth2ClientIdConfigMap {
 pub struct ScrapeConfigDockerSdConfigsOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1083,12 +1301,15 @@ pub struct ScrapeConfigDockerSdConfigsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1096,14 +1317,19 @@ pub struct ScrapeConfigDockerSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigDockerSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1147,7 +1373,9 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfigCa {
 pub struct ScrapeConfigDockerSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1160,7 +1388,9 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigDockerSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1184,7 +1414,9 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfigCert {
 pub struct ScrapeConfigDockerSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1197,7 +1429,9 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigDockerSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1210,7 +1444,9 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigDockerSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1218,16 +1454,23 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// EC2SDConfig allow retrieving scrape targets from AWS EC2 instances. The private IP address is used by default, but may be changed to the public IP address with relabeling. The IAM credentials used must have the ec2:DescribeInstances permission to discover scrape targets See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ec2_sd_config
+/// EC2SDConfig allow retrieving scrape targets from AWS EC2 instances.
+/// The private IP address is used by default, but may be changed to the public IP address with relabeling.
+/// The IAM credentials used must have the ec2:DescribeInstances permission to discover scrape targets
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ec2_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEc2SdConfigs {
     /// AccessKey is the AWS API key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKey")]
     pub access_key: Option<ScrapeConfigEc2SdConfigsAccessKey>,
-    /// Filters can be used optionally to filter the instance list by other criteria. Available filter criteria can be found here: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html Filter API documentation: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Filter.html
+    /// Filters can be used optionally to filter the instance list by other criteria.
+    /// Available filter criteria can be found here:
+    /// https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html
+    /// Filter API documentation: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Filter.html
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ScrapeConfigEc2SdConfigsFilters>>,
-    /// The port to scrape metrics from. If using the public IP address, this must instead be specified in the relabeling rule.
+    /// The port to scrape metrics from. If using the public IP address, this must
+    /// instead be specified in the relabeling rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// RefreshInterval configures the refresh interval at which Prometheus will re-read the instance list.
@@ -1249,7 +1492,9 @@ pub struct ScrapeConfigEc2SdConfigs {
 pub struct ScrapeConfigEc2SdConfigsAccessKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1269,7 +1514,9 @@ pub struct ScrapeConfigEc2SdConfigsFilters {
 pub struct ScrapeConfigEc2SdConfigsSecretKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1277,7 +1524,9 @@ pub struct ScrapeConfigEc2SdConfigsSecretKey {
     pub optional: Option<bool>,
 }
 
-/// Eureka SD configurations allow retrieving scrape targets using the Eureka REST API. Prometheus will periodically check the REST endpoint and create a target for every app instance. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#eureka_sd_config
+/// Eureka SD configurations allow retrieving scrape targets using the Eureka REST API.
+/// Prometheus will periodically check the REST endpoint and create a target for every app instance.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#eureka_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigs {
     /// Authorization header to use on every scrape request.
@@ -1292,23 +1541,36 @@ pub struct ScrapeConfigEurekaSdConfigs {
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization` or `basic_auth`.
+    /// Optional OAuth 2.0 configuration.
+    /// Cannot be set at the same time as `authorization` or `basic_auth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigEurekaSdConfigsOauth2>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigEurekaSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Refresh interval to re-read the instance list.
@@ -1327,9 +1589,13 @@ pub struct ScrapeConfigEurekaSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigEurekaSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -1339,7 +1605,9 @@ pub struct ScrapeConfigEurekaSdConfigsAuthorization {
 pub struct ScrapeConfigEurekaSdConfigsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1350,20 +1618,25 @@ pub struct ScrapeConfigEurekaSdConfigsAuthorizationCredentials {
 /// BasicAuth information to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigsBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigEurekaSdConfigsBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigEurekaSdConfigsBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1371,12 +1644,15 @@ pub struct ScrapeConfigEurekaSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1384,16 +1660,20 @@ pub struct ScrapeConfigEurekaSdConfigsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization` or `basic_auth`.
+/// Optional OAuth 2.0 configuration.
+/// Cannot be set at the same time as `authorization` or `basic_auth`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigsOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ScrapeConfigEurekaSdConfigsOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ScrapeConfigEurekaSdConfigsOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -1404,7 +1684,8 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1420,7 +1701,9 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2ClientId {
 pub struct ScrapeConfigEurekaSdConfigsOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1433,7 +1716,9 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2ClientIdConfigMap {
 pub struct ScrapeConfigEurekaSdConfigsOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1441,12 +1726,15 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1454,14 +1742,19 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigEurekaSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1505,7 +1798,9 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfigCa {
 pub struct ScrapeConfigEurekaSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1518,7 +1813,9 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigEurekaSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1542,7 +1839,9 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfigCert {
 pub struct ScrapeConfigEurekaSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1555,7 +1854,9 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigEurekaSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1568,7 +1869,9 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigEurekaSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1576,25 +1879,44 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// FileSDConfig defines a Prometheus file service discovery configuration See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config
+/// FileSDConfig defines a Prometheus file service discovery configuration
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigFileSdConfigs {
-    /// List of files to be used for file discovery. Recommendation: use absolute paths. While relative paths work, the prometheus-operator project makes no guarantees about the working directory where the configuration file is stored. Files must be mounted using Prometheus.ConfigMaps or Prometheus.Secrets.
+    /// List of files to be used for file discovery. Recommendation: use absolute paths. While relative paths work, the
+    /// prometheus-operator project makes no guarantees about the working directory where the configuration file is
+    /// stored.
+    /// Files must be mounted using Prometheus.ConfigMaps or Prometheus.Secrets.
     pub files: Vec<String>,
     /// RefreshInterval configures the refresh interval at which Prometheus will reload the content of the files.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
 }
 
-/// GCESDConfig configures scrape targets from GCP GCE instances. The private IP address is used by default, but may be changed to the public IP address with relabeling. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#gce_sd_config 
-///  The GCE service discovery will load the Google Cloud credentials from the file specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable. See https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform 
-///  A pre-requisite for using GCESDConfig is that a Secret containing valid Google Cloud credentials is mounted into the Prometheus or PrometheusAgent pod via the `.spec.secrets` field and that the GOOGLE_APPLICATION_CREDENTIALS environment variable is set to /etc/prometheus/secrets/<secret-name>/<credentials-filename.json>.
+/// GCESDConfig configures scrape targets from GCP GCE instances.
+/// The private IP address is used by default, but may be changed to
+/// the public IP address with relabeling.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#gce_sd_config
+/// 
+/// 
+/// The GCE service discovery will load the Google Cloud credentials
+/// from the file specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable.
+/// See https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform
+/// 
+/// 
+/// A pre-requisite for using GCESDConfig is that a Secret containing valid
+/// Google Cloud credentials is mounted into the Prometheus or PrometheusAgent
+/// pod via the `.spec.secrets` field and that the GOOGLE_APPLICATION_CREDENTIALS
+/// environment variable is set to /etc/prometheus/secrets/<secret-name>/<credentials-filename.json>.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigGceSdConfigs {
-    /// Filter can be used optionally to filter the instance list by other criteria Syntax of this filter is described in the filter query parameter section: https://cloud.google.com/compute/docs/reference/latest/instances/list
+    /// Filter can be used optionally to filter the instance list by other criteria
+    /// Syntax of this filter is described in the filter query parameter section:
+    /// https://cloud.google.com/compute/docs/reference/latest/instances/list
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
-    /// The port to scrape metrics from. If using the public IP address, this must instead be specified in the relabeling rule.
+    /// The port to scrape metrics from. If using the public IP address, this must
+    /// instead be specified in the relabeling rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// The Google Cloud Project ID
@@ -1609,13 +1931,17 @@ pub struct ScrapeConfigGceSdConfigs {
     pub zone: String,
 }
 
-/// HetznerSDConfig allow retrieving scrape targets from Hetzner Cloud API and Robot API. This service discovery uses the public IPv4 address by default, but that can be changed with relabeling See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#hetzner_sd_config
+/// HetznerSDConfig allow retrieving scrape targets from Hetzner Cloud API and Robot API.
+/// This service discovery uses the public IPv4 address by default, but that can be changed with relabeling
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#hetzner_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigs {
-    /// Authorization header configuration, required when role is hcloud. Role robot does not support bearer token authentication.
+    /// Authorization header configuration, required when role is hcloud.
+    /// Role robot does not support bearer token authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigHetznerSdConfigsAuthorization>,
-    /// BasicAuth information to use on every scrape request, required when role is robot. Role hcloud does not support basic auth.
+    /// BasicAuth information to use on every scrape request, required when role is robot.
+    /// Role hcloud does not support basic auth.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigHetznerSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
@@ -1624,26 +1950,39 @@ pub struct ScrapeConfigHetznerSdConfigs {
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// Optional OAuth 2.0 configuration. Cannot be used at the same time as `basic_auth` or `authorization`.
+    /// Optional OAuth 2.0 configuration.
+    /// Cannot be used at the same time as `basic_auth` or `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigHetznerSdConfigsOauth2>,
     /// The port to scrape metrics from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHetznerSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// The time after which the servers are refreshed.
@@ -1656,15 +1995,20 @@ pub struct ScrapeConfigHetznerSdConfigs {
     pub tls_config: Option<ScrapeConfigHetznerSdConfigsTlsConfig>,
 }
 
-/// Authorization header configuration, required when role is hcloud. Role robot does not support bearer token authentication.
+/// Authorization header configuration, required when role is hcloud.
+/// Role robot does not support bearer token authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigHetznerSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -1674,7 +2018,9 @@ pub struct ScrapeConfigHetznerSdConfigsAuthorization {
 pub struct ScrapeConfigHetznerSdConfigsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1682,23 +2028,29 @@ pub struct ScrapeConfigHetznerSdConfigsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// BasicAuth information to use on every scrape request, required when role is robot. Role hcloud does not support basic auth.
+/// BasicAuth information to use on every scrape request, required when role is robot.
+/// Role hcloud does not support basic auth.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigHetznerSdConfigsBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigHetznerSdConfigsBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1706,12 +2058,15 @@ pub struct ScrapeConfigHetznerSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1719,16 +2074,20 @@ pub struct ScrapeConfigHetznerSdConfigsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// Optional OAuth 2.0 configuration. Cannot be used at the same time as `basic_auth` or `authorization`.
+/// Optional OAuth 2.0 configuration.
+/// Cannot be used at the same time as `basic_auth` or `authorization`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ScrapeConfigHetznerSdConfigsOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ScrapeConfigHetznerSdConfigsOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -1739,7 +2098,8 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1755,7 +2115,9 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2ClientId {
 pub struct ScrapeConfigHetznerSdConfigsOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1768,7 +2130,9 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2ClientIdConfigMap {
 pub struct ScrapeConfigHetznerSdConfigsOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1776,12 +2140,15 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1789,14 +2156,19 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHetznerSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1804,7 +2176,9 @@ pub struct ScrapeConfigHetznerSdConfigsProxyConnectHeader {
     pub optional: Option<bool>,
 }
 
-/// HetznerSDConfig allow retrieving scrape targets from Hetzner Cloud API and Robot API. This service discovery uses the public IPv4 address by default, but that can be changed with relabeling See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#hetzner_sd_config
+/// HetznerSDConfig allow retrieving scrape targets from Hetzner Cloud API and Robot API.
+/// This service discovery uses the public IPv4 address by default, but that can be changed with relabeling
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#hetzner_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigHetznerSdConfigsRole {
     #[serde(rename = "hcloud")]
@@ -1853,7 +2227,9 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfigCa {
 pub struct ScrapeConfigHetznerSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1866,7 +2242,9 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigHetznerSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1890,7 +2268,9 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfigCert {
 pub struct ScrapeConfigHetznerSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1903,7 +2283,9 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigHetznerSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1916,7 +2298,9 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigHetznerSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1924,32 +2308,47 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// HTTPSDConfig defines a prometheus HTTP service discovery configuration See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#http_sd_config
+/// HTTPSDConfig defines a prometheus HTTP service discovery configuration
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#http_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigs {
     /// Authorization header configuration to authenticate against the target HTTP endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigHttpSdConfigsAuthorization>,
-    /// BasicAuth information to authenticate against the target HTTP endpoint. More info: https://prometheus.io/docs/operating/configuration/#endpoints
+    /// BasicAuth information to authenticate against the target HTTP endpoint.
+    /// More info: https://prometheus.io/docs/operating/configuration/#endpoints
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigHttpSdConfigsBasicAuth>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHttpSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
-    /// RefreshInterval configures the refresh interval at which Prometheus will re-query the endpoint to update the target list.
+    /// RefreshInterval configures the refresh interval at which Prometheus will re-query the
+    /// endpoint to update the target list.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// TLS configuration applying to the target HTTP endpoint.
@@ -1965,9 +2364,13 @@ pub struct ScrapeConfigHttpSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigHttpSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -1977,7 +2380,9 @@ pub struct ScrapeConfigHttpSdConfigsAuthorization {
 pub struct ScrapeConfigHttpSdConfigsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1985,23 +2390,29 @@ pub struct ScrapeConfigHttpSdConfigsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// BasicAuth information to authenticate against the target HTTP endpoint. More info: https://prometheus.io/docs/operating/configuration/#endpoints
+/// BasicAuth information to authenticate against the target HTTP endpoint.
+/// More info: https://prometheus.io/docs/operating/configuration/#endpoints
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigsBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigHttpSdConfigsBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigHttpSdConfigsBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2009,12 +2420,15 @@ pub struct ScrapeConfigHttpSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2022,14 +2436,19 @@ pub struct ScrapeConfigHttpSdConfigsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigHttpSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2073,7 +2492,9 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfigCa {
 pub struct ScrapeConfigHttpSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2086,7 +2507,9 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigHttpSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2110,7 +2533,9 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfigCert {
 pub struct ScrapeConfigHttpSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2123,7 +2548,9 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigHttpSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2136,7 +2563,9 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigHttpSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2144,19 +2573,28 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config
+/// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigs {
-    /// The API server address consisting of a hostname or IP address followed by an optional port number. If left empty, Prometheus is assumed to run inside of the cluster. It will discover API servers automatically and use the pod's CA certificate and bearer token file at /var/run/secrets/kubernetes.io/serviceaccount/.
+    /// The API server address consisting of a hostname or IP address followed
+    /// by an optional port number.
+    /// If left empty, Prometheus is assumed to run inside
+    /// of the cluster. It will discover API servers automatically and use the pod's
+    /// CA certificate and bearer token file at /var/run/secrets/kubernetes.io/serviceaccount/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServer")]
     pub api_server: Option<String>,
-    /// Optional metadata to attach to discovered targets. It requires Prometheus >= v2.35.0 for `pod` role and Prometheus >= v2.37.0 for `endpoints` and `endpointslice` roles.
+    /// Optional metadata to attach to discovered targets.
+    /// It requires Prometheus >= v2.35.0 for `pod` role and
+    /// Prometheus >= v2.37.0 for `endpoints` and `endpointslice` roles.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<ScrapeConfigKubernetesSdConfigsAttachMetadata>,
-    /// Authorization header to use on every scrape request. Cannot be set at the same time as `basicAuth`, or `oauth2`.
+    /// Authorization header to use on every scrape request.
+    /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigKubernetesSdConfigsAuthorization>,
-    /// BasicAuth information to use on every scrape request. Cannot be set at the same time as `authorization`, or `oauth2`.
+    /// BasicAuth information to use on every scrape request.
+    /// Cannot be set at the same time as `authorization`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigKubernetesSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
@@ -2168,23 +2606,36 @@ pub struct ScrapeConfigKubernetesSdConfigs {
     /// Optional namespace discovery. If omitted, Prometheus discovers targets across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<ScrapeConfigKubernetesSdConfigsNamespaces>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`, or `basicAuth`.
+    /// Optional OAuth 2.0 configuration.
+    /// Cannot be set at the same time as `authorization`, or `basicAuth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigKubernetesSdConfigsOauth2>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKubernetesSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Role of the Kubernetes entities that should be discovered.
@@ -2197,23 +2648,33 @@ pub struct ScrapeConfigKubernetesSdConfigs {
     pub tls_config: Option<ScrapeConfigKubernetesSdConfigsTlsConfig>,
 }
 
-/// Optional metadata to attach to discovered targets. It requires Prometheus >= v2.35.0 for `pod` role and Prometheus >= v2.37.0 for `endpoints` and `endpointslice` roles.
+/// Optional metadata to attach to discovered targets.
+/// It requires Prometheus >= v2.35.0 for `pod` role and
+/// Prometheus >= v2.37.0 for `endpoints` and `endpointslice` roles.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsAttachMetadata {
-    /// Attaches node metadata to discovered targets. When set to true, Prometheus must have the `get` permission on the `Nodes` objects. Only valid for Pod, Endpoint and Endpointslice roles.
+    /// Attaches node metadata to discovered targets.
+    /// When set to true, Prometheus must have the `get` permission on the
+    /// `Nodes` objects.
+    /// Only valid for Pod, Endpoint and Endpointslice roles.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
 }
 
-/// Authorization header to use on every scrape request. Cannot be set at the same time as `basicAuth`, or `oauth2`.
+/// Authorization header to use on every scrape request.
+/// Cannot be set at the same time as `basicAuth`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigKubernetesSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -2223,7 +2684,9 @@ pub struct ScrapeConfigKubernetesSdConfigsAuthorization {
 pub struct ScrapeConfigKubernetesSdConfigsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2231,23 +2694,29 @@ pub struct ScrapeConfigKubernetesSdConfigsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// BasicAuth information to use on every scrape request. Cannot be set at the same time as `authorization`, or `oauth2`.
+/// BasicAuth information to use on every scrape request.
+/// Cannot be set at the same time as `authorization`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigKubernetesSdConfigsBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigKubernetesSdConfigsBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2255,12 +2724,15 @@ pub struct ScrapeConfigKubernetesSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2271,7 +2743,8 @@ pub struct ScrapeConfigKubernetesSdConfigsBasicAuthUsername {
 /// Optional namespace discovery. If omitted, Prometheus discovers targets across all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsNamespaces {
-    /// List of namespaces where to watch for resources. If empty and `ownNamespace` isn't true, Prometheus watches for resources in all namespaces.
+    /// List of namespaces where to watch for resources.
+    /// If empty and `ownNamespace` isn't true, Prometheus watches for resources in all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
     /// Includes the namespace in which the Prometheus pod exists to the list of watched namesapces.
@@ -2279,16 +2752,20 @@ pub struct ScrapeConfigKubernetesSdConfigsNamespaces {
     pub own_namespace: Option<bool>,
 }
 
-/// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`, or `basicAuth`.
+/// Optional OAuth 2.0 configuration.
+/// Cannot be set at the same time as `authorization`, or `basicAuth`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ScrapeConfigKubernetesSdConfigsOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ScrapeConfigKubernetesSdConfigsOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -2299,7 +2776,8 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2315,7 +2793,9 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientId {
 pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2328,7 +2808,9 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientIdConfigMap {
 pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2336,12 +2818,15 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2349,14 +2834,19 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKubernetesSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2364,7 +2854,8 @@ pub struct ScrapeConfigKubernetesSdConfigsProxyConnectHeader {
     pub optional: Option<bool>,
 }
 
-/// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config
+/// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigKubernetesSdConfigsRole {
     Node,
@@ -2457,7 +2948,9 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCa {
 pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2470,7 +2963,9 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2494,7 +2989,9 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCert {
 pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2507,7 +3004,9 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2520,7 +3019,9 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigKubernetesSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2528,7 +3029,8 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// KumaSDConfig allow retrieving scrape targets from Kuma's control plane. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kuma_sd_config
+/// KumaSDConfig allow retrieving scrape targets from Kuma's control plane.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kuma_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigs {
     /// Authorization header to use on every scrape request.
@@ -2549,23 +3051,36 @@ pub struct ScrapeConfigKumaSdConfigs {
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying. IP and domain names can contain port numbers. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`, or `basicAuth`.
+    /// Optional OAuth 2.0 configuration.
+    /// Cannot be set at the same time as `authorization`, or `basicAuth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigKumaSdConfigsOauth2>,
-    /// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKumaSdConfigsProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY). If unset, Prometheus uses its default value. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use. 
-    ///  It requires Prometheus >= v2.43.0.
+    /// `proxyURL` defines the HTTP proxy server to use.
+    /// 
+    /// 
+    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// The time to wait between polling update requests.
@@ -2584,9 +3099,13 @@ pub struct ScrapeConfigKumaSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigKumaSdConfigsAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -2596,7 +3115,9 @@ pub struct ScrapeConfigKumaSdConfigsAuthorization {
 pub struct ScrapeConfigKumaSdConfigsAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2607,20 +3128,25 @@ pub struct ScrapeConfigKumaSdConfigsAuthorizationCredentials {
 /// BasicAuth information to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigsBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigKumaSdConfigsBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<ScrapeConfigKumaSdConfigsBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigsBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2628,12 +3154,15 @@ pub struct ScrapeConfigKumaSdConfigsBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigsBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2641,16 +3170,20 @@ pub struct ScrapeConfigKumaSdConfigsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// Optional OAuth 2.0 configuration. Cannot be set at the same time as `authorization`, or `basicAuth`.
+/// Optional OAuth 2.0 configuration.
+/// Cannot be set at the same time as `authorization`, or `basicAuth`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigsOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: ScrapeConfigKumaSdConfigsOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: ScrapeConfigKumaSdConfigsOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -2661,7 +3194,8 @@ pub struct ScrapeConfigKumaSdConfigsOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigsOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2677,7 +3211,9 @@ pub struct ScrapeConfigKumaSdConfigsOauth2ClientId {
 pub struct ScrapeConfigKumaSdConfigsOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2690,7 +3226,9 @@ pub struct ScrapeConfigKumaSdConfigsOauth2ClientIdConfigMap {
 pub struct ScrapeConfigKumaSdConfigsOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2698,12 +3236,15 @@ pub struct ScrapeConfigKumaSdConfigsOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigsOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2711,14 +3252,19 @@ pub struct ScrapeConfigKumaSdConfigsOauth2ClientSecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigKumaSdConfigsProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2762,7 +3308,9 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfigCa {
 pub struct ScrapeConfigKumaSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2775,7 +3323,9 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigKumaSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2799,7 +3349,9 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfigCert {
 pub struct ScrapeConfigKumaSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2812,7 +3364,9 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigKumaSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2825,7 +3379,9 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigKumaSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2833,41 +3389,64 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts, scraped samples and remote write samples. 
-///  More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigMetricRelabelings {
-    /// Action to perform based on the regex matching. 
-    ///  `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0. `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0. 
-    ///  Default: "Replace"
+    /// Action to perform based on the regex matching.
+    /// 
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// 
+    /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ScrapeConfigMetricRelabelingsAction>,
-    /// Modulus to take of the hash of the source label values. 
-    ///  Only applicable when the action is `HashMod`.
+    /// Modulus to take of the hash of the source label values.
+    /// 
+    /// 
+    /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
     /// Regular expression against which the extracted value is matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a Replace action is performed if the regular expression matches. 
-    ///  Regex capture groups are available.
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// 
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
     /// Separator is the string between concatenated SourceLabels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated using the configured Separator and matched against the configured regular expression.
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// Label to which the resulting string is written in a replacement. 
-    ///  It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`, `KeepEqual` and `DropEqual` actions. 
-    ///  Regex capture groups are available.
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// 
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts, scraped samples and remote write samples. 
-///  More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigMetricRelabelingsAction {
     #[serde(rename = "replace")]
@@ -2910,19 +3489,25 @@ pub enum ScrapeConfigMetricRelabelingsAction {
     DropEqual,
 }
 
-/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
+/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigOpenstackSdConfigs {
-    /// Whether the service discovery should list all instances for all projects. It is only relevant for the 'instance' role and usually requires admin permissions.
+    /// Whether the service discovery should list all instances for all projects.
+    /// It is only relevant for the 'instance' role and usually requires admin permissions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allTenants")]
     pub all_tenants: Option<bool>,
     /// ApplicationCredentialID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialId")]
     pub application_credential_id: Option<String>,
-    /// The ApplicationCredentialID or ApplicationCredentialName fields are required if using an application credential to authenticate. Some providers allow you to create an application credential to authenticate rather than a password.
+    /// The ApplicationCredentialID or ApplicationCredentialName fields are
+    /// required if using an application credential to authenticate. Some providers
+    /// allow you to create an application credential to authenticate rather than a
+    /// password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialName")]
     pub application_credential_name: Option<String>,
-    /// The applicationCredentialSecret field is required if using an application credential to authenticate.
+    /// The applicationCredentialSecret field is required if using an application
+    /// credential to authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialSecret")]
     pub application_credential_secret: Option<ScrapeConfigOpenstackSdConfigsApplicationCredentialSecret>,
     /// Availability of the endpoint to connect to.
@@ -2931,22 +3516,29 @@ pub struct ScrapeConfigOpenstackSdConfigs {
     /// DomainID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainID")]
     pub domain_id: Option<String>,
-    /// At most one of domainId and domainName must be provided if using username with Identity V3. Otherwise, either are optional.
+    /// At most one of domainId and domainName must be provided if using username
+    /// with Identity V3. Otherwise, either are optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
-    /// IdentityEndpoint specifies the HTTP endpoint that is required to work with the Identity API of the appropriate version.
+    /// IdentityEndpoint specifies the HTTP endpoint that is required to work with
+    /// the Identity API of the appropriate version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityEndpoint")]
     pub identity_endpoint: Option<String>,
-    /// Password for the Identity V2 and V3 APIs. Consult with your provider's control panel to discover your account's preferred method of authentication.
+    /// Password for the Identity V2 and V3 APIs. Consult with your provider's
+    /// control panel to discover your account's preferred method of authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ScrapeConfigOpenstackSdConfigsPassword>,
-    /// The port to scrape metrics from. If using the public IP address, this must instead be specified in the relabeling rule.
+    /// The port to scrape metrics from. If using the public IP address, this must
+    /// instead be specified in the relabeling rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// ProjectID
+    ///  ProjectID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
     pub project_id: Option<String>,
-    /// The ProjectId and ProjectName fields are optional for the Identity V2 API. Some providers allow you to specify a ProjectName instead of the ProjectId. Some require both. Your provider's authentication policies will determine how these fields influence authentication.
+    /// The ProjectId and ProjectName fields are optional for the Identity V2 API.
+    /// Some providers allow you to specify a ProjectName instead of the ProjectId.
+    /// Some require both. Your provider's authentication policies will determine
+    /// how these fields influence authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectName")]
     pub project_name: Option<String>,
     /// Refresh interval to re-read the instance list.
@@ -2962,17 +3554,23 @@ pub struct ScrapeConfigOpenstackSdConfigs {
     /// UserID
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub userid: Option<String>,
-    /// Username is required if using Identity V2 API. Consult with your provider's control panel to discover your account's username. In Identity V3, either userid or a combination of username and domainId or domainName are needed
+    /// Username is required if using Identity V2 API. Consult with your provider's
+    /// control panel to discover your account's username.
+    /// In Identity V3, either userid or a combination of username
+    /// and domainId or domainName are needed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
-/// The applicationCredentialSecret field is required if using an application credential to authenticate.
+/// The applicationCredentialSecret field is required if using an application
+/// credential to authenticate.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigOpenstackSdConfigsApplicationCredentialSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2980,7 +3578,8 @@ pub struct ScrapeConfigOpenstackSdConfigsApplicationCredentialSecret {
     pub optional: Option<bool>,
 }
 
-/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
+/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigOpenstackSdConfigsAvailability {
     Public,
@@ -2994,12 +3593,15 @@ pub enum ScrapeConfigOpenstackSdConfigsAvailability {
     InternalX,
 }
 
-/// Password for the Identity V2 and V3 APIs. Consult with your provider's control panel to discover your account's preferred method of authentication.
+/// Password for the Identity V2 and V3 APIs. Consult with your provider's
+/// control panel to discover your account's preferred method of authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigOpenstackSdConfigsPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3007,7 +3609,8 @@ pub struct ScrapeConfigOpenstackSdConfigsPassword {
     pub optional: Option<bool>,
 }
 
-/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
+/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#openstack_sd_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigOpenstackSdConfigsRole {
     Instance,
@@ -3054,7 +3657,9 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCa {
 pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3067,7 +3672,9 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCaConfigMap {
 pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3091,7 +3698,9 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCert {
 pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3104,7 +3713,9 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCertConfigMap {
 pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3117,7 +3728,9 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigCertSecret {
 pub struct ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3125,14 +3738,19 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests. 
-///  It requires Prometheus >= v2.43.0.
+/// ProxyConnectHeader optionally specifies headers to send to
+/// proxies during CONNECT requests.
+/// 
+/// 
+/// It requires Prometheus >= v2.43.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3140,41 +3758,64 @@ pub struct ScrapeConfigProxyConnectHeader {
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts, scraped samples and remote write samples. 
-///  More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigRelabelings {
-    /// Action to perform based on the regex matching. 
-    ///  `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0. `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0. 
-    ///  Default: "Replace"
+    /// Action to perform based on the regex matching.
+    /// 
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// 
+    /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ScrapeConfigRelabelingsAction>,
-    /// Modulus to take of the hash of the source label values. 
-    ///  Only applicable when the action is `HashMod`.
+    /// Modulus to take of the hash of the source label values.
+    /// 
+    /// 
+    /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
     /// Regular expression against which the extracted value is matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a Replace action is performed if the regular expression matches. 
-    ///  Regex capture groups are available.
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// 
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
     /// Separator is the string between concatenated SourceLabels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated using the configured Separator and matched against the configured regular expression.
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// Label to which the resulting string is written in a replacement. 
-    ///  It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`, `KeepEqual` and `DropEqual` actions. 
-    ///  Regex capture groups are available.
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// 
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts, scraped samples and remote write samples. 
-///  More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigRelabelingsAction {
     #[serde(rename = "replace")]
@@ -3226,7 +3867,8 @@ pub enum ScrapeConfigScheme {
     Https,
 }
 
-/// StaticConfig defines a Prometheus static configuration. See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
+/// StaticConfig defines a Prometheus static configuration.
+/// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigStaticConfigs {
     /// Labels assigned to all metrics scraped from the targets.
@@ -3273,7 +3915,9 @@ pub struct ScrapeConfigTlsConfigCa {
 pub struct ScrapeConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3286,7 +3930,9 @@ pub struct ScrapeConfigTlsConfigCaConfigMap {
 pub struct ScrapeConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3310,7 +3956,9 @@ pub struct ScrapeConfigTlsConfigCert {
 pub struct ScrapeConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3323,7 +3971,9 @@ pub struct ScrapeConfigTlsConfigCertConfigMap {
 pub struct ScrapeConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3336,7 +3986,9 @@ pub struct ScrapeConfigTlsConfigCertSecret {
 pub struct ScrapeConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

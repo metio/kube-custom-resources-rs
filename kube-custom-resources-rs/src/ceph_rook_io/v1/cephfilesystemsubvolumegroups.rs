@@ -5,6 +5,7 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
+use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// Spec represents the specification of a Ceph Filesystem SubVolumeGroup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -13,6 +14,9 @@ use std::collections::BTreeMap;
 #[kube(status = "CephFilesystemSubVolumeGroupStatus")]
 #[kube(schema = "disabled")]
 pub struct CephFilesystemSubVolumeGroupSpec {
+    /// The data pool name for the Ceph Filesystem subvolume group layout, if the default CephFS pool is not desired.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPoolName")]
+    pub data_pool_name: Option<String>,
     /// FilesystemName is the name of Ceph Filesystem SubVolumeGroup volume name. Typically it's the name of
     /// the CephFilesystem CR. If not coming from the CephFilesystem CR, it can be retrieved from the
     /// list of Ceph Filesystem volumes with `ceph fs volume ls`. To learn more about Ceph Filesystem
@@ -27,6 +31,9 @@ pub struct CephFilesystemSubVolumeGroupSpec {
     /// only one out of (export, distributed, random) can be set at a time
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pinning: Option<CephFilesystemSubVolumeGroupPinning>,
+    /// Quota size of the Ceph Filesystem subvolume group.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quota: Option<IntOrString>,
 }
 
 /// Pinning configuration of CephFilesystemSubVolumeGroup,

@@ -22,7 +22,9 @@ pub struct ReplicatedStateMachineSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credential: Option<ReplicatedStateMachineCredential>,
     /// Overrides values in default Template. 
-    ///  Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A RSM manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the RSM to manage instances from different templates.
+    ///  Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A RSM manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the RSM to manage instances from different templates. 
+    ///  The naming convention for instances (pods) based on the RSM Name, InstanceTemplate Name, and ordinal. The constructed instance name follows the pattern: $(rsm.name)-$(template.name)-$(ordinal). By default, the ordinal starts from 0 for each InstanceTemplate. It is important to ensure that the Name of each InstanceTemplate is unique. 
+    ///  The sum of replicas across all InstanceTemplates should not exceed the total number of Replicas specified for the RSM. Any remaining replicas will be generated using the default template and will follow the default naming rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<ReplicatedStateMachineInstances>>,
     /// Members(Pods) update strategy. 
@@ -35,6 +37,9 @@ pub struct ReplicatedStateMachineSpec {
     /// Defines the minimum number of seconds a newly created pod should be ready without any of its container crashing to be considered available. Defaults to 0, meaning the pod will be considered available as soon as it is ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
+    /// Specifies instances to be scaled in with dedicated names in the list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
+    pub offline_instances: Option<Vec<String>>,
     /// Indicates that the rsm is paused, meaning the reconciliation of this rsm object will be paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
@@ -422,22 +427,23 @@ pub struct ReplicatedStateMachineCredentialUsernameValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReplicatedStateMachineInstances {
+    /// Defines RuntimeClass to override.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "RuntimeClassName")]
+    pub runtime_class_name: Option<String>,
     /// Defines annotations to override. Add new or override existing annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
-    ///  Applied only if Name is not specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
-    pub generate_name: Option<String>,
+    /// Defines Env to override. Add new or override existing envs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ReplicatedStateMachineInstancesEnv>>,
     /// Defines image to override. Will override the first container's image of the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Defines labels to override. Add new or override existing labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Defines the name of the instance. Only applied when Replicas is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    /// Specifies the name of the template. Each instance of the template derives its name from the RSM's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(rsm.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default.
+    pub name: String,
     /// Defines NodeName to override.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
@@ -462,6 +468,86 @@ pub struct ReplicatedStateMachineInstances {
     /// Defines Volumes to override. Add new or override existing volumes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ReplicatedStateMachineInstancesVolumes>>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ReplicatedStateMachineInstancesEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ReplicatedStateMachineInstancesEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ReplicatedStateMachineInstancesEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ReplicatedStateMachineInstancesEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ReplicatedStateMachineInstancesEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ReplicatedStateMachineInstancesEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ReplicatedStateMachineInstancesEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ReplicatedStateMachineInstancesEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ReplicatedStateMachineInstancesEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ReplicatedStateMachineInstancesEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ReplicatedStateMachineInstancesEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Defines Resources to override. Will override the first container's resources of the pod.

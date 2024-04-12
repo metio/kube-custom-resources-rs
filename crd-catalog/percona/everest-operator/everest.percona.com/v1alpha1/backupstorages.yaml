@@ -46,6 +46,10 @@ spec:
                 endpointURL:
                   description: "EndpointURL is an endpoint URL of backup storage."
                   type: "string"
+                forcePathStyle:
+                  default: false
+                  description: "ForcePathStyle is set to use path-style URLs.\nIf unspecified, the default value is false."
+                  type: "boolean"
                 region:
                   description: "Region is a region where the bucket is located."
                   type: "string"

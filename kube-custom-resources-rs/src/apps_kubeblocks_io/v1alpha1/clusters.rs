@@ -146,9 +146,6 @@ pub struct ClusterComponentSpecs {
     /// A group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ClusterComponentSpecsAffinity>,
-    /// References the class defined in ComponentClassDefinition.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
-    pub class_def_ref: Option<ClusterComponentSpecsClassDefRef>,
     /// References the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDef")]
     pub component_def: Option<String>,
@@ -160,7 +157,9 @@ pub struct ClusterComponentSpecs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
     pub enabled_logs: Option<Vec<String>>,
     /// Overrides values in default Template. 
-    ///  Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A component manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the component to manage instances from different templates.
+    ///  Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A component manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the component to manage instances from different templates. 
+    ///  The naming convention for instances (pods) based on the Component Name, InstanceTemplate Name, and ordinal. The constructed instance name follows the pattern: $(component.name)-$(template.name)-$(ordinal). By default, the ordinal starts from 0 for each InstanceTemplate. It is important to ensure that the Name of each InstanceTemplate is unique. 
+    ///  The sum of replicas across all InstanceTemplates should not exceed the total number of Replicas specified for the Component. Any remaining replicas will be generated using the default template and will follow the default naming rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<ClusterComponentSpecsInstances>>,
     /// Defines provider context for TLS certs. Required when TLS is enabled.
@@ -173,6 +172,9 @@ pub struct ClusterComponentSpecs {
     ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="name is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specifies instances to be scaled in with dedicated names in the list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
+    pub offline_instances: Option<Vec<String>>,
     /// Specifies the number of component replicas.
     pub replicas: i32,
     /// Specifies the resources requests and limits of the workload.
@@ -190,7 +192,7 @@ pub struct ClusterComponentSpecs {
     /// ServiceVersion specifies the version of the service provisioned by the component. The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/). If not explicitly specified, the version defined in the referenced topology will be used. If no version is specified in the topology, the latest available version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Services expose endpoints that can be accessed by clients.
+    /// Services overrides services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterComponentSpecsServices>>,
     /// Defines the strategy for switchover and failover when workloadType is Replication.
@@ -245,35 +247,26 @@ pub enum ClusterComponentSpecsAffinityTenancy {
     DedicatedNode,
 }
 
-/// References the class defined in ComponentClassDefinition.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterComponentSpecsClassDefRef {
-    /// Defines the name of the class that is defined in the ComponentClassDefinition.
-    pub class: String,
-    /// Specifies the name of the ComponentClassDefinition.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
 /// InstanceTemplate defines values to override in pod template.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterComponentSpecsInstances {
+    /// Defines RuntimeClass to override.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "RuntimeClassName")]
+    pub runtime_class_name: Option<String>,
     /// Defines annotations to override. Add new or override existing annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
-    ///  Applied only if Name is not specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
-    pub generate_name: Option<String>,
+    /// Defines Env to override. Add new or override existing envs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ClusterComponentSpecsInstancesEnv>>,
     /// Defines image to override. Will override the first container's image of the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Defines labels to override. Add new or override existing labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Defines the name of the instance. Only applied when Replicas is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    /// Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default.
+    pub name: String,
     /// Defines NodeName to override.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
@@ -298,6 +291,86 @@ pub struct ClusterComponentSpecsInstances {
     /// Defines Volumes to override. Add new or override existing volumes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ClusterComponentSpecsInstancesVolumes>>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsInstancesEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterComponentSpecsInstancesEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsInstancesEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterComponentSpecsInstancesEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ClusterComponentSpecsInstancesEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterComponentSpecsInstancesEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterComponentSpecsInstancesEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsInstancesEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsInstancesEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsInstancesEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsInstancesEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Defines Resources to override. Will override the first container's resources of the pod.
@@ -1568,16 +1641,57 @@ pub struct ClusterComponentSpecsServiceRefs {
     ///  Under this referencing approach, the ServiceKind and ServiceVersion of service reference declaration defined in the ClusterDefinition will not be validated. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
+    /// Specifies the cluster to reference.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
+    pub cluster_ref: Option<ClusterComponentSpecsServiceRefsClusterRef>,
     /// Specifies the identifier of the service reference declaration. It corresponds to the serviceRefDeclaration name defined in the clusterDefinition.componentDefs[*].serviceRefDeclarations[*].name.
     pub name: String,
-    /// Specifies the namespace of the referenced Cluster or the namespace of the referenced ServiceDescriptor object. If not provided, the referenced Cluster and ServiceDescriptor will be searched in the namespace of the current cluster by default.
+    /// Specifies the namespace of the referenced Cluster or ServiceDescriptor object. If not specified, the namespace of the current cluster will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// The service descriptor of the service provided by external sources. 
-    ///  When referencing a service provided by external sources, the ServiceDescriptor object name is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion defined in the service reference declaration in the ClusterDefinition. 
+    ///  When referencing a service provided by external sources, a ServiceDescriptor object is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion declared in the definition. 
     ///  If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDescriptor")]
     pub service_descriptor: Option<String>,
+}
+
+/// Specifies the cluster to reference.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsServiceRefsClusterRef {
+    /// The name of the cluster to reference.
+    pub cluster: String,
+    /// The credential (SystemAccount) to reference from the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credential: Option<ClusterComponentSpecsServiceRefsClusterRefCredential>,
+    /// The service to reference from the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<ClusterComponentSpecsServiceRefsClusterRefService>,
+}
+
+/// The credential (SystemAccount) to reference from the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsServiceRefsClusterRefCredential {
+    /// The name of the component where the credential resides in.
+    pub component: String,
+    /// The name of the credential (SystemAccount) to reference.
+    pub name: String,
+}
+
+/// The service to reference from the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterComponentSpecsServiceRefsClusterRefService {
+    /// The name of the component where the service resides in. 
+    ///  It is required when referencing a component service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub component: Option<String>,
+    /// The port name of the service to reference. 
+    ///  If there is a non-zero node-port exist for the matched service port, the node-port will be selected first. If the referenced service is a pod-service, there will be multiple service objects matched, and the resolved value will be presented in the following format: service1.name:port1,service2.name:port2...
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// The name of the service to reference. 
+    ///  Leave it empty to reference the default service. Set it to "headless" to reference the default headless service. If the referenced service is a pod-service, there will be multiple service objects matched, and the resolved value will be presented in the following format: service1.name,service2.name...
+    pub service: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1585,8 +1699,11 @@ pub struct ClusterComponentSpecsServices {
     /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// The name of the service.
+    /// References the component service name defined in the ComponentDefinition.Spec.Services[x].Name.
     pub name: String,
+    /// Indicates whether to generate individual services for each pod. If set to true, a separate service will be created for each pod in the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podService")]
+    pub pod_service: Option<bool>,
     /// Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. 
     ///  - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
     ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
@@ -1840,7 +1957,7 @@ pub struct ClusterServices {
     pub component_selector: Option<String>,
     /// Name defines the name of the service. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated.
     pub name: String,
-    /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service. if GeneratePodOrdinalService sets to true, RoleSelector will be ignored.
+    /// RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
     /// ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: 
@@ -1981,9 +2098,6 @@ pub struct ClusterShardingSpecsTemplate {
     /// A group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ClusterShardingSpecsTemplateAffinity>,
-    /// References the class defined in ComponentClassDefinition.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classDefRef")]
-    pub class_def_ref: Option<ClusterShardingSpecsTemplateClassDefRef>,
     /// References the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDef")]
     pub component_def: Option<String>,
@@ -1995,7 +2109,9 @@ pub struct ClusterShardingSpecsTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledLogs")]
     pub enabled_logs: Option<Vec<String>>,
     /// Overrides values in default Template. 
-    ///  Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A component manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the component to manage instances from different templates.
+    ///  Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A component manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the component to manage instances from different templates. 
+    ///  The naming convention for instances (pods) based on the Component Name, InstanceTemplate Name, and ordinal. The constructed instance name follows the pattern: $(component.name)-$(template.name)-$(ordinal). By default, the ordinal starts from 0 for each InstanceTemplate. It is important to ensure that the Name of each InstanceTemplate is unique. 
+    ///  The sum of replicas across all InstanceTemplates should not exceed the total number of Replicas specified for the Component. Any remaining replicas will be generated using the default template and will follow the default naming rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<ClusterShardingSpecsTemplateInstances>>,
     /// Defines provider context for TLS certs. Required when TLS is enabled.
@@ -2008,6 +2124,9 @@ pub struct ClusterShardingSpecsTemplate {
     ///  TODO +kubebuilder:validation:XValidation:rule="self == oldSelf",message="name is immutable"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specifies instances to be scaled in with dedicated names in the list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
+    pub offline_instances: Option<Vec<String>>,
     /// Specifies the number of component replicas.
     pub replicas: i32,
     /// Specifies the resources requests and limits of the workload.
@@ -2025,7 +2144,7 @@ pub struct ClusterShardingSpecsTemplate {
     /// ServiceVersion specifies the version of the service provisioned by the component. The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/). If not explicitly specified, the version defined in the referenced topology will be used. If no version is specified in the topology, the latest available version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Services expose endpoints that can be accessed by clients.
+    /// Services overrides services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterShardingSpecsTemplateServices>>,
     /// Defines the strategy for switchover and failover when workloadType is Replication.
@@ -2080,35 +2199,26 @@ pub enum ClusterShardingSpecsTemplateAffinityTenancy {
     DedicatedNode,
 }
 
-/// References the class defined in ComponentClassDefinition.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterShardingSpecsTemplateClassDefRef {
-    /// Defines the name of the class that is defined in the ComponentClassDefinition.
-    pub class: String,
-    /// Specifies the name of the ComponentClassDefinition.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
 /// InstanceTemplate defines values to override in pod template.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterShardingSpecsTemplateInstances {
+    /// Defines RuntimeClass to override.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "RuntimeClassName")]
+    pub runtime_class_name: Option<String>,
     /// Defines annotations to override. Add new or override existing annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
-    ///  Applied only if Name is not specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
-    pub generate_name: Option<String>,
+    /// Defines Env to override. Add new or override existing envs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ClusterShardingSpecsTemplateInstancesEnv>>,
     /// Defines image to override. Will override the first container's image of the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Defines labels to override. Add new or override existing labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Defines the name of the instance. Only applied when Replicas is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    /// Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default.
+    pub name: String,
     /// Defines NodeName to override.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
@@ -2133,6 +2243,86 @@ pub struct ClusterShardingSpecsTemplateInstances {
     /// Defines Volumes to override. Add new or override existing volumes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumes>>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateInstancesEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterShardingSpecsTemplateInstancesEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateInstancesEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterShardingSpecsTemplateInstancesEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ClusterShardingSpecsTemplateInstancesEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterShardingSpecsTemplateInstancesEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterShardingSpecsTemplateInstancesEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Defines Resources to override. Will override the first container's resources of the pod.
@@ -3403,16 +3593,57 @@ pub struct ClusterShardingSpecsTemplateServiceRefs {
     ///  Under this referencing approach, the ServiceKind and ServiceVersion of service reference declaration defined in the ClusterDefinition will not be validated. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
+    /// Specifies the cluster to reference.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
+    pub cluster_ref: Option<ClusterShardingSpecsTemplateServiceRefsClusterRef>,
     /// Specifies the identifier of the service reference declaration. It corresponds to the serviceRefDeclaration name defined in the clusterDefinition.componentDefs[*].serviceRefDeclarations[*].name.
     pub name: String,
-    /// Specifies the namespace of the referenced Cluster or the namespace of the referenced ServiceDescriptor object. If not provided, the referenced Cluster and ServiceDescriptor will be searched in the namespace of the current cluster by default.
+    /// Specifies the namespace of the referenced Cluster or ServiceDescriptor object. If not specified, the namespace of the current cluster will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// The service descriptor of the service provided by external sources. 
-    ///  When referencing a service provided by external sources, the ServiceDescriptor object name is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion defined in the service reference declaration in the ClusterDefinition. 
+    ///  When referencing a service provided by external sources, a ServiceDescriptor object is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion declared in the definition. 
     ///  If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDescriptor")]
     pub service_descriptor: Option<String>,
+}
+
+/// Specifies the cluster to reference.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateServiceRefsClusterRef {
+    /// The name of the cluster to reference.
+    pub cluster: String,
+    /// The credential (SystemAccount) to reference from the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credential: Option<ClusterShardingSpecsTemplateServiceRefsClusterRefCredential>,
+    /// The service to reference from the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<ClusterShardingSpecsTemplateServiceRefsClusterRefService>,
+}
+
+/// The credential (SystemAccount) to reference from the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateServiceRefsClusterRefCredential {
+    /// The name of the component where the credential resides in.
+    pub component: String,
+    /// The name of the credential (SystemAccount) to reference.
+    pub name: String,
+}
+
+/// The service to reference from the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterShardingSpecsTemplateServiceRefsClusterRefService {
+    /// The name of the component where the service resides in. 
+    ///  It is required when referencing a component service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub component: Option<String>,
+    /// The port name of the service to reference. 
+    ///  If there is a non-zero node-port exist for the matched service port, the node-port will be selected first. If the referenced service is a pod-service, there will be multiple service objects matched, and the resolved value will be presented in the following format: service1.name:port1,service2.name:port2...
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// The name of the service to reference. 
+    ///  Leave it empty to reference the default service. Set it to "headless" to reference the default headless service. If the referenced service is a pod-service, there will be multiple service objects matched, and the resolved value will be presented in the following format: service1.name,service2.name...
+    pub service: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -3420,8 +3651,11 @@ pub struct ClusterShardingSpecsTemplateServices {
     /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// The name of the service.
+    /// References the component service name defined in the ComponentDefinition.Spec.Services[x].Name.
     pub name: String,
+    /// Indicates whether to generate individual services for each pod. If set to true, a separate service will be created for each pod in the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podService")]
+    pub pod_service: Option<bool>,
     /// Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. 
     ///  - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. 
     ///  More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.

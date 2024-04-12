@@ -42,6 +42,15 @@ pub struct JobSetSpec {
     /// Suspend suspends all running child Jobs when set to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
+    /// TTLSecondsAfterFinished limits the lifetime of a JobSet that has finished
+    /// execution (either Complete or Failed). If this field is set,
+    /// TTLSecondsAfterFinished after the JobSet finishes, it is eligible to be
+    /// automatically deleted. When the JobSet is being deleted, its lifecycle
+    /// guarantees (e.g. finalizers) will be honored. If this field is unset,
+    /// the JobSet won't be automatically deleted. If this field is set to zero,
+    /// the JobSet becomes eligible to be deleted immediately after it finishes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
+    pub ttl_seconds_after_finished: Option<i32>,
 }
 
 /// FailurePolicy, if set, configures when to declare the JobSet as

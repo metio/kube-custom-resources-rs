@@ -63,7 +63,7 @@ spec:
                   maxLength: 64
                   type: "string"
                 parametersRef:
-                  description: "ParametersRef is a reference to a resource that contains the configuration\nparameters corresponding to the GatewayClass. This is optional if the\ncontroller does not require any additional configuration.\n\n\nParametersRef can reference a standard Kubernetes resource, i.e. ConfigMap,\nor an implementation-specific custom resource. The resource can be\ncluster-scoped or namespace-scoped.\n\n\nIf the referent cannot be found, the GatewayClass's \"InvalidParameters\"\nstatus condition will be true.\n\n\nSupport: Implementation-specific"
+                  description: "ParametersRef is a reference to a resource that contains the configuration\nparameters corresponding to the GatewayClass. This is optional if the\ncontroller does not require any additional configuration.\n\n\nParametersRef can reference a standard Kubernetes resource, i.e. ConfigMap,\nor an implementation-specific custom resource. The resource can be\ncluster-scoped or namespace-scoped.\n\n\nIf the referent cannot be found, the GatewayClass's \"InvalidParameters\"\nstatus condition will be true.\n\n\nA Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,\nthe merging behavior is implementation specific.\nIt is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.\n\n\nSupport: Implementation-specific"
                   properties:
                     group:
                       description: "Group is the group of the referent."

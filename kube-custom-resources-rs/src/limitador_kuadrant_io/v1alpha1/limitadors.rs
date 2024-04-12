@@ -615,6 +615,9 @@ pub struct LimitadorStorageRedisCachedOptions {
     /// Ratio to apply to the TTL from Redis on cached counters [default: 10]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ratio: Option<i64>,
+    /// ResponseTimeout defines the timeout for Redis commands in milliseconds [default: 350]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-timeout")]
+    pub response_timeout: Option<i64>,
     /// TTL for cached counters in milliseconds [default: 5000]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ttl: Option<i64>,

@@ -56,6 +56,12 @@ pub struct KustomizationSpec {
     /// is empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeConfig")]
     pub kube_config: Option<KustomizationKubeConfig>,
+    /// NamePrefix will prefix the names of all managed resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namePrefix")]
+    pub name_prefix: Option<String>,
+    /// NameSuffix will suffix the names of all managed resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameSuffix")]
+    pub name_suffix: Option<String>,
     /// Strategic merge and JSON patches, defined as inline YAML objects,
     /// capable of targeting objects based on kind, label and annotation selectors.
     #[serde(default, skip_serializing_if = "Option::is_none")]

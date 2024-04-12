@@ -28,7 +28,7 @@ pub struct OpenTelemetryCollectorSpec {
     /// for the OpenTelemetryCollector workload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaler: Option<OpenTelemetryCollectorAutoscaler>,
-    /// Config is the raw JSON to be used as the collector's configuration. Refer to the OpenTelemetry Collector documentation for details.
+    /// Config is the raw YAML to be used as the collector's configuration. Refer to the OpenTelemetry Collector documentation for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
     /// ConfigMaps is a list of ConfigMaps in the same namespace as the OpenTelemetryCollector
@@ -3527,7 +3527,7 @@ pub struct OpenTelemetryCollectorPodSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
-/// ServicePort contains information on service's port.
+/// PortsSpec defines the OpenTelemetryCollector's container/service ports additional specifications.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenTelemetryCollectorPorts {
     /// The application protocol for this port.
@@ -3535,6 +3535,9 @@ pub struct OpenTelemetryCollectorPorts {
     /// This field follows standard Kubernetes label syntax.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
+    /// Allows defining which port to bind to the host in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
     /// The name of this port within the service. This must be a DNS_LABEL.
     /// All ports within a ServiceSpec must have unique names.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -30,9 +30,9 @@ pub struct ContourConfigurationSpec {
     pub envoy: Option<ContourConfigurationEnvoy>,
     /// FeatureFlags defines toggle to enable new contour features.
     /// Available toggles are:
-    /// useEndpointSlices - configures contour to fetch endpoint data
-    /// from k8s endpoint slices. defaults to false and reading endpoint
-    /// data from the k8s endpoints.
+    /// useEndpointSlices - Configures contour to fetch endpoint data
+    /// from k8s endpoint slices. defaults to true,
+    /// If false then reads endpoint data from the k8s endpoints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureFlags")]
     pub feature_flags: Option<Vec<String>>,
     /// Gateway contains parameters for the gateway-api Gateway that Contour

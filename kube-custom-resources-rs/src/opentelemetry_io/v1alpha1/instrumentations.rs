@@ -670,6 +670,10 @@ pub struct InstrumentationJava {
     /// Env defines java specific env vars.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<InstrumentationJavaEnv>>,
+    /// Extensions defines java specific extensions.
+    /// All extensions are copied to a single directory; if a JAR with the same name exists, it will be overwritten.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub extensions: Option<Vec<InstrumentationJavaExtensions>>,
     /// Image is a container image with javaagent auto-instrumentation JAR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -770,6 +774,14 @@ pub struct InstrumentationJavaEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstrumentationJavaExtensions {
+    /// Dir is a directory with extensions auto-instrumentation JAR.
+    pub dir: String,
+    /// Image is a container image with extensions auto-instrumentation JAR.
+    pub image: String,
 }
 
 /// Resources describes the compute resource requirements.

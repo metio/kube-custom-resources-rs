@@ -669,6 +669,9 @@ spec:
                             ratio:
                               description: "Ratio to apply to the TTL from Redis on cached counters [default: 10]"
                               type: "integer"
+                            response-timeout:
+                              description: "ResponseTimeout defines the timeout for Redis commands in milliseconds [default: 350]"
+                              type: "integer"
                             ttl:
                               description: "TTL for cached counters in milliseconds [default: 5000]"
                               type: "integer"

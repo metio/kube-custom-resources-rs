@@ -42,8 +42,8 @@ pub struct MachineHealthCheckSpec {
     /// UnhealthyConditions contains a list of the conditions that determine
     /// whether a node is considered unhealthy.  The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(rename = "unhealthyConditions")]
-    pub unhealthy_conditions: Vec<MachineHealthCheckUnhealthyConditions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
+    pub unhealthy_conditions: Option<Vec<MachineHealthCheckUnhealthyConditions>>,
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
     /// Eg. "[3-5]" - This means that remediation will be allowed only when:

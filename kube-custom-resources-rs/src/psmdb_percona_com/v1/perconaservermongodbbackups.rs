@@ -4,6 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
+use std::collections::BTreeMap;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "psmdb.percona.com", version = "v1", kind = "PerconaServerMongoDBBackup", plural = "perconaservermongodbbackups")]
@@ -51,6 +52,8 @@ pub struct PerconaServerMongoDBBackupStatus {
     pub pbm_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmPod")]
     pub pbm_pod: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmPods")]
+    pub pbm_pods: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replsetNames")]
     pub replset_names: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

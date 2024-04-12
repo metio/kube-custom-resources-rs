@@ -242,6 +242,8 @@ pub struct FilterFiltersLua {
     pub alias: Option<String>,
     /// Lua function name that will be triggered to do filtering. It's assumed that the function is declared inside the Script defined above.
     pub call: String,
+    /// Inline LUA code instead of loading from a path via script.
+    pub code: String,
     /// If enabled, Lua script will be executed in protected mode. It prevents to crash when invalid Lua script is executed. Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedMode")]
     pub protected_mode: Option<bool>,
@@ -361,14 +363,47 @@ pub struct FilterFiltersMultiline {
     /// Alias for the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alias: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub buffer: Option<bool>,
+    /// Set a limit on the amount of memory in MB the emitter can consume if the outputs provide backpressure. The default for this limit is 10M. The pipeline will pause once the buffer exceeds the value of this setting. For example, if the value is set to 10MB then the pipeline will pause if the buffer exceeds 10M. The pipeline will remain paused until the output drains the buffer below the 10M limit.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterMemBufLimit")]
+    pub emitter_mem_buf_limit: Option<i64>,
+    /// Name for the emitter input instance which re-emits the completed records at the beginning of the pipeline.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterName")]
+    pub emitter_name: Option<String>,
+    /// The storage type for the emitter input instance. This option supports the values memory (default) and filesystem.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterType")]
+    pub emitter_type: Option<FilterFiltersMultilineEmitterType>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushMs")]
+    pub flush_ms: Option<i64>,
     /// Key name that holds the content to process. Note that a Multiline Parser definition can already specify the key_content to use, but this option allows to overwrite that value for the purpose of the filter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyContent")]
     pub key_content: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<FilterFiltersMultilineMode>,
     /// Specify one or multiple Multiline Parsing definitions to apply to the content. You can specify multiple multiline parsers to detect different formats by separating them with a comma.
     pub parser: String,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
+}
+
+/// Multiline defines a Multiline configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FilterFiltersMultilineEmitterType {
+    #[serde(rename = "memory")]
+    Memory,
+    #[serde(rename = "filesystem")]
+    Filesystem,
+}
+
+/// Multiline defines a Multiline configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FilterFiltersMultilineMode {
+    #[serde(rename = "parser")]
+    Parser,
+    #[serde(rename = "partial_message")]
+    PartialMessage,
 }
 
 /// Nest defines Nest Filter configuration.
@@ -467,9 +502,13 @@ pub struct FilterFiltersRewriteTag {
     /// Alias for the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alias: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterMemBufLimit")]
+    pub emitter_mem_buf_limit: Option<String>,
     /// When the filter emits a record under the new Tag, there is an internal emitter plugin that takes care of the job. Since this emitter expose metrics as any other component of the pipeline, you can use this property to configure an optional name for it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterName")]
     pub emitter_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterStorageType")]
+    pub emitter_storage_type: Option<String>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,

@@ -93,6 +93,8 @@ pub struct EmqxEnterprisePersistentSpec {
     pub selector: Option<EmqxEnterprisePersistentSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -113,6 +115,8 @@ pub struct EmqxEnterprisePersistentSpecDataSourceRef {
     pub api_group: Option<String>,
     pub kind: String,
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -379,6 +383,10 @@ pub struct EmqxEnterpriseTemplateSpecAffinityPodAffinityPreferredDuringSchedulin
 pub struct EmqxEnterpriseTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EmqxEnterpriseTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<EmqxEnterpriseTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -423,6 +431,10 @@ pub struct EmqxEnterpriseTemplateSpecAffinityPodAffinityPreferredDuringSchedulin
 pub struct EmqxEnterpriseTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EmqxEnterpriseTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<EmqxEnterpriseTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -482,6 +494,10 @@ pub struct EmqxEnterpriseTemplateSpecAffinityPodAntiAffinityPreferredDuringSched
 pub struct EmqxEnterpriseTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EmqxEnterpriseTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<EmqxEnterpriseTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -526,6 +542,10 @@ pub struct EmqxEnterpriseTemplateSpecAffinityPodAntiAffinityPreferredDuringSched
 pub struct EmqxEnterpriseTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EmqxEnterpriseTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<EmqxEnterpriseTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -741,6 +761,8 @@ pub struct EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePostStart {
     pub exec: Option<EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePostStartTcpSocket>,
 }
@@ -771,6 +793,11 @@ pub struct EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePostStartHttpGetHttpH
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -783,6 +810,8 @@ pub struct EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePreStop {
     pub exec: Option<EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePreStopTcpSocket>,
 }
@@ -810,6 +839,11 @@ pub struct EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePreStopHttpGet {
 pub struct EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecEmqxContainerLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -962,9 +996,16 @@ pub struct EmqxEnterpriseTemplateSpecEmqxContainerReadinessProbeTcpSocket {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecEmqxContainerResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<EmqxEnterpriseTemplateSpecEmqxContainerResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecEmqxContainerResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1141,8 +1182,12 @@ pub struct EmqxEnterpriseTemplateSpecEphemeralContainers {
     pub ports: Option<Vec<EmqxEnterpriseTemplateSpecEphemeralContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<EmqxEnterpriseTemplateSpecEphemeralContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<EmqxEnterpriseTemplateSpecEphemeralContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<EmqxEnterpriseTemplateSpecEphemeralContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<EmqxEnterpriseTemplateSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1263,6 +1308,8 @@ pub struct EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePostStart {
     pub exec: Option<EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket>,
 }
@@ -1293,6 +1340,11 @@ pub struct EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePostStartHttpGe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -1305,6 +1357,8 @@ pub struct EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePreStop {
     pub exec: Option<EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket>,
 }
@@ -1332,6 +1386,11 @@ pub struct EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePreStopHttpGet 
 pub struct EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecEphemeralContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1482,11 +1541,26 @@ pub struct EmqxEnterpriseTemplateSpecEphemeralContainersReadinessProbeTcpSocket 
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecEphemeralContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecEphemeralContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<EmqxEnterpriseTemplateSpecEphemeralContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecEphemeralContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1663,8 +1737,12 @@ pub struct EmqxEnterpriseTemplateSpecExtraContainers {
     pub ports: Option<Vec<EmqxEnterpriseTemplateSpecExtraContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<EmqxEnterpriseTemplateSpecExtraContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<EmqxEnterpriseTemplateSpecExtraContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<EmqxEnterpriseTemplateSpecExtraContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<EmqxEnterpriseTemplateSpecExtraContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1783,6 +1861,8 @@ pub struct EmqxEnterpriseTemplateSpecExtraContainersLifecyclePostStart {
     pub exec: Option<EmqxEnterpriseTemplateSpecExtraContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<EmqxEnterpriseTemplateSpecExtraContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<EmqxEnterpriseTemplateSpecExtraContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<EmqxEnterpriseTemplateSpecExtraContainersLifecyclePostStartTcpSocket>,
 }
@@ -1813,6 +1893,11 @@ pub struct EmqxEnterpriseTemplateSpecExtraContainersLifecyclePostStartHttpGetHtt
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecExtraContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecExtraContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -1825,6 +1910,8 @@ pub struct EmqxEnterpriseTemplateSpecExtraContainersLifecyclePreStop {
     pub exec: Option<EmqxEnterpriseTemplateSpecExtraContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<EmqxEnterpriseTemplateSpecExtraContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<EmqxEnterpriseTemplateSpecExtraContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<EmqxEnterpriseTemplateSpecExtraContainersLifecyclePreStopTcpSocket>,
 }
@@ -1852,6 +1939,11 @@ pub struct EmqxEnterpriseTemplateSpecExtraContainersLifecyclePreStopHttpGet {
 pub struct EmqxEnterpriseTemplateSpecExtraContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecExtraContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2002,11 +2094,26 @@ pub struct EmqxEnterpriseTemplateSpecExtraContainersReadinessProbeTcpSocket {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecExtraContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecExtraContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<EmqxEnterpriseTemplateSpecExtraContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecExtraContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2189,8 +2296,12 @@ pub struct EmqxEnterpriseTemplateSpecInitContainers {
     pub ports: Option<Vec<EmqxEnterpriseTemplateSpecInitContainersPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<EmqxEnterpriseTemplateSpecInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<EmqxEnterpriseTemplateSpecInitContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<EmqxEnterpriseTemplateSpecInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<EmqxEnterpriseTemplateSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -2309,6 +2420,8 @@ pub struct EmqxEnterpriseTemplateSpecInitContainersLifecyclePostStart {
     pub exec: Option<EmqxEnterpriseTemplateSpecInitContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<EmqxEnterpriseTemplateSpecInitContainersLifecyclePostStartHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<EmqxEnterpriseTemplateSpecInitContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<EmqxEnterpriseTemplateSpecInitContainersLifecyclePostStartTcpSocket>,
 }
@@ -2339,6 +2452,11 @@ pub struct EmqxEnterpriseTemplateSpecInitContainersLifecyclePostStartHttpGetHttp
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecInitContainersLifecyclePostStartSleep {
+    pub seconds: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecInitContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -2351,6 +2469,8 @@ pub struct EmqxEnterpriseTemplateSpecInitContainersLifecyclePreStop {
     pub exec: Option<EmqxEnterpriseTemplateSpecInitContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<EmqxEnterpriseTemplateSpecInitContainersLifecyclePreStopHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<EmqxEnterpriseTemplateSpecInitContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<EmqxEnterpriseTemplateSpecInitContainersLifecyclePreStopTcpSocket>,
 }
@@ -2378,6 +2498,11 @@ pub struct EmqxEnterpriseTemplateSpecInitContainersLifecyclePreStopHttpGet {
 pub struct EmqxEnterpriseTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecInitContainersLifecyclePreStopSleep {
+    pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2528,11 +2653,26 @@ pub struct EmqxEnterpriseTemplateSpecInitContainersReadinessProbeTcpSocket {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecInitContainersResizePolicy {
+    #[serde(rename = "resourceName")]
+    pub resource_name: String,
+    #[serde(rename = "restartPolicy")]
+    pub restart_policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecInitContainersResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<EmqxEnterpriseTemplateSpecInitContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecInitContainersResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3026,6 +3166,8 @@ pub struct EmqxEnterpriseTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<EmqxEnterpriseTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -3046,6 +3188,8 @@ pub struct EmqxEnterpriseTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecData
     pub api_group: Option<String>,
     pub kind: String,
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3223,6 +3367,8 @@ pub struct EmqxEnterpriseTemplateSpecVolumesProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EmqxEnterpriseTemplateSpecVolumesProjectedSources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<EmqxEnterpriseTemplateSpecVolumesProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<EmqxEnterpriseTemplateSpecVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
@@ -3231,6 +3377,35 @@ pub struct EmqxEnterpriseTemplateSpecVolumesProjectedSources {
     pub secret: Option<EmqxEnterpriseTemplateSpecVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<EmqxEnterpriseTemplateSpecVolumesProjectedSourcesServiceAccountToken>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecVolumesProjectedSourcesClusterTrustBundle {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<EmqxEnterpriseTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<EmqxEnterpriseTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EmqxEnterpriseTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

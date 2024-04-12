@@ -1599,7 +1599,7 @@ spec:
                       type: "integer"
                   type: "object"
                 config:
-                  description: "Config is the raw JSON to be used as the collector's configuration. Refer to the OpenTelemetry Collector documentation for details."
+                  description: "Config is the raw YAML to be used as the collector's configuration. Refer to the OpenTelemetry Collector documentation for details."
                   type: "string"
                 configmaps:
                   description: "ConfigMaps is a list of ConfigMaps in the same namespace as the OpenTelemetryCollector\nobject, which shall be mounted into the Collector Pods."
@@ -2995,11 +2995,15 @@ spec:
                 ports:
                   description: "Ports allows a set of ports to be exposed by the underlying v1.Service. By default, the operator\nwill attempt to infer the required ports by parsing the .Spec."
                   items:
-                    description: "ServicePort contains information on service's port."
+                    description: "PortsSpec defines the OpenTelemetryCollector's container/service ports additional specifications."
                     properties:
                       appProtocol:
                         description: "The application protocol for this port.\nThis is used as a hint for implementations to offer richer behavior for protocols that they understand.\nThis field follows standard Kubernetes label syntax."
                         type: "string"
+                      hostPort:
+                        description: "Allows defining which port to bind to the host in the Container."
+                        format: "int32"
+                        type: "integer"
                       name:
                         description: "The name of this port within the service. This must be a DNS_LABEL.\nAll ports within a ServiceSpec must have unique names."
                         type: "string"

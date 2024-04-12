@@ -7,13 +7,16 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use std::collections::HashMap;
 
-/// AlertmanagerConfigSpec is a specification of the desired behavior of the Alertmanager configuration. By definition, the Alertmanager configuration only applies to alerts for which the `namespace` label is equal to the namespace of the AlertmanagerConfig resource.
+/// AlertmanagerConfigSpec is a specification of the desired behavior of the Alertmanager configuration.
+/// By definition, the Alertmanager configuration only applies to alerts for which
+/// the `namespace` label is equal to the namespace of the AlertmanagerConfig resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "monitoring.coreos.com", version = "v1alpha1", kind = "AlertmanagerConfig", plural = "alertmanagerconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct AlertmanagerConfigSpec {
-    /// List of inhibition rules. The rules will only apply to alerts matching the resource's namespace.
+    /// List of inhibition rules. The rules will only apply to alerts matching
+    /// the resource's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inhibitRules")]
     pub inhibit_rules: Option<Vec<AlertmanagerConfigInhibitRules>>,
     /// List of MuteTimeInterval specifying when the routes should be muted.
@@ -22,21 +25,29 @@ pub struct AlertmanagerConfigSpec {
     /// List of receivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub receivers: Option<Vec<AlertmanagerConfigReceivers>>,
-    /// The Alertmanager route definition for alerts matching the resource's namespace. If present, it will be added to the generated Alertmanager configuration as a first-level route.
+    /// The Alertmanager route definition for alerts matching the resource's
+    /// namespace. If present, it will be added to the generated Alertmanager
+    /// configuration as a first-level route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<AlertmanagerConfigRoute>,
 }
 
-/// InhibitRule defines an inhibition rule that allows to mute alerts when other alerts are already firing. See https://prometheus.io/docs/alerting/latest/configuration/#inhibit_rule
+/// InhibitRule defines an inhibition rule that allows to mute alerts when other
+/// alerts are already firing.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#inhibit_rule
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigInhibitRules {
-    /// Labels that must have an equal value in the source and target alert for the inhibition to take effect.
+    /// Labels that must have an equal value in the source and target alert for
+    /// the inhibition to take effect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub equal: Option<Vec<String>>,
-    /// Matchers for which one or more alerts have to exist for the inhibition to take effect. The operator enforces that the alert matches the resource's namespace.
+    /// Matchers for which one or more alerts have to exist for the inhibition
+    /// to take effect. The operator enforces that the alert matches the
+    /// resource's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceMatch")]
     pub source_match: Option<Vec<AlertmanagerConfigInhibitRulesSourceMatch>>,
-    /// Matchers that have to be fulfilled in the alerts to be muted. The operator enforces that the alert matches the resource's namespace.
+    /// Matchers that have to be fulfilled in the alerts to be muted. The
+    /// operator enforces that the alert matches the resource's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetMatch")]
     pub target_match: Option<Vec<AlertmanagerConfigInhibitRulesTargetMatch>>,
 }
@@ -44,12 +55,14 @@ pub struct AlertmanagerConfigInhibitRules {
 /// Matcher defines how to match on alert's labels.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigInhibitRulesSourceMatch {
-    /// Match operation available with AlertManager >= v0.22.0 and takes precedence over Regex (deprecated) if non-empty.
+    /// Match operation available with AlertManager >= v0.22.0 and
+    /// takes precedence over Regex (deprecated) if non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchType")]
     pub match_type: Option<AlertmanagerConfigInhibitRulesSourceMatchMatchType>,
     /// Label to match.
     pub name: String,
-    /// Whether to match on equality (false) or regular-expression (true). Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
+    /// Whether to match on equality (false) or regular-expression (true).
+    /// Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<bool>,
     /// Label value to match.
@@ -73,12 +86,14 @@ pub enum AlertmanagerConfigInhibitRulesSourceMatchMatchType {
 /// Matcher defines how to match on alert's labels.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigInhibitRulesTargetMatch {
-    /// Match operation available with AlertManager >= v0.22.0 and takes precedence over Regex (deprecated) if non-empty.
+    /// Match operation available with AlertManager >= v0.22.0 and
+    /// takes precedence over Regex (deprecated) if non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchType")]
     pub match_type: Option<AlertmanagerConfigInhibitRulesTargetMatchMatchType>,
     /// Label to match.
     pub name: String,
-    /// Whether to match on equality (false) or regular-expression (true). Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
+    /// Whether to match on equality (false) or regular-expression (true).
+    /// Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<bool>,
     /// Label value to match.
@@ -161,7 +176,8 @@ pub struct AlertmanagerConfigReceivers {
     /// List of Email configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailConfigs")]
     pub email_configs: Option<Vec<AlertmanagerConfigReceiversEmailConfigs>>,
-    /// List of MSTeams configurations. It requires Alertmanager >= 0.26.0.
+    /// List of MSTeams configurations.
+    /// It requires Alertmanager >= 0.26.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "msteamsConfigs")]
     pub msteams_configs: Option<Vec<AlertmanagerConfigReceiversMsteamsConfigs>>,
     /// Name of the receiver. Must be unique across all items from the list.
@@ -198,10 +214,13 @@ pub struct AlertmanagerConfigReceivers {
     pub wechat_configs: Option<Vec<AlertmanagerConfigReceiversWechatConfigs>>,
 }
 
-/// DiscordConfig configures notifications via Discord. See https://prometheus.io/docs/alerting/latest/configuration/#discord_config
+/// DiscordConfig configures notifications via Discord.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#discord_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigs {
-    /// The secret's key that contains the Discord webhook URL. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the Discord webhook URL.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(rename = "apiURL")]
     pub api_url: AlertmanagerConfigReceiversDiscordConfigsApiUrl,
     /// HTTP client configuration.
@@ -218,12 +237,16 @@ pub struct AlertmanagerConfigReceiversDiscordConfigs {
     pub title: Option<String>,
 }
 
-/// The secret's key that contains the Discord webhook URL. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the Discord webhook URL.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsApiUrl {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -234,13 +257,18 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsApiUrl {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -257,15 +285,20 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -275,7 +308,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -283,23 +318,29 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCrede
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -307,12 +348,15 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthPassword 
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -320,12 +364,17 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthUsername 
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -336,13 +385,16 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret 
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -353,7 +405,8 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -369,7 +422,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -382,7 +437,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdConf
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -390,12 +447,15 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdSecr
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -439,7 +499,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -452,7 +514,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaConfigM
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -476,7 +540,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -489,7 +555,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertConfi
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -502,7 +570,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertSecre
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -516,10 +586,14 @@ pub struct AlertmanagerConfigReceiversEmailConfigs {
     /// The identity to use for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authIdentity")]
     pub auth_identity: Option<String>,
-    /// The secret's key that contains the password to use for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the password to use for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authPassword")]
     pub auth_password: Option<AlertmanagerConfigReceiversEmailConfigsAuthPassword>,
-    /// The secret's key that contains the CRAM-MD5 secret. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the CRAM-MD5 secret.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authSecret")]
     pub auth_secret: Option<AlertmanagerConfigReceiversEmailConfigsAuthSecret>,
     /// The username to use for authentication.
@@ -528,7 +602,8 @@ pub struct AlertmanagerConfigReceiversEmailConfigs {
     /// The sender address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<String>,
-    /// Further headers email header key/value pairs. Overrides any headers previously set by the notification implementation.
+    /// Further headers email header key/value pairs. Overrides any headers
+    /// previously set by the notification implementation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<AlertmanagerConfigReceiversEmailConfigsHeaders>>,
     /// The hostname to identify to the SMTP server.
@@ -537,7 +612,8 @@ pub struct AlertmanagerConfigReceiversEmailConfigs {
     /// The HTML body of the email notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub html: Option<String>,
-    /// The SMTP TLS requirement. Note that Go does not support unencrypted connections to remote SMTP endpoints.
+    /// The SMTP TLS requirement.
+    /// Note that Go does not support unencrypted connections to remote SMTP endpoints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireTLS")]
     pub require_tls: Option<bool>,
     /// Whether or not to notify about resolved alerts.
@@ -557,12 +633,16 @@ pub struct AlertmanagerConfigReceiversEmailConfigs {
     pub to: Option<String>,
 }
 
-/// The secret's key that contains the password to use for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the password to use for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversEmailConfigsAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -570,12 +650,16 @@ pub struct AlertmanagerConfigReceiversEmailConfigsAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the CRAM-MD5 secret. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the CRAM-MD5 secret.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversEmailConfigsAuthSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -628,7 +712,9 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCa {
 pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -641,7 +727,9 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCaConfigMap {
 pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -665,7 +753,9 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCert {
 pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -678,7 +768,9 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCertConfigMap {
 pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -691,7 +783,9 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigCertSecret {
 pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -699,7 +793,8 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// MSTeamsConfig configures notifications via Microsoft Teams. It requires Alertmanager >= 0.26.0.
+/// MSTeamsConfig configures notifications via Microsoft Teams.
+/// It requires Alertmanager >= 0.26.0.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigs {
     /// HTTP client configuration.
@@ -708,7 +803,8 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigs {
     /// Whether to notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
-    /// Message summary template. It requires Alertmanager >= 0.27.0.
+    /// Message summary template.
+    /// It requires Alertmanager >= 0.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub summary: Option<String>,
     /// Message body template.
@@ -725,13 +821,18 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigs {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -748,15 +849,20 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -766,7 +872,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -774,23 +882,29 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCrede
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -798,12 +912,15 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthPassword 
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -811,12 +928,17 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthUsername 
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -827,13 +949,16 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret 
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -844,7 +969,8 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -860,7 +986,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -873,7 +1001,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdConf
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -881,12 +1011,15 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdSecr
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -930,7 +1063,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -943,7 +1078,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaConfigM
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -967,7 +1104,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -980,7 +1119,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertConfi
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -993,7 +1134,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertSecre
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1006,7 +1149,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigKeySecret
 pub struct AlertmanagerConfigReceiversMsteamsConfigsWebhookUrl {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1014,13 +1159,16 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsWebhookUrl {
     pub optional: Option<bool>,
 }
 
-/// OpsGenieConfig configures notifications via OpsGenie. See https://prometheus.io/docs/alerting/latest/configuration/#opsgenie_config
+/// OpsGenieConfig configures notifications via OpsGenie.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#opsgenie_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigs {
     /// Comma separated list of actions that will be available for the alert.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<String>,
-    /// The secret's key that contains the OpsGenie API key. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the OpsGenie API key.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<AlertmanagerConfigReceiversOpsgenieConfigsApiKey>,
     /// The URL to send OpsGenie API requests to.
@@ -1059,17 +1207,22 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigs {
     /// Comma separated list of tags attached to the notifications.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<String>,
-    /// Whether to update message and description of the alert in OpsGenie if it already exists By default, the alert is never updated in OpsGenie, the new message only appears in activity log.
+    /// Whether to update message and description of the alert in OpsGenie if it already exists
+    /// By default, the alert is never updated in OpsGenie, the new message only appears in activity log.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateAlerts")]
     pub update_alerts: Option<bool>,
 }
 
-/// The secret's key that contains the OpsGenie API key. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the OpsGenie API key.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsApiKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1089,13 +1242,18 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsDetails {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -1112,15 +1270,20 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -1130,7 +1293,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1138,23 +1303,29 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorizationCred
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1162,12 +1333,15 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthPassword
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1175,12 +1349,17 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBasicAuthUsername
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1191,13 +1370,16 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBearerTokenSecret
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -1208,7 +1390,8 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1224,7 +1407,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1237,7 +1422,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientIdCon
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1245,12 +1432,15 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientIdSec
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1294,7 +1484,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1307,7 +1499,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCaConfig
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1331,7 +1525,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1344,7 +1540,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCertConf
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1357,7 +1555,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCertSecr
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1365,7 +1565,8 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigKeySecre
     pub optional: Option<bool>,
 }
 
-/// OpsGenieConfigResponder defines a responder to an incident. One of `id`, `name` or `username` has to be defined.
+/// OpsGenieConfigResponder defines a responder to an incident.
+/// One of `id`, `name` or `username` has to be defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsResponders {
     /// ID of the responder.
@@ -1382,7 +1583,8 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsResponders {
     pub username: Option<String>,
 }
 
-/// OpsGenieConfigResponder defines a responder to an incident. One of `id`, `name` or `username` has to be defined.
+/// OpsGenieConfigResponder defines a responder to an incident.
+/// One of `id`, `name` or `username` has to be defined.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlertmanagerConfigReceiversOpsgenieConfigsRespondersType {
     #[serde(rename = "team")]
@@ -1397,7 +1599,8 @@ pub enum AlertmanagerConfigReceiversOpsgenieConfigsRespondersType {
     Schedule,
 }
 
-/// PagerDutyConfig configures notifications via PagerDuty. See https://prometheus.io/docs/alerting/latest/configuration/#pagerduty_config
+/// PagerDutyConfig configures notifications via PagerDuty.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#pagerduty_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigs {
     /// The class/type of the event.
@@ -1430,13 +1633,20 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigs {
     /// A list of link details to attach that provide further detail about an incident.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pagerDutyLinkConfigs")]
     pub pager_duty_link_configs: Option<Vec<AlertmanagerConfigReceiversPagerdutyConfigsPagerDutyLinkConfigs>>,
-    /// The secret's key that contains the PagerDuty integration key (when using Events API v2). Either this field or `serviceKey` needs to be defined. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the PagerDuty integration key (when using
+    /// Events API v2). Either this field or `serviceKey` needs to be defined.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingKey")]
     pub routing_key: Option<AlertmanagerConfigReceiversPagerdutyConfigsRoutingKey>,
     /// Whether or not to notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
-    /// The secret's key that contains the PagerDuty service key (when using integration type "Prometheus"). Either this field or `routingKey` needs to be defined. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the PagerDuty service key (when using
+    /// integration type "Prometheus"). Either this field or `routingKey` needs to
+    /// be defined.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceKey")]
     pub service_key: Option<AlertmanagerConfigReceiversPagerdutyConfigsServiceKey>,
     /// Severity of the incident.
@@ -1459,13 +1669,18 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsDetails {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -1482,15 +1697,20 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -1500,7 +1720,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1508,23 +1730,29 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorizationCre
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1532,12 +1760,15 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthPasswor
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1545,12 +1776,17 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBasicAuthUsernam
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1561,13 +1797,16 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBearerTokenSecre
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -1578,7 +1817,8 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1594,7 +1834,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1607,7 +1849,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientIdCo
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1615,12 +1859,15 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientIdSe
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1664,7 +1911,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1677,7 +1926,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCaConfi
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1701,7 +1952,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1714,7 +1967,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCertCon
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1727,7 +1982,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCertSec
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1760,12 +2017,17 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsPagerDutyLinkConfigs {
     pub href: Option<String>,
 }
 
-/// The secret's key that contains the PagerDuty integration key (when using Events API v2). Either this field or `serviceKey` needs to be defined. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the PagerDuty integration key (when using
+/// Events API v2). Either this field or `serviceKey` needs to be defined.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsRoutingKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1773,12 +2035,18 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsRoutingKey {
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the PagerDuty service key (when using integration type "Prometheus"). Either this field or `routingKey` needs to be defined. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the PagerDuty service key (when using
+/// integration type "Prometheus"). Either this field or `routingKey` needs to
+/// be defined.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsServiceKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1786,13 +2054,15 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsServiceKey {
     pub optional: Option<bool>,
 }
 
-/// PushoverConfig configures notifications via Pushover. See https://prometheus.io/docs/alerting/latest/configuration/#pushover_config
+/// PushoverConfig configures notifications via Pushover.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#pushover_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigs {
     /// The name of a device to send the notification to
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
-    /// How long your notification will continue to be retried for, unless the user acknowledges the notification.
+    /// How long your notification will continue to be retried for, unless the user
+    /// acknowledges the notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expire: Option<String>,
     /// Whether notification message is HTML or plain text.
@@ -1807,7 +2077,8 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     /// Priority, see https://pushover.net/api#priority
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<String>,
-    /// How often the Pushover servers will send the same notification to the user. Must be at least 30 seconds.
+    /// How often the Pushover servers will send the same notification to the user.
+    /// Must be at least 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry: Option<String>,
     /// Whether or not to notify about resolved alerts.
@@ -1819,10 +2090,15 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     /// Notification title.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// The secret's key that contains the registered application's API token, see https://pushover.net/apps. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator. Either `token` or `tokenFile` is required.
+    /// The secret's key that contains the registered application's API token, see https://pushover.net/apps.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
+    /// Either `token` or `tokenFile` is required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<AlertmanagerConfigReceiversPushoverConfigsToken>,
-    /// The token file that contains the registered application's API token, see https://pushover.net/apps. Either `token` or `tokenFile` is required. It requires Alertmanager >= v0.26.0.
+    /// The token file that contains the registered application's API token, see https://pushover.net/apps.
+    /// Either `token` or `tokenFile` is required.
+    /// It requires Alertmanager >= v0.26.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenFile")]
     pub token_file: Option<String>,
     /// A supplementary URL shown alongside the message.
@@ -1831,10 +2107,15 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     /// A title for supplementary URL, otherwise just the URL is shown
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlTitle")]
     pub url_title: Option<String>,
-    /// The secret's key that contains the recipient user's user key. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator. Either `userKey` or `userKeyFile` is required.
+    /// The secret's key that contains the recipient user's user key.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
+    /// Either `userKey` or `userKeyFile` is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userKey")]
     pub user_key: Option<AlertmanagerConfigReceiversPushoverConfigsUserKey>,
-    /// The user key file that contains the recipient user's user key. Either `userKey` or `userKeyFile` is required. It requires Alertmanager >= v0.26.0.
+    /// The user key file that contains the recipient user's user key.
+    /// Either `userKey` or `userKeyFile` is required.
+    /// It requires Alertmanager >= v0.26.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userKeyFile")]
     pub user_key_file: Option<String>,
 }
@@ -1842,13 +2123,18 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -1865,15 +2151,20 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -1883,7 +2174,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1891,23 +2184,29 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorizationCred
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1915,12 +2214,15 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthPassword
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1928,12 +2230,17 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBasicAuthUsername
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1944,13 +2251,16 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigBearerTokenSecret
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -1961,7 +2271,8 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -1977,7 +2288,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1990,7 +2303,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientIdCon
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1998,12 +2313,15 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientIdSec
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2047,7 +2365,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2060,7 +2380,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCaConfig
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2084,7 +2406,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2097,7 +2421,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCertConf
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2110,7 +2436,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCertSecr
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2118,12 +2446,17 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigKeySecre
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the registered application's API token, see https://pushover.net/apps. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator. Either `token` or `tokenFile` is required.
+/// The secret's key that contains the registered application's API token, see https://pushover.net/apps.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
+/// Either `token` or `tokenFile` is required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsToken {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2131,12 +2464,17 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsToken {
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the recipient user's user key. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator. Either `userKey` or `userKeyFile` is required.
+/// The secret's key that contains the recipient user's user key.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
+/// Either `userKey` or `userKeyFile` is required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversPushoverConfigsUserKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2144,13 +2482,16 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsUserKey {
     pub optional: Option<bool>,
 }
 
-/// SlackConfig configures notifications via Slack. See https://prometheus.io/docs/alerting/latest/configuration/#slack_config
+/// SlackConfig configures notifications via Slack.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#slack_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigs {
     /// A list of Slack actions that are sent with each notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<AlertmanagerConfigReceiversSlackConfigsActions>>,
-    /// The secret's key that contains the Slack webhook URL. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the Slack webhook URL.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<AlertmanagerConfigReceiversSlackConfigsApiUrl>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "callbackId")]
@@ -2199,10 +2540,17 @@ pub struct AlertmanagerConfigReceiversSlackConfigs {
     pub username: Option<String>,
 }
 
-/// SlackAction configures a single Slack action that is sent with each notification. See https://api.slack.com/docs/message-attachments#action_fields and https://api.slack.com/docs/message-buttons for more information.
+/// SlackAction configures a single Slack action that is sent with each
+/// notification.
+/// See https://api.slack.com/docs/message-attachments#action_fields and
+/// https://api.slack.com/docs/message-buttons for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsActions {
-    /// SlackConfirmationField protect users from destructive actions or particularly distinguished decisions by asking them to confirm their button click one more time. See https://api.slack.com/docs/interactive-message-field-guide#confirmation_fields for more information.
+    /// SlackConfirmationField protect users from destructive actions or
+    /// particularly distinguished decisions by asking them to confirm their button
+    /// click one more time.
+    /// See https://api.slack.com/docs/interactive-message-field-guide#confirmation_fields
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub confirm: Option<AlertmanagerConfigReceiversSlackConfigsActionsConfirm>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2218,7 +2566,11 @@ pub struct AlertmanagerConfigReceiversSlackConfigsActions {
     pub value: Option<String>,
 }
 
-/// SlackConfirmationField protect users from destructive actions or particularly distinguished decisions by asking them to confirm their button click one more time. See https://api.slack.com/docs/interactive-message-field-guide#confirmation_fields for more information.
+/// SlackConfirmationField protect users from destructive actions or
+/// particularly distinguished decisions by asking them to confirm their button
+/// click one more time.
+/// See https://api.slack.com/docs/interactive-message-field-guide#confirmation_fields
+/// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsActionsConfirm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dismissText")]
@@ -2230,12 +2582,16 @@ pub struct AlertmanagerConfigReceiversSlackConfigsActionsConfirm {
     pub title: Option<String>,
 }
 
-/// The secret's key that contains the Slack webhook URL. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the Slack webhook URL.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsApiUrl {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2243,7 +2599,10 @@ pub struct AlertmanagerConfigReceiversSlackConfigsApiUrl {
     pub optional: Option<bool>,
 }
 
-/// SlackField configures a single Slack field that is sent with each notification. Each field must contain a title, value, and optionally, a boolean value to indicate if the field is short enough to be displayed next to other fields designated as short. See https://api.slack.com/docs/message-attachments#fields for more information.
+/// SlackField configures a single Slack field that is sent with each notification.
+/// Each field must contain a title, value, and optionally, a boolean value to indicate if the field
+/// is short enough to be displayed next to other fields designated as short.
+/// See https://api.slack.com/docs/message-attachments#fields for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2255,13 +2614,18 @@ pub struct AlertmanagerConfigReceiversSlackConfigsFields {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -2278,15 +2642,20 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -2296,7 +2665,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2304,23 +2675,29 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorizationCredent
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2328,12 +2705,15 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2341,12 +2721,17 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2357,13 +2742,16 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigBearerTokenSecret {
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -2374,7 +2762,8 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2390,7 +2779,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2403,7 +2794,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientIdConfig
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2411,12 +2804,15 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientIdSecret
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2460,7 +2856,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2473,7 +2871,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCaConfigMap
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2497,7 +2897,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2510,7 +2912,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCertConfigM
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2523,7 +2927,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCertSecret 
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2531,10 +2937,12 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// SNSConfig configures notifications via AWS SNS. See https://prometheus.io/docs/alerting/latest/configuration/#sns_configs
+/// SNSConfig configures notifications via AWS SNS.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#sns_configs
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigs {
-    /// The SNS API URL i.e. https://sns.us-east-2.amazonaws.com. If not specified, the SNS API URL from the SNS SDK will be used.
+    /// The SNS API URL i.e. https://sns.us-east-2.amazonaws.com.
+    /// If not specified, the SNS API URL from the SNS SDK will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<String>,
     /// SNS message attributes.
@@ -2546,7 +2954,8 @@ pub struct AlertmanagerConfigReceiversSnsConfigs {
     /// The message content of the SNS notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Phone number if message is delivered via SMS in E.164 format. If you don't specify this value, you must specify a value for the TopicARN or TargetARN.
+    /// Phone number if message is delivered via SMS in E.164 format.
+    /// If you don't specify this value, you must specify a value for the TopicARN or TargetARN.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "phoneNumber")]
     pub phone_number: Option<String>,
     /// Whether or not to notify about resolved alerts.
@@ -2558,10 +2967,12 @@ pub struct AlertmanagerConfigReceiversSnsConfigs {
     /// Subject line when the message is delivered to email endpoints.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
-    /// The  mobile platform endpoint ARN if message is delivered via mobile notifications. If you don't specify this value, you must specify a value for the topic_arn or PhoneNumber.
+    /// The  mobile platform endpoint ARN if message is delivered via mobile notifications.
+    /// If you don't specify this value, you must specify a value for the topic_arn or PhoneNumber.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetARN")]
     pub target_arn: Option<String>,
-    /// SNS topic ARN, i.e. arn:aws:sns:us-east-2:698519295917:My-Topic If you don't specify this value, you must specify a value for the PhoneNumber or TargetARN.
+    /// SNS topic ARN, i.e. arn:aws:sns:us-east-2:698519295917:My-Topic
+    /// If you don't specify this value, you must specify a value for the PhoneNumber or TargetARN.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicARN")]
     pub topic_arn: Option<String>,
 }
@@ -2569,13 +2980,18 @@ pub struct AlertmanagerConfigReceiversSnsConfigs {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -2592,15 +3008,20 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -2610,7 +3031,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2618,23 +3041,29 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentia
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2642,12 +3071,15 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2655,12 +3087,17 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2671,13 +3108,16 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret {
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -2688,7 +3128,8 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -2704,7 +3145,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2717,7 +3160,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdConfigMa
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2725,12 +3170,15 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdSecret {
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2774,7 +3222,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2787,7 +3237,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCaConfigMap {
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2811,7 +3263,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2824,7 +3278,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCertConfigMap
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2837,7 +3293,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCertSecret {
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2848,7 +3306,8 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigKeySecret {
 /// Configures AWS's Signature Verification 4 signing process to sign requests.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsSigv4 {
-    /// AccessKey is the AWS API key. If not specified, the environment variable `AWS_ACCESS_KEY_ID` is used.
+    /// AccessKey is the AWS API key. If not specified, the environment variable
+    /// `AWS_ACCESS_KEY_ID` is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKey")]
     pub access_key: Option<AlertmanagerConfigReceiversSnsConfigsSigv4AccessKey>,
     /// Profile is the named AWS profile used to authenticate.
@@ -2860,17 +3319,21 @@ pub struct AlertmanagerConfigReceiversSnsConfigsSigv4 {
     /// RoleArn is the named AWS profile used to authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleArn")]
     pub role_arn: Option<String>,
-    /// SecretKey is the AWS API secret. If not specified, the environment variable `AWS_SECRET_ACCESS_KEY` is used.
+    /// SecretKey is the AWS API secret. If not specified, the environment
+    /// variable `AWS_SECRET_ACCESS_KEY` is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
     pub secret_key: Option<AlertmanagerConfigReceiversSnsConfigsSigv4SecretKey>,
 }
 
-/// AccessKey is the AWS API key. If not specified, the environment variable `AWS_ACCESS_KEY_ID` is used.
+/// AccessKey is the AWS API key. If not specified, the environment variable
+/// `AWS_ACCESS_KEY_ID` is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsSigv4AccessKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2878,12 +3341,15 @@ pub struct AlertmanagerConfigReceiversSnsConfigsSigv4AccessKey {
     pub optional: Option<bool>,
 }
 
-/// SecretKey is the AWS API secret. If not specified, the environment variable `AWS_SECRET_ACCESS_KEY` is used.
+/// SecretKey is the AWS API secret. If not specified, the environment
+/// variable `AWS_SECRET_ACCESS_KEY` is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversSnsConfigsSigv4SecretKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2891,18 +3357,27 @@ pub struct AlertmanagerConfigReceiversSnsConfigsSigv4SecretKey {
     pub optional: Option<bool>,
 }
 
-/// TelegramConfig configures notifications via Telegram. See https://prometheus.io/docs/alerting/latest/configuration/#telegram_config
+/// TelegramConfig configures notifications via Telegram.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#telegram_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigs {
-    /// The Telegram API URL i.e. https://api.telegram.org. If not specified, default API URL will be used.
+    /// The Telegram API URL i.e. https://api.telegram.org.
+    /// If not specified, default API URL will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<String>,
-    /// Telegram bot token. It is mutually exclusive with `botTokenFile`. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator. 
-    ///  Either `botToken` or `botTokenFile` is required.
+    /// Telegram bot token. It is mutually exclusive with `botTokenFile`.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
+    /// 
+    /// 
+    /// Either `botToken` or `botTokenFile` is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "botToken")]
     pub bot_token: Option<AlertmanagerConfigReceiversTelegramConfigsBotToken>,
-    /// File to read the Telegram bot token from. It is mutually exclusive with `botToken`. Either `botToken` or `botTokenFile` is required. 
-    ///  It requires Alertmanager >= v0.26.0.
+    /// File to read the Telegram bot token from. It is mutually exclusive with `botToken`.
+    /// Either `botToken` or `botTokenFile` is required.
+    /// 
+    /// 
+    /// It requires Alertmanager >= v0.26.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "botTokenFile")]
     pub bot_token_file: Option<String>,
     /// The Telegram chat ID.
@@ -2925,13 +3400,19 @@ pub struct AlertmanagerConfigReceiversTelegramConfigs {
     pub send_resolved: Option<bool>,
 }
 
-/// Telegram bot token. It is mutually exclusive with `botTokenFile`. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator. 
-///  Either `botToken` or `botTokenFile` is required.
+/// Telegram bot token. It is mutually exclusive with `botTokenFile`.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
+/// 
+/// 
+/// Either `botToken` or `botTokenFile` is required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsBotToken {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2942,13 +3423,18 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsBotToken {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -2965,15 +3451,20 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -2983,7 +3474,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2991,23 +3484,29 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorizationCred
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3015,12 +3514,15 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthPassword
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3028,12 +3530,17 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBasicAuthUsername
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3044,13 +3551,16 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigBearerTokenSecret
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -3061,7 +3571,8 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -3077,7 +3588,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3090,7 +3603,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientIdCon
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3098,12 +3613,15 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientIdSec
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3147,7 +3665,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3160,7 +3680,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCaConfig
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3184,7 +3706,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3197,7 +3721,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCertConf
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3210,7 +3736,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCertSecr
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3218,7 +3746,8 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigKeySecre
     pub optional: Option<bool>,
 }
 
-/// TelegramConfig configures notifications via Telegram. See https://prometheus.io/docs/alerting/latest/configuration/#telegram_config
+/// TelegramConfig configures notifications via Telegram.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#telegram_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlertmanagerConfigReceiversTelegramConfigsParseMode {
     MarkdownV2,
@@ -3227,10 +3756,13 @@ pub enum AlertmanagerConfigReceiversTelegramConfigsParseMode {
     Html,
 }
 
-/// VictorOpsConfig configures notifications via VictorOps. See https://prometheus.io/docs/alerting/latest/configuration/#victorops_config
+/// VictorOpsConfig configures notifications via VictorOps.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#victorops_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigs {
-    /// The secret's key that contains the API key to use when talking to the VictorOps API. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the API key to use when talking to the VictorOps API.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<AlertmanagerConfigReceiversVictoropsConfigsApiKey>,
     /// The VictorOps API URL.
@@ -3262,12 +3794,16 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigs {
     pub state_message: Option<String>,
 }
 
-/// The secret's key that contains the API key to use when talking to the VictorOps API. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the API key to use when talking to the VictorOps API.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsApiKey {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3287,13 +3823,18 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsCustomFields {
 /// The HTTP client's configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -3310,15 +3851,20 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -3328,7 +3874,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3336,23 +3884,29 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCre
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3360,12 +3914,15 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthPasswor
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3373,12 +3930,17 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthUsernam
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3389,13 +3951,16 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecre
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -3406,7 +3971,8 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -3422,7 +3988,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3435,7 +4003,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdCo
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3443,12 +4013,15 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdSe
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3492,7 +4065,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3505,7 +4080,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaConfi
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3529,7 +4106,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3542,7 +4121,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertCon
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3555,7 +4136,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertSec
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3563,13 +4146,16 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecr
     pub optional: Option<bool>,
 }
 
-/// WebexConfig configures notification via Cisco Webex See https://prometheus.io/docs/alerting/latest/configuration/#webex_config
+/// WebexConfig configures notification via Cisco Webex
+/// See https://prometheus.io/docs/alerting/latest/configuration/#webex_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigs {
-    /// The Webex Teams API URL i.e. https://webexapis.com/v1/messages Provide if different from the default API URL.
+    /// The Webex Teams API URL i.e. https://webexapis.com/v1/messages
+    /// Provide if different from the default API URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<String>,
-    /// The HTTP client's configuration. You must supply the bot token via the `httpConfig.authorization` field.
+    /// The HTTP client's configuration.
+    /// You must supply the bot token via the `httpConfig.authorization` field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfig>,
     /// Message template
@@ -3583,16 +4169,22 @@ pub struct AlertmanagerConfigReceiversWebexConfigs {
     pub send_resolved: Option<bool>,
 }
 
-/// The HTTP client's configuration. You must supply the bot token via the `httpConfig.authorization` field.
+/// The HTTP client's configuration.
+/// You must supply the bot token via the `httpConfig.authorization` field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -3609,15 +4201,20 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -3627,7 +4224,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3635,23 +4234,29 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredent
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3659,12 +4264,15 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3672,12 +4280,17 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3688,13 +4301,16 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret {
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -3705,7 +4321,8 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -3721,7 +4338,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3734,7 +4353,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdConfig
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3742,12 +4363,15 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdSecret
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3791,7 +4415,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3804,7 +4430,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCaConfigMap
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3828,7 +4456,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3841,7 +4471,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertConfigM
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3854,7 +4486,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertSecret 
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3862,7 +4496,8 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// WebhookConfig configures notifications via a generic receiver supporting the webhook payload. See https://prometheus.io/docs/alerting/latest/configuration/#webhook_config
+/// WebhookConfig configures notifications via a generic receiver supporting the webhook payload.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#webhook_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigs {
     /// HTTP client configuration.
@@ -3874,10 +4509,15 @@ pub struct AlertmanagerConfigReceiversWebhookConfigs {
     /// Whether or not to notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
-    /// The URL to send HTTP POST requests to. `urlSecret` takes precedence over `url`. One of `urlSecret` and `url` should be defined.
+    /// The URL to send HTTP POST requests to. `urlSecret` takes precedence over
+    /// `url`. One of `urlSecret` and `url` should be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    /// The secret's key that contains the webhook URL to send HTTP requests to. `urlSecret` takes precedence over `url`. One of `urlSecret` and `url` should be defined. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the webhook URL to send HTTP requests to.
+    /// `urlSecret` takes precedence over `url`. One of `urlSecret` and `url`
+    /// should be defined.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlSecret")]
     pub url_secret: Option<AlertmanagerConfigReceiversWebhookConfigsUrlSecret>,
 }
@@ -3885,13 +4525,18 @@ pub struct AlertmanagerConfigReceiversWebhookConfigs {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -3908,15 +4553,20 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -3926,7 +4576,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3934,23 +4586,29 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorizationCrede
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3958,12 +4616,15 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthPassword 
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3971,12 +4632,17 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBasicAuthUsername 
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3987,13 +4653,16 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigBearerTokenSecret 
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -4004,7 +4673,8 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -4020,7 +4690,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4033,7 +4705,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientIdConf
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4041,12 +4715,15 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientIdSecr
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4090,7 +4767,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4103,7 +4782,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCaConfigM
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4127,7 +4808,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4140,7 +4823,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCertConfi
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4153,7 +4838,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCertSecre
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4161,12 +4848,18 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigKeySecret
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the webhook URL to send HTTP requests to. `urlSecret` takes precedence over `url`. One of `urlSecret` and `url` should be defined. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the webhook URL to send HTTP requests to.
+/// `urlSecret` takes precedence over `url`. One of `urlSecret` and `url`
+/// should be defined.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigsUrlSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4174,12 +4867,15 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsUrlSecret {
     pub optional: Option<bool>,
 }
 
-/// WeChatConfig configures notifications via WeChat. See https://prometheus.io/docs/alerting/latest/configuration/#wechat_config
+/// WeChatConfig configures notifications via WeChat.
+/// See https://prometheus.io/docs/alerting/latest/configuration/#wechat_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentID")]
     pub agent_id: Option<String>,
-    /// The secret's key that contains the WeChat API key. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the WeChat API key.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiSecret")]
     pub api_secret: Option<AlertmanagerConfigReceiversWechatConfigsApiSecret>,
     /// The WeChat API URL.
@@ -4207,12 +4903,16 @@ pub struct AlertmanagerConfigReceiversWechatConfigs {
     pub to_user: Option<String>,
 }
 
-/// The secret's key that contains the WeChat API key. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the WeChat API key.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsApiSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4223,13 +4923,18 @@ pub struct AlertmanagerConfigReceiversWechatConfigsApiSecret {
 /// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfig {
-    /// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// Authorization header configuration for the client.
+    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// BasicAuth for the client.
+    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuth>,
-    /// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+    /// The secret's key that contains the bearer token to be used by the client
+    /// for authentication.
+    /// The secret needs to be in the same namespace as the AlertmanagerConfig
+    /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
@@ -4246,15 +4951,20 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfig {
     pub tls_config: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client. This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// Authorization header configuration for the client.
+/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCredentials>,
-    /// Defines the authentication type. The value is case-insensitive. 
-    ///  "Basic" is not a supported value. 
-    ///  Default: "Bearer"
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// 
+    /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -4264,7 +4974,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorization {
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCredentials {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4272,23 +4984,29 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCreden
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client. This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// BasicAuth for the client.
+/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuth {
-    /// `password` specifies a key of a Secret containing the password for authentication.
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthPassword>,
-    /// `username` specifies a key of a Secret containing the username for authentication.
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// `password` specifies a key of a Secret containing the password for authentication.
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthPassword {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4296,12 +5014,15 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// `username` specifies a key of a Secret containing the username for authentication.
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthUsername {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4309,12 +5030,17 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token to be used by the client for authentication. The secret needs to be in the same namespace as the AlertmanagerConfig object and accessible by the Prometheus Operator.
+/// The secret's key that contains the bearer token to be used by the client
+/// for authentication.
+/// The secret needs to be in the same namespace as the AlertmanagerConfig
+/// object and accessible by the Prometheus Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4325,13 +5051,16 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret {
 /// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2 {
-    /// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
     #[serde(rename = "clientId")]
     pub client_id: AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId,
-    /// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
     #[serde(rename = "clientSecret")]
     pub client_secret: AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret,
-    /// `endpointParams` configures the HTTP parameters to append to the token URL.
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -4342,7 +5071,8 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2 {
     pub token_url: String,
 }
 
-/// `clientId` specifies a key of a Secret or ConfigMap containing the OAuth2 client's ID.
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
@@ -4358,7 +5088,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId {
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4371,7 +5103,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdConfi
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4379,12 +5113,15 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdSecre
     pub optional: Option<bool>,
 }
 
-/// `clientSecret` specifies a key of a Secret containing the OAuth2 client's secret.
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4428,7 +5165,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCa {
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4441,7 +5180,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaConfigMa
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4465,7 +5206,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCert {
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertConfigMap {
     /// The key to select.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4478,7 +5221,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertConfig
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4491,7 +5236,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertSecret
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4499,34 +5246,57 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigKeySecret 
     pub optional: Option<bool>,
 }
 
-/// The Alertmanager route definition for alerts matching the resource's namespace. If present, it will be added to the generated Alertmanager configuration as a first-level route.
+/// The Alertmanager route definition for alerts matching the resource's
+/// namespace. If present, it will be added to the generated Alertmanager
+/// configuration as a first-level route.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigRoute {
     /// ActiveTimeIntervals is a list of MuteTimeInterval names when this route should be active.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeTimeIntervals")]
     pub active_time_intervals: Option<Vec<String>>,
-    /// Boolean indicating whether an alert should continue matching subsequent sibling nodes. It will always be overridden to true for the first-level route by the Prometheus operator.
+    /// Boolean indicating whether an alert should continue matching subsequent
+    /// sibling nodes. It will always be overridden to true for the first-level
+    /// route by the Prometheus operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "continue")]
     pub r#continue: Option<bool>,
-    /// List of labels to group by. Labels must not be repeated (unique list). Special label "..." (aggregate by all possible labels), if provided, must be the only element in the list.
+    /// List of labels to group by.
+    /// Labels must not be repeated (unique list).
+    /// Special label "..." (aggregate by all possible labels), if provided, must be the only element in the list.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupBy")]
     pub group_by: Option<Vec<String>>,
-    /// How long to wait before sending an updated notification. Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$` Example: "5m"
+    /// How long to wait before sending an updated notification.
+    /// Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$`
+    /// Example: "5m"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupInterval")]
     pub group_interval: Option<String>,
-    /// How long to wait before sending the initial notification. Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$` Example: "30s"
+    /// How long to wait before sending the initial notification.
+    /// Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$`
+    /// Example: "30s"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupWait")]
     pub group_wait: Option<String>,
-    /// List of matchers that the alert's labels should match. For the first level route, the operator removes any existing equality and regexp matcher on the `namespace` label and adds a `namespace: <object namespace>` matcher.
+    /// List of matchers that the alert's labels should match. For the first
+    /// level route, the operator removes any existing equality and regexp
+    /// matcher on the `namespace` label and adds a `namespace: <object
+    /// namespace>` matcher.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matchers: Option<Vec<AlertmanagerConfigRouteMatchers>>,
-    /// Note: this comment applies to the field definition above but appears below otherwise it gets included in the generated manifest. CRD schema doesn't support self-referential types for now (see https://github.com/kubernetes/kubernetes/issues/62872). We have to use an alternative type to circumvent the limitation. The downside is that the Kube API can't validate the data beyond the fact that it is a valid JSON representation. MuteTimeIntervals is a list of MuteTimeInterval names that will mute this route when matched,
+    /// Note: this comment applies to the field definition above but appears
+    /// below otherwise it gets included in the generated manifest.
+    /// CRD schema doesn't support self-referential types for now (see
+    /// https://github.com/kubernetes/kubernetes/issues/62872). We have to use
+    /// an alternative type to circumvent the limitation. The downside is that
+    /// the Kube API can't validate the data beyond the fact that it is a valid
+    /// JSON representation.
+    /// MuteTimeIntervals is a list of MuteTimeInterval names that will mute this route when matched,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "muteTimeIntervals")]
     pub mute_time_intervals: Option<Vec<String>>,
-    /// Name of the receiver for this route. If not empty, it should be listed in the `receivers` field.
+    /// Name of the receiver for this route. If not empty, it should be listed in
+    /// the `receivers` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub receiver: Option<String>,
-    /// How long to wait before repeating the last notification. Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$` Example: "4h"
+    /// How long to wait before repeating the last notification.
+    /// Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$`
+    /// Example: "4h"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repeatInterval")]
     pub repeat_interval: Option<String>,
     /// Child routes.
@@ -4537,12 +5307,14 @@ pub struct AlertmanagerConfigRoute {
 /// Matcher defines how to match on alert's labels.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AlertmanagerConfigRouteMatchers {
-    /// Match operation available with AlertManager >= v0.22.0 and takes precedence over Regex (deprecated) if non-empty.
+    /// Match operation available with AlertManager >= v0.22.0 and
+    /// takes precedence over Regex (deprecated) if non-empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchType")]
     pub match_type: Option<AlertmanagerConfigRouteMatchersMatchType>,
     /// Label to match.
     pub name: String,
-    /// Whether to match on equality (false) or regular-expression (true). Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
+    /// Whether to match on equality (false) or regular-expression (true).
+    /// Deprecated: for AlertManager >= v0.22.0, `matchType` should be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<bool>,
     /// Label value to match.
