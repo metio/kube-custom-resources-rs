@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "core.kubeadmiral.io", version = "v1alpha1", kind = "OverridePolicy", plural = "overridepolicies")]
@@ -169,7 +168,7 @@ pub struct OverridePolicyOverrideRulesOverridersJsonpatch {
     pub path: String,
     /// Value is the value(s) required by the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// StringMapOverrider represents the rules dedicated to handling resource labels/annotations

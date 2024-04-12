@@ -4,7 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 /// Spec defines the desired behavior of the FederatedObject.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -23,7 +23,7 @@ pub struct FederatedObjectSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placements: Option<Vec<FederatedObjectPlacements>>,
     /// Template is the base template of the Kubernetes object to be propagated.
-    pub template: HashMap<String, serde_json::Value>,
+    pub template: BTreeMap<String, serde_json::Value>,
 }
 
 /// LeaderReference contains the identifying metadata of a "leader" Kubernetes object.
@@ -63,7 +63,7 @@ pub struct FederatedObjectOverridesClustersPatches {
     pub op: Option<String>,
     pub path: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// PlacementWithController describes the member clusters that a Kubernetes object should be propagated to.

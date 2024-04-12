@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// AssignSpec defines the desired state of Assign.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -206,7 +205,7 @@ pub struct AssignParametersAssign {
     pub from_metadata: Option<AssignParametersAssignFromMetadata>,
     /// Value is a constant value that will be assigned to `location`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ExternalData describes the external data provider to be used for mutation.

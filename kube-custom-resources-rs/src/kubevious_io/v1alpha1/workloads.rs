@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
@@ -478,7 +477,7 @@ pub struct WorkloadTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<WorkloadTemplateSpecTopologySpreadConstraints>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub volumes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1129,9 +1128,9 @@ pub struct WorkloadTemplateSpecContainersReadinessProbeTcpSocket {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadTemplateSpecContainersResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<HashMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<HashMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1669,9 +1668,9 @@ pub struct WorkloadTemplateSpecEphemeralContainersReadinessProbeTcpSocket {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadTemplateSpecEphemeralContainersResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<HashMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<HashMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2203,9 +2202,9 @@ pub struct WorkloadTemplateSpecInitContainersReadinessProbeTcpSocket {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadTemplateSpecInitContainersResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<HashMap<String, serde_json::Value>>,
+    pub limits: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<HashMap<String, serde_json::Value>>,
+    pub requests: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

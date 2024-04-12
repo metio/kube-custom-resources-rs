@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// KustomizationSpec defines the configuration to calculate the desired state from a Source using Kustomize.
@@ -64,7 +63,7 @@ pub struct KustomizationSpec {
     /// Strategic merge patches, defined as inline YAML objects.
     /// Deprecated: Use Patches instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesStrategicMerge")]
-    pub patches_strategic_merge: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub patches_strategic_merge: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Path to the directory containing the kustomization.yaml file, or the
     /// set of plain YAMLs a kustomization.yaml should be generated for.
     /// Defaults to 'None', which translates to the root path of the SourceRef.
@@ -303,7 +302,7 @@ pub struct KustomizationPatchesJson6902Patch {
     /// Value contains a valid JSON structure. The meaning of the value depends on the value of Op, and is NOT taken into
     /// account by all operations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// JSON6902 is a JSON6902 operation object.

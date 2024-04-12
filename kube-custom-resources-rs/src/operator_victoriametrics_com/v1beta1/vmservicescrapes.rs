@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// VMServiceScrapeSpec defines the desired state of VMServiceScrape
@@ -263,7 +262,7 @@ pub struct VMServiceScrapeEndpointsMetricRelabelConfigs {
     pub action: Option<String>,
     /// If represents metricsQL match expression (or list of expressions): '{__name__=~"foo_.*"}'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "if")]
-    pub r#if: Option<HashMap<String, serde_json::Value>>,
+    pub r#if: Option<BTreeMap<String, serde_json::Value>>,
     /// Labels is used together with Match for `action: graphite`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -393,7 +392,7 @@ pub struct VMServiceScrapeEndpointsRelabelConfigs {
     pub action: Option<String>,
     /// If represents metricsQL match expression (or list of expressions): '{__name__=~"foo_.*"}'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "if")]
-    pub r#if: Option<HashMap<String, serde_json::Value>>,
+    pub r#if: Option<BTreeMap<String, serde_json::Value>>,
     /// Labels is used together with Match for `action: graphite`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,

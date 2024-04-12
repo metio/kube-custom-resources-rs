@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// Spec declares policy behaviors.
@@ -45,7 +44,7 @@ pub struct ClusterCleanupPolicyConditions {
 pub struct ClusterCleanupPolicyConditionsAll {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -54,7 +53,7 @@ pub struct ClusterCleanupPolicyConditionsAll {
     pub operator: Option<ClusterCleanupPolicyConditionsAllOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -79,7 +78,7 @@ pub enum ClusterCleanupPolicyConditionsAllOperator {
 pub struct ClusterCleanupPolicyConditionsAny {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -88,7 +87,7 @@ pub struct ClusterCleanupPolicyConditionsAny {
     pub operator: Option<ClusterCleanupPolicyConditionsAnyOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -155,7 +154,7 @@ pub struct ClusterCleanupPolicyContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -219,13 +218,13 @@ pub struct ClusterCleanupPolicyContextImageRegistryImageRegistryCredentials {
 pub struct ClusterCleanupPolicyContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ExcludeResources defines when cleanuppolicy should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.

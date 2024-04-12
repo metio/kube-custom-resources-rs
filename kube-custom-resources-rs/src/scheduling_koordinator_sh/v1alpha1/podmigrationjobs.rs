@@ -4,7 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -106,7 +106,7 @@ pub struct PodMigrationJobReservationOptions {
     pub reservation_ref: Option<PodMigrationJobReservationOptionsReservationRef>,
     /// Template is the object that describes the Reservation that will be created if not specified ReservationRef
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<HashMap<String, serde_json::Value>>,
+    pub template: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// PreemptionOption decides whether to preempt other Pods. The preemption is safe and reserves resources for preempted Pods.

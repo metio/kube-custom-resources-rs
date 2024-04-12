@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
@@ -428,7 +427,7 @@ pub struct ClusterClassPatchesDefinitionsJsonPatches {
     /// which cannot be produced by another type (unset type field).
     /// Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
     /// ValueFrom defines the value of the patch.
     /// Note: Either Value or ValueFrom is required for add and replace
     /// operations. Only one of them is allowed to be set at the same time.
@@ -581,21 +580,21 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// NOTE: This field uses PreserveUnknownFields and Schemaless,
     /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
-    pub additional_properties: Option<HashMap<String, serde_json::Value>>,
+    pub additional_properties: Option<BTreeMap<String, serde_json::Value>>,
     /// Default is the default value of the variable.
     /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// Description is a human-readable description of this variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// Enum is the list of valid values of the variable.
     /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enum")]
-    pub r#enum: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub r#enum: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Example is an example for this variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<HashMap<String, serde_json::Value>>,
+    pub example: Option<BTreeMap<String, serde_json::Value>>,
     /// ExclusiveMaximum specifies if the Maximum is exclusive.
     /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
@@ -615,7 +614,7 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// NOTE: This field uses PreserveUnknownFields and Schemaless,
     /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<HashMap<String, serde_json::Value>>,
+    pub items: Option<BTreeMap<String, serde_json::Value>>,
     /// MaxItems is the max length of an array variable.
     /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxItems")]
@@ -654,7 +653,7 @@ pub struct ClusterClassVariablesSchemaOpenApiv3Schema {
     /// NOTE: This field uses PreserveUnknownFields and Schemaless,
     /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub properties: Option<HashMap<String, serde_json::Value>>,
+    pub properties: Option<BTreeMap<String, serde_json::Value>>,
     /// Required specifies which fields of an object are required.
     /// NOTE: Can only be set if type is object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1328,21 +1327,21 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// NOTE: This field uses PreserveUnknownFields and Schemaless,
     /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
-    pub additional_properties: Option<HashMap<String, serde_json::Value>>,
+    pub additional_properties: Option<BTreeMap<String, serde_json::Value>>,
     /// Default is the default value of the variable.
     /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// Description is a human-readable description of this variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// Enum is the list of valid values of the variable.
     /// NOTE: Can be set for all types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enum")]
-    pub r#enum: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub r#enum: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Example is an example for this variable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<HashMap<String, serde_json::Value>>,
+    pub example: Option<BTreeMap<String, serde_json::Value>>,
     /// ExclusiveMaximum specifies if the Maximum is exclusive.
     /// NOTE: Can only be set if type is integer or number.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
@@ -1362,7 +1361,7 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// NOTE: This field uses PreserveUnknownFields and Schemaless,
     /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<HashMap<String, serde_json::Value>>,
+    pub items: Option<BTreeMap<String, serde_json::Value>>,
     /// MaxItems is the max length of an array variable.
     /// NOTE: Can only be set if type is array.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxItems")]
@@ -1401,7 +1400,7 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3Schema {
     /// NOTE: This field uses PreserveUnknownFields and Schemaless,
     /// because recursive validation is not possible.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub properties: Option<HashMap<String, serde_json::Value>>,
+    pub properties: Option<BTreeMap<String, serde_json::Value>>,
     /// Required specifies which fields of an object are required.
     /// NOTE: Can only be set if type is object.
     #[serde(default, skip_serializing_if = "Option::is_none")]

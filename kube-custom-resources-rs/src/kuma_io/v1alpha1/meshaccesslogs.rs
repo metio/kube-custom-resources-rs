@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// Spec is the specification of the Kuma MeshAccessLog resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -114,7 +113,7 @@ pub struct MeshAccessLogFromDefaultBackendsOpenTelemetry {
     /// It can contain placeholders available on
     /// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub body: Option<HashMap<String, serde_json::Value>>,
+    pub body: Option<BTreeMap<String, serde_json::Value>>,
     /// Endpoint of OpenTelemetry collector. An empty port defaults to 4317.
     pub endpoint: String,
 }
@@ -339,7 +338,7 @@ pub struct MeshAccessLogToDefaultBackendsOpenTelemetry {
     /// It can contain placeholders available on
     /// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub body: Option<HashMap<String, serde_json::Value>>,
+    pub body: Option<BTreeMap<String, serde_json::Value>>,
     /// Endpoint of OpenTelemetry collector. An empty port defaults to 4317.
     pub endpoint: String,
 }

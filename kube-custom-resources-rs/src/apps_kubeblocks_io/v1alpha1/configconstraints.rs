@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// ConfigConstraintSpec defines the desired state of ConfigConstraint
@@ -65,7 +64,7 @@ pub struct ConfigConstraintConfigurationSchema {
     pub cue: Option<String>,
     /// Transforms the schema from CUE to json for further OpenAPI validation
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub schema: Option<HashMap<String, serde_json::Value>>,
+    pub schema: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

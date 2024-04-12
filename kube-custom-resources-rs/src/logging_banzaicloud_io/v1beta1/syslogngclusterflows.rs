@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "logging.banzaicloud.io", version = "v1beta1", kind = "SyslogNGClusterFlow", plural = "syslogngclusterflows")]
@@ -40,11 +39,11 @@ pub struct SyslogNGClusterFlowFilters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterFlowFiltersMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub and: Option<HashMap<String, serde_json::Value>>,
+    pub and: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub not: Option<HashMap<String, serde_json::Value>>,
+    pub not: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub or: Option<HashMap<String, serde_json::Value>>,
+    pub or: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<SyslogNGClusterFlowFiltersMatchRegexp>,
 }
@@ -123,11 +122,11 @@ pub struct SyslogNGClusterFlowFiltersRewriteGroupUnset {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterFlowFiltersRewriteGroupUnsetCondition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub and: Option<HashMap<String, serde_json::Value>>,
+    pub and: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub not: Option<HashMap<String, serde_json::Value>>,
+    pub not: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub or: Option<HashMap<String, serde_json::Value>>,
+    pub or: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<SyslogNGClusterFlowFiltersRewriteGroupUnsetConditionRegexp>,
 }
@@ -158,11 +157,11 @@ pub struct SyslogNGClusterFlowFiltersRewriteRename {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterFlowFiltersRewriteRenameCondition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub and: Option<HashMap<String, serde_json::Value>>,
+    pub and: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub not: Option<HashMap<String, serde_json::Value>>,
+    pub not: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub or: Option<HashMap<String, serde_json::Value>>,
+    pub or: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<SyslogNGClusterFlowFiltersRewriteRenameConditionRegexp>,
 }
@@ -191,11 +190,11 @@ pub struct SyslogNGClusterFlowFiltersRewriteSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterFlowFiltersRewriteSetCondition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub and: Option<HashMap<String, serde_json::Value>>,
+    pub and: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub not: Option<HashMap<String, serde_json::Value>>,
+    pub not: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub or: Option<HashMap<String, serde_json::Value>>,
+    pub or: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<SyslogNGClusterFlowFiltersRewriteSetConditionRegexp>,
 }
@@ -229,11 +228,11 @@ pub struct SyslogNGClusterFlowFiltersRewriteSubst {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterFlowFiltersRewriteSubstCondition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub and: Option<HashMap<String, serde_json::Value>>,
+    pub and: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub not: Option<HashMap<String, serde_json::Value>>,
+    pub not: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub or: Option<HashMap<String, serde_json::Value>>,
+    pub or: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<SyslogNGClusterFlowFiltersRewriteSubstConditionRegexp>,
 }
@@ -261,11 +260,11 @@ pub struct SyslogNGClusterFlowFiltersRewriteUnset {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterFlowFiltersRewriteUnsetCondition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub and: Option<HashMap<String, serde_json::Value>>,
+    pub and: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub not: Option<HashMap<String, serde_json::Value>>,
+    pub not: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub or: Option<HashMap<String, serde_json::Value>>,
+    pub or: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<SyslogNGClusterFlowFiltersRewriteUnsetConditionRegexp>,
 }
@@ -286,11 +285,11 @@ pub struct SyslogNGClusterFlowFiltersRewriteUnsetConditionRegexp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterFlowMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub and: Option<HashMap<String, serde_json::Value>>,
+    pub and: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub not: Option<HashMap<String, serde_json::Value>>,
+    pub not: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub or: Option<HashMap<String, serde_json::Value>>,
+    pub or: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<SyslogNGClusterFlowMatchRegexp>,
 }

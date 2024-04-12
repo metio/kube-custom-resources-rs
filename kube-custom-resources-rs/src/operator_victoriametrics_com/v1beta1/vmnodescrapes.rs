@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// VMNodeScrapeSpec defines specification for VMNodeScrape.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -201,7 +200,7 @@ pub struct VMNodeScrapeMetricRelabelConfigs {
     pub action: Option<String>,
     /// If represents metricsQL match expression (or list of expressions): '{__name__=~"foo_.*"}'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "if")]
-    pub r#if: Option<HashMap<String, serde_json::Value>>,
+    pub r#if: Option<BTreeMap<String, serde_json::Value>>,
     /// Labels is used together with Match for `action: graphite`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -331,7 +330,7 @@ pub struct VMNodeScrapeRelabelConfigs {
     pub action: Option<String>,
     /// If represents metricsQL match expression (or list of expressions): '{__name__=~"foo_.*"}'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "if")]
-    pub r#if: Option<HashMap<String, serde_json::Value>>,
+    pub r#if: Option<BTreeMap<String, serde_json::Value>>,
     /// Labels is used together with Match for `action: graphite`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,

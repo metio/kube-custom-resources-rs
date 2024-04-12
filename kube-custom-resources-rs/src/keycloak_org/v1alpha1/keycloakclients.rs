@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// KeycloakClientSpec defines the desired state of KeycloakClient.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -219,7 +218,7 @@ pub struct KeycloakClientClientAuthorizationSettingsPolicies {
     pub scopes: Option<Vec<String>>,
     /// Scopes Data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopesData")]
-    pub scopes_data: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub scopes_data: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -248,7 +247,7 @@ pub struct KeycloakClientClientAuthorizationSettingsPoliciesResourcesData {
     pub owner_managed_access: Option<bool>,
     /// The scopes associated with this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scopes: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub scopes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// The type of this resource. It can be used to group different resource instances with the same type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -280,7 +279,7 @@ pub struct KeycloakClientClientAuthorizationSettingsResources {
     pub owner_managed_access: Option<bool>,
     /// The scopes associated with this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scopes: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub scopes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// The type of this resource. It can be used to group different resource instances with the same type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -350,7 +349,7 @@ pub struct KeycloakClientClientAuthorizationSettingsScopesPolicies {
     pub scopes: Option<Vec<String>>,
     /// Scopes Data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopesData")]
-    pub scopes_data: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub scopes_data: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -379,7 +378,7 @@ pub struct KeycloakClientClientAuthorizationSettingsScopesPoliciesResourcesData 
     pub owner_managed_access: Option<bool>,
     /// The scopes associated with this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scopes: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub scopes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// The type of this resource. It can be used to group different resource instances with the same type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -411,7 +410,7 @@ pub struct KeycloakClientClientAuthorizationSettingsScopesResources {
     pub owner_managed_access: Option<bool>,
     /// The scopes associated with this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scopes: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub scopes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// The type of this resource. It can be used to group different resource instances with the same type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,

@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
@@ -51,7 +50,7 @@ pub struct TerraformSpec {
     pub enable_inventory: Option<bool>,
     /// Enterprise is the enterprise configuration placeholder.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub enterprise: Option<HashMap<String, serde_json::Value>>,
+    pub enterprise: Option<BTreeMap<String, serde_json::Value>>,
     /// List of all configuration files to be created in initialization.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileMappings")]
     pub file_mappings: Option<Vec<TerraformFileMappings>>,
@@ -102,7 +101,7 @@ pub struct TerraformSpec {
     pub tfstate: Option<TerraformTfstate>,
     /// Values map to the Terraform variable "values", which is an object of arbitrary values. It is a convenient way to pass values to Terraform resources without having to define a variable for each value. To use this feature, your Terraform file must define the variable "values".
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<HashMap<String, serde_json::Value>>,
+    pub values: Option<BTreeMap<String, serde_json::Value>>,
     /// List of input variables to set for the Terraform program.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vars: Option<Vec<TerraformVars>>,
@@ -2690,7 +2689,7 @@ pub struct TerraformVars {
     /// Name is the name of the variable
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
     /// EnvVarSource represents a source for the value of an EnvVar.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<TerraformVarsValueFrom>,

@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// Desired state of the ClusterIssuer resource.
@@ -645,7 +644,7 @@ pub struct ClusterIssuerAcmeSolversDns01Webhook {
     /// For details on the schema of this field, consult the webhook provider
     /// implementation's documentation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub config: Option<HashMap<String, serde_json::Value>>,
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
     /// The API group name that should be used when POSTing ChallengePayload
     /// resources to the webhook apiserver.
     /// This should be the same as the GroupName specified in the webhook

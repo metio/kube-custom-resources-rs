@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// Spec is the specification of the Kuma MeshProxyPatch resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -82,7 +81,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsClusterJsonPatches {
     pub path: String,
     /// Value must be a valid json value used by replace and add operations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// JsonPatchBlock is one json patch operation block.
@@ -164,7 +163,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsHttpFilterJsonPatches {
     pub path: String,
     /// Value must be a valid json value used by replace and add operations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// JsonPatchBlock is one json patch operation block.
@@ -255,7 +254,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsListenerJsonPatches {
     pub path: String,
     /// Value must be a valid json value used by replace and add operations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// JsonPatchBlock is one json patch operation block.
@@ -339,7 +338,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsNetworkFilterJsonPatches {
     pub path: String,
     /// Value must be a valid json value used by replace and add operations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// JsonPatchBlock is one json patch operation block.
@@ -430,7 +429,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsVirtualHostJsonPatches {
     pub path: String,
     /// Value must be a valid json value used by replace and add operations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// JsonPatchBlock is one json patch operation block.

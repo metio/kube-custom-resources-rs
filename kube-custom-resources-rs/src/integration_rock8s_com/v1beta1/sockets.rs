@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
@@ -945,9 +944,9 @@ pub struct SocketResources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stringTemplates")]
     pub string_templates: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<HashMap<String, serde_json::Value>>,
+    pub template: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub templates: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub templates: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub when: Option<Vec<String>>,
 }
@@ -961,9 +960,9 @@ pub struct SocketResultResources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stringTemplates")]
     pub string_templates: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<HashMap<String, serde_json::Value>>,
+    pub template: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub templates: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub templates: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
 /// Var represents a variable whose value will be sourced from a field in a Kubernetes object.

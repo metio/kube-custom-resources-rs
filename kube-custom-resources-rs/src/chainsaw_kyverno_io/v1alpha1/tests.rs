@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// Test spec.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -61,7 +60,7 @@ pub struct TestBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Catch defines actions to be executed on failure.
@@ -136,7 +135,7 @@ pub struct TestCatchCommandBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -145,7 +144,7 @@ pub struct TestCatchCommandEnv {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
@@ -157,7 +156,7 @@ pub struct TestCatchCommandOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Delete represents a deletion operation.
@@ -189,7 +188,7 @@ pub struct TestCatchDeleteBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
@@ -369,7 +368,7 @@ pub struct TestCatchScriptBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -378,7 +377,7 @@ pub struct TestCatchScriptEnv {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
@@ -390,7 +389,7 @@ pub struct TestCatchScriptOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Sleep defines zzzz.
@@ -502,7 +501,7 @@ pub struct TestStepsBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Catch defines actions to be executed on failure.
@@ -577,7 +576,7 @@ pub struct TestStepsCatchCommandBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -586,7 +585,7 @@ pub struct TestStepsCatchCommandEnv {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
@@ -598,7 +597,7 @@ pub struct TestStepsCatchCommandOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Delete represents a deletion operation.
@@ -630,7 +629,7 @@ pub struct TestStepsCatchDeleteBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
@@ -810,7 +809,7 @@ pub struct TestStepsCatchScriptBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -819,7 +818,7 @@ pub struct TestStepsCatchScriptEnv {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
@@ -831,7 +830,7 @@ pub struct TestStepsCatchScriptOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Sleep defines zzzz.
@@ -974,7 +973,7 @@ pub struct TestStepsFinallyCommandBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -983,7 +982,7 @@ pub struct TestStepsFinallyCommandEnv {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
@@ -995,7 +994,7 @@ pub struct TestStepsFinallyCommandOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Delete represents a deletion operation.
@@ -1027,7 +1026,7 @@ pub struct TestStepsFinallyDeleteBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
@@ -1207,7 +1206,7 @@ pub struct TestStepsFinallyScriptBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -1216,7 +1215,7 @@ pub struct TestStepsFinallyScriptEnv {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
@@ -1228,7 +1227,7 @@ pub struct TestStepsFinallyScriptOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Sleep defines zzzz.
@@ -1404,7 +1403,7 @@ pub struct TestStepsTryApplyBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
@@ -1426,7 +1425,7 @@ pub struct TestStepsTryApplyOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Assert represents an assertion to be made. It checks whether the conditions specified in the assertion hold true.
@@ -1458,7 +1457,7 @@ pub struct TestStepsTryAssertBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Command defines a command to run.
@@ -1498,7 +1497,7 @@ pub struct TestStepsTryCommandBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -1507,7 +1506,7 @@ pub struct TestStepsTryCommandEnv {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
@@ -1519,7 +1518,7 @@ pub struct TestStepsTryCommandOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Create represents a creation operation.
@@ -1560,7 +1559,7 @@ pub struct TestStepsTryCreateBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
@@ -1582,7 +1581,7 @@ pub struct TestStepsTryCreateOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Delete represents a deletion operation.
@@ -1614,7 +1613,7 @@ pub struct TestStepsTryDeleteBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
@@ -1675,7 +1674,7 @@ pub struct TestStepsTryErrorBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Patch represents a patch operation.
@@ -1716,7 +1715,7 @@ pub struct TestStepsTryPatchBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
@@ -1738,7 +1737,7 @@ pub struct TestStepsTryPatchOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Script defines a script to run.
@@ -1776,7 +1775,7 @@ pub struct TestStepsTryScriptBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.
@@ -1785,7 +1784,7 @@ pub struct TestStepsTryScriptEnv {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Output represents an output binding with a match to determine if the binding must be considered or not.
@@ -1797,7 +1796,7 @@ pub struct TestStepsTryScriptOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Sleep defines zzzz.
@@ -1845,7 +1844,7 @@ pub struct TestStepsTryUpdateBindings {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
@@ -1867,7 +1866,7 @@ pub struct TestStepsTryUpdateOutputs {
     /// Name the name of the binding.
     pub name: String,
     /// Value value of the binding.
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Wait determines the resource wait collector to execute.
