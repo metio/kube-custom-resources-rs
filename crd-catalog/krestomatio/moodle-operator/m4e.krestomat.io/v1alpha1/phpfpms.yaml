@@ -5,6 +5,10 @@ metadata:
 spec:
   group: "m4e.krestomat.io"
   names:
+    categories:
+      - "lms"
+      - "m4e"
+      - "web"
     kind: "Phpfpm"
     listKind: "PhpfpmList"
     plural: "phpfpms"

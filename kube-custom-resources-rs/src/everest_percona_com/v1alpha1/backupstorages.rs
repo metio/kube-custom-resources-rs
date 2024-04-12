@@ -27,6 +27,10 @@ pub struct BackupStorageSpec {
     /// EndpointURL is an endpoint URL of backup storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointURL")]
     pub endpoint_url: Option<String>,
+    /// ForcePathStyle is set to use path-style URLs.
+    /// If unspecified, the default value is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
+    pub force_path_style: Option<bool>,
     /// Region is a region where the bucket is located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,

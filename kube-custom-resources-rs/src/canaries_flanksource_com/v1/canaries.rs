@@ -5,6 +5,7 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 /// CanarySpec defines the desired state of Canary
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -72,6 +73,8 @@ pub struct CanarySpec {
     pub junit: Option<Vec<CanaryJunit>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<Vec<CanaryKubernetes>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesResource")]
+    pub kubernetes_resource: Option<Vec<CanaryKubernetesResource>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap: Option<Vec<CanaryLdap>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1155,6 +1158,8 @@ pub struct CanaryCatalogSelector {
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub statuses: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSelector")]
+    pub tag_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub types: Option<Vec<String>>,
 }
@@ -5283,6 +5288,201 @@ pub struct CanaryKubernetesTransform {
     pub json_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResource {
+    /// Set initial delays and retry intervals for checks.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkRetries")]
+    pub check_retries: Option<CanaryKubernetesResourceCheckRetries>,
+    /// Checks to run against the kubernetes resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub checks: Option<Vec<CanaryKubernetesResourceChecks>>,
+    /// Description for the check
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub display: Option<CanaryKubernetesResourceDisplay>,
+    /// Icon for overwriting default icon on the dashboard
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub icon: Option<String>,
+    /// Kubeconfig is the kubeconfig or the path to the kubeconfig file.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubeconfig: Option<CanaryKubernetesResourceKubeconfig>,
+    /// Labels for the check
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Metrics to expose from check results
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<Vec<CanaryKubernetesResourceMetrics>>,
+    /// Name of the check
+    pub name: String,
+    /// Namespace to insert the check into, if different to the namespace the canary is defined, e.g.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Resources are kubernetes resources that are created & cleared
+    /// after every check run.
+    pub resources: HashMap<String, serde_json::Value>,
+    /// StaticResources are kubernetes resources that are created & only
+    /// cleared when the canary is deleted
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticResources")]
+    pub static_resources: Option<HashMap<String, serde_json::Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub test: Option<CanaryKubernetesResourceTest>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub transform: Option<CanaryKubernetesResourceTransform>,
+    /// Transformed checks have a delete strategy on deletion they can either be marked healthy, unhealthy or left as is
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformDeleteStrategy")]
+    pub transform_delete_strategy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitFor")]
+    pub wait_for: Option<CanaryKubernetesResourceWaitFor>,
+}
+
+/// Set initial delays and retry intervals for checks.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceCheckRetries {
+    /// Delay is the initial delay
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delay: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
+}
+
+/// KubernetesResourceChecks is the canary spec.
+/// NOTE: It's only created to make crd generation possible.
+/// embedding CanarySpec into KubernetesResourceCheck.checks
+/// directly generates an invalid crd.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceChecks {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceDisplay {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+/// Kubeconfig is the kubeconfig or the path to the kubeconfig file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceKubeconfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<CanaryKubernetesResourceKubeconfigValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceKubeconfigValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<CanaryKubernetesResourceKubeconfigValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmRef")]
+    pub helm_ref: Option<CanaryKubernetesResourceKubeconfigValueFromHelmRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<CanaryKubernetesResourceKubeconfigValueFromSecretKeyRef>,
+    /// ServiceAccount specifies the service account whose token should be fetched
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceKubeconfigValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceKubeconfigValueFromHelmRef {
+    /// Key is a JSONPath expression used to fetch the key from the merged JSON.
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceKubeconfigValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceMetrics {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<CanaryKubernetesResourceMetricsLabels>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceMetricsLabels {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueExpr")]
+    pub value_expr: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceTest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceTransform {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub javascript: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryKubernetesResourceWaitFor {
+    /// Disable waiting for resources to get to their desired state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disable: Option<bool>,
+    /// Expr is a cel expression that determines whether all the resources
+    /// are in their desired state before running checks on them.
+    /// 	Default: `dyn(resources).all(r, k8s.isHealthy(r))`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expr: Option<String>,
+    /// Interval to check if all static & non-static resources are ready.
+    /// 	Default: 30s
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i64>,
+    /// Timeout to wait for all static & non-static resources to be ready.
+    /// 	Default: 10m
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

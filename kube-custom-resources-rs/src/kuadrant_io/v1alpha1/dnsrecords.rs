@@ -102,6 +102,18 @@ pub struct DNSRecordStatus {
     /// observedGeneration is the most recently observed generation of the DNSRecord.  When the DNSRecord is updated, the controller updates the corresponding record in each managed zone.  If an update for a particular zone fails, that failure is recorded in the status condition for the zone so that the controller can determine that it needs to retry the update for that specific zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// QueuedAt is a time when DNS record was received for the reconciliation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuedAt")]
+    pub queued_at: Option<String>,
+    /// QueuedFor is a time when we expect a DNS record to be reconciled again
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuedFor")]
+    pub queued_for: Option<String>,
+    /// ValidFor indicates duration since the last reconciliation we consider data in the record to be valid
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validFor")]
+    pub valid_for: Option<String>,
+    /// WriteCounter represent a number of consecutive write attempts on the same generation of the record. It is being reset to 0 when the generation changes or there are no changes to write.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeCounter")]
+    pub write_counter: Option<i64>,
 }
 
 /// Endpoint is a high-level way of a connection between a service and an IP

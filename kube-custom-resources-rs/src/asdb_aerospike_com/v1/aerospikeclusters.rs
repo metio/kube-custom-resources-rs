@@ -8016,6 +8016,9 @@ pub struct AerospikeClusterStatusPods {
     /// DirtyVolumes is the list of volume names that are removed from aerospike namespaces and will be cleaned during init if they are reused in any namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dirtyVolumes")]
     pub dirty_volumes: Option<Vec<String>>,
+    /// DynamicConfigFailed is true if aerospike config change failed to apply dynamically.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicConfigFailed")]
+    pub dynamic_config_failed: Option<bool>,
     /// HostExternalIP of the K8s host this pod is scheduled on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostExternalIP")]
     pub host_external_ip: Option<String>,

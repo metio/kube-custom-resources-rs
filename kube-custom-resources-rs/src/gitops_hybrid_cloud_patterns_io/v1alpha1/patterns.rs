@@ -17,7 +17,11 @@ pub struct PatternSpec {
     pub analytics_uuid: Option<String>,
     #[serde(rename = "clusterGroupName")]
     pub cluster_group_name: String,
-    /// .Name is dot separated per the helm --set syntax, such as: global.something.field
+    /// Comma separated capabilities to enable certain experimental features
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentalCapabilities")]
+    pub experimental_capabilities: Option<String>,
+    /// .Name is dot separated per the helm --set syntax, such as:
+    ///   global.something.field
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraParameters")]
     pub extra_parameters: Option<Vec<PatternExtraParameters>>,
     /// URLs to additional Helm parameter files
@@ -64,7 +68,9 @@ pub struct PatternGitSpec {
     /// Branch, tag, or commit to deploy.  Does not support short-sha's. Default: HEAD
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRevision")]
     pub target_revision: Option<String>,
-    /// Optional. K8s secret name where the info for connecting to git can be found. The supported secrets are modeled after the private repositories in argo (https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repositories) currently ssh and username+password are supported
+    /// Optional. K8s secret name where the info for connecting to git can be found. The supported secrets are modeled after the
+    /// private repositories in argo (https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repositories)
+    /// currently ssh and username+password are supported
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecret")]
     pub token_secret: Option<String>,
     /// Optional. K8s secret namespace where the token for connecting to git can be found
@@ -74,13 +80,15 @@ pub struct PatternGitSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PatternMultiSourceConfig {
-    /// The git reference when deploying the clustergroup helm chart directly from a git repo Defaults to 'main'. (Only used when developing the clustergroup helm chart)
+    /// The git reference when deploying the clustergroup helm chart directly from a git repo
+    /// Defaults to 'main'. (Only used when developing the clustergroup helm chart)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterGroupChartGitRevision")]
     pub cluster_group_chart_git_revision: Option<String>,
     /// Which chart version for the clustergroup helm chart. Defaults to "0.8.*"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterGroupChartVersion")]
     pub cluster_group_chart_version: Option<String>,
-    /// The url when deploying the clustergroup helm chart directly from a git repo Defaults to '' which means not used (Only used when developing the clustergroup helm chart)
+    /// The url when deploying the clustergroup helm chart directly from a git repo
+    /// Defaults to '' which means not used (Only used when developing the clustergroup helm chart)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterGroupGitRepoUrl")]
     pub cluster_group_git_repo_url: Option<String>,
     /// (EXPERIMENTAL) Enable multi-source support when deploying the clustergroup argo application
@@ -127,7 +135,10 @@ pub struct PatternStatus {
     pub version: Option<i64>,
 }
 
-/// PatternApplicationInfo defines the Applications Status for the Pattern. This structure is part of the PatternStatus as an array The Application Status will be included as part of the Observed state of Pattern
+/// PatternApplicationInfo defines the Applications
+/// Status for the Pattern.
+/// This structure is part of the PatternStatus as an array
+/// The Application Status will be included as part of the Observed state of Pattern
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PatternStatusApplications {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthMessage")]

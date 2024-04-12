@@ -8,7 +8,12 @@ use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
-/// Defines the desired state of the FlowCollector resource. <br><br> *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature is not officially supported by Red Hat. It might have been, for example, contributed by the community and accepted without a formal agreement for maintenance. The product maintainers might provide some support for these features as a best effort only.
+/// Defines the desired state of the FlowCollector resource.
+/// <br><br>
+/// *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature
+/// is not officially supported by Red Hat. It might have been, for example, contributed by the community
+/// and accepted without a formal agreement for maintenance. The product maintainers might provide some support
+/// for these features as a best effort only.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "flows.netobserv.io", version = "v1beta1", kind = "FlowCollector", plural = "flowcollectors")]
 #[kube(status = "FlowCollectorStatus")]
@@ -20,7 +25,10 @@ pub struct FlowCollectorSpec {
     /// `consolePlugin` defines the settings related to the OpenShift Console plugin, when available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolePlugin")]
     pub console_plugin: Option<FlowCollectorConsolePlugin>,
-    /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br> - `DIRECT` (default) to make the flow processor listening directly from the agents.<br> - `KAFKA` to make flows sent to a Kafka pipeline before consumption by the processor.<br> Kafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).
+    /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>
+    /// - `DIRECT` (default) to make the flow processor listening directly from the agents.<br>
+    /// - `KAFKA` to make flows sent to a Kafka pipeline before consumption by the processor.<br>
+    /// Kafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentModel")]
     pub deployment_model: Option<FlowCollectorDeploymentModel>,
     /// `exporters` define additional optional exporters for custom consumption or storage.
@@ -35,7 +43,8 @@ pub struct FlowCollectorSpec {
     /// Namespace where NetObserv pods are deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
+    /// `processor` defines the settings of the component that receives the flows from the agent,
+    /// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub processor: Option<FlowCollectorProcessor>,
 }
@@ -43,39 +52,61 @@ pub struct FlowCollectorSpec {
 /// Agent configuration for flows extraction.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgent {
-    /// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `EBPF`.
+    /// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type`
+    /// is set to `EBPF`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ebpf: Option<FlowCollectorAgentEbpf>,
-    /// `ipfix` [deprecated (*)] - describes the settings related to the IPFIX-based flow reporter when `spec.agent.type` is set to `IPFIX`.
+    /// `ipfix` [deprecated (*)] - describes the settings related to the IPFIX-based flow reporter when `spec.agent.type`
+    /// is set to `IPFIX`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipfix: Option<FlowCollectorAgentIpfix>,
-    /// `type` [deprecated (*)] selects the flows tracing agent. The only possible value is `EBPF` (default), to use NetObserv eBPF agent.<br> Previously, using an IPFIX collector was allowed, but was deprecated and it is now removed.<br> Setting `IPFIX` is ignored and still use the eBPF Agent. Since there is only a single option here, this field will be remove in a future API version.
+    /// `type` [deprecated (*)] selects the flows tracing agent. The only possible value is `EBPF` (default), to use NetObserv eBPF agent.<br>
+    /// Previously, using an IPFIX collector was allowed, but was deprecated and it is now removed.<br>
+    /// Setting `IPFIX` is ignored and still use the eBPF Agent.
+    /// Since there is only a single option here, this field will be remove in a future API version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorAgentType>,
 }
 
-/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `EBPF`.
+/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type`
+/// is set to `EBPF`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpf {
-    /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending. Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load, however you can expect higher memory consumption and an increased latency in the flow collection.
+    /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending.
+    /// Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load,
+    /// however you can expect higher memory consumption and an increased latency in the flow collection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheActiveTimeout")]
     pub cache_active_timeout: Option<String>,
-    /// `cacheMaxFlows` is the max number of flows in an aggregate; when reached, the reporter sends the flows. Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load, however you can expect higher memory consumption and an increased latency in the flow collection.
+    /// `cacheMaxFlows` is the max number of flows in an aggregate; when reached, the reporter sends the flows.
+    /// Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load,
+    /// however you can expect higher memory consumption and an increased latency in the flow collection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheMaxFlows")]
     pub cache_max_flows: Option<i32>,
-    /// `debug` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
+    /// `debug` allows setting some aspects of the internal configuration of the eBPF agent.
+    /// This section is aimed exclusively for debugging and fine-grained performance optimizations,
+    /// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<FlowCollectorAgentEbpfDebug>,
-    /// `excludeInterfaces` contains the interface names that are excluded from flow tracing. An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression. Otherwise it is matched as a case-sensitive string.
+    /// `excludeInterfaces` contains the interface names that are excluded from flow tracing.
+    /// An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression.
+    /// Otherwise it is matched as a case-sensitive string.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
-    /// List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br> - `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting the kernel debug filesystem, so the eBPF pod has to run as privileged. If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br> - `DNSTracking`: enable the DNS tracking feature.<br> - `FlowRTT` [unsupported (*)]: enable flow latency (RTT) calculations in the eBPF agent during TCP handshakes. This feature better works with `sampling` set to 1.<br>
+    /// List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>
+    /// - `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting
+    /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
+    /// If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>
+    /// - `DNSTracking`: enable the DNS tracking feature.<br>
+    /// - `FlowRTT` [unsupported (*)]: enable flow latency (RTT) calculations in the eBPF agent during TCP handshakes. This feature better works with `sampling` set to 1.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorAgentEbpfImagePullPolicy>,
-    /// `interfaces` contains the interface names from where flows are collected. If empty, the agent fetches all the interfaces in the system, excepting the ones listed in ExcludeInterfaces. An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression. Otherwise it is matched as a case-sensitive string.
+    /// `interfaces` contains the interface names from where flows are collected. If empty, the agent
+    /// fetches all the interfaces in the system, excepting the ones listed in ExcludeInterfaces.
+    /// An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression.
+    /// Otherwise it is matched as a case-sensitive string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<String>>,
     /// `kafkaBatchSize` limits the maximum size of a request in bytes before being sent to a partition. Ignored when not using Kafka. Default: 1MB.
@@ -87,10 +118,15 @@ pub struct FlowCollectorAgentEbpf {
     /// `metrics` defines the eBPF agent configuration regarding metrics
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorAgentEbpfMetrics>,
-    /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container. If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF is in use, then you can turn on this mode for more global privileges. Some agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support.
+    /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets
+    /// granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container.
+    /// If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF
+    /// is in use, then you can turn on this mode for more global privileges.
+    /// Some agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// `resources` are the compute resources required by this container.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorAgentEbpfResources>,
     /// Sampling rate of the flow reporter. 100 means one flow on 100 is sent. 0 or 1 means all flows are sampled.
@@ -98,15 +134,21 @@ pub struct FlowCollectorAgentEbpf {
     pub sampling: Option<i32>,
 }
 
-/// `debug` allows setting some aspects of the internal configuration of the eBPF agent. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
+/// `debug` allows setting some aspects of the internal configuration of the eBPF agent.
+/// This section is aimed exclusively for debugging and fine-grained performance optimizations,
+/// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpfDebug {
-    /// `env` allows passing custom environment variables to underlying components. Useful for passing some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
+    /// `env` allows passing custom environment variables to underlying components. Useful for passing
+    /// some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be
+    /// publicly exposed as part of the FlowCollector descriptor, as they are only useful
+    /// in edge debug or support scenarios.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
 }
 
-/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `EBPF`.
+/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type`
+/// is set to `EBPF`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorAgentEbpfImagePullPolicy {
     IfNotPresent,
@@ -114,7 +156,8 @@ pub enum FlowCollectorAgentEbpfImagePullPolicy {
     Never,
 }
 
-/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type` is set to `EBPF`.
+/// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type`
+/// is set to `EBPF`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorAgentEbpfLogLevel {
     #[serde(rename = "trace")]
@@ -158,7 +201,8 @@ pub struct FlowCollectorAgentEbpfMetricsServer {
 /// TLS configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpfMetricsServerTls {
-    /// `insecureSkipVerify` allows skipping client-side verification of the provided certificate. If set to `true`, the `providedCaFile` field is ignored.
+    /// `insecureSkipVerify` allows skipping client-side verification of the provided certificate.
+    /// If set to `true`, the `providedCaFile` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// TLS configuration when `type` is set to `PROVIDED`.
@@ -167,7 +211,10 @@ pub struct FlowCollectorAgentEbpfMetricsServerTls {
     /// Reference to the CA file when `type` is set to `PROVIDED`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providedCaFile")]
     pub provided_ca_file: Option<FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFile>,
-    /// Select the type of TLS configuration:<br> - `DISABLED` (default) to not configure TLS for the endpoint. - `PROVIDED` to manually provide cert file and a key file. [Unsupported (*)]. - `AUTO` to use OpenShift auto generated certificate using annotations.
+    /// Select the type of TLS configuration:<br>
+    /// - `DISABLED` (default) to not configure TLS for the endpoint.
+    /// - `PROVIDED` to manually provide cert file and a key file. [Unsupported (*)].
+    /// - `AUTO` to use OpenShift auto generated certificate using annotations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorAgentEbpfMetricsServerTlsType>,
 }
@@ -184,7 +231,8 @@ pub struct FlowCollectorAgentEbpfMetricsServerTlsProvided {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -210,7 +258,8 @@ pub struct FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFile {
     /// Name of the config map or secret containing the file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the file reference: "configmap" or "secret"
@@ -238,18 +287,29 @@ pub enum FlowCollectorAgentEbpfMetricsServerTlsType {
     Auto,
 }
 
-/// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// `resources` are the compute resources required by this container.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpfResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<FlowCollectorAgentEbpfResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -257,11 +317,14 @@ pub struct FlowCollectorAgentEbpfResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentEbpfResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// `ipfix` [deprecated (*)] - describes the settings related to the IPFIX-based flow reporter when `spec.agent.type` is set to `IPFIX`.
+/// `ipfix` [deprecated (*)] - describes the settings related to the IPFIX-based flow reporter when `spec.agent.type`
+/// is set to `IPFIX`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorAgentIpfix {
     /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending.
@@ -273,13 +336,19 @@ pub struct FlowCollectorAgentIpfix {
     /// `clusterNetworkOperator` defines the settings related to the OpenShift Cluster Network Operator, when available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetworkOperator")]
     pub cluster_network_operator: Option<FlowCollectorAgentIpfixClusterNetworkOperator>,
-    /// `forceSampleAll` allows disabling sampling in the IPFIX-based flow reporter. It is not recommended to sample all the traffic with IPFIX, as it might generate cluster instability. If you REALLY want to do that, set this flag to `true`. Use at your own risk. When it is set to `true`, the value of `sampling` is ignored.
+    /// `forceSampleAll` allows disabling sampling in the IPFIX-based flow reporter.
+    /// It is not recommended to sample all the traffic with IPFIX, as it might generate cluster instability.
+    /// If you REALLY want to do that, set this flag to `true`. Use at your own risk.
+    /// When it is set to `true`, the value of `sampling` is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceSampleAll")]
     pub force_sample_all: Option<bool>,
     /// `ovnKubernetes` defines the settings of the OVN-Kubernetes CNI, when available. This configuration is used when using OVN's IPFIX exports, without OpenShift. When using OpenShift, refer to the `clusterNetworkOperator` property instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ovnKubernetes")]
     pub ovn_kubernetes: Option<FlowCollectorAgentIpfixOvnKubernetes>,
-    /// `sampling` is the sampling rate on the reporter. 100 means one flow on 100 is sent. To ensure cluster stability, it is not possible to set a value below 2. If you really want to sample every packet, which might impact the cluster stability, refer to `forceSampleAll`. Alternatively, you can use the eBPF Agent instead of IPFIX.
+    /// `sampling` is the sampling rate on the reporter. 100 means one flow on 100 is sent.
+    /// To ensure cluster stability, it is not possible to set a value below 2.
+    /// If you really want to sample every packet, which might impact the cluster stability,
+    /// refer to `forceSampleAll`. Alternatively, you can use the eBPF Agent instead of IPFIX.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
 }
@@ -321,7 +390,8 @@ pub struct FlowCollectorConsolePlugin {
     /// `autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaler: Option<FlowCollectorConsolePluginAutoscaler>,
-    /// Enables the console plugin deployment. `spec.loki.enable` must also be `true`
+    /// Enables the console plugin deployment.
+    /// `spec.loki.enable` must also be `true`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
@@ -339,13 +409,16 @@ pub struct FlowCollectorConsolePlugin {
     /// `quickFilters` configures quick filter presets for the Console plugin
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "quickFilters")]
     pub quick_filters: Option<Vec<FlowCollectorConsolePluginQuickFilters>>,
-    /// `register` allows, when set to `true`, to automatically register the provided console plugin with the OpenShift Console operator. When set to `false`, you can still register it manually by editing console.operator.openshift.io/cluster with the following command: `oc patch console.operator.openshift.io cluster --type='json' -p '[{"op": "add", "path": "/spec/plugins/-", "value": "netobserv-plugin"}]'`
+    /// `register` allows, when set to `true`, to automatically register the provided console plugin with the OpenShift Console operator.
+    /// When set to `false`, you can still register it manually by editing console.operator.openshift.io/cluster with the following command:
+    /// `oc patch console.operator.openshift.io cluster --type='json' -p '[{"op": "add", "path": "/spec/plugins/-", "value": "netobserv-plugin"}]'`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub register: Option<bool>,
     /// `replicas` defines the number of replicas (pods) to start.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// `resources`, in terms of compute resources, required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// `resources`, in terms of compute resources, required by this container.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorConsolePluginResources>,
 }
@@ -359,10 +432,16 @@ pub struct FlowCollectorConsolePluginAutoscaler {
     /// Metrics used by the pod autoscaler. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<Vec<FlowCollectorConsolePluginAutoscalerMetrics>>,
-    /// `minReplicas` is the lower limit for the number of replicas to which the autoscaler can scale down. It defaults to 1 pod. minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured. Scaling is active as long as at least one metric value is available.
+    /// `minReplicas` is the lower limit for the number of replicas to which the autoscaler
+    /// can scale down. It defaults to 1 pod. minReplicas is allowed to be 0 if the
+    /// alpha feature gate HPAScaleToZero is enabled and at least one Object or External
+    /// metric is configured. Scaling is active as long as at least one metric value is
+    /// available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
-    /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br> - `DISABLED` does not deploy an horizontal pod autoscaler.<br> - `ENABLED` deploys an horizontal pod autoscaler.<br>
+    /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br>
+    /// - `DISABLED` does not deploy an horizontal pod autoscaler.<br>
+    /// - `ENABLED` deploys an horizontal pod autoscaler.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<FlowCollectorConsolePluginAutoscalerStatus>,
 }
@@ -595,7 +674,8 @@ pub struct FlowCollectorConsolePluginPortNaming {
     /// Enable the console plugin port-to-service name translation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// `portNames` defines additional port names to use in the console, for example, `portNames: {"3100": "loki"}`.
+    /// `portNames` defines additional port names to use in the console,
+    /// for example, `portNames: {"3100": "loki"}`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNames")]
     pub port_names: Option<BTreeMap<String, String>>,
 }
@@ -606,24 +686,36 @@ pub struct FlowCollectorConsolePluginQuickFilters {
     /// `default` defines whether this filter should be active by default or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<bool>,
-    /// `filter` is a set of keys and values to be set when this filter is selected. Each key can relate to a list of values using a coma-separated string, for example, `filter: {"src_namespace": "namespace1,namespace2"}`.
+    /// `filter` is a set of keys and values to be set when this filter is selected. Each key can relate to a list of values using a coma-separated string,
+    /// for example, `filter: {"src_namespace": "namespace1,namespace2"}`.
     pub filter: BTreeMap<String, String>,
     /// Name of the filter, that is displayed in the Console
     pub name: String,
 }
 
-/// `resources`, in terms of compute resources, required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// `resources`, in terms of compute resources, required by this container.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorConsolePluginResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<FlowCollectorConsolePluginResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -631,11 +723,18 @@ pub struct FlowCollectorConsolePluginResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorConsolePluginResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// Defines the desired state of the FlowCollector resource. <br><br> *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature is not officially supported by Red Hat. It might have been, for example, contributed by the community and accepted without a formal agreement for maintenance. The product maintainers might provide some support for these features as a best effort only.
+/// Defines the desired state of the FlowCollector resource.
+/// <br><br>
+/// *: the mention of "unsupported", or "deprecated" for a feature throughout this document means that this feature
+/// is not officially supported by Red Hat. It might have been, for example, contributed by the community
+/// and accepted without a formal agreement for maintenance. The product maintainers might provide some support
+/// for these features as a best effort only.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorDeploymentModel {
     #[serde(rename = "DIRECT")]
@@ -719,7 +818,8 @@ pub struct FlowCollectorExportersKafkaSaslClientIdReference {
     /// Name of the config map or secret containing the file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the file reference: "configmap" or "secret"
@@ -745,7 +845,8 @@ pub struct FlowCollectorExportersKafkaSaslClientSecretReference {
     /// Name of the config map or secret containing the file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the file reference: "configmap" or "secret"
@@ -782,7 +883,8 @@ pub struct FlowCollectorExportersKafkaTls {
     /// Enable TLS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate. If set to `true`, the `caCert` field is ignored.
+    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
+    /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
@@ -802,7 +904,8 @@ pub struct FlowCollectorExportersKafkaTlsCaCert {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -831,7 +934,8 @@ pub struct FlowCollectorExportersKafkaTlsUserCert {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -895,7 +999,8 @@ pub struct FlowCollectorKafkaSaslClientIdReference {
     /// Name of the config map or secret containing the file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the file reference: "configmap" or "secret"
@@ -921,7 +1026,8 @@ pub struct FlowCollectorKafkaSaslClientSecretReference {
     /// Name of the config map or secret containing the file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the file reference: "configmap" or "secret"
@@ -958,7 +1064,8 @@ pub struct FlowCollectorKafkaTls {
     /// Enable TLS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate. If set to `true`, the `caCert` field is ignored.
+    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
+    /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
@@ -978,7 +1085,8 @@ pub struct FlowCollectorKafkaTlsCaCert {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -1007,7 +1115,8 @@ pub struct FlowCollectorKafkaTlsUserCert {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -1027,7 +1136,11 @@ pub enum FlowCollectorKafkaTlsUserCertType {
 /// `loki`, the flow store, client settings.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorLoki {
-    /// `authToken` describes the way to get a token to authenticate to Loki.<br> - `DISABLED` does not send any token with the request.<br> - `FORWARD` forwards the user token for authorization.<br> - `HOST` [deprecated (*)] - uses the local pod service account to authenticate to Loki.<br> When using the Loki Operator, this must be set to `FORWARD`.
+    /// `authToken` describes the way to get a token to authenticate to Loki.<br>
+    /// - `DISABLED` does not send any token with the request.<br>
+    /// - `FORWARD` forwards the user token for authorization.<br>
+    /// - `HOST` [deprecated (*)] - uses the local pod service account to authenticate to Loki.<br>
+    /// When using the Loki Operator, this must be set to `FORWARD`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authToken")]
     pub auth_token: Option<FlowCollectorLokiAuthToken>,
     /// `batchSize` is the maximum batch size (in bytes) of logs to accumulate before sending.
@@ -1048,10 +1161,14 @@ pub struct FlowCollectorLoki {
     /// `minBackoff` is the initial backoff time for client connection between retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minBackoff")]
     pub min_backoff: Option<String>,
-    /// `querierURL` specifies the address of the Loki querier service, in case it is different from the Loki ingester URL. If empty, the URL value is used (assuming that the Loki ingester and querier are in the same server). When using the Loki Operator, do not set it, since ingestion and queries use the Loki gateway.
+    /// `querierURL` specifies the address of the Loki querier service, in case it is different from the
+    /// Loki ingester URL. If empty, the URL value is used (assuming that the Loki ingester
+    /// and querier are in the same server). When using the Loki Operator, do not set it, since
+    /// ingestion and queries use the Loki gateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "querierUrl")]
     pub querier_url: Option<String>,
-    /// `readTimeout` is the maximum loki query total time limit. A timeout of zero means no timeout.
+    /// `readTimeout` is the maximum loki query total time limit.
+    /// A timeout of zero means no timeout.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeout")]
     pub read_timeout: Option<String>,
     /// `staticLabels` is a map of common labels to set on each flow.
@@ -1060,19 +1177,28 @@ pub struct FlowCollectorLoki {
     /// TLS client configuration for Loki status URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusTls")]
     pub status_tls: Option<FlowCollectorLokiStatusTls>,
-    /// `statusURL` specifies the address of the Loki `/ready`, `/metrics` and `/config` endpoints, in case it is different from the Loki querier URL. If empty, the `querierURL` value is used. This is useful to show error messages and some context in the frontend. When using the Loki Operator, set it to the Loki HTTP query frontend service, for example https://loki-query-frontend-http.netobserv.svc:3100/. `statusTLS` configuration is used when `statusUrl` is set.
+    /// `statusURL` specifies the address of the Loki `/ready`, `/metrics` and `/config` endpoints, in case it is different from the
+    /// Loki querier URL. If empty, the `querierURL` value is used.
+    /// This is useful to show error messages and some context in the frontend.
+    /// When using the Loki Operator, set it to the Loki HTTP query frontend service, for example
+    /// https://loki-query-frontend-http.netobserv.svc:3100/.
+    /// `statusTLS` configuration is used when `statusUrl` is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusUrl")]
     pub status_url: Option<String>,
-    /// `tenantID` is the Loki `X-Scope-OrgID` that identifies the tenant for each request. When using the Loki Operator, set it to `network`, which corresponds to a special tenant mode.
+    /// `tenantID` is the Loki `X-Scope-OrgID` that identifies the tenant for each request.
+    /// When using the Loki Operator, set it to `network`, which corresponds to a special tenant mode.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<String>,
-    /// `timeout` is the maximum processor time connection / request limit. A timeout of zero means no timeout.
+    /// `timeout` is the maximum processor time connection / request limit.
+    /// A timeout of zero means no timeout.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
     /// TLS client configuration for Loki URL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<FlowCollectorLokiTls>,
-    /// `url` is the address of an existing Loki service to push the flows to. When using the Loki Operator, set it to the Loki gateway service with the `network` tenant set in path, for example https://loki-gateway-http.netobserv.svc:8080/api/logs/v1/network.
+    /// `url` is the address of an existing Loki service to push the flows to. When using the Loki Operator,
+    /// set it to the Loki gateway service with the `network` tenant set in path, for example
+    /// https://loki-gateway-http.netobserv.svc:8080/api/logs/v1/network.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -1097,7 +1223,8 @@ pub struct FlowCollectorLokiStatusTls {
     /// Enable TLS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate. If set to `true`, the `caCert` field is ignored.
+    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
+    /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
@@ -1117,7 +1244,8 @@ pub struct FlowCollectorLokiStatusTlsCaCert {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -1146,7 +1274,8 @@ pub struct FlowCollectorLokiStatusTlsUserCert {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -1172,7 +1301,8 @@ pub struct FlowCollectorLokiTls {
     /// Enable TLS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate. If set to `true`, the `caCert` field is ignored.
+    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
+    /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
@@ -1192,7 +1322,8 @@ pub struct FlowCollectorLokiTlsCaCert {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -1221,7 +1352,8 @@ pub struct FlowCollectorLokiTlsUserCert {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -1238,16 +1370,19 @@ pub enum FlowCollectorLokiTlsUserCertType {
     Secret,
 }
 
-/// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
+/// `processor` defines the settings of the component that receives the flows from the agent,
+/// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessor {
-    /// `addZone` allows availability zone awareness by labelling flows with their source and destination zones. This feature requires the "topology.kubernetes.io/zone" label to be set on nodes.
+    /// `addZone` allows availability zone awareness by labelling flows with their source and destination zones.
+    /// This feature requires the "topology.kubernetes.io/zone" label to be set on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addZone")]
     pub add_zone: Option<bool>,
     /// `clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
-    /// `conversationEndTimeout` is the time to wait after a network flow is received, to consider the conversation ended. This delay is ignored when a FIN packet is collected for TCP flows (see `conversationTerminatingTimeout` instead).
+    /// `conversationEndTimeout` is the time to wait after a network flow is received, to consider the conversation ended.
+    /// This delay is ignored when a FIN packet is collected for TCP flows (see `conversationTerminatingTimeout` instead).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationEndTimeout")]
     pub conversation_end_timeout: Option<String>,
     /// `conversationHeartbeatInterval` is the time to wait between "tick" events of a conversation
@@ -1256,7 +1391,9 @@ pub struct FlowCollectorProcessor {
     /// `conversationTerminatingTimeout` is the time to wait from detected FIN flag to end a conversation. Only relevant for TCP flows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationTerminatingTimeout")]
     pub conversation_terminating_timeout: Option<String>,
-    /// `debug` allows setting some aspects of the internal configuration of the flow processor. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
+    /// `debug` allows setting some aspects of the internal configuration of the flow processor.
+    /// This section is aimed exclusively for debugging and fine-grained performance optimizations,
+    /// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<FlowCollectorProcessorDebug>,
     /// `dropUnusedFields` [deprecated (*)] this setting is not used anymore.
@@ -1271,7 +1408,8 @@ pub struct FlowCollectorProcessor {
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorProcessorImagePullPolicy>,
-    /// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages. This setting is ignored when Kafka is disabled.
+    /// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
+    /// This setting is ignored when Kafka is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerAutoscaler")]
     pub kafka_consumer_autoscaler: Option<FlowCollectorProcessorKafkaConsumerAutoscaler>,
     /// `kafkaConsumerBatchSize` indicates to the broker the maximum batch size, in bytes, that the consumer accepts. Ignored when not using Kafka. Default: 10MB.
@@ -1280,13 +1418,18 @@ pub struct FlowCollectorProcessor {
     /// `kafkaConsumerQueueCapacity` defines the capacity of the internal message queue used in the Kafka consumer client. Ignored when not using Kafka.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerQueueCapacity")]
     pub kafka_consumer_queue_capacity: Option<i64>,
-    /// `kafkaConsumerReplicas` defines the number of replicas (pods) to start for `flowlogs-pipeline-transformer`, which consumes Kafka messages. This setting is ignored when Kafka is disabled.
+    /// `kafkaConsumerReplicas` defines the number of replicas (pods) to start for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
+    /// This setting is ignored when Kafka is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerReplicas")]
     pub kafka_consumer_replicas: Option<i32>,
     /// `logLevel` of the processor runtime
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorProcessorLogLevel>,
-    /// `logTypes` defines the desired record types to generate. Possible values are:<br> - `FLOWS` (default) to export regular network flows<br> - `CONVERSATIONS` to generate events for started conversations, ended conversations as well as periodic "tick" updates<br> - `ENDED_CONVERSATIONS` to generate only ended conversations events<br> - `ALL` to generate both network flows and all conversations events<br>
+    /// `logTypes` defines the desired record types to generate. Possible values are:<br>
+    /// - `FLOWS` (default) to export regular network flows<br>
+    /// - `CONVERSATIONS` to generate events for started conversations, ended conversations as well as periodic "tick" updates<br>
+    /// - `ENDED_CONVERSATIONS` to generate only ended conversations events<br>
+    /// - `ALL` to generate both network flows and all conversations events<br>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logTypes")]
     pub log_types: Option<FlowCollectorProcessorLogTypes>,
     /// `Metrics` define the processor configuration regarding metrics
@@ -1295,13 +1438,16 @@ pub struct FlowCollectorProcessor {
     /// Set `multiClusterDeployment` to `true` to enable multi clusters feature. This adds clusterName label to flows data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterDeployment")]
     pub multi_cluster_deployment: Option<bool>,
-    /// Port of the flow collector (host port). By convention, some values are forbidden. It must be greater than 1024 and different from 4500, 4789 and 6081.
+    /// Port of the flow collector (host port).
+    /// By convention, some values are forbidden. It must be greater than 1024 and different from
+    /// 4500, 4789 and 6081.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// `profilePort` allows setting up a Go pprof profiler listening to this port
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilePort")]
     pub profile_port: Option<i32>,
-    /// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// `resources` are the compute resources required by this container.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorProcessorResources>,
     /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift.
@@ -1309,15 +1455,21 @@ pub struct FlowCollectorProcessor {
     pub subnet_labels: Option<FlowCollectorProcessorSubnetLabels>,
 }
 
-/// `debug` allows setting some aspects of the internal configuration of the flow processor. This section is aimed exclusively for debugging and fine-grained performance optimizations, such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
+/// `debug` allows setting some aspects of the internal configuration of the flow processor.
+/// This section is aimed exclusively for debugging and fine-grained performance optimizations,
+/// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorDebug {
-    /// `env` allows passing custom environment variables to underlying components. Useful for passing some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be publicly exposed as part of the FlowCollector descriptor, as they are only useful in edge debug or support scenarios.
+    /// `env` allows passing custom environment variables to underlying components. Useful for passing
+    /// some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be
+    /// publicly exposed as part of the FlowCollector descriptor, as they are only useful
+    /// in edge debug or support scenarios.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
 }
 
-/// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
+/// `processor` defines the settings of the component that receives the flows from the agent,
+/// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorImagePullPolicy {
     IfNotPresent,
@@ -1325,7 +1477,8 @@ pub enum FlowCollectorProcessorImagePullPolicy {
     Never,
 }
 
-/// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages. This setting is ignored when Kafka is disabled.
+/// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
+/// This setting is ignored when Kafka is disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscaler {
     /// `maxReplicas` is the upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
@@ -1334,10 +1487,16 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscaler {
     /// Metrics used by the pod autoscaler. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<Vec<FlowCollectorProcessorKafkaConsumerAutoscalerMetrics>>,
-    /// `minReplicas` is the lower limit for the number of replicas to which the autoscaler can scale down. It defaults to 1 pod. minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured. Scaling is active as long as at least one metric value is available.
+    /// `minReplicas` is the lower limit for the number of replicas to which the autoscaler
+    /// can scale down. It defaults to 1 pod. minReplicas is allowed to be 0 if the
+    /// alpha feature gate HPAScaleToZero is enabled and at least one Object or External
+    /// metric is configured. Scaling is active as long as at least one metric value is
+    /// available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
-    /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br> - `DISABLED` does not deploy an horizontal pod autoscaler.<br> - `ENABLED` deploys an horizontal pod autoscaler.<br>
+    /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br>
+    /// - `DISABLED` does not deploy an horizontal pod autoscaler.<br>
+    /// - `ENABLED` deploys an horizontal pod autoscaler.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<FlowCollectorProcessorKafkaConsumerAutoscalerStatus>,
 }
@@ -1528,7 +1687,8 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsResourceTarget {
     pub value: Option<IntOrString>,
 }
 
-/// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages. This setting is ignored when Kafka is disabled.
+/// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
+/// This setting is ignored when Kafka is disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorKafkaConsumerAutoscalerStatus {
     #[serde(rename = "DISABLED")]
@@ -1537,7 +1697,8 @@ pub enum FlowCollectorProcessorKafkaConsumerAutoscalerStatus {
     Enabled,
 }
 
-/// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
+/// `processor` defines the settings of the component that receives the flows from the agent,
+/// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorLogLevel {
     #[serde(rename = "trace")]
@@ -1556,7 +1717,8 @@ pub enum FlowCollectorProcessorLogLevel {
     Panic,
 }
 
-/// `processor` defines the settings of the component that receives the flows from the agent, enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
+/// `processor` defines the settings of the component that receives the flows from the agent,
+/// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorLogTypes {
     #[serde(rename = "FLOWS")]
@@ -1572,13 +1734,26 @@ pub enum FlowCollectorProcessorLogTypes {
 /// `Metrics` define the processor configuration regarding metrics
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorMetrics {
-    /// `disableAlerts` is a list of alerts that should be disabled. Possible values are:<br> `NetObservNoFlows`, which is triggered when no flows are being observed for a certain period.<br> `NetObservLokiError`, which is triggered when flows are being dropped due to Loki errors.<br>
+    /// `disableAlerts` is a list of alerts that should be disabled.
+    /// Possible values are:<br>
+    /// `NetObservNoFlows`, which is triggered when no flows are being observed for a certain period.<br>
+    /// `NetObservLokiError`, which is triggered when flows are being dropped due to Loki errors.<br>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
-    /// `ignoreTags` [deprecated (*)] is a list of tags to specify which metrics to ignore. Each metric is associated with a list of tags. More details in https://github.com/netobserv/network-observability-operator/tree/main/controllers/flowlogspipeline/metrics_definitions . Available tags are: `egress`, `ingress`, `flows`, `bytes`, `packets`, `namespaces`, `nodes`, `workloads`, `nodes-flows`, `namespaces-flows`, `workloads-flows`. Namespace-based metrics are covered by both `workloads` and `namespaces` tags, hence it is recommended to always ignore one of them (`workloads` offering a finer granularity).<br> Deprecation notice: use `includeList` instead.
+    /// `ignoreTags` [deprecated (*)] is a list of tags to specify which metrics to ignore. Each metric is associated with a list of tags. More details in https://github.com/netobserv/network-observability-operator/tree/main/controllers/flowlogspipeline/metrics_definitions .
+    /// Available tags are: `egress`, `ingress`, `flows`, `bytes`, `packets`, `namespaces`, `nodes`, `workloads`, `nodes-flows`, `namespaces-flows`, `workloads-flows`.
+    /// Namespace-based metrics are covered by both `workloads` and `namespaces` tags, hence it is recommended to always ignore one of them (`workloads` offering a finer granularity).<br>
+    /// Deprecation notice: use `includeList` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreTags")]
     pub ignore_tags: Option<Vec<String>>,
-    /// `includeList` is a list of metric names to specify which ones to generate. The names correspond to the names in Prometheus without the prefix. For example, `namespace_egress_packets_total` will show up as `netobserv_namespace_egress_packets_total` in Prometheus. Note that the more metrics you add, the bigger is the impact on Prometheus workload resources. Metrics enabled by default are: `namespace_flows_total`, `node_ingress_bytes_total`, `workload_ingress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled), `namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled). More information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md
+    /// `includeList` is a list of metric names to specify which ones to generate.
+    /// The names correspond to the names in Prometheus without the prefix. For example,
+    /// `namespace_egress_packets_total` will show up as `netobserv_namespace_egress_packets_total` in Prometheus.
+    /// Note that the more metrics you add, the bigger is the impact on Prometheus workload resources.
+    /// Metrics enabled by default are:
+    /// `namespace_flows_total`, `node_ingress_bytes_total`, `workload_ingress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),
+    /// `namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled).
+    /// More information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeList")]
     pub include_list: Option<Vec<String>>,
     /// Metrics server endpoint configuration for Prometheus scraper
@@ -1600,7 +1775,8 @@ pub struct FlowCollectorProcessorMetricsServer {
 /// TLS configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorMetricsServerTls {
-    /// `insecureSkipVerify` allows skipping client-side verification of the provided certificate. If set to `true`, the `providedCaFile` field is ignored.
+    /// `insecureSkipVerify` allows skipping client-side verification of the provided certificate.
+    /// If set to `true`, the `providedCaFile` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// TLS configuration when `type` is set to `PROVIDED`.
@@ -1609,7 +1785,10 @@ pub struct FlowCollectorProcessorMetricsServerTls {
     /// Reference to the CA file when `type` is set to `PROVIDED`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providedCaFile")]
     pub provided_ca_file: Option<FlowCollectorProcessorMetricsServerTlsProvidedCaFile>,
-    /// Select the type of TLS configuration:<br> - `DISABLED` (default) to not configure TLS for the endpoint. - `PROVIDED` to manually provide cert file and a key file. [Unsupported (*)]. - `AUTO` to use OpenShift auto generated certificate using annotations.
+    /// Select the type of TLS configuration:<br>
+    /// - `DISABLED` (default) to not configure TLS for the endpoint.
+    /// - `PROVIDED` to manually provide cert file and a key file. [Unsupported (*)].
+    /// - `AUTO` to use OpenShift auto generated certificate using annotations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorProcessorMetricsServerTlsType>,
 }
@@ -1626,7 +1805,8 @@ pub struct FlowCollectorProcessorMetricsServerTlsProvided {
     /// Name of the config map or secret containing certificates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the certificate reference: `configmap` or `secret`
@@ -1652,7 +1832,8 @@ pub struct FlowCollectorProcessorMetricsServerTlsProvidedCaFile {
     /// Name of the config map or secret containing the file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed. If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    /// Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Type for the file reference: "configmap" or "secret"
@@ -1680,18 +1861,29 @@ pub enum FlowCollectorProcessorMetricsServerTlsType {
     Auto,
 }
 
-/// `resources` are the compute resources required by this container. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+/// `resources` are the compute resources required by this container.
+/// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<FlowCollectorProcessorResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1699,17 +1891,21 @@ pub struct FlowCollectorProcessorResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorSubnetLabels {
-    /// `customLabels` allows to customize subnets and IPs labelling, such as to identify cluster-external workloads or web services. If you enable `openShiftAutoDetect`, `customLabels` can override the detected subnets in case they overlap.
+    /// `customLabels` allows to customize subnets and IPs labelling, such as to identify cluster-external workloads or web services.
+    /// If you enable `openShiftAutoDetect`, `customLabels` can override the detected subnets in case they overlap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabels")]
     pub custom_labels: Option<Vec<FlowCollectorProcessorSubnetLabelsCustomLabels>>,
-    /// `openShiftAutoDetect` allows, when set to `true`, to detect automatically the machines, pods and services subnets based on the OpenShift install configuration and the Cluster Network Operator configuration.
+    /// `openShiftAutoDetect` allows, when set to `true`, to detect automatically the machines, pods and services subnets based on the
+    /// OpenShift install configuration and the Cluster Network Operator configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openShiftAutoDetect")]
     pub open_shift_auto_detect: Option<bool>,
 }

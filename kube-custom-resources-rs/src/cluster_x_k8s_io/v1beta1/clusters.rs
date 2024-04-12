@@ -775,7 +775,11 @@ pub struct ClusterStatus {
     /// Conditions defines current service state of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ControlPlaneReady defines if the control plane is ready.
+    /// ControlPlaneReady denotes if the control plane became ready during initial provisioning
+    /// to receive requests.
+    /// NOTE: this field is part of the Cluster API contract and it is used to orchestrate provisioning.
+    /// The value of this field is never updated after provisioning is completed. Please use conditions
+    /// to check the operational state of the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReady")]
     pub control_plane_ready: Option<bool>,
     /// FailureDomains is a slice of failure domain objects synced from the infrastructure provider.

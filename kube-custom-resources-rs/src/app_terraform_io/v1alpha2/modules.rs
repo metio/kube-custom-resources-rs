@@ -12,20 +12,25 @@ use serde::{Serialize, Deserialize};
 #[kube(status = "ModuleStatus")]
 #[kube(schema = "disabled")]
 pub struct ModuleSpec {
-    /// Specify whether or not to execute a Destroy run when the object is deleted from the Kubernetes. Default: `false`.
+    /// Specify whether or not to execute a Destroy run when the object is deleted from the Kubernetes.
+    /// Default: `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destroyOnDeletion")]
     pub destroy_on_deletion: Option<bool>,
     /// Module source and version to execute.
     pub module: ModuleModule,
-    /// Name of the module that will be uploaded and executed. Default: `this`.
+    /// Name of the module that will be uploaded and executed.
+    /// Default: `this`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Organization name where the Workspace will be created. More information: - https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/organizations
+    /// Organization name where the Workspace will be created.
+    /// More information:
+    ///   - https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/organizations
     pub organization: String,
     /// Module outputs to store in ConfigMap(non-sensitive) or Secret(sensitive).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<ModuleOutputs>>,
-    /// Allows executing a new Run without changing any Workspace or Module attributes. Example: kubectl patch <KIND> <NAME> --type=merge --patch '{"spec": {"restartedAt": "'\`date -u -Iseconds\`'"}}'
+    /// Allows executing a new Run without changing any Workspace or Module attributes.
+    /// Example: kubectl patch <KIND> <NAME> --type=merge --patch '{"spec": {"restartedAt": "'\`date -u -Iseconds\`'"}}'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartedAt")]
     pub restarted_at: Option<String>,
     /// API Token to be used for API calls.
@@ -40,7 +45,9 @@ pub struct ModuleSpec {
 /// Module source and version to execute.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleModule {
-    /// Non local Terraform module source. More information: - https://developer.hashicorp.com/terraform/language/modules/sources
+    /// Non local Terraform module source.
+    /// More information:
+    ///   - https://developer.hashicorp.com/terraform/language/modules/sources
     pub source: String,
     /// Terraform module version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -52,7 +59,8 @@ pub struct ModuleModule {
 pub struct ModuleOutputs {
     /// Output name must match with the module output.
     pub name: String,
-    /// Specify whether or not the output is sensitive. Default: `false`.
+    /// Specify whether or not the output is sensitive.
+    /// Default: `false`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sensitive: Option<bool>,
 }
@@ -70,7 +78,9 @@ pub struct ModuleToken {
 pub struct ModuleTokenSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -88,7 +98,8 @@ pub struct ModuleVariables {
 /// Workspace to execute the module.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleWorkspace {
-    /// Module Workspace ID. Must match pattern: `^ws-[a-zA-Z0-9]+$`
+    /// Module Workspace ID.
+    /// Must match pattern: `^ws-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Module Workspace Name.
@@ -99,7 +110,10 @@ pub struct ModuleWorkspace {
 /// ModuleStatus defines the observed state of Module.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleStatus {
-    /// A configuration version is a resource used to reference the uploaded configuration files. More information: - https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions - https://developer.hashicorp.com/terraform/cloud-docs/run/api
+    /// A configuration version is a resource used to reference the uploaded configuration files.
+    /// More information:
+    ///   - https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions
+    ///   - https://developer.hashicorp.com/terraform/cloud-docs/run/api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<ModuleStatusConfigurationVersion>,
     /// Workspace Destroy Run status.
@@ -111,7 +125,9 @@ pub struct ModuleStatus {
     /// Module Outputs status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output: Option<ModuleStatusOutput>,
-    /// Workspace Runs status. More information: - https://developer.hashicorp.com/terraform/cloud-docs/run/states
+    /// Workspace Runs status.
+    /// More information:
+    ///   - https://developer.hashicorp.com/terraform/cloud-docs/run/states
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub run: Option<ModuleStatusRun>,
     /// Workspace ID where the module is running.
@@ -119,7 +135,10 @@ pub struct ModuleStatus {
     pub workspace_id: String,
 }
 
-/// A configuration version is a resource used to reference the uploaded configuration files. More information: - https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions - https://developer.hashicorp.com/terraform/cloud-docs/run/api
+/// A configuration version is a resource used to reference the uploaded configuration files.
+/// More information:
+///   - https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions
+///   - https://developer.hashicorp.com/terraform/cloud-docs/run/api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleStatusConfigurationVersion {
     /// Configuration Version ID.
@@ -136,7 +155,9 @@ pub struct ModuleStatusOutput {
     pub run_id: String,
 }
 
-/// Workspace Runs status. More information: - https://developer.hashicorp.com/terraform/cloud-docs/run/states
+/// Workspace Runs status.
+/// More information:
+///   - https://developer.hashicorp.com/terraform/cloud-docs/run/states
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleStatusRun {
     /// The configuration version of this run.

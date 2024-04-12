@@ -170,20 +170,6 @@ spec:
                             type: "array"
                             x-kubernetes-list-type: "set"
                         type: "object"
-                      classDefRef:
-                        description: "References the class defined in ComponentClassDefinition."
-                        properties:
-                          class:
-                            description: "Defines the name of the class that is defined in the ComponentClassDefinition."
-                            type: "string"
-                          name:
-                            description: "Specifies the name of the ComponentClassDefinition."
-                            maxLength: 63
-                            pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                            type: "string"
-                        required:
-                          - "class"
-                        type: "object"
                       componentDef:
                         description: "References the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef."
                         maxLength: 64
@@ -201,20 +187,102 @@ spec:
                         type: "array"
                         x-kubernetes-list-type: "set"
                       instances:
-                        description: "Overrides values in default Template. \n Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A component manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the component to manage instances from different templates."
+                        description: "Overrides values in default Template. \n Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A component manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the component to manage instances from different templates. \n The naming convention for instances (pods) based on the Component Name, InstanceTemplate Name, and ordinal. The constructed instance name follows the pattern: $(component.name)-$(template.name)-$(ordinal). By default, the ordinal starts from 0 for each InstanceTemplate. It is important to ensure that the Name of each InstanceTemplate is unique. \n The sum of replicas across all InstanceTemplates should not exceed the total number of Replicas specified for the Component. Any remaining replicas will be generated using the default template and will follow the default naming rules."
                         items:
                           description: "InstanceTemplate defines values to override in pod template."
                           properties:
+                            RuntimeClassName:
+                              description: "Defines RuntimeClass to override."
+                              type: "string"
                             annotations:
                               additionalProperties:
                                 type: "string"
                               description: "Defines annotations to override. Add new or override existing annotations."
                               type: "object"
-                            generateName:
-                              description: "GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. \n Applied only if Name is not specified."
-                              maxLength: 54
-                              pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                              type: "string"
+                            env:
+                              description: "Defines Env to override. Add new or override existing envs."
+                              items:
+                                description: "EnvVar represents an environment variable present in a Container."
+                                properties:
+                                  name:
+                                    description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                    type: "string"
+                                  value:
+                                    description: "Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to \"\"."
+                                    type: "string"
+                                  valueFrom:
+                                    description: "Source for the environment variable's value. Cannot be used if value is not empty."
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Selects a key of a ConfigMap."
+                                        properties:
+                                          key:
+                                            description: "The key to select."
+                                            type: "string"
+                                          name:
+                                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                            type: "string"
+                                          optional:
+                                            description: "Specify whether the ConfigMap or its key must be defined"
+                                            type: "boolean"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                      fieldRef:
+                                        description: "Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+                                        properties:
+                                          apiVersion:
+                                            description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
+                                            type: "string"
+                                          fieldPath:
+                                            description: "Path of the field to select in the specified API version."
+                                            type: "string"
+                                        required:
+                                          - "fieldPath"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                      resourceFieldRef:
+                                        description: "Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported."
+                                        properties:
+                                          containerName:
+                                            description: "Container name: required for volumes, optional for env vars"
+                                            type: "string"
+                                          divisor:
+                                            anyOf:
+                                              - type: "integer"
+                                              - type: "string"
+                                            description: "Specifies the output format of the exposed resources, defaults to \"1\""
+                                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                            x-kubernetes-int-or-string: true
+                                          resource:
+                                            description: "Required: resource to select"
+                                            type: "string"
+                                        required:
+                                          - "resource"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                      secretKeyRef:
+                                        description: "Selects a key of a secret in the pod's namespace"
+                                        properties:
+                                          key:
+                                            description: "The key of the secret to select from.  Must be a valid secret key."
+                                            type: "string"
+                                          name:
+                                            description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                            type: "string"
+                                          optional:
+                                            description: "Specify whether the Secret or its key must be defined"
+                                            type: "boolean"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                    type: "object"
+                                required:
+                                  - "name"
+                                type: "object"
+                              type: "array"
                             image:
                               description: "Defines image to override. Will override the first container's image of the pod."
                               type: "string"
@@ -224,8 +292,8 @@ spec:
                               description: "Defines labels to override. Add new or override existing labels."
                               type: "object"
                             name:
-                              description: "Defines the name of the instance. Only applied when Replicas is 1."
-                              maxLength: 64
+                              description: "Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default."
+                              maxLength: 54
                               pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                               type: "string"
                             nodeName:
@@ -1519,6 +1587,8 @@ spec:
                                   - "name"
                                 type: "object"
                               type: "array"
+                          required:
+                            - "name"
                           type: "object"
                         type: "array"
                       issuer:
@@ -1568,6 +1638,11 @@ spec:
                         maxLength: 22
                         pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                         type: "string"
+                      offlineInstances:
+                        description: "Specifies instances to be scaled in with dedicated names in the list."
+                        items:
+                          type: "string"
+                        type: "array"
                       replicas:
                         default: 1
                         description: "Specifies the number of component replicas."
@@ -1622,14 +1697,51 @@ spec:
                             cluster:
                               description: "The name of the KubeBlocks cluster being referenced when a service provided by another KubeBlocks cluster is being referenced. \n By default, the clusterDefinition.spec.connectionCredential secret corresponding to the referenced Cluster will be used to bind to the current component. The connection credential secret should include and correspond to the following fields: endpoint, port, username, and password when a KubeBlocks cluster is being referenced. \n Under this referencing approach, the ServiceKind and ServiceVersion of service reference declaration defined in the ClusterDefinition will not be validated. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence."
                               type: "string"
+                            clusterRef:
+                              description: "Specifies the cluster to reference."
+                              properties:
+                                cluster:
+                                  description: "The name of the cluster to reference."
+                                  type: "string"
+                                credential:
+                                  description: "The credential (SystemAccount) to reference from the cluster."
+                                  properties:
+                                    component:
+                                      description: "The name of the component where the credential resides in."
+                                      type: "string"
+                                    name:
+                                      description: "The name of the credential (SystemAccount) to reference."
+                                      type: "string"
+                                  required:
+                                    - "component"
+                                    - "name"
+                                  type: "object"
+                                service:
+                                  description: "The service to reference from the cluster."
+                                  properties:
+                                    component:
+                                      description: "The name of the component where the service resides in. \n It is required when referencing a component service."
+                                      type: "string"
+                                    port:
+                                      description: "The port name of the service to reference. \n If there is a non-zero node-port exist for the matched service port, the node-port will be selected first. If the referenced service is a pod-service, there will be multiple service objects matched, and the resolved value will be presented in the following format: service1.name:port1,service2.name:port2..."
+                                      type: "string"
+                                    service:
+                                      description: "The name of the service to reference. \n Leave it empty to reference the default service. Set it to \"headless\" to reference the default headless service. If the referenced service is a pod-service, there will be multiple service objects matched, and the resolved value will be presented in the following format: service1.name,service2.name..."
+                                      type: "string"
+                                  required:
+                                    - "service"
+                                  type: "object"
+                              required:
+                                - "cluster"
+                              type: "object"
                             name:
                               description: "Specifies the identifier of the service reference declaration. It corresponds to the serviceRefDeclaration name defined in the clusterDefinition.componentDefs[*].serviceRefDeclarations[*].name."
                               type: "string"
                             namespace:
-                              description: "Specifies the namespace of the referenced Cluster or the namespace of the referenced ServiceDescriptor object. If not provided, the referenced Cluster and ServiceDescriptor will be searched in the namespace of the current cluster by default."
+                              description: "Specifies the namespace of the referenced Cluster or ServiceDescriptor object. If not specified, the namespace of the current cluster will be used."
                               type: "string"
                             serviceDescriptor:
-                              description: "The service descriptor of the service provided by external sources. \n When referencing a service provided by external sources, the ServiceDescriptor object name is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion defined in the service reference declaration in the ClusterDefinition. \n If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence."
+                              description: "The service descriptor of the service provided by external sources. \n When referencing a service provided by external sources, a ServiceDescriptor object is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion declared in the definition. \n If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence."
                               type: "string"
                           required:
                             - "name"
@@ -1640,7 +1752,7 @@ spec:
                         maxLength: 32
                         type: "string"
                       services:
-                        description: "Services expose endpoints that can be accessed by clients."
+                        description: "Services overrides services defined in referenced ComponentDefinition."
                         items:
                           properties:
                             annotations:
@@ -1649,9 +1761,12 @@ spec:
                               description: "If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer."
                               type: "object"
                             name:
-                              description: "The name of the service."
-                              maxLength: 15
+                              description: "References the component service name defined in the ComponentDefinition.Spec.Services[x].Name."
+                              maxLength: 25
                               type: "string"
+                            podService:
+                              description: "Indicates whether to generate individual services for each pod. If set to true, a separate service will be created for each pod in the cluster."
+                              type: "boolean"
                             serviceType:
                               default: "ClusterIP"
                               description: "Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. \n - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. \n More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
@@ -1983,9 +2098,10 @@ spec:
                         type: "string"
                       name:
                         description: "Name defines the name of the service. otherwise, it indicates the name of the service. Others can refer to this service by its name. (e.g., connection credential) Cannot be updated."
+                        maxLength: 25
                         type: "string"
                       roleSelector:
-                        description: "RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service. if GeneratePodOrdinalService sets to true, RoleSelector will be ignored."
+                        description: "RoleSelector extends the ServiceSpec.Selector by allowing you to specify defined role as selector for the service."
                         type: "string"
                       serviceName:
                         description: "ServiceName defines the name of the underlying service object. If not specified, the default service name with different patterns will be used: \n - CLUSTER_NAME: for cluster-level services - CLUSTER_NAME-COMPONENT_NAME: for component-level services \n Only one default service name is allowed. Cannot be updated."
@@ -2168,20 +2284,6 @@ spec:
                                 type: "array"
                                 x-kubernetes-list-type: "set"
                             type: "object"
-                          classDefRef:
-                            description: "References the class defined in ComponentClassDefinition."
-                            properties:
-                              class:
-                                description: "Defines the name of the class that is defined in the ComponentClassDefinition."
-                                type: "string"
-                              name:
-                                description: "Specifies the name of the ComponentClassDefinition."
-                                maxLength: 63
-                                pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                                type: "string"
-                            required:
-                              - "class"
-                            type: "object"
                           componentDef:
                             description: "References the name of the ComponentDefinition. If both componentDefRef and componentDef are provided, the componentDef will take precedence over componentDefRef."
                             maxLength: 64
@@ -2199,20 +2301,102 @@ spec:
                             type: "array"
                             x-kubernetes-list-type: "set"
                           instances:
-                            description: "Overrides values in default Template. \n Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A component manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the component to manage instances from different templates."
+                            description: "Overrides values in default Template. \n Instance is the fundamental unit managed by KubeBlocks. It represents a Pod with additional objects such as PVCs, Services, ConfigMaps, etc. A component manages instances with a total count of Replicas, and by default, all these instances are generated from the same template. The InstanceTemplate provides a way to override values in the default template, allowing the component to manage instances from different templates. \n The naming convention for instances (pods) based on the Component Name, InstanceTemplate Name, and ordinal. The constructed instance name follows the pattern: $(component.name)-$(template.name)-$(ordinal). By default, the ordinal starts from 0 for each InstanceTemplate. It is important to ensure that the Name of each InstanceTemplate is unique. \n The sum of replicas across all InstanceTemplates should not exceed the total number of Replicas specified for the Component. Any remaining replicas will be generated using the default template and will follow the default naming rules."
                             items:
                               description: "InstanceTemplate defines values to override in pod template."
                               properties:
+                                RuntimeClassName:
+                                  description: "Defines RuntimeClass to override."
+                                  type: "string"
                                 annotations:
                                   additionalProperties:
                                     type: "string"
                                   description: "Defines annotations to override. Add new or override existing annotations."
                                   type: "object"
-                                generateName:
-                                  description: "GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. \n Applied only if Name is not specified."
-                                  maxLength: 54
-                                  pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                                  type: "string"
+                                env:
+                                  description: "Defines Env to override. Add new or override existing envs."
+                                  items:
+                                    description: "EnvVar represents an environment variable present in a Container."
+                                    properties:
+                                      name:
+                                        description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                        type: "string"
+                                      value:
+                                        description: "Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to \"\"."
+                                        type: "string"
+                                      valueFrom:
+                                        description: "Source for the environment variable's value. Cannot be used if value is not empty."
+                                        properties:
+                                          configMapKeyRef:
+                                            description: "Selects a key of a ConfigMap."
+                                            properties:
+                                              key:
+                                                description: "The key to select."
+                                                type: "string"
+                                              name:
+                                                description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                                type: "string"
+                                              optional:
+                                                description: "Specify whether the ConfigMap or its key must be defined"
+                                                type: "boolean"
+                                            required:
+                                              - "key"
+                                            type: "object"
+                                            x-kubernetes-map-type: "atomic"
+                                          fieldRef:
+                                            description: "Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+                                            properties:
+                                              apiVersion:
+                                                description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
+                                                type: "string"
+                                              fieldPath:
+                                                description: "Path of the field to select in the specified API version."
+                                                type: "string"
+                                            required:
+                                              - "fieldPath"
+                                            type: "object"
+                                            x-kubernetes-map-type: "atomic"
+                                          resourceFieldRef:
+                                            description: "Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported."
+                                            properties:
+                                              containerName:
+                                                description: "Container name: required for volumes, optional for env vars"
+                                                type: "string"
+                                              divisor:
+                                                anyOf:
+                                                  - type: "integer"
+                                                  - type: "string"
+                                                description: "Specifies the output format of the exposed resources, defaults to \"1\""
+                                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                                x-kubernetes-int-or-string: true
+                                              resource:
+                                                description: "Required: resource to select"
+                                                type: "string"
+                                            required:
+                                              - "resource"
+                                            type: "object"
+                                            x-kubernetes-map-type: "atomic"
+                                          secretKeyRef:
+                                            description: "Selects a key of a secret in the pod's namespace"
+                                            properties:
+                                              key:
+                                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                                type: "string"
+                                              name:
+                                                description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                                                type: "string"
+                                              optional:
+                                                description: "Specify whether the Secret or its key must be defined"
+                                                type: "boolean"
+                                            required:
+                                              - "key"
+                                            type: "object"
+                                            x-kubernetes-map-type: "atomic"
+                                        type: "object"
+                                    required:
+                                      - "name"
+                                    type: "object"
+                                  type: "array"
                                 image:
                                   description: "Defines image to override. Will override the first container's image of the pod."
                                   type: "string"
@@ -2222,8 +2406,8 @@ spec:
                                   description: "Defines labels to override. Add new or override existing labels."
                                   type: "object"
                                 name:
-                                  description: "Defines the name of the instance. Only applied when Replicas is 1."
-                                  maxLength: 64
+                                  description: "Specifies the name of the template. Each instance of the template derives its name from the Component's Name, the template's Name and the instance's ordinal. The constructed instance name follows the pattern $(component.name)-$(template.name)-$(ordinal). The ordinal starts from 0 by default."
+                                  maxLength: 54
                                   pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                                   type: "string"
                                 nodeName:
@@ -3517,6 +3701,8 @@ spec:
                                       - "name"
                                     type: "object"
                                   type: "array"
+                              required:
+                                - "name"
                               type: "object"
                             type: "array"
                           issuer:
@@ -3566,6 +3752,11 @@ spec:
                             maxLength: 22
                             pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                             type: "string"
+                          offlineInstances:
+                            description: "Specifies instances to be scaled in with dedicated names in the list."
+                            items:
+                              type: "string"
+                            type: "array"
                           replicas:
                             default: 1
                             description: "Specifies the number of component replicas."
@@ -3620,14 +3811,51 @@ spec:
                                 cluster:
                                   description: "The name of the KubeBlocks cluster being referenced when a service provided by another KubeBlocks cluster is being referenced. \n By default, the clusterDefinition.spec.connectionCredential secret corresponding to the referenced Cluster will be used to bind to the current component. The connection credential secret should include and correspond to the following fields: endpoint, port, username, and password when a KubeBlocks cluster is being referenced. \n Under this referencing approach, the ServiceKind and ServiceVersion of service reference declaration defined in the ClusterDefinition will not be validated. If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence."
                                   type: "string"
+                                clusterRef:
+                                  description: "Specifies the cluster to reference."
+                                  properties:
+                                    cluster:
+                                      description: "The name of the cluster to reference."
+                                      type: "string"
+                                    credential:
+                                      description: "The credential (SystemAccount) to reference from the cluster."
+                                      properties:
+                                        component:
+                                          description: "The name of the component where the credential resides in."
+                                          type: "string"
+                                        name:
+                                          description: "The name of the credential (SystemAccount) to reference."
+                                          type: "string"
+                                      required:
+                                        - "component"
+                                        - "name"
+                                      type: "object"
+                                    service:
+                                      description: "The service to reference from the cluster."
+                                      properties:
+                                        component:
+                                          description: "The name of the component where the service resides in. \n It is required when referencing a component service."
+                                          type: "string"
+                                        port:
+                                          description: "The port name of the service to reference. \n If there is a non-zero node-port exist for the matched service port, the node-port will be selected first. If the referenced service is a pod-service, there will be multiple service objects matched, and the resolved value will be presented in the following format: service1.name:port1,service2.name:port2..."
+                                          type: "string"
+                                        service:
+                                          description: "The name of the service to reference. \n Leave it empty to reference the default service. Set it to \"headless\" to reference the default headless service. If the referenced service is a pod-service, there will be multiple service objects matched, and the resolved value will be presented in the following format: service1.name,service2.name..."
+                                          type: "string"
+                                      required:
+                                        - "service"
+                                      type: "object"
+                                  required:
+                                    - "cluster"
+                                  type: "object"
                                 name:
                                   description: "Specifies the identifier of the service reference declaration. It corresponds to the serviceRefDeclaration name defined in the clusterDefinition.componentDefs[*].serviceRefDeclarations[*].name."
                                   type: "string"
                                 namespace:
-                                  description: "Specifies the namespace of the referenced Cluster or the namespace of the referenced ServiceDescriptor object. If not provided, the referenced Cluster and ServiceDescriptor will be searched in the namespace of the current cluster by default."
+                                  description: "Specifies the namespace of the referenced Cluster or ServiceDescriptor object. If not specified, the namespace of the current cluster will be used."
                                   type: "string"
                                 serviceDescriptor:
-                                  description: "The service descriptor of the service provided by external sources. \n When referencing a service provided by external sources, the ServiceDescriptor object name is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion defined in the service reference declaration in the ClusterDefinition. \n If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence."
+                                  description: "The service descriptor of the service provided by external sources. \n When referencing a service provided by external sources, a ServiceDescriptor object is required to establish the service binding. The `serviceDescriptor.spec.serviceKind` and `serviceDescriptor.spec.serviceVersion` should match the serviceKind and serviceVersion declared in the definition. \n If both Cluster and ServiceDescriptor are specified, the Cluster takes precedence."
                                   type: "string"
                               required:
                                 - "name"
@@ -3638,7 +3866,7 @@ spec:
                             maxLength: 32
                             type: "string"
                           services:
-                            description: "Services expose endpoints that can be accessed by clients."
+                            description: "Services overrides services defined in referenced ComponentDefinition."
                             items:
                               properties:
                                 annotations:
@@ -3647,9 +3875,12 @@ spec:
                                   description: "If ServiceType is LoadBalancer, cloud provider related parameters can be put here. More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer."
                                   type: "object"
                                 name:
-                                  description: "The name of the service."
-                                  maxLength: 15
+                                  description: "References the component service name defined in the ComponentDefinition.Spec.Services[x].Name."
+                                  maxLength: 25
                                   type: "string"
+                                podService:
+                                  description: "Indicates whether to generate individual services for each pod. If set to true, a separate service will be created for each pod in the cluster."
+                                  type: "boolean"
                                 serviceType:
                                   default: "ClusterIP"
                                   description: "Determines how the Service is exposed. Valid options are ClusterIP, NodePort, and LoadBalancer. \n - `ClusterIP` allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, they are determined by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. \n More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."

@@ -143,7 +143,6 @@ spec:
                       - "timeout"
                       - "type"
                     type: "object"
-                  minItems: 1
                   type: "array"
                 unhealthyRange:
                   description: "Any further remediation is only allowed if the number of machines selected by \"selector\" as not healthy\nis within the range of \"UnhealthyRange\". Takes precedence over MaxUnhealthy.\nEg. \"[3-5]\" - This means that remediation will be allowed only when:\n(a) there are at least 3 unhealthy machines (and)\n(b) there are at most 5 unhealthy machines"
@@ -152,7 +151,6 @@ spec:
               required:
                 - "clusterName"
                 - "selector"
-                - "unhealthyConditions"
               type: "object"
             status:
               description: "Most recently observed status of MachineHealthCheck resource"

@@ -261,6 +261,9 @@ pub struct VSphereMachineNetworkRoutes {
 /// PCIDeviceSpec defines virtual machine's PCI configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereMachinePciDevices {
+    /// CustomLabel is the hardware label of a virtual machine's PCI device. Defaults to the eponymous property value in the template from which the virtual machine is cloned.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabel")]
+    pub custom_label: Option<String>,
     /// DeviceID is the device ID of a virtual machine's PCI, in integer. Defaults to the eponymous property value in the template from which the virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceId")]
     pub device_id: Option<i32>,

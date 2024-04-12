@@ -177,13 +177,16 @@ pub struct AWXSpec {
     /// Protocol to use for the loadbalancer
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loadbalancer_protocol: Option<AWXLoadbalancerProtocol>,
-    /// Metrics-Utlity ConfigMap
+    /// Metrics-Utility ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics_utility_configmap: Option<String>,
-    /// Metrics-Utlity Gather Data CronJob Schedule
+    /// Enable metrics utility shipping to Red Hat Hybrid Cloud Console
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_console_enabled: Option<bool>,
+    /// Metrics-Utility Gather Data CronJob Schedule
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics_utility_cronjob_gather_schedule: Option<String>,
-    /// Metrics-Utlity Report CronJob Schedule
+    /// Metrics-Utility Report CronJob Schedule
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics_utility_cronjob_report_schedule: Option<String>,
     /// Enable metrics utility
@@ -198,15 +201,21 @@ pub struct AWXSpec {
     /// Metrics-Utility Image Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics_utility_image_version: Option<String>,
-    /// Metrics-Utlity PVC Claim
+    /// Metrics-Utility PVC Claim
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics_utility_pvc_claim: Option<String>,
-    /// Metrics-Utlity PVC Claim Size
+    /// Metrics-Utility PVC Claim Size
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics_utility_pvc_claim_size: Option<String>,
-    /// Metrics-Utlity PVC Claim Storage Class
+    /// Metrics-Utility PVC Claim Storage Class
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics_utility_pvc_claim_storage_class: Option<String>,
+    /// Metrics-Utility Secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_secret: Option<String>,
+    /// Metrics-Utility Ship Target
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics_utility_ship_target: Option<String>,
     /// Set the socket listen queue size for nginx (defaults to same as uwsgi)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nginx_listen_queue_size: Option<i64>,

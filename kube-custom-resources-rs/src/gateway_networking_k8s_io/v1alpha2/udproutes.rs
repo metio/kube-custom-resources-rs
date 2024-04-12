@@ -29,8 +29,8 @@ pub struct UDPRouteSpec {
     /// 
     /// 
     /// * Gateway (Gateway conformance profile)
+    /// * Service (Mesh conformance profile, ClusterIP Services only)
     /// 
-    /// * Service (Mesh conformance profile, experimental, ClusterIP Services only)
     /// 
     /// This API may be extended in the future to support additional kinds of parent
     /// resources.
@@ -104,7 +104,7 @@ pub struct UDPRouteSpec {
 /// 
 /// 
 /// * Gateway (Gateway conformance profile)
-/// * Service (Mesh conformance profile, experimental, ClusterIP Services only)
+/// * Service (Mesh conformance profile, ClusterIP Services only)
 /// 
 /// 
 /// This API may be extended in the future to support additional kinds of parent
@@ -131,7 +131,7 @@ pub struct UDPRouteParentRefs {
     /// 
     /// 
     /// * Gateway (Gateway conformance profile)
-    /// * Service (Mesh conformance profile, experimental, ClusterIP Services only)
+    /// * Service (Mesh conformance profile, ClusterIP Services only)
     /// 
     /// 
     /// Support for other resources is Implementation-Specific.
@@ -211,14 +211,12 @@ pub struct UDPRouteParentRefs {
     /// following resources, SectionName is interpreted as the following:
     /// 
     /// 
-    /// * Gateway: Listener Name. When both Port (experimental) and SectionName
+    /// * Gateway: Listener name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
     /// both specified values.
-    /// * Service: Port Name. When both Port (experimental) and SectionName
+    /// * Service: Port name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
-    /// both specified values. Note that attaching Routes to Services as Parents
-    /// is part of experimental Mesh support and is not supported for any other
-    /// purpose.
+    /// both specified values.
     /// 
     /// 
     /// Implementations MAY choose to support attaching Routes to other resources.
@@ -465,7 +463,7 @@ pub struct UDPRouteStatusParentsParentRef {
     /// 
     /// 
     /// * Gateway (Gateway conformance profile)
-    /// * Service (Mesh conformance profile, experimental, ClusterIP Services only)
+    /// * Service (Mesh conformance profile, ClusterIP Services only)
     /// 
     /// 
     /// Support for other resources is Implementation-Specific.
@@ -545,14 +543,12 @@ pub struct UDPRouteStatusParentsParentRef {
     /// following resources, SectionName is interpreted as the following:
     /// 
     /// 
-    /// * Gateway: Listener Name. When both Port (experimental) and SectionName
+    /// * Gateway: Listener name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
     /// both specified values.
-    /// * Service: Port Name. When both Port (experimental) and SectionName
+    /// * Service: Port name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
-    /// both specified values. Note that attaching Routes to Services as Parents
-    /// is part of experimental Mesh support and is not supported for any other
-    /// purpose.
+    /// both specified values.
     /// 
     /// 
     /// Implementations MAY choose to support attaching Routes to other resources.

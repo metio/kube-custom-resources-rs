@@ -1245,6 +1245,7 @@ apiVersion `fossul.io/v1`:
 apiVersion `gateway.networking.k8s.io/v1`:
 - `GatewayClass`
 - `Gateway`
+- `GRPCRoute`
 - `HTTPRoute`
 
 apiVersion `gateway.networking.k8s.io/v1alpha2`:

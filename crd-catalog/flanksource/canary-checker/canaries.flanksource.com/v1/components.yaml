@@ -68,6 +68,8 @@ spec:
                         items:
                           type: "string"
                         type: "array"
+                      tagSelector:
+                        type: "string"
                       tags:
                         additionalProperties:
                           type: "string"
@@ -181,6 +183,8 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                              tagSelector:
+                                type: "string"
                               tags:
                                 additionalProperties:
                                   type: "string"
@@ -314,6 +318,8 @@ spec:
                         items:
                           type: "string"
                         type: "array"
+                      tagSelector:
+                        type: "string"
                       types:
                         items:
                           type: "string"

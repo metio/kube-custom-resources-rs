@@ -3338,6 +3338,8 @@ pub struct ScheduledSparkApplicationTemplateSparkUiOptions {
     pub ingress_tls: Option<Vec<ScheduledSparkApplicationTemplateSparkUiOptionsIngressTls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLabels")]
+    pub service_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePort")]
     pub service_port: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]

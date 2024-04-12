@@ -252,6 +252,46 @@ pub struct GatewayInfrastructure {
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// ParametersRef is a reference to a resource that contains the configuration
+    /// parameters corresponding to the Gateway. This is optional if the
+    /// controller does not require any additional configuration.
+    /// 
+    /// 
+    /// This follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis
+    /// 
+    /// 
+    /// The Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,
+    /// the merging behavior is implementation specific.
+    /// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+    /// 
+    /// 
+    /// Support: Implementation-specific
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parametersRef")]
+    pub parameters_ref: Option<GatewayInfrastructureParametersRef>,
+}
+
+/// ParametersRef is a reference to a resource that contains the configuration
+/// parameters corresponding to the Gateway. This is optional if the
+/// controller does not require any additional configuration.
+/// 
+/// 
+/// This follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis
+/// 
+/// 
+/// The Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,
+/// the merging behavior is implementation specific.
+/// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+/// 
+/// 
+/// Support: Implementation-specific
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct GatewayInfrastructureParametersRef {
+    /// Group is the group of the referent.
+    pub group: String,
+    /// Kind is kind of the referent.
+    pub kind: String,
+    /// Name is the name of the referent.
+    pub name: String,
 }
 
 /// Listener embodies the concept of a logical endpoint where a Gateway accepts
@@ -545,6 +585,19 @@ pub struct GatewayListenersTls {
     /// Support: Implementation-specific (More than one reference or other resource types)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateRefs")]
     pub certificate_refs: Option<Vec<GatewayListenersTlsCertificateRefs>>,
+    /// FrontendValidation holds configuration information for validating the frontend (client).
+    /// Setting this field will require clients to send a client certificate
+    /// required for validation during the TLS handshake. In browsers this may result in a dialog appearing
+    /// that requests a user to specify the client certificate.
+    /// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+    /// 
+    /// 
+    /// Support: Extended
+    /// 
+    /// 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "frontendValidation")]
+    pub frontend_validation: Option<GatewayListenersTlsFrontendValidation>,
     /// Mode defines the TLS behavior for the TLS session initiated by the client.
     /// There are two possible modes:
     /// 
@@ -598,6 +651,82 @@ pub struct GatewayListenersTlsCertificateRefs {
     /// Kind is kind of the referent. For example "Secret".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
+    /// Name is the name of the referent.
+    pub name: String,
+    /// Namespace is the namespace of the referenced object. When unspecified, the local
+    /// namespace is inferred.
+    /// 
+    /// 
+    /// Note that when a namespace different than the local namespace is specified,
+    /// a ReferenceGrant object is required in the referent namespace to allow that
+    /// namespace's owner to accept the reference. See the ReferenceGrant
+    /// documentation for details.
+    /// 
+    /// 
+    /// Support: Core
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// FrontendValidation holds configuration information for validating the frontend (client).
+/// Setting this field will require clients to send a client certificate
+/// required for validation during the TLS handshake. In browsers this may result in a dialog appearing
+/// that requests a user to specify the client certificate.
+/// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+/// 
+/// 
+/// Support: Extended
+/// 
+/// 
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct GatewayListenersTlsFrontendValidation {
+    /// CACertificateRefs contains one or more references to
+    /// Kubernetes objects that contain TLS certificates of
+    /// the Certificate Authorities that can be used
+    /// as a trust anchor to validate the certificates presented by the client.
+    /// 
+    /// 
+    /// A single CA certificate reference to a Kubernetes ConfigMap
+    /// has "Core" support.
+    /// Implementations MAY choose to support attaching multiple CA certificates to
+    /// a Listener, but this behavior is implementation-specific.
+    /// 
+    /// 
+    /// Support: Core - A single reference to a Kubernetes ConfigMap
+    /// with the CA certificate in a key named `ca.crt`.
+    /// 
+    /// 
+    /// Support: Implementation-specific (More than one reference, or other kinds
+    /// of resources).
+    /// 
+    /// 
+    /// References to a resource in a different namespace are invalid UNLESS there
+    /// is a ReferenceGrant in the target namespace that allows the certificate
+    /// to be attached. If a ReferenceGrant does not allow this reference, the
+    /// "ResolvedRefs" condition MUST be set to False for this listener with the
+    /// "RefNotPermitted" reason.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificateRefs")]
+    pub ca_certificate_refs: Option<Vec<GatewayListenersTlsFrontendValidationCaCertificateRefs>>,
+}
+
+/// ObjectReference identifies an API object including its namespace.
+/// 
+/// 
+/// The API object must be valid in the cluster; the Group and Kind must
+/// be registered in the cluster for this reference to be valid.
+/// 
+/// 
+/// References to objects with invalid Group and Kind are not valid, and must
+/// be rejected by the implementation, with appropriate Conditions set
+/// on the containing object.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct GatewayListenersTlsFrontendValidationCaCertificateRefs {
+    /// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+    /// When unspecified or empty string, core API group is inferred.
+    pub group: String,
+    /// Kind is kind of the referent. For example "ConfigMap" or "Service".
+    pub kind: String,
     /// Name is the name of the referent.
     pub name: String,
     /// Namespace is the namespace of the referenced object. When unspecified, the local

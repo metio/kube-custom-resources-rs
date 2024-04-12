@@ -24,12 +24,16 @@ pub struct PrometheusRuleGroups {
     /// Interval determines how often rules in the group are evaluated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// Limit the number of alerts an alerting rule and series a recording rule can produce. Limit is supported starting with Prometheus >= 2.31 and Thanos Ruler >= 0.24.
+    /// Limit the number of alerts an alerting rule and series a recording
+    /// rule can produce.
+    /// Limit is supported starting with Prometheus >= 2.31 and Thanos Ruler >= 0.24.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
     /// Name of the rule group.
     pub name: String,
-    /// PartialResponseStrategy is only used by ThanosRuler and will be ignored by Prometheus instances. More info: https://github.com/thanos-io/thanos/blob/main/docs/components/rule.md#partial-response
+    /// PartialResponseStrategy is only used by ThanosRuler and will
+    /// be ignored by Prometheus instances.
+    /// More info: https://github.com/thanos-io/thanos/blob/main/docs/components/rule.md#partial-response
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partial_response_strategy: Option<String>,
     /// List of alerting and recording rules.
@@ -37,13 +41,16 @@ pub struct PrometheusRuleGroups {
     pub rules: Option<Vec<PrometheusRuleGroupsRules>>,
 }
 
-/// Rule describes an alerting or recording rule See Prometheus documentation: [alerting](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) or [recording](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/#recording-rules) rule
+/// Rule describes an alerting or recording rule
+/// See Prometheus documentation: [alerting](https://www.prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) or [recording](https://www.prometheus.io/docs/prometheus/latest/configuration/recording_rules/#recording-rules) rule
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRuleGroupsRules {
-    /// Name of the alert. Must be a valid label value. Only one of `record` and `alert` must be set.
+    /// Name of the alert. Must be a valid label value.
+    /// Only one of `record` and `alert` must be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alert: Option<String>,
-    /// Annotations to add to each alert. Only valid for alerting rules.
+    /// Annotations to add to each alert.
+    /// Only valid for alerting rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// PromQL expression to evaluate.
@@ -57,7 +64,8 @@ pub struct PrometheusRuleGroupsRules {
     /// Labels to add or overwrite.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of the time series to output to. Must be a valid metric name. Only one of `record` and `alert` must be set.
+    /// Name of the time series to output to. Must be a valid metric name.
+    /// Only one of `record` and `alert` must be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub record: Option<String>,
 }
