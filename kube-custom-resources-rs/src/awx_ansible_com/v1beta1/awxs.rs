@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "awx.ansible.com", version = "v1beta1", kind = "AWX", plural = "awxs")]
@@ -848,7 +847,7 @@ pub struct AWXExtraSettings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub setting: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

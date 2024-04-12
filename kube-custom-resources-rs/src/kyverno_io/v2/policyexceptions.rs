@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// Spec declares policy exception behaviors.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -41,7 +40,7 @@ pub struct PolicyExceptionConditions {
 pub struct PolicyExceptionConditionsAll {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -50,7 +49,7 @@ pub struct PolicyExceptionConditionsAll {
     pub operator: Option<PolicyExceptionConditionsAllOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -75,7 +74,7 @@ pub enum PolicyExceptionConditionsAllOperator {
 pub struct PolicyExceptionConditionsAny {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -84,7 +83,7 @@ pub struct PolicyExceptionConditionsAny {
     pub operator: Option<PolicyExceptionConditionsAnyOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

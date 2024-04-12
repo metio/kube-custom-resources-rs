@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
@@ -370,7 +369,7 @@ pub struct ClusterTopologyVariables {
     /// hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type via controller-tools,
     /// i.e. it is not possible to have no type field.
     /// Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// Workers encapsulates the different constructs that form the worker nodes
@@ -666,7 +665,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsVariablesOverrides {
     /// hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type via controller-tools,
     /// i.e. it is not possible to have no type field.
     /// Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// MachinePoolTopology specifies the different parameters for a pool of worker nodes in the topology.
@@ -766,7 +765,7 @@ pub struct ClusterTopologyWorkersMachinePoolsVariablesOverrides {
     /// hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type via controller-tools,
     /// i.e. it is not possible to have no type field.
     /// Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// ClusterStatus defines the observed state of Cluster.

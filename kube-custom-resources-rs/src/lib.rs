@@ -516,11 +516,6 @@ apiVersion `camel.apache.org/v1`:
 apiVersion `camel.apache.org/v1alpha1`:
 - `Kamelet`
 
-## canaries_flanksource_com
-
-apiVersion `canaries.flanksource.com/v1`:
-- `Canary`
-
 ## capabilities_3scale_net
 
 apiVersion `capabilities.3scale.net/v1alpha1`:
@@ -3315,8 +3310,6 @@ pub mod cache_kubedl_io;
 pub mod caching_ibm_com;
 #[cfg(feature = "camel_apache_org")]
 pub mod camel_apache_org;
-#[cfg(feature = "canaries_flanksource_com")]
-pub mod canaries_flanksource_com;
 #[cfg(feature = "capabilities_3scale_net")]
 pub mod capabilities_3scale_net;
 #[cfg(feature = "capsule_clastix_io")]

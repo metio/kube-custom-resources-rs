@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// Spec represents the desired behavior of ClusterOverridePolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -201,7 +200,7 @@ pub struct ClusterOverridePolicyOverrideRulesOverridersPlaintext {
     pub path: String,
     /// Value to be applied to target field. Must be empty when operator is Remove.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// PlaintextOverrider is a simple overrider that overrides target fields according to path, operator and value.
@@ -439,7 +438,7 @@ pub struct ClusterOverridePolicyOverridersPlaintext {
     pub path: String,
     /// Value to be applied to target field. Must be empty when operator is Remove.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// PlaintextOverrider is a simple overrider that overrides target fields according to path, operator and value.

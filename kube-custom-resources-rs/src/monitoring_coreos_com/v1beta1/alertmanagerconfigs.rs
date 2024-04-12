@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// AlertmanagerConfigSpec is a specification of the desired behavior of the Alertmanager configuration.
 /// By definition, the Alertmanager configuration only applies to alerts for which
@@ -5093,7 +5092,7 @@ pub struct AlertmanagerConfigRoute {
     pub repeat_interval: Option<String>,
     /// Child routes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub routes: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub routes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
 /// Matcher defines how to match on alert's labels.

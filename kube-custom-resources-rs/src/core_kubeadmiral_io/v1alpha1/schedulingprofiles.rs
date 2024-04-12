@@ -4,7 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "core.kubeadmiral.io", version = "v1alpha1", kind = "SchedulingProfile", plural = "schedulingprofiles")]
@@ -23,7 +23,7 @@ pub struct SchedulingProfileSpec {
 pub struct SchedulingProfilePluginConfig {
     /// Args defines the arguments passed to the plugins at the time of initialization. Args can have arbitrary structure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub args: Option<HashMap<String, serde_json::Value>>,
+    pub args: Option<BTreeMap<String, serde_json::Value>>,
     /// Name defines the name of plugin being configured.
     pub name: String,
 }

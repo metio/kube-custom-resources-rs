@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// ConstraintTemplateSpec defines the desired state of ConstraintTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -67,7 +66,7 @@ pub struct ConstraintTemplateTargetsCode {
     /// The engine used to evaluate the code. Example: "Rego". Required.
     pub engine: String,
     /// The source code for the template. Required.
-    pub source: HashMap<String, serde_json::Value>,
+    pub source: BTreeMap<String, serde_json::Value>,
 }
 
 /// ConstraintTemplateStatus defines the observed state of ConstraintTemplate.

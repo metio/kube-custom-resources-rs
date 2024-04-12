@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
 /// ClusterColocationProfileSpec is a description of a ClusterColocationProfile.
@@ -33,7 +32,7 @@ pub struct ClusterColocationProfileSpec {
     pub namespace_selector: Option<ClusterColocationProfileNamespaceSelector>,
     /// Patch indicates patching podTemplate that will be injected to the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub patch: Option<HashMap<String, serde_json::Value>>,
+    pub patch: Option<BTreeMap<String, serde_json::Value>>,
     /// If specified, the priorityClassName and the priority value defined in PriorityClass will be injected into the Pod. The PriorityClassName, priority value in PriorityClassName and KoordinatorPriority will affect the scheduling, preemption and other behaviors of Koordinator system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,

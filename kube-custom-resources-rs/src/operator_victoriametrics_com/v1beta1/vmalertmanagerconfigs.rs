@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 /// VMAlertmanagerConfigSpec defines configuration for VMAlertmanagerConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2479,7 +2478,7 @@ pub struct VMAlertmanagerConfigRoute {
     /// Child routes.
     /// https://prometheus.io/docs/alerting/latest/configuration/#route
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub routes: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub routes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
 /// MuteTimeInterval for alerts

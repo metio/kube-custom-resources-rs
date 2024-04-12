@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
@@ -29,7 +28,7 @@ pub struct ReservationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preAllocation")]
     pub pre_allocation: Option<bool>,
     /// Template defines the scheduling requirements (resources, affinities, images, ...) processed by the scheduler just like a normal pod. If the `template.spec.nodeName` is specified, the scheduler will not choose another node but reserve resources on the specified node.
-    pub template: HashMap<String, serde_json::Value>,
+    pub template: BTreeMap<String, serde_json::Value>,
     /// Time-to-Live period for the reservation. `expires` and `ttl` are mutually exclusive. Defaults to 24h. Set 0 to disable expiration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ttl: Option<String>,

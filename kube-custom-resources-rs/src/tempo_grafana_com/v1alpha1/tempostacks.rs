@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
@@ -70,7 +69,7 @@ pub struct TempoStackSpec {
 pub struct TempoStackExtraConfig {
     /// Tempo defines any extra Tempo configuration, which will be merged with the operator's generated Tempo configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tempo: Option<HashMap<String, serde_json::Value>>,
+    pub tempo: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// HashRing defines the spec for the distributed hash ring configuration.

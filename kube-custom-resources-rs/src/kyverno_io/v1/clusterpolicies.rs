@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// Spec declares policy behaviors.
@@ -97,7 +96,7 @@ pub struct ClusterPolicyRules {
     pub name: String,
     /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub preconditions: Option<HashMap<String, serde_json::Value>>,
+    pub preconditions: Option<BTreeMap<String, serde_json::Value>>,
     /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller. The default value is set to "true", it must be set to "false" to apply generate and mutateExisting rules to those requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipBackgroundRequests")]
     pub skip_background_requests: Option<bool>,
@@ -167,7 +166,7 @@ pub struct ClusterPolicyRulesContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -231,13 +230,13 @@ pub struct ClusterPolicyRulesContextImageRegistryImageRegistryCredentials {
 pub struct ClusterPolicyRulesContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ExcludeResources defines when this policy rule should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.
@@ -581,7 +580,7 @@ pub struct ClusterPolicyRulesGenerate {
     pub clone_list: Option<ClusterPolicyRulesGenerateCloneList>,
     /// Data provides the resource declaration used to populate each generated resource. At most one of Data or Clone must be specified. If neither are provided, the generated resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub data: Option<HashMap<String, serde_json::Value>>,
+    pub data: Option<BTreeMap<String, serde_json::Value>>,
     /// Kind specifies resource kind.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -1000,7 +999,7 @@ pub struct ClusterPolicyRulesMutate {
     pub foreach: Option<Vec<ClusterPolicyRulesMutateForeach>>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources. See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/ and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
-    pub patch_strategic_merge: Option<HashMap<String, serde_json::Value>>,
+    pub patch_strategic_merge: Option<BTreeMap<String, serde_json::Value>>,
     /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources. See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
@@ -1017,7 +1016,7 @@ pub struct ClusterPolicyRulesMutateForeach {
     pub context: Option<Vec<ClusterPolicyRulesMutateForeachContext>>,
     /// Foreach declares a nested foreach iterator
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foreach: Option<HashMap<String, serde_json::Value>>,
+    pub foreach: Option<BTreeMap<String, serde_json::Value>>,
     /// List specifies a JMESPath expression that results in one or more elements to which the validation logic is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub list: Option<String>,
@@ -1026,7 +1025,7 @@ pub struct ClusterPolicyRulesMutateForeach {
     pub order: Option<ClusterPolicyRulesMutateForeachOrder>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources. See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/ and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
-    pub patch_strategic_merge: Option<HashMap<String, serde_json::Value>>,
+    pub patch_strategic_merge: Option<BTreeMap<String, serde_json::Value>>,
     /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources. See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
@@ -1081,7 +1080,7 @@ pub struct ClusterPolicyRulesMutateForeachContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -1145,13 +1144,13 @@ pub struct ClusterPolicyRulesMutateForeachContextImageRegistryImageRegistryCrede
 pub struct ClusterPolicyRulesMutateForeachContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ForEachMutation applies mutation rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
@@ -1177,7 +1176,7 @@ pub struct ClusterPolicyRulesMutateForeachPreconditions {
 pub struct ClusterPolicyRulesMutateForeachPreconditionsAll {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -1186,7 +1185,7 @@ pub struct ClusterPolicyRulesMutateForeachPreconditionsAll {
     pub operator: Option<ClusterPolicyRulesMutateForeachPreconditionsAllOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -1215,7 +1214,7 @@ pub enum ClusterPolicyRulesMutateForeachPreconditionsAllOperator {
 pub struct ClusterPolicyRulesMutateForeachPreconditionsAny {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -1224,7 +1223,7 @@ pub struct ClusterPolicyRulesMutateForeachPreconditionsAny {
     pub operator: Option<ClusterPolicyRulesMutateForeachPreconditionsAnyOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -1268,7 +1267,7 @@ pub struct ClusterPolicyRulesMutateTargets {
     pub namespace: Option<String>,
     /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub preconditions: Option<HashMap<String, serde_json::Value>>,
+    pub preconditions: Option<BTreeMap<String, serde_json::Value>>,
     /// UID specifies the resource uid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
@@ -1320,7 +1319,7 @@ pub struct ClusterPolicyRulesMutateTargetsContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -1384,13 +1383,13 @@ pub struct ClusterPolicyRulesMutateTargetsContextImageRegistryImageRegistryCrede
 pub struct ClusterPolicyRulesMutateTargetsContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Validation is used to validate matching resources.
@@ -1398,7 +1397,7 @@ pub struct ClusterPolicyRulesMutateTargetsContextVariable {
 pub struct ClusterPolicyRulesValidate {
     /// AnyPattern specifies list of validation patterns. At least one of the patterns must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
-    pub any_pattern: Option<HashMap<String, serde_json::Value>>,
+    pub any_pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cel: Option<ClusterPolicyRulesValidateCel>,
@@ -1416,7 +1415,7 @@ pub struct ClusterPolicyRulesValidate {
     pub message: Option<String>,
     /// Pattern specifies an overlay-style pattern used to check resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pattern: Option<HashMap<String, serde_json::Value>>,
+    pub pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<ClusterPolicyRulesValidatePodSecurity>,
@@ -1551,7 +1550,7 @@ pub struct ClusterPolicyRulesValidateCelVariables {
 pub struct ClusterPolicyRulesValidateDeny {
     /// Multiple conditions can be declared under an `any` or `all` statement. A direct list of conditions (without `any` or `all` statements) is also supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<HashMap<String, serde_json::Value>>,
+    pub conditions: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ForEachValidation applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
@@ -1559,7 +1558,7 @@ pub struct ClusterPolicyRulesValidateDeny {
 pub struct ClusterPolicyRulesValidateForeach {
     /// AnyPattern specifies list of validation patterns. At least one of the patterns must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
-    pub any_pattern: Option<HashMap<String, serde_json::Value>>,
+    pub any_pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// Context defines variables and data sources that can be used during rule execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<ClusterPolicyRulesValidateForeachContext>>,
@@ -1571,13 +1570,13 @@ pub struct ClusterPolicyRulesValidateForeach {
     pub element_scope: Option<bool>,
     /// Foreach declares a nested foreach iterator
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foreach: Option<HashMap<String, serde_json::Value>>,
+    pub foreach: Option<BTreeMap<String, serde_json::Value>>,
     /// List specifies a JMESPath expression that results in one or more elements to which the validation logic is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub list: Option<String>,
     /// Pattern specifies an overlay-style pattern used to check resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pattern: Option<HashMap<String, serde_json::Value>>,
+    pub pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<ClusterPolicyRulesValidateForeachPreconditions>,
@@ -1629,7 +1628,7 @@ pub struct ClusterPolicyRulesValidateForeachContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -1693,13 +1692,13 @@ pub struct ClusterPolicyRulesValidateForeachContextImageRegistryImageRegistryCre
 pub struct ClusterPolicyRulesValidateForeachContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Deny defines conditions used to pass or fail a validation rule.
@@ -1707,7 +1706,7 @@ pub struct ClusterPolicyRulesValidateForeachContextVariable {
 pub struct ClusterPolicyRulesValidateForeachDeny {
     /// Multiple conditions can be declared under an `any` or `all` statement. A direct list of conditions (without `any` or `all` statements) is also supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<HashMap<String, serde_json::Value>>,
+    pub conditions: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
@@ -1726,7 +1725,7 @@ pub struct ClusterPolicyRulesValidateForeachPreconditions {
 pub struct ClusterPolicyRulesValidateForeachPreconditionsAll {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -1735,7 +1734,7 @@ pub struct ClusterPolicyRulesValidateForeachPreconditionsAll {
     pub operator: Option<ClusterPolicyRulesValidateForeachPreconditionsAllOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -1764,7 +1763,7 @@ pub enum ClusterPolicyRulesValidateForeachPreconditionsAllOperator {
 pub struct ClusterPolicyRulesValidateForeachPreconditionsAny {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -1773,7 +1772,7 @@ pub struct ClusterPolicyRulesValidateForeachPreconditionsAny {
     pub operator: Option<ClusterPolicyRulesValidateForeachPreconditionsAnyOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -1834,7 +1833,7 @@ pub struct ClusterPolicyRulesValidateManifestsAttestorsEntries {
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attestor: Option<HashMap<String, serde_json::Value>>,
+    pub attestor: Option<BTreeMap<String, serde_json::Value>>,
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<ClusterPolicyRulesValidateManifestsAttestorsEntriesCertificates>,
@@ -2212,7 +2211,7 @@ pub struct ClusterPolicyRulesVerifyImagesAttestationsAttestorsEntries {
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attestor: Option<HashMap<String, serde_json::Value>>,
+    pub attestor: Option<BTreeMap<String, serde_json::Value>>,
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<ClusterPolicyRulesVerifyImagesAttestationsAttestorsEntriesCertificates>,
@@ -2387,7 +2386,7 @@ pub struct ClusterPolicyRulesVerifyImagesAttestationsConditions {
 pub struct ClusterPolicyRulesVerifyImagesAttestationsConditionsAll {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -2396,7 +2395,7 @@ pub struct ClusterPolicyRulesVerifyImagesAttestationsConditionsAll {
     pub operator: Option<ClusterPolicyRulesVerifyImagesAttestationsConditionsAllOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -2425,7 +2424,7 @@ pub enum ClusterPolicyRulesVerifyImagesAttestationsConditionsAllOperator {
 pub struct ClusterPolicyRulesVerifyImagesAttestationsConditionsAny {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -2434,7 +2433,7 @@ pub struct ClusterPolicyRulesVerifyImagesAttestationsConditionsAny {
     pub operator: Option<ClusterPolicyRulesVerifyImagesAttestationsConditionsAnyOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -2475,7 +2474,7 @@ pub struct ClusterPolicyRulesVerifyImagesAttestorsEntries {
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attestor: Option<HashMap<String, serde_json::Value>>,
+    pub attestor: Option<BTreeMap<String, serde_json::Value>>,
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<ClusterPolicyRulesVerifyImagesAttestorsEntriesCertificates>,
@@ -2757,7 +2756,7 @@ pub struct ClusterPolicyStatusAutogenRules {
     pub name: String,
     /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub preconditions: Option<HashMap<String, serde_json::Value>>,
+    pub preconditions: Option<BTreeMap<String, serde_json::Value>>,
     /// SkipBackgroundRequests bypasses admission requests that are sent by the background controller. The default value is set to "true", it must be set to "false" to apply generate and mutateExisting rules to those requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipBackgroundRequests")]
     pub skip_background_requests: Option<bool>,
@@ -2827,7 +2826,7 @@ pub struct ClusterPolicyStatusAutogenRulesContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -2891,13 +2890,13 @@ pub struct ClusterPolicyStatusAutogenRulesContextImageRegistryImageRegistryCrede
 pub struct ClusterPolicyStatusAutogenRulesContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ExcludeResources defines when this policy rule should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.
@@ -3241,7 +3240,7 @@ pub struct ClusterPolicyStatusAutogenRulesGenerate {
     pub clone_list: Option<ClusterPolicyStatusAutogenRulesGenerateCloneList>,
     /// Data provides the resource declaration used to populate each generated resource. At most one of Data or Clone must be specified. If neither are provided, the generated resource will be created with default data only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub data: Option<HashMap<String, serde_json::Value>>,
+    pub data: Option<BTreeMap<String, serde_json::Value>>,
     /// Kind specifies resource kind.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -3660,7 +3659,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutate {
     pub foreach: Option<Vec<ClusterPolicyStatusAutogenRulesMutateForeach>>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources. See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/ and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
-    pub patch_strategic_merge: Option<HashMap<String, serde_json::Value>>,
+    pub patch_strategic_merge: Option<BTreeMap<String, serde_json::Value>>,
     /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources. See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
@@ -3677,7 +3676,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeach {
     pub context: Option<Vec<ClusterPolicyStatusAutogenRulesMutateForeachContext>>,
     /// Foreach declares a nested foreach iterator
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foreach: Option<HashMap<String, serde_json::Value>>,
+    pub foreach: Option<BTreeMap<String, serde_json::Value>>,
     /// List specifies a JMESPath expression that results in one or more elements to which the validation logic is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub list: Option<String>,
@@ -3686,7 +3685,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeach {
     pub order: Option<ClusterPolicyStatusAutogenRulesMutateForeachOrder>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources. See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/ and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
-    pub patch_strategic_merge: Option<HashMap<String, serde_json::Value>>,
+    pub patch_strategic_merge: Option<BTreeMap<String, serde_json::Value>>,
     /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources. See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
@@ -3741,7 +3740,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeachContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -3805,13 +3804,13 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeachContextImageRegistryImage
 pub struct ClusterPolicyStatusAutogenRulesMutateForeachContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ForEachMutation applies mutation rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
@@ -3837,7 +3836,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeachPreconditions {
 pub struct ClusterPolicyStatusAutogenRulesMutateForeachPreconditionsAll {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -3846,7 +3845,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeachPreconditionsAll {
     pub operator: Option<ClusterPolicyStatusAutogenRulesMutateForeachPreconditionsAllOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -3875,7 +3874,7 @@ pub enum ClusterPolicyStatusAutogenRulesMutateForeachPreconditionsAllOperator {
 pub struct ClusterPolicyStatusAutogenRulesMutateForeachPreconditionsAny {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -3884,7 +3883,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeachPreconditionsAny {
     pub operator: Option<ClusterPolicyStatusAutogenRulesMutateForeachPreconditionsAnyOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -3928,7 +3927,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateTargets {
     pub namespace: Option<String>,
     /// Preconditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. A direct list of conditions (without `any` or `all` statements is supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub preconditions: Option<HashMap<String, serde_json::Value>>,
+    pub preconditions: Option<BTreeMap<String, serde_json::Value>>,
     /// UID specifies the resource uid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
@@ -3980,7 +3979,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateTargetsContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -4044,13 +4043,13 @@ pub struct ClusterPolicyStatusAutogenRulesMutateTargetsContextImageRegistryImage
 pub struct ClusterPolicyStatusAutogenRulesMutateTargetsContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Validation is used to validate matching resources.
@@ -4058,7 +4057,7 @@ pub struct ClusterPolicyStatusAutogenRulesMutateTargetsContextVariable {
 pub struct ClusterPolicyStatusAutogenRulesValidate {
     /// AnyPattern specifies list of validation patterns. At least one of the patterns must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
-    pub any_pattern: Option<HashMap<String, serde_json::Value>>,
+    pub any_pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// CEL allows validation checks using the Common Expression Language (https://kubernetes.io/docs/reference/using-api/cel/).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cel: Option<ClusterPolicyStatusAutogenRulesValidateCel>,
@@ -4076,7 +4075,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidate {
     pub message: Option<String>,
     /// Pattern specifies an overlay-style pattern used to check resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pattern: Option<HashMap<String, serde_json::Value>>,
+    pub pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// PodSecurity applies exemptions for Kubernetes Pod Security admission by specifying exclusions for Pod Security Standards controls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<ClusterPolicyStatusAutogenRulesValidatePodSecurity>,
@@ -4211,7 +4210,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateCelVariables {
 pub struct ClusterPolicyStatusAutogenRulesValidateDeny {
     /// Multiple conditions can be declared under an `any` or `all` statement. A direct list of conditions (without `any` or `all` statements) is also supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<HashMap<String, serde_json::Value>>,
+    pub conditions: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ForEachValidation applies validate rules to a list of sub-elements by creating a context for each entry in the list and looping over it to apply the specified logic.
@@ -4219,7 +4218,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateDeny {
 pub struct ClusterPolicyStatusAutogenRulesValidateForeach {
     /// AnyPattern specifies list of validation patterns. At least one of the patterns must be satisfied for the validation rule to succeed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anyPattern")]
-    pub any_pattern: Option<HashMap<String, serde_json::Value>>,
+    pub any_pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// Context defines variables and data sources that can be used during rule execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<ClusterPolicyStatusAutogenRulesValidateForeachContext>>,
@@ -4231,13 +4230,13 @@ pub struct ClusterPolicyStatusAutogenRulesValidateForeach {
     pub element_scope: Option<bool>,
     /// Foreach declares a nested foreach iterator
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foreach: Option<HashMap<String, serde_json::Value>>,
+    pub foreach: Option<BTreeMap<String, serde_json::Value>>,
     /// List specifies a JMESPath expression that results in one or more elements to which the validation logic is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub list: Option<String>,
     /// Pattern specifies an overlay-style pattern used to check resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pattern: Option<HashMap<String, serde_json::Value>>,
+    pub pattern: Option<BTreeMap<String, serde_json::Value>>,
     /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<ClusterPolicyStatusAutogenRulesValidateForeachPreconditions>,
@@ -4289,7 +4288,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateForeachContextApiCallData {
     /// Key is a unique identifier for the data value
     pub key: String,
     /// Value is the data value
-    pub value: HashMap<String, serde_json::Value>,
+    pub value: BTreeMap<String, serde_json::Value>,
 }
 
 /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
@@ -4353,13 +4352,13 @@ pub struct ClusterPolicyStatusAutogenRulesValidateForeachContextImageRegistryIma
 pub struct ClusterPolicyStatusAutogenRulesValidateForeachContextVariable {
     /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Deny defines conditions used to pass or fail a validation rule.
@@ -4367,7 +4366,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateForeachContextVariable {
 pub struct ClusterPolicyStatusAutogenRulesValidateForeachDeny {
     /// Multiple conditions can be declared under an `any` or `all` statement. A direct list of conditions (without `any` or `all` statements) is also supported for backwards compatibility but will be deprecated in the next major release. See: https://kyverno.io/docs/writing-policies/validate/#deny-rules
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<HashMap<String, serde_json::Value>>,
+    pub conditions: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a set of conditions. The declaration can contain nested `any` or `all` statements. See: https://kyverno.io/docs/writing-policies/preconditions/
@@ -4386,7 +4385,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateForeachPreconditions {
 pub struct ClusterPolicyStatusAutogenRulesValidateForeachPreconditionsAll {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -4395,7 +4394,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateForeachPreconditionsAll {
     pub operator: Option<ClusterPolicyStatusAutogenRulesValidateForeachPreconditionsAllOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -4424,7 +4423,7 @@ pub enum ClusterPolicyStatusAutogenRulesValidateForeachPreconditionsAllOperator 
 pub struct ClusterPolicyStatusAutogenRulesValidateForeachPreconditionsAny {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -4433,7 +4432,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateForeachPreconditionsAny {
     pub operator: Option<ClusterPolicyStatusAutogenRulesValidateForeachPreconditionsAnyOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -4494,7 +4493,7 @@ pub struct ClusterPolicyStatusAutogenRulesValidateManifestsAttestorsEntries {
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attestor: Option<HashMap<String, serde_json::Value>>,
+    pub attestor: Option<BTreeMap<String, serde_json::Value>>,
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<ClusterPolicyStatusAutogenRulesValidateManifestsAttestorsEntriesCertificates>,
@@ -4872,7 +4871,7 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntri
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attestor: Option<HashMap<String, serde_json::Value>>,
+    pub attestor: Option<BTreeMap<String, serde_json::Value>>,
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsAttestorsEntriesCertificates>,
@@ -5047,7 +5046,7 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsConditions {
 pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAll {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -5056,7 +5055,7 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAll 
     pub operator: Option<ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAllOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -5085,7 +5084,7 @@ pub enum ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAllOpe
 pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAny {
     /// Key is the context entry (using JMESPath) for conditional rule evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<HashMap<String, serde_json::Value>>,
+    pub key: Option<BTreeMap<String, serde_json::Value>>,
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -5094,7 +5093,7 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAny 
     pub operator: Option<ClusterPolicyStatusAutogenRulesVerifyImagesAttestationsConditionsAnyOperator>,
     /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<HashMap<String, serde_json::Value>>,
+    pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// Condition defines variable-based conditional criteria for rule execution.
@@ -5135,7 +5134,7 @@ pub struct ClusterPolicyStatusAutogenRulesVerifyImagesAttestorsEntries {
     pub annotations: Option<BTreeMap<String, String>>,
     /// Attestor is a nested set of Attestor used to specify a more complex set of match authorities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attestor: Option<HashMap<String, serde_json::Value>>,
+    pub attestor: Option<BTreeMap<String, serde_json::Value>>,
     /// Certificates specifies one or more certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<ClusterPolicyStatusAutogenRulesVerifyImagesAttestorsEntriesCertificates>,

@@ -5,7 +5,6 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// the desired specification
@@ -115,7 +114,7 @@ pub struct KameletDataTypesTypesSchema {
     pub description: Option<String>,
     /// JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<HashMap<String, serde_json::Value>>,
+    pub example: Option<BTreeMap<String, serde_json::Value>>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletDataTypesTypesSchemaExternalDocs>,
@@ -144,16 +143,16 @@ pub struct KameletDataTypesTypesSchemaExternalDocs {
 pub struct KameletDataTypesTypesSchemaProperties {
     /// default is a default value for undefined object fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enum")]
-    pub r#enum: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub r#enum: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<HashMap<String, serde_json::Value>>,
+    pub example: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
@@ -210,7 +209,7 @@ pub struct KameletDefinition {
     pub description: Option<String>,
     /// JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<HashMap<String, serde_json::Value>>,
+    pub example: Option<BTreeMap<String, serde_json::Value>>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletDefinitionExternalDocs>,
@@ -239,16 +238,16 @@ pub struct KameletDefinitionExternalDocs {
 pub struct KameletDefinitionProperties {
     /// default is a default value for undefined object fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enum")]
-    pub r#enum: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub r#enum: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<HashMap<String, serde_json::Value>>,
+    pub example: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
@@ -363,7 +362,7 @@ pub struct KameletTypesSchema {
     pub description: Option<String>,
     /// JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<HashMap<String, serde_json::Value>>,
+    pub example: Option<BTreeMap<String, serde_json::Value>>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletTypesSchemaExternalDocs>,
@@ -392,16 +391,16 @@ pub struct KameletTypesSchemaExternalDocs {
 pub struct KameletTypesSchemaProperties {
     /// default is a default value for undefined object fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<HashMap<String, serde_json::Value>>,
+    pub default: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enum")]
-    pub r#enum: Option<Vec<HashMap<String, serde_json::Value>>>,
+    pub r#enum: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<HashMap<String, serde_json::Value>>,
+    pub example: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]

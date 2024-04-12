@@ -4,7 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
 /// DeferredResourceSpec defines the desired state of DeferredResource
@@ -16,7 +16,7 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 pub struct DeferredResourceSpec {
     /// Resource is the resource to create after the defer is resolved
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<HashMap<String, serde_json::Value>>,
+    pub resource: Option<BTreeMap<String, serde_json::Value>>,
     /// ServiceAccountName is the name of the ServiceAccount to use to create deferred resources from. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,

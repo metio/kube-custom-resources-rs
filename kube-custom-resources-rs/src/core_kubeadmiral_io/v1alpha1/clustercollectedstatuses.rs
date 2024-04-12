@@ -4,7 +4,7 @@
 
 
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 /// CollectedFieldsWithCluster stores the collected fields of a Kubernetes object in a member cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -13,7 +13,7 @@ pub struct ClusterCollectedStatusClusters {
     pub cluster: String,
     /// CollectedFields is the the set of fields collected for the Kubernetes object.
     #[serde(rename = "collectedFields")]
-    pub collected_fields: HashMap<String, serde_json::Value>,
+    pub collected_fields: BTreeMap<String, serde_json::Value>,
     /// Error records any errors encountered while collecting fields from the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,

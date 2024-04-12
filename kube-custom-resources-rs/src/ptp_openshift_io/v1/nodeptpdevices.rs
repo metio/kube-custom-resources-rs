@@ -4,7 +4,7 @@
 
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 /// NodePtpDeviceSpec defines the desired state of NodePtpDevice
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -36,7 +36,7 @@ pub struct NodePtpDeviceStatusDevices {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePtpDeviceStatusHwconfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub config: Option<HashMap<String, serde_json::Value>>,
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceID")]
     pub device_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
