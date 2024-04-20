@@ -485,16 +485,6 @@ apiVersion `boskos.k8s.io/v1`:
 - `DRLCObject`
 - `ResourceObject`
 
-## bpfd_dev
-
-apiVersion `bpfd.dev/v1alpha1`:
-- `BpfProgram`
-- `KprobeProgram`
-- `TcProgram`
-- `TracepointProgram`
-- `UprobeProgram`
-- `XdpProgram`
-
 ## bpfman_io
 
 apiVersion `bpfman.io/v1alpha1`:
@@ -527,9 +517,7 @@ apiVersion `caching.ibm.com/v1alpha1`:
 apiVersion `camel.apache.org/v1`:
 - `Build`
 - `CamelCatalog`
-- `IntegrationProfile`
 - `Kamelet`
-- `Pipe`
 
 apiVersion `camel.apache.org/v1alpha1`:
 - `Kamelet`
@@ -3366,8 +3354,6 @@ pub mod bitnami_com;
 pub mod bmc_tinkerbell_org;
 #[cfg(feature = "boskos_k8s_io")]
 pub mod boskos_k8s_io;
-#[cfg(feature = "bpfd_dev")]
-pub mod bpfd_dev;
 #[cfg(feature = "bpfman_io")]
 pub mod bpfman_io;
 #[cfg(feature = "bus_volcano_sh")]
