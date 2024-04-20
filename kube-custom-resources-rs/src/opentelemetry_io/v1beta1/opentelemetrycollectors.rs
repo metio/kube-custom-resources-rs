@@ -2042,6 +2042,8 @@ pub struct OpenTelemetryCollectorPodSecurityContextWindowsOptions {
 pub struct OpenTelemetryCollectorPorts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
@@ -2478,6 +2480,8 @@ pub enum OpenTelemetryCollectorTargetAllocatorAllocationStrategy {
     LeastWeighted,
     #[serde(rename = "consistent-hashing")]
     ConsistentHashing,
+    #[serde(rename = "per-node")]
+    PerNode,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

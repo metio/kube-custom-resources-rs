@@ -58,10 +58,14 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplate {
 /// Spec is the Compliance Benchmarker DaemonSet's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpec {
-    /// Containers is a list of Compliance benchmark containers. If specified, this overrides the specified Compliance Benchmarker DaemonSet containers. If omitted, the Compliance Benchmarker DaemonSet will use its default values for its containers.
+    /// Containers is a list of Compliance benchmark containers.
+    /// If specified, this overrides the specified Compliance Benchmarker DaemonSet containers.
+    /// If omitted, the Compliance Benchmarker DaemonSet will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of Compliance benchmark init containers. If specified, this overrides the specified Compliance Benchmarker DaemonSet init containers. If omitted, the Compliance Benchmarker DaemonSet will use its default values for its init containers.
+    /// InitContainers is a list of Compliance benchmark init containers.
+    /// If specified, this overrides the specified Compliance Benchmarker DaemonSet init containers.
+    /// If omitted, the Compliance Benchmarker DaemonSet will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainers>>,
 }
@@ -69,9 +73,12 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpec {
 /// ComplianceBenchmarkerDaemonSetContainer is a Compliance Benchmarker DaemonSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Compliance Benchmarker DaemonSet container by name. Supported values are: compliance-benchmarker
+    /// Name is an enum which identifies the Compliance Benchmarker DaemonSet container by name.
+    /// Supported values are: compliance-benchmarker
     pub name: ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Compliance Benchmarker DaemonSet container's resources. If omitted, the Compliance Benchmarker DaemonSet will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named Compliance Benchmarker DaemonSet container's resources.
+    /// If omitted, the Compliance Benchmarker DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResources>,
 }
@@ -83,18 +90,26 @@ pub enum ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersName 
     ComplianceBenchmarker,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Compliance Benchmarker DaemonSet container's resources. If omitted, the Compliance Benchmarker DaemonSet will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named Compliance Benchmarker DaemonSet container's resources.
+/// If omitted, the Compliance Benchmarker DaemonSet will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -102,16 +117,21 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersRes
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// ComplianceBenchmarkerDaemonSetInitContainer is a Compliance Benchmarker DaemonSet init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the Compliance Benchmarker DaemonSet init container by name. Supported values are: tigera-compliance-benchmarker-tls-key-cert-provisioner
+    /// Name is an enum which identifies the Compliance Benchmarker DaemonSet init container by name.
+    /// Supported values are: tigera-compliance-benchmarker-tls-key-cert-provisioner
     pub name: ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Compliance Benchmarker DaemonSet init container's resources. If omitted, the Compliance Benchmarker DaemonSet will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named Compliance Benchmarker DaemonSet init container's resources.
+    /// If omitted, the Compliance Benchmarker DaemonSet will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResources>,
 }
@@ -123,18 +143,26 @@ pub enum ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersN
     TigeraComplianceBenchmarkerTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Compliance Benchmarker DaemonSet init container's resources. If omitted, the Compliance Benchmarker DaemonSet will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named Compliance Benchmarker DaemonSet init container's resources.
+/// If omitted, the Compliance Benchmarker DaemonSet will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -142,7 +170,9 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainer
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -173,10 +203,14 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplate {
 /// Spec is the compliance controller Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpec {
-    /// Containers is a list of compliance controller containers. If specified, this overrides the specified compliance controller Deployment containers. If omitted, the compliance controller Deployment will use its default values for its containers.
+    /// Containers is a list of compliance controller containers.
+    /// If specified, this overrides the specified compliance controller Deployment containers.
+    /// If omitted, the compliance controller Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of compliance controller init containers. If specified, this overrides the specified compliance controller Deployment init containers. If omitted, the compliance controller Deployment will use its default values for its init containers.
+    /// InitContainers is a list of compliance controller init containers.
+    /// If specified, this overrides the specified compliance controller Deployment init containers.
+    /// If omitted, the compliance controller Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -184,9 +218,12 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpec {
 /// ComplianceControllerDeploymentContainer is a compliance controller Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the compliance controller Deployment container by name. Supported values are: compliance-controller
+    /// Name is an enum which identifies the compliance controller Deployment container by name.
+    /// Supported values are: compliance-controller
     pub name: ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance controller Deployment container's resources. If omitted, the compliance controller Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named compliance controller Deployment container's resources.
+    /// If omitted, the compliance controller Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -198,18 +235,26 @@ pub enum ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersName 
     ComplianceController,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance controller Deployment container's resources. If omitted, the compliance controller Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named compliance controller Deployment container's resources.
+/// If omitted, the compliance controller Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -217,16 +262,21 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersRes
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// ComplianceControllerDeploymentInitContainer is a compliance controller Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the compliance controller Deployment init container by name. Supported values are: tigera-compliance-controller-tls-key-cert-provisioner
+    /// Name is an enum which identifies the compliance controller Deployment init container by name.
+    /// Supported values are: tigera-compliance-controller-tls-key-cert-provisioner
     pub name: ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance controller Deployment init container's resources. If omitted, the compliance controller Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named compliance controller Deployment init container's resources.
+    /// If omitted, the compliance controller Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -238,18 +288,26 @@ pub enum ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersN
     TigeraComplianceControllerTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance controller Deployment init container's resources. If omitted, the compliance controller Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named compliance controller Deployment init container's resources.
+/// If omitted, the compliance controller Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -257,7 +315,9 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainer
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -280,10 +340,14 @@ pub struct ComplianceComplianceReporterPodTemplateTemplate {
 /// Spec is the ComplianceReporter PodTemplate's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpec {
-    /// Containers is a list of ComplianceServer containers. If specified, this overrides the specified ComplianceReporter PodSpec containers. If omitted, the ComplianceServer Deployment will use its default values for its containers.
+    /// Containers is a list of ComplianceServer containers.
+    /// If specified, this overrides the specified ComplianceReporter PodSpec containers.
+    /// If omitted, the ComplianceServer Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecContainers>>,
-    /// InitContainers is a list of ComplianceReporter PodSpec init containers. If specified, this overrides the specified ComplianceReporter PodSpec init containers. If omitted, the ComplianceServer Deployment will use its default values for its init containers.
+    /// InitContainers is a list of ComplianceReporter PodSpec init containers.
+    /// If specified, this overrides the specified ComplianceReporter PodSpec init containers.
+    /// If omitted, the ComplianceServer Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainers>>,
 }
@@ -291,9 +355,12 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpec {
 /// ComplianceReporterPodTemplateContainer is a ComplianceServer Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainers {
-    /// Name is an enum which identifies the ComplianceServer Deployment container by name. Supported values are: reporter
+    /// Name is an enum which identifies the ComplianceServer Deployment container by name.
+    /// Supported values are: reporter
     pub name: ComplianceComplianceReporterPodTemplateTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment container's resources. If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named ComplianceServer Deployment container's resources.
+    /// If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceReporterPodTemplateTemplateSpecContainersResources>,
 }
@@ -305,18 +372,26 @@ pub enum ComplianceComplianceReporterPodTemplateTemplateSpecContainersName {
     Reporter,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment container's resources. If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named ComplianceServer Deployment container's resources.
+/// If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -324,16 +399,21 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainersResource
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// ComplianceReporterPodTemplateInitContainer is a ComplianceServer Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainers {
-    /// Name is an enum which identifies the ComplianceReporter PodSpec init container by name. Supported values are: tigera-compliance-reporter-tls-key-cert-provisioner
+    /// Name is an enum which identifies the ComplianceReporter PodSpec init container by name.
+    /// Supported values are: tigera-compliance-reporter-tls-key-cert-provisioner
     pub name: ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceReporter PodSpec init container's resources. If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named ComplianceReporter PodSpec init container's resources.
+    /// If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResources>,
 }
@@ -345,18 +425,26 @@ pub enum ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersName {
     TigeraComplianceReporterTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceReporter PodSpec init container's resources. If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named ComplianceReporter PodSpec init container's resources.
+/// If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -364,7 +452,9 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersReso
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -395,10 +485,14 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplate {
 /// Spec is the ComplianceServer Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpec {
-    /// Containers is a list of ComplianceServer containers. If specified, this overrides the specified ComplianceServer Deployment containers. If omitted, the ComplianceServer Deployment will use its default values for its containers.
+    /// Containers is a list of ComplianceServer containers.
+    /// If specified, this overrides the specified ComplianceServer Deployment containers.
+    /// If omitted, the ComplianceServer Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of ComplianceServer init containers. If specified, this overrides the specified ComplianceServer Deployment init containers. If omitted, the ComplianceServer Deployment will use its default values for its init containers.
+    /// InitContainers is a list of ComplianceServer init containers.
+    /// If specified, this overrides the specified ComplianceServer Deployment init containers.
+    /// If omitted, the ComplianceServer Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -406,9 +500,12 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpec {
 /// ComplianceServerDeploymentContainer is a ComplianceServer Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the ComplianceServer Deployment container by name. Supported values are: compliance-server
+    /// Name is an enum which identifies the ComplianceServer Deployment container by name.
+    /// Supported values are: compliance-server
     pub name: ComplianceComplianceServerDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment container's resources. If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named ComplianceServer Deployment container's resources.
+    /// If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -420,18 +517,26 @@ pub enum ComplianceComplianceServerDeploymentSpecTemplateSpecContainersName {
     ComplianceServer,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment container's resources. If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named ComplianceServer Deployment container's resources.
+/// If omitted, the ComplianceServer Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -439,16 +544,21 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResourc
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// ComplianceServerDeploymentInitContainer is a ComplianceServer Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the ComplianceServer Deployment init container by name. Supported values are: tigera-compliance-server-tls-key-cert-provisioner
+    /// Name is an enum which identifies the ComplianceServer Deployment init container by name.
+    /// Supported values are: tigera-compliance-server-tls-key-cert-provisioner
     pub name: ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment init container's resources. If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named ComplianceServer Deployment init container's resources.
+    /// If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -460,18 +570,26 @@ pub enum ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersName 
     TigeraComplianceServerTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ComplianceServer Deployment init container's resources. If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named ComplianceServer Deployment init container's resources.
+/// If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -479,7 +597,9 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersRes
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -510,10 +630,14 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplate {
 /// Spec is the compliance snapshotter Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpec {
-    /// Containers is a list of compliance snapshotter containers. If specified, this overrides the specified compliance snapshotter Deployment containers. If omitted, the compliance snapshotter Deployment will use its default values for its containers.
+    /// Containers is a list of compliance snapshotter containers.
+    /// If specified, this overrides the specified compliance snapshotter Deployment containers.
+    /// If omitted, the compliance snapshotter Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of compliance snapshotter init containers. If specified, this overrides the specified compliance snapshotter Deployment init containers. If omitted, the compliance snapshotter Deployment will use its default values for its init containers.
+    /// InitContainers is a list of compliance snapshotter init containers.
+    /// If specified, this overrides the specified compliance snapshotter Deployment init containers.
+    /// If omitted, the compliance snapshotter Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -521,9 +645,12 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpec {
 /// ComplianceSnapshotterDeploymentContainer is a compliance snapshotter Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the compliance snapshotter Deployment container by name. Supported values are: compliance-snapshotter
+    /// Name is an enum which identifies the compliance snapshotter Deployment container by name.
+    /// Supported values are: compliance-snapshotter
     pub name: ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance snapshotter Deployment container's resources. If omitted, the compliance snapshotter Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named compliance snapshotter Deployment container's resources.
+    /// If omitted, the compliance snapshotter Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -535,18 +662,26 @@ pub enum ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersName
     ComplianceSnapshotter,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance snapshotter Deployment container's resources. If omitted, the compliance snapshotter Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named compliance snapshotter Deployment container's resources.
+/// If omitted, the compliance snapshotter Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -554,16 +689,21 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersRe
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// ComplianceSnapshotterDeploymentInitContainer is a compliance snapshotter Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the compliance snapshotter Deployment init container by name. Supported values are: tigera-compliance-snapshotter-tls-key-cert-provisioner
+    /// Name is an enum which identifies the compliance snapshotter Deployment init container by name.
+    /// Supported values are: tigera-compliance-snapshotter-tls-key-cert-provisioner
     pub name: ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance snapshotter Deployment init container's resources. If omitted, the compliance snapshotter Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named compliance snapshotter Deployment init container's resources.
+    /// If omitted, the compliance snapshotter Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -575,18 +715,26 @@ pub enum ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainers
     TigeraComplianceSnapshotterTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named compliance snapshotter Deployment init container's resources. If omitted, the compliance snapshotter Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named compliance snapshotter Deployment init container's resources.
+/// If omitted, the compliance snapshotter Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -594,14 +742,17 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContaine
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// Most recently observed state for Tigera compliance reporting.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ComplianceStatus {
-    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of Ready, Progressing, Degraded or other customer types.
+    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of
+    /// Ready, Progressing, Degraded or other customer types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// State provides user-readable status.

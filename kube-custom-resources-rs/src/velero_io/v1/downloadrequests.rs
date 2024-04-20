@@ -42,6 +42,7 @@ pub enum DownloadRequestTargetKind {
     #[serde(rename = "CSIBackupVolumeSnapshotContents")]
     CsiBackupVolumeSnapshotContents,
     BackupVolumeInfos,
+    RestoreVolumeInfo,
 }
 
 /// DownloadRequestStatus is the current status of a DownloadRequest.

@@ -172,6 +172,9 @@ pub struct VMUserTargetRefs {
     /// for instance http://vmsingle:8429
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "static")]
     pub r#static: Option<VMUserTargetRefsStatic>,
+    /// TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefBasicAuth")]
+    pub target_ref_basic_auth: Option<VMUserTargetRefsTargetRefBasicAuth>,
     /// QueryParams []string `json:"queryParams,omitempty"`
     /// TargetPathSuffix allows to add some suffix to the target path
     /// It allows to hide tenant configuration from user with crd as ref.
@@ -215,6 +218,53 @@ pub struct VMUserTargetRefsStatic {
     /// URLs allows setting multiple urls for load-balancing at vmauth-side.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub urls: Option<Vec<String>>,
+}
+
+/// TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTargetRefsTargetRefBasicAuth {
+    /// The secret in the service scrape namespace that contains the password
+    /// for authentication.
+    /// It must be at them same namespace as CRD
+    pub password: VMUserTargetRefsTargetRefBasicAuthPassword,
+    /// The secret in the service scrape namespace that contains the username
+    /// for authentication.
+    /// It must be at them same namespace as CRD
+    pub username: VMUserTargetRefsTargetRefBasicAuthUsername,
+}
+
+/// The secret in the service scrape namespace that contains the password
+/// for authentication.
+/// It must be at them same namespace as CRD
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTargetRefsTargetRefBasicAuthPassword {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The secret in the service scrape namespace that contains the username
+/// for authentication.
+/// It must be at them same namespace as CRD
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VMUserTargetRefsTargetRefBasicAuthUsername {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// TokenRef allows fetching token from user-created secrets by its name and key.

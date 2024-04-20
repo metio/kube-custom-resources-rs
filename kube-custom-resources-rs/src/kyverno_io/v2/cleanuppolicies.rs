@@ -20,10 +20,15 @@ pub struct CleanupPolicySpec {
     /// Context defines variables and data sources that can be used during rule execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<CleanupPolicyContext>>,
-    /// ExcludeResources defines when cleanuppolicy should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.
+    /// ExcludeResources defines when cleanuppolicy should not be applied. The exclude
+    /// criteria can include resource information (e.g. kind, name, namespace, labels)
+    /// and admission review request information like the name or role.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclude: Option<CleanupPolicyExclude>,
-    /// MatchResources defines when cleanuppolicy should be applied. The match criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the user name or role. At least one kind is required.
+    /// MatchResources defines when cleanuppolicy should be applied. The match
+    /// criteria can include resource information (e.g. kind, name, namespace, labels)
+    /// and admission review request information like the user name or role.
+    /// At least one kind is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<CleanupPolicyMatch>,
     /// The schedule in Cron format
@@ -33,10 +38,16 @@ pub struct CleanupPolicySpec {
 /// Conditions defines the conditions used to select the resources which will be cleaned up.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyConditions {
-    /// AllConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, all of the conditions need to pass.
+    /// AllConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, all of the conditions need to pass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub all: Option<Vec<CleanupPolicyConditionsAll>>,
-    /// AnyConditions enable variable-based conditional rule execution. This is useful for finer control of when an rule is applied. A condition can reference object data using JMESPath notation. Here, at least one of the conditions need to pass.
+    /// AnyConditions enable variable-based conditional rule execution. This is useful for
+    /// finer control of when an rule is applied. A condition can reference object data
+    /// using JMESPath notation.
+    /// Here, at least one of the conditions need to pass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<Vec<CleanupPolicyConditionsAny>>,
 }
@@ -49,10 +60,14 @@ pub struct CleanupPolicyConditionsAll {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<CleanupPolicyConditionsAllOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -83,10 +98,14 @@ pub struct CleanupPolicyConditionsAny {
     /// Message is an optional display message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Operator is the conditional operation to perform. Valid operators are: Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals, GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan, DurationLessThanOrEquals, DurationLessThan
+    /// Operator is the conditional operation to perform. Valid operators are:
+    /// Equals, NotEquals, In, AnyIn, AllIn, NotIn, AnyNotIn, AllNotIn, GreaterThanOrEquals,
+    /// GreaterThan, LessThanOrEquals, LessThan, DurationGreaterThanOrEquals, DurationGreaterThan,
+    /// DurationLessThanOrEquals, DurationLessThan
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<CleanupPolicyConditionsAnyOperator>,
-    /// Value is the conditional value, or set of values. The values can be fixed set or can be variables declared using JMESPath.
+    /// Value is the conditional value, or set of values. The values can be fixed set
+    /// or can be variables declared using JMESPath.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -109,16 +128,22 @@ pub enum CleanupPolicyConditionsAnyOperator {
     DurationLessThan,
 }
 
-/// ContextEntry adds variables and data sources to a rule Context. Either a ConfigMap reference or a APILookup must be provided.
+/// ContextEntry adds variables and data sources to a rule Context. Either a
+/// ConfigMap reference or a APILookup must be provided.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyContext {
-    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+    /// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+    /// The data returned is stored in the context with the name for the context entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCall")]
     pub api_call: Option<CleanupPolicyContextApiCall>,
     /// ConfigMap is the ConfigMap reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CleanupPolicyContextConfigMap>,
-    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+    /// GlobalContextEntryReference is a reference to a cached global context entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
+    pub global_reference: Option<CleanupPolicyContextGlobalReference>,
+    /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+    /// details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<CleanupPolicyContextImageRegistry>,
     /// Name is the variable name.
@@ -129,22 +154,35 @@ pub struct CleanupPolicyContext {
     pub variable: Option<CleanupPolicyContextVariable>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyContextApiCall {
-    /// Data specifies the POST data sent to the server.
+    /// The data object specifies the POST data sent to the server.
+    /// Only applicable when the method field is set to POST.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<Vec<CleanupPolicyContextApiCallData>>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the JSON response returned from the server. For example a JMESPath of "items | length(@)" applied to the API server response for the URLPath "/apis/apps/v1/deployments" will return the total count of deployments across all namespaces.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Method is the HTTP request type (GET or POST).
+    /// Method is the HTTP request type (GET or POST). Defaults to GET.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<CleanupPolicyContextApiCallMethod>,
-    /// Service is an API call to a JSON web service
+    /// Service is an API call to a JSON web service.
+    /// This is used for non-Kubernetes API server calls.
+    /// It's mutually exclusive with the URLPath field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CleanupPolicyContextApiCallService>,
-    /// URLPath is the URL path to be used in the HTTP GET or POST request to the Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments"). The format required is the same format used by the `kubectl get --raw` command. See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls for details.
+    /// URLPath is the URL path to be used in the HTTP GET or POST request to the
+    /// Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+    /// The format required is the same format used by the `kubectl get --raw` command.
+    /// See https://kyverno.io/docs/writing-policies/external-data-sources/#variables-from-kubernetes-api-server-calls
+    /// for details.
+    /// It's mutually exclusive with the Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPath")]
     pub url_path: Option<String>,
 }
@@ -158,7 +196,8 @@ pub struct CleanupPolicyContextApiCallData {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service. The data returned is stored in the context with the name for the context entry.
+/// APICall is an HTTP request to the Kubernetes API server, or other JSON web service.
+/// The data returned is stored in the context with the name for the context entry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CleanupPolicyContextApiCallMethod {
     #[serde(rename = "GET")]
@@ -167,13 +206,17 @@ pub enum CleanupPolicyContextApiCallMethod {
     Post,
 }
 
-/// Service is an API call to a JSON web service
+/// Service is an API call to a JSON web service.
+/// This is used for non-Kubernetes API server calls.
+/// It's mutually exclusive with the URLPath field.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyContextApiCallService {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the server certificate.
+    /// CABundle is a PEM encoded CA bundle which will be used to validate
+    /// the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// URL is the JSON web service URL. A typical form is `https://{service}.{namespace}:{port}/{path}`.
+    /// URL is the JSON web service URL. A typical form is
+    /// `https://{service}.{namespace}:{port}/{path}`.
     pub url: String,
 }
 
@@ -187,16 +230,35 @@ pub struct CleanupPolicyContextConfigMap {
     pub namespace: Option<String>,
 }
 
-/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+/// GlobalContextEntryReference is a reference to a cached global context entry.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CleanupPolicyContextGlobalReference {
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the JSON response returned from the server. For example
+    /// a JMESPath of "items | length(@)" applied to the API server response
+    /// for the URLPath "/apis/apps/v1/deployments" will return the total count
+    /// of deployments across all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
+    pub jmes_path: Option<String>,
+    /// Name of the global context entry
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
+/// details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
     pub image_registry_credentials: Option<CleanupPolicyContextImageRegistryImageRegistryCredentials>,
-    /// JMESPath is an optional JSON Match Expression that can be used to transform the ImageData struct returned as a result of processing the image reference.
+    /// JMESPath is an optional JSON Match Expression that can be used to
+    /// transform the ImageData struct returned as a result of processing
+    /// the image reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
-    /// Reference is image reference to a container image in the registry. Example: ghcr.io/kyverno/kyverno:latest
+    /// Reference is image reference to a container image in the registry.
+    /// Example: ghcr.io/kyverno/kyverno:latest
     pub reference: String,
 }
 
@@ -206,10 +268,12 @@ pub struct CleanupPolicyContextImageRegistryImageRegistryCredentials {
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
-    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided. It can be of one of these values: default,google,azure,amazon,github.
+    /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+    /// It can be of one of these values: default,google,azure,amazon,github.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<String>>,
-    /// Secrets specifies a list of secrets that are provided for credentials. Secrets must live in the Kyverno namespace.
+    /// Secrets specifies a list of secrets that are provided for credentials.
+    /// Secrets must live in the Kyverno namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
 }
@@ -217,10 +281,12 @@ pub struct CleanupPolicyContextImageRegistryImageRegistryCredentials {
 /// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyContextVariable {
-    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+    /// Default is an optional arbitrary JSON object that the variable may take if the JMESPath
+    /// expression evaluates to nil
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, serde_json::Value>>,
-    /// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+    /// JMESPath is an optional JMESPath Expression that can be used to
+    /// transform the variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmesPath")]
     pub jmes_path: Option<String>,
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
@@ -228,7 +294,9 @@ pub struct CleanupPolicyContextVariable {
     pub value: Option<BTreeMap<String, serde_json::Value>>,
 }
 
-/// ExcludeResources defines when cleanuppolicy should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.
+/// ExcludeResources defines when cleanuppolicy should not be applied. The exclude
+/// criteria can include resource information (e.g. kind, name, namespace, labels)
+/// and admission review request information like the name or role.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExclude {
     /// All allows specifying resources which will be ANDed
@@ -259,89 +327,128 @@ pub struct CleanupPolicyExcludeAll {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAllResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CleanupPolicyExcludeAllResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CleanupPolicyExcludeAllResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyExcludeAllResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAllResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyExcludeAllResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAllResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAllSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -366,94 +473,136 @@ pub struct CleanupPolicyExcludeAny {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAnyResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CleanupPolicyExcludeAnyResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CleanupPolicyExcludeAnyResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyExcludeAnyResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAnyResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyExcludeAnyResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAnyResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyExcludeAnySubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// MatchResources defines when cleanuppolicy should be applied. The match criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the user name or role. At least one kind is required.
+/// MatchResources defines when cleanuppolicy should be applied. The match
+/// criteria can include resource information (e.g. kind, name, namespace, labels)
+/// and admission review request information like the user name or role.
+/// At least one kind is required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatch {
     /// All allows specifying resources which will be ANDed
@@ -484,89 +633,128 @@ pub struct CleanupPolicyMatchAll {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAllResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CleanupPolicyMatchAllResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CleanupPolicyMatchAllResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyMatchAllResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAllResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyMatchAllResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAllResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAllSubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -591,89 +779,128 @@ pub struct CleanupPolicyMatchAny {
 /// ResourceDescription contains information about the resource being created or modified.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAnyResources {
-    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys and values support the wildcard characters "*" (matches zero or many characters) and "?" (matches at least one character).
+    /// Annotations is a  map of annotations (key-value pairs of type string). Annotation keys
+    /// and values support the wildcard characters "*" (matches zero or many characters) and
+    /// "?" (matches at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Kinds is a list of resource kinds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<String>>,
-    /// Name is the name of the resource. The name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character). NOTE: "Name" is being deprecated in favor of "Names".
+    /// Name is the name of the resource. The name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
+    /// NOTE: "Name" is being deprecated in favor of "Names".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Names are the names of the resources. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Names are the names of the resources. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+    /// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+    /// and `?` (matches one character).Wildcards allows writing label selectors like
+    /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+    /// does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CleanupPolicyMatchAnyResourcesNamespaceSelector>,
-    /// Namespaces is a list of namespaces names. Each name supports wildcard characters "*" (matches zero or many characters) and "?" (at least one character).
+    /// Namespaces is a list of namespaces names. Each name supports wildcard characters
+    /// "*" (matches zero or many characters) and "?" (at least one character).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Operations can contain values ["CREATE, "UPDATE", "CONNECT", "DELETE"], which are used to match a specific action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
-    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+    /// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+    /// characters `*` (matches zero or many characters) and `?` (matches one character).
+    /// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+    /// using ["*" : "*"] matches any key and value but does not match an empty label set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CleanupPolicyMatchAnyResourcesSelector>,
 }
 
-/// NamespaceSelector is a label selector for the resource namespace. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character).Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// NamespaceSelector is a label selector for the resource namespace. Label keys and values
+/// in `matchLabels` support the wildcard characters `*` (matches zero or many characters)
+/// and `?` (matches one character).Wildcards allows writing label selectors like
+/// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
+/// does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyMatchAnyResourcesNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAnyResourcesNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard characters `*` (matches zero or many characters) and `?` (matches one character). Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but does not match an empty label set.
+/// Selector is a label selector. Label keys and values in `matchLabels` support the wildcard
+/// characters `*` (matches zero or many characters) and `?` (matches one character).
+/// Wildcards allows writing label selectors like ["storage.k8s.io/*": "*"]. Note that
+/// using ["*" : "*"] matches any key and value but does not match an empty label set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyMatchAnyResourcesSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAnyResourcesSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
+/// Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+/// or a value for non-objects such as user and group names.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CleanupPolicyMatchAnySubjects {
-    /// APIGroup holds the API group of the referenced subject. Defaults to "" for ServiceAccount subjects. Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+    /// APIGroup holds the API group of the referenced subject.
+    /// Defaults to "" for ServiceAccount subjects.
+    /// Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount". If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+    /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+    /// If the Authorizer does not recognized the kind value, the Authorizer should report an error.
     pub kind: String,
     /// Name of the object being referenced.
     pub name: String,
-    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
+    /// Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+    /// the Authorizer should report an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }

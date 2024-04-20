@@ -2469,6 +2469,9 @@ pub struct OutputS3 {
     /// Normally, when an upload request fails, there is a high chance for the last received chunk to be swapped with a later chunk, resulting in data shuffling. This feature prevents this shuffling by using a queue logic for uploads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "PreserveDataOrdering")]
     pub preserve_data_ordering: Option<bool>,
+    /// Option to specify an AWS Profile for credentials.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "Profile")]
+    pub profile: Option<String>,
     /// The AWS region of your S3 bucket
     #[serde(rename = "Region")]
     pub region: String,

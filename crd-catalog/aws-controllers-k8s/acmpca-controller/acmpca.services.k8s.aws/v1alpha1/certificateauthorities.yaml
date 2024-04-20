@@ -191,9 +191,6 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
-                certificateAuthorityType:
-                  description: "The type of the certificate authority."
-                  type: "string"
                 keyStorageSecurityStandard:
                   description: "Specifies a cryptographic key management compliance standard used for handling\nCA keys.\n\n\nDefault: FIPS_140_2_LEVEL_3_OR_HIGHER\n\n\nSome Amazon Web Services Regions do not support the default. When creating\na CA in these Regions, you must provide FIPS_140_2_LEVEL_2_OR_HIGHER as the\nargument for KeyStorageSecurityStandard. Failure to do this results in an\nInvalidArgsException with the message, \"A certificate authority cannot be\ncreated in this region with the specified security standard.\"\n\n\nFor information about security standard support in various Regions, see Storage\nand security compliance of Amazon Web Services Private CA private keys (https://docs.aws.amazon.com/privateca/latest/userguide/data-protection.html#private-keys)."
                   type: "string"
@@ -235,12 +232,13 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                type:
+                  type: "string"
                 usageMode:
                   description: "Specifies whether the CA issues general-purpose certificates that typically\nrequire a revocation mechanism, or short-lived certificates that may optionally\nomit revocation because they expire quickly. Short-lived certificate validity\nis limited to seven days.\n\n\nThe default value is GENERAL_PURPOSE."
                   type: "string"
               required:
                 - "certificateAuthorityConfiguration"
-                - "certificateAuthorityType"
               type: "object"
             status:
               description: "CertificateAuthorityStatus defines the observed state of CertificateAuthority"
@@ -261,6 +259,9 @@ spec:
                     - "ownerAccountID"
                     - "region"
                   type: "object"
+                certificateSigningRequest:
+                  description: "The base64 PEM-encoded certificate signing request (CSR) for your private\nCA certificate."
+                  type: "string"
                 conditions:
                   description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
@@ -290,9 +291,6 @@ spec:
                 createdAt:
                   description: "Date and time at which your private CA was created."
                   format: "date-time"
-                  type: "string"
-                csr:
-                  format: "byte"
                   type: "string"
                 failureReason:
                   description: "Reason the request to create your private CA failed."

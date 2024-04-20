@@ -66,7 +66,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "BareMetalHostSpec defines the desired state of BareMetalHost"
+              description: "BareMetalHostSpec defines the desired state of BareMetalHost."
               properties:
                 architecture:
                   description: "CPU architecture of the host, e.g. \"x86_64\" or \"aarch64\". If unset, eventually populated by inspection."
@@ -178,11 +178,12 @@ spec:
                       description: "Checksum is the checksum for the image."
                       type: "string"
                     checksumType:
-                      description: "ChecksumType is the checksum algorithm for the image. e.g md5, sha256, sha512"
+                      description: "ChecksumType is the checksum algorithm for the image, e.g md5, sha256 or sha512. The special value \"auto\" can be used to detect the algorithm from the checksum. If missing, MD5 is used. If in doubt, use \"auto\"."
                       enum:
                         - "md5"
                         - "sha256"
                         - "sha512"
+                        - "auto"
                       type: "string"
                     format:
                       description: "DiskFormat contains the format of the image (raw, qcow2, ...). Needs to be set to raw for raw images streaming. Note live-iso means an iso referenced by the url will be live-booted and not deployed to disk, and in this case the checksum options are not required and if specified will be ignored."
@@ -233,7 +234,7 @@ spec:
                     hardwareRAIDVolumes:
                       description: "The list of logical disks for hardware RAID, if rootDeviceHints isn't used, first volume is root volume. You can set the value of this field to `[]` to clear all the hardware RAID configurations."
                       items:
-                        description: "HardwareRAIDVolume defines the desired configuration of volume in hardware RAID"
+                        description: "HardwareRAIDVolume defines the desired configuration of volume in hardware RAID."
                         properties:
                           controller:
                             description: "The name of the RAID controller to use"
@@ -278,7 +279,7 @@ spec:
                     softwareRAIDVolumes:
                       description: "The list of logical disks for software RAID, if rootDeviceHints isn't used, first volume is root volume. If HardwareRAIDVolumes is set this item will be invalid. The number of created Software RAID devices must be 1 or 2. If there is only one Software RAID device, it has to be a RAID-1. If there are two, the first one has to be a RAID-1, while the RAID level for the second one can be 0, 1, or 1+0. As the first RAID device will be the deployment device, enforcing a RAID-1 reduces the risk of ending up with a non-booting node in case of a disk failure. Software RAID will always be deleted."
                       items:
-                        description: "SoftwareRAIDVolume defines the desired configuration of volume in software RAID"
+                        description: "SoftwareRAIDVolume defines the desired configuration of volume in software RAID."
                         properties:
                           level:
                             description: "RAID level for the logical disk. The following levels are supported: 0;1;1+0."
@@ -410,7 +411,7 @@ spec:
                 - "online"
               type: "object"
             status:
-              description: "BareMetalHostStatus defines the observed state of BareMetalHost"
+              description: "BareMetalHostStatus defines the observed state of BareMetalHost."
               properties:
                 errorCount:
                   default: 0
@@ -518,7 +519,7 @@ spec:
                           vlans:
                             description: "The VLANs available"
                             items:
-                              description: "VLAN represents the name and ID of a VLAN"
+                              description: "VLAN represents the name and ID of a VLAN."
                               properties:
                                 id:
                                   description: "VLANID is a 12-bit 802.1Q VLAN identifier"
@@ -717,11 +718,12 @@ spec:
                           description: "Checksum is the checksum for the image."
                           type: "string"
                         checksumType:
-                          description: "ChecksumType is the checksum algorithm for the image. e.g md5, sha256, sha512"
+                          description: "ChecksumType is the checksum algorithm for the image, e.g md5, sha256 or sha512. The special value \"auto\" can be used to detect the algorithm from the checksum. If missing, MD5 is used. If in doubt, use \"auto\"."
                           enum:
                             - "md5"
                             - "sha256"
                             - "sha512"
+                            - "auto"
                           type: "string"
                         format:
                           description: "DiskFormat contains the format of the image (raw, qcow2, ...). Needs to be set to raw for raw images streaming. Note live-iso means an iso referenced by the url will be live-booted and not deployed to disk, and in this case the checksum options are not required and if specified will be ignored."
@@ -744,7 +746,7 @@ spec:
                         hardwareRAIDVolumes:
                           description: "The list of logical disks for hardware RAID, if rootDeviceHints isn't used, first volume is root volume. You can set the value of this field to `[]` to clear all the hardware RAID configurations."
                           items:
-                            description: "HardwareRAIDVolume defines the desired configuration of volume in hardware RAID"
+                            description: "HardwareRAIDVolume defines the desired configuration of volume in hardware RAID."
                             properties:
                               controller:
                                 description: "The name of the RAID controller to use"
@@ -789,7 +791,7 @@ spec:
                         softwareRAIDVolumes:
                           description: "The list of logical disks for software RAID, if rootDeviceHints isn't used, first volume is root volume. If HardwareRAIDVolumes is set this item will be invalid. The number of created Software RAID devices must be 1 or 2. If there is only one Software RAID device, it has to be a RAID-1. If there are two, the first one has to be a RAID-1, while the RAID level for the second one can be 0, 1, or 1+0. As the first RAID device will be the deployment device, enforcing a RAID-1 reduces the risk of ending up with a non-booting node in case of a disk failure. Software RAID will always be deleted."
                           items:
-                            description: "SoftwareRAIDVolume defines the desired configuration of volume in software RAID"
+                            description: "SoftwareRAIDVolume defines the desired configuration of volume in software RAID."
                             properties:
                               level:
                                 description: "RAID level for the logical disk. The following levels are supported: 0;1;1+0."

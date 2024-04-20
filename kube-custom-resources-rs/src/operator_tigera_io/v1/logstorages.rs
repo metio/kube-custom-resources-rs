@@ -14,13 +14,17 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "LogStorageStatus")]
 #[kube(schema = "disabled")]
 pub struct LogStorageSpec {
-    /// ComponentResources can be used to customize the resource requirements for each component. Only ECKOperator is supported for this spec.
+    /// ComponentResources can be used to customize the resource requirements for each component.
+    /// Only ECKOperator is supported for this spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentResources")]
     pub component_resources: Option<Vec<LogStorageComponentResources>>,
-    /// DataNodeSelector gives you more control over the node that Elasticsearch will run on. The contents of DataNodeSelector will be added to the PodSpec of the Elasticsearch nodes. For the pod to be eligible to run on a node, the node must have each of the indicated key-value pairs as labels as well as access to the specified StorageClassName.
+    /// DataNodeSelector gives you more control over the node that Elasticsearch will run on. The contents of DataNodeSelector will
+    /// be added to the PodSpec of the Elasticsearch nodes. For the pod to be eligible to run on a node, the node must have
+    /// each of the indicated key-value pairs as labels as well as access to the specified StorageClassName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataNodeSelector")]
     pub data_node_selector: Option<BTreeMap<String, String>>,
-    /// ECKOperatorStatefulSet configures the ECKOperator StatefulSet. If used in conjunction with the deprecated ComponentResources, then these overrides take precedence.
+    /// ECKOperatorStatefulSet configures the ECKOperator StatefulSet. If used in conjunction with the deprecated
+    /// ComponentResources, then these overrides take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eckOperatorStatefulSet")]
     pub eck_operator_stateful_set: Option<LogStorageEckOperatorStatefulSet>,
     /// ElasticsearchMetricsDeployment configures the tigera-elasticsearch-metric Deployment.
@@ -41,7 +45,11 @@ pub struct LogStorageSpec {
     /// Retention defines how long data is retained in the Elasticsearch cluster before it is cleared.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<LogStorageRetention>,
-    /// StorageClassName will populate the PersistentVolumeClaim.StorageClassName that is used to provision disks to the Tigera Elasticsearch cluster. The StorageClassName should only be modified when no LogStorage is currently active. We recommend choosing a storage class dedicated to Tigera LogStorage only. Otherwise, data retention cannot be guaranteed during upgrades. See https://docs.tigera.io/maintenance/upgrading for up-to-date instructions. Default: tigera-elasticsearch
+    /// StorageClassName will populate the PersistentVolumeClaim.StorageClassName that is used to provision disks to the
+    /// Tigera Elasticsearch cluster. The StorageClassName should only be modified when no LogStorage is currently
+    /// active. We recommend choosing a storage class dedicated to Tigera LogStorage only. Otherwise, data retention
+    /// cannot be guaranteed during upgrades. See https://docs.tigera.io/maintenance/upgrading for up-to-date instructions.
+    /// Default: tigera-elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
@@ -49,7 +57,8 @@ pub struct LogStorageSpec {
 /// The ComponentResource struct associates a ResourceRequirements with a component by name
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageComponentResources {
-    /// Deprecated. Please use ECKOperatorStatefulSet. ComponentName is an enum which identifies the component
+    /// Deprecated. Please use ECKOperatorStatefulSet.
+    /// ComponentName is an enum which identifies the component
     #[serde(rename = "componentName")]
     pub component_name: LogStorageComponentResourcesComponentName,
     /// ResourceRequirements allows customization of limits and requests for compute resources such as cpu and memory.
@@ -67,15 +76,21 @@ pub enum LogStorageComponentResourcesComponentName {
 /// ResourceRequirements allows customization of limits and requests for compute resources such as cpu and memory.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageComponentResourcesResourceRequirements {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageComponentResourcesResourceRequirementsClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -83,11 +98,14 @@ pub struct LogStorageComponentResourcesResourceRequirements {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageComponentResourcesResourceRequirementsClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// ECKOperatorStatefulSet configures the ECKOperator StatefulSet. If used in conjunction with the deprecated ComponentResources, then these overrides take precedence.
+/// ECKOperatorStatefulSet configures the ECKOperator StatefulSet. If used in conjunction with the deprecated
+/// ComponentResources, then these overrides take precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageEckOperatorStatefulSet {
     /// Spec is the specification of the ECKOperator StatefulSet.
@@ -114,10 +132,14 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplate {
 /// Spec is the ECKOperator StatefulSet's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpec {
-    /// Containers is a list of ECKOperator StatefulSet containers. If specified, this overrides the specified ECKOperator StatefulSet containers. If omitted, the ECKOperator StatefulSet will use its default values for its containers.
+    /// Containers is a list of ECKOperator StatefulSet containers.
+    /// If specified, this overrides the specified ECKOperator StatefulSet containers.
+    /// If omitted, the ECKOperator StatefulSet will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of ECKOperator StatefulSet init containers. If specified, this overrides the specified ECKOperator StatefulSet init containers. If omitted, the ECKOperator StatefulSet will use its default values for its init containers.
+    /// InitContainers is a list of ECKOperator StatefulSet init containers.
+    /// If specified, this overrides the specified ECKOperator StatefulSet init containers.
+    /// If omitted, the ECKOperator StatefulSet will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainers>>,
 }
@@ -125,9 +147,12 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpec {
 /// ECKOperatorStatefulSetContainer is a ECKOperator StatefulSet container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the ECKOperator StatefulSet container by name. Supported values are: manager
+    /// Name is an enum which identifies the ECKOperator StatefulSet container by name.
+    /// Supported values are: manager
     pub name: LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ECKOperator StatefulSet container's resources. If omitted, the ECKOperator StatefulSet will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named ECKOperator StatefulSet container's resources.
+    /// If omitted, the ECKOperator StatefulSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResources>,
 }
@@ -139,18 +164,26 @@ pub enum LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersName {
     Manager,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ECKOperator StatefulSet container's resources. If omitted, the ECKOperator StatefulSet will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named ECKOperator StatefulSet container's resources.
+/// If omitted, the ECKOperator StatefulSet will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -158,7 +191,9 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -167,23 +202,33 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResourcesCl
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the ECKOperator StatefulSet init container by name.
     pub name: String,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ECKOperator StatefulSet init container's resources. If omitted, the ECKOperator StatefulSet will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named ECKOperator StatefulSet init container's resources.
+    /// If omitted, the ECKOperator StatefulSet will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResources>,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ECKOperator StatefulSet init container's resources. If omitted, the ECKOperator StatefulSet will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named ECKOperator StatefulSet init container's resources.
+/// If omitted, the ECKOperator StatefulSet will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -191,7 +236,9 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResourc
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -222,10 +269,14 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplate {
 /// Spec is the ElasticsearchMetrics Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpec {
-    /// Containers is a list of ElasticsearchMetricsDeployment containers. If specified, this overrides the specified ElasticsearchMetricsDeployment containers. If omitted, the ElasticsearchMetrics Deployment will use its default values for its containers.
+    /// Containers is a list of ElasticsearchMetricsDeployment containers.
+    /// If specified, this overrides the specified ElasticsearchMetricsDeployment containers.
+    /// If omitted, the ElasticsearchMetrics Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of ElasticsearchMetricsDeployment init containers. If specified, this overrides the specified ElasticsearchMetricsDeployment init containers. If omitted, the ElasticsearchMetrics Deployment will use its default values for its init containers.
+    /// InitContainers is a list of ElasticsearchMetricsDeployment init containers.
+    /// If specified, this overrides the specified ElasticsearchMetricsDeployment init containers.
+    /// If omitted, the ElasticsearchMetrics Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -233,9 +284,12 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpec {
 /// ElasticsearchMetricsDeploymentContainer is a ElasticsearchMetricsDeployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the ElasticsearchMetricsDeployment container by name. Supported values are: tigera-elasticsearch-metrics
+    /// Name is an enum which identifies the ElasticsearchMetricsDeployment container by name.
+    /// Supported values are: tigera-elasticsearch-metrics
     pub name: LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ElasticsearchMetricsDeployment container's resources. If omitted, the ElasticsearchMetrics Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named ElasticsearchMetricsDeployment container's resources.
+    /// If omitted, the ElasticsearchMetrics Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -247,18 +301,26 @@ pub enum LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersName 
     TigeraElasticsearchMetrics,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ElasticsearchMetricsDeployment container's resources. If omitted, the ElasticsearchMetrics Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named ElasticsearchMetricsDeployment container's resources.
+/// If omitted, the ElasticsearchMetrics Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -266,16 +328,21 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersRes
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// ElasticsearchMetricsDeploymentInitContainer is a ElasticsearchMetricsDeployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the ElasticsearchMetricsDeployment init container by name. Supported values are: tigera-ee-elasticsearch-metrics-tls-key-cert-provisioner
+    /// Name is an enum which identifies the ElasticsearchMetricsDeployment init container by name.
+    /// Supported values are: tigera-ee-elasticsearch-metrics-tls-key-cert-provisioner
     pub name: LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ElasticsearchMetricsDeployment init container's resources. If omitted, the ElasticsearchMetrics Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named ElasticsearchMetricsDeployment init container's resources.
+    /// If omitted, the ElasticsearchMetrics Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -287,18 +354,26 @@ pub enum LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersN
     TigeraEeElasticsearchMetricsTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named ElasticsearchMetricsDeployment init container's resources. If omitted, the ElasticsearchMetrics Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named ElasticsearchMetricsDeployment init container's resources.
+/// If omitted, the ElasticsearchMetrics Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -306,7 +381,9 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainer
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -345,10 +422,14 @@ pub struct LogStorageKibanaSpecTemplate {
 /// Spec is the Kibana's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpec {
-    /// Containers is a list of Kibana containers. If specified, this overrides the specified Kibana Deployment containers. If omitted, the Kibana Deployment will use its default values for its containers.
+    /// Containers is a list of Kibana containers.
+    /// If specified, this overrides the specified Kibana Deployment containers.
+    /// If omitted, the Kibana Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<LogStorageKibanaSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of Kibana init containers. If specified, this overrides the specified Kibana Deployment init containers. If omitted, the Kibana Deployment will use its default values for its init containers.
+    /// InitContainers is a list of Kibana init containers.
+    /// If specified, this overrides the specified Kibana Deployment init containers.
+    /// If omitted, the Kibana Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<LogStorageKibanaSpecTemplateSpecInitContainers>>,
 }
@@ -356,9 +437,12 @@ pub struct LogStorageKibanaSpecTemplateSpec {
 /// KibanaContainer is a Kibana container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Kibana Deployment container by name. Supported values are: kibana
+    /// Name is an enum which identifies the Kibana Deployment container by name.
+    /// Supported values are: kibana
     pub name: LogStorageKibanaSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Kibana container's resources. If omitted, the Kibana will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named Kibana container's resources.
+    /// If omitted, the Kibana will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LogStorageKibanaSpecTemplateSpecContainersResources>,
 }
@@ -370,18 +454,26 @@ pub enum LogStorageKibanaSpecTemplateSpecContainersName {
     Kibana,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Kibana container's resources. If omitted, the Kibana will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named Kibana container's resources.
+/// If omitted, the Kibana will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageKibanaSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -389,16 +481,22 @@ pub struct LogStorageKibanaSpecTemplateSpecContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// KibanaInitContainer is a Kibana init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the Kibana init container by name. Supported values are: key-cert-provisioner
+    /// Name is an enum which identifies the Kibana init container by name.
+    /// Supported values are: key-cert-provisioner
     pub name: LogStorageKibanaSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Kibana Deployment init container's resources. If omitted, the Kibana Deployment will use its default value for this init container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named Kibana Deployment init container's resources.
+    /// If omitted, the Kibana Deployment will use its default value for this init container's resources.
+    /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LogStorageKibanaSpecTemplateSpecInitContainersResources>,
 }
@@ -410,18 +508,27 @@ pub enum LogStorageKibanaSpecTemplateSpecInitContainersName {
     KeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Kibana Deployment init container's resources. If omitted, the Kibana Deployment will use its default value for this init container's resources. If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named Kibana Deployment init container's resources.
+/// If omitted, the Kibana Deployment will use its default value for this init container's resources.
+/// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageKibanaSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -429,7 +536,9 @@ pub struct LogStorageKibanaSpecTemplateSpecInitContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageKibanaSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -460,10 +569,14 @@ pub struct LogStorageLinseedDeploymentSpecTemplate {
 /// Spec is the linseed Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpec {
-    /// Containers is a list of linseed containers. If specified, this overrides the specified linseed Deployment containers. If omitted, the linseed Deployment will use its default values for its containers.
+    /// Containers is a list of linseed containers.
+    /// If specified, this overrides the specified linseed Deployment containers.
+    /// If omitted, the linseed Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<LogStorageLinseedDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of linseed init containers. If specified, this overrides the specified linseed Deployment init containers. If omitted, the linseed Deployment will use its default values for its init containers.
+    /// InitContainers is a list of linseed init containers.
+    /// If specified, this overrides the specified linseed Deployment init containers.
+    /// If omitted, the linseed Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<LogStorageLinseedDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -471,9 +584,12 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpec {
 /// LinseedDeploymentContainer is a linseed Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the linseed Deployment container by name. Supported values are: tigera-linseed
+    /// Name is an enum which identifies the linseed Deployment container by name.
+    /// Supported values are: tigera-linseed
     pub name: LogStorageLinseedDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment container's resources. If omitted, the linseed Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named linseed Deployment container's resources.
+    /// If omitted, the linseed Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LogStorageLinseedDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -485,18 +601,26 @@ pub enum LogStorageLinseedDeploymentSpecTemplateSpecContainersName {
     TigeraLinseed,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment container's resources. If omitted, the linseed Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named linseed Deployment container's resources.
+/// If omitted, the linseed Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageLinseedDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -504,16 +628,21 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpecContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// LinseedDeploymentInitContainer is a linseed Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the linseed Deployment init container by name. Supported values are: tigera-secure-linseed-token-tls-key-cert-provisioner,tigera-secure-linseed-cert-key-cert-provisioner
+    /// Name is an enum which identifies the linseed Deployment init container by name.
+    /// Supported values are: tigera-secure-linseed-token-tls-key-cert-provisioner,tigera-secure-linseed-cert-key-cert-provisioner
     pub name: LogStorageLinseedDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment init container's resources. If omitted, the linseed Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named linseed Deployment init container's resources.
+    /// If omitted, the linseed Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -527,18 +656,26 @@ pub enum LogStorageLinseedDeploymentSpecTemplateSpecInitContainersName {
     TigeraSecureLinseedCertKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named linseed Deployment init container's resources. If omitted, the linseed Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named linseed Deployment init container's resources.
+/// If omitted, the linseed Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -546,7 +683,9 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -567,12 +706,16 @@ pub struct LogStorageNodes {
 /// NodeSets defines configuration specific to each Elasticsearch Node Set
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageNodesNodeSets {
-    /// SelectionAttributes defines K8s node attributes a NodeSet should use when setting the Node Affinity selectors and Elasticsearch cluster awareness attributes for the Elasticsearch nodes. The list of SelectionAttributes are used to define Node Affinities and set the node awareness configuration in the running Elasticsearch instance.
+    /// SelectionAttributes defines K8s node attributes a NodeSet should use when setting the Node Affinity selectors and
+    /// Elasticsearch cluster awareness attributes for the Elasticsearch nodes. The list of SelectionAttributes are used
+    /// to define Node Affinities and set the node awareness configuration in the running Elasticsearch instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectionAttributes")]
     pub selection_attributes: Option<Vec<LogStorageNodesNodeSetsSelectionAttributes>>,
 }
 
-/// NodeSetSelectionAttribute defines a K8s node "attribute" the Elasticsearch nodes should be aware of. The "Name" and "Value" are used together to set the "awareness" attributes in Elasticsearch, while the "NodeLabel" and "Value" are used together to define Node Affinity for the Pods created for the Elasticsearch nodes.
+/// NodeSetSelectionAttribute defines a K8s node "attribute" the Elasticsearch nodes should be aware of. The "Name" and "Value"
+/// are used together to set the "awareness" attributes in Elasticsearch, while the "NodeLabel" and "Value" are used together
+/// to define Node Affinity for the Pods created for the Elasticsearch nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageNodesNodeSetsSelectionAttributes {
     pub name: String,
@@ -584,15 +727,21 @@ pub struct LogStorageNodesNodeSetsSelectionAttributes {
 /// ResourceRequirements defines the resource limits and requirements for the Elasticsearch cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageNodesResourceRequirements {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LogStorageNodesResourceRequirementsClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -600,29 +749,49 @@ pub struct LogStorageNodesResourceRequirements {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageNodesResourceRequirementsClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// Retention defines how long data is retained in the Elasticsearch cluster before it is cleared.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageRetention {
-    /// AuditReports configures the retention period for audit logs, in days.  Logs written on a day that started at least this long ago are removed.  To keep logs for at least x days, use a retention period of x+1. Default: 91
+    /// AuditReports configures the retention period for audit logs, in days.  Logs written on a day that started at least this long ago are
+    /// removed.  To keep logs for at least x days, use a retention period of x+1.
+    /// Default: 91
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditReports")]
     pub audit_reports: Option<i32>,
-    /// BGPLogs configures the retention period for BGP logs, in days.  Logs written on a day that started at least this long ago are removed.  To keep logs for at least x days, use a retention period of x+1. Default: 8
+    /// BGPLogs configures the retention period for BGP logs, in days.  Logs written on a day that started at least this long ago
+    /// are removed.  To keep logs for at least x days, use a retention period of x+1.
+    /// Default: 8
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bgpLogs")]
     pub bgp_logs: Option<i32>,
-    /// ComplianceReports configures the retention period for compliance reports, in days. Reports are output from the analysis of the system state and audit events for compliance reporting. Consult the Compliance Reporting documentation for more details on reports. Logs written on a day that started at least this long ago are removed.  To keep logs for at least x days, use a retention period of x+1. Default: 91
+    /// ComplianceReports configures the retention period for compliance reports, in days. Reports are output
+    /// from the analysis of the system state and audit events for compliance reporting.
+    /// Consult the Compliance Reporting documentation for more details on reports.
+    /// Logs written on a day that started at least this long ago are
+    /// removed.  To keep logs for at least x days, use a retention period of x+1.
+    /// Default: 91
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "complianceReports")]
     pub compliance_reports: Option<i32>,
-    /// DNSLogs configures the retention period for DNS logs, in days.  Logs written on a day that started at least this long ago are removed.  To keep logs for at least x days, use a retention period of x+1. Default: 8
+    /// DNSLogs configures the retention period for DNS logs, in days.  Logs written on a day that started at least this long ago
+    /// are removed.  To keep logs for at least x days, use a retention period of x+1.
+    /// Default: 8
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsLogs")]
     pub dns_logs: Option<i32>,
-    /// Flows configures the retention period for flow logs, in days.  Logs written on a day that started at least this long ago are removed.  To keep logs for at least x days, use a retention period of x+1. Default: 8
+    /// Flows configures the retention period for flow logs, in days.  Logs written on a day that started at least this long ago
+    /// are removed.  To keep logs for at least x days, use a retention period of x+1.
+    /// Default: 8
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flows: Option<i32>,
-    /// Snapshots configures the retention period for snapshots, in days. Snapshots are periodic captures of resources which along with audit events are used to generate reports. Consult the Compliance Reporting documentation for more details on snapshots. Logs written on a day that started at least this long ago are removed.  To keep logs for at least x days, use a retention period of x+1. Default: 91
+    /// Snapshots configures the retention period for snapshots, in days. Snapshots are periodic captures
+    /// of resources which along with audit events are used to generate reports.
+    /// Consult the Compliance Reporting documentation for more details on snapshots.
+    /// Logs written on a day that started at least this long ago are
+    /// removed.  To keep logs for at least x days, use a retention period of x+1.
+    /// Default: 91
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshots: Option<i32>,
 }
@@ -630,13 +799,16 @@ pub struct LogStorageRetention {
 /// Most recently observed state for Tigera log storage.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LogStorageStatus {
-    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of Ready, Progressing, Degraded or other customer types.
+    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of
+    /// Ready, Progressing, Degraded or other customer types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ElasticsearchHash represents the current revision and configuration of the installed Elasticsearch cluster. This is an opaque string which can be monitored for changes to perform actions when Elasticsearch is modified.
+    /// ElasticsearchHash represents the current revision and configuration of the installed Elasticsearch cluster. This
+    /// is an opaque string which can be monitored for changes to perform actions when Elasticsearch is modified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchHash")]
     pub elasticsearch_hash: Option<String>,
-    /// KibanaHash represents the current revision and configuration of the installed Kibana dashboard. This is an opaque string which can be monitored for changes to perform actions when Kibana is modified.
+    /// KibanaHash represents the current revision and configuration of the installed Kibana dashboard. This
+    /// is an opaque string which can be monitored for changes to perform actions when Kibana is modified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kibanaHash")]
     pub kibana_hash: Option<String>,
     /// State provides user-readable status.

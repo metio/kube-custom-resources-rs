@@ -18,6 +18,10 @@ pub struct VMStaticScrapeSpec {
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
+    /// SeriesLimit defines per-scrape limit on number of unique time series
+    /// a single target can expose during all the scrapes on the time window of 24h.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
+    pub series_limit: Option<i64>,
     /// A list of target endpoints to scrape metrics from.
     #[serde(rename = "targetEndpoints")]
     pub target_endpoints: Vec<VMStaticScrapeTargetEndpoints>,
@@ -91,6 +95,10 @@ pub struct VMStaticScrapeTargetEndpoints {
     /// one of scrape_interval or interval can be used
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scrape_interval: Option<String>,
+    /// SeriesLimit defines per-scrape limit on number of unique time series
+    /// a single target can expose during all the scrapes on the time window of 24h.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
+    pub series_limit: Option<i64>,
     /// Targets static targets addresses in form of ["192.122.55.55:9100","some-name:9100"].
     pub targets: Vec<String>,
     /// TLSConfig configuration to use when scraping the endpoint
@@ -221,8 +229,10 @@ pub struct VMStaticScrapeTargetEndpointsMetricRelabelConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
+    /// victoriaMetrics supports multiline regex joined with |
+    /// https://docs.victoriametrics.com/vmagent/#relabeling-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+    pub regex: Option<BTreeMap<String, serde_json::Value>>,
     /// Replacement value against which a regex replace is performed if the
     /// regular expression matches. Regex capture groups are available. Default is '$1'
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -351,8 +361,10 @@ pub struct VMStaticScrapeTargetEndpointsRelabelConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
+    /// victoriaMetrics supports multiline regex joined with |
+    /// https://docs.victoriametrics.com/vmagent/#relabeling-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+    pub regex: Option<BTreeMap<String, serde_json::Value>>,
     /// Replacement value against which a regex replace is performed if the
     /// regular expression matches. Regex capture groups are available. Default is '$1'
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -523,6 +535,10 @@ pub struct VMStaticScrapeTargetEndpointsTlsConfigKeySecret {
 pub struct VMStaticScrapeTargetEndpointsVmScrapeParams {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_compression: Option<bool>,
+    /// disable_keepalive allows disabling HTTP keep-alive when scraping targets.
+    /// By default, HTTP keep-alive is enabled, so TCP connections to scrape targets
+    /// could be re-used.
+    /// See https://docs.victoriametrics.com/vmagent.html#scrape_config-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_keep_alive: Option<bool>,
     /// Headers allows sending custom headers to scrape targets
@@ -532,6 +548,7 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParams {
     /// vmagent supports since 1.79.0 version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
+    /// deprecated since [v1.85](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.85.0), will be removed in next release
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metric_relabel_debug: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -540,6 +557,7 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParams {
     /// See feature description https://docs.victoriametrics.com/vmagent.html#scraping-targets-via-a-proxy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfig>,
+    /// deprecated since [v1.85](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.85.0), will be removed in next release
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabel_debug: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -17,7 +17,8 @@ pub struct TigeraStatusSpec {
 /// TigeraStatusStatus defines the observed state of TigeraStatus
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TigeraStatusStatus {
-    /// Conditions represents the latest observed set of conditions for this component. A component may be one or more of Available, Progressing, or Degraded.
+    /// Conditions represents the latest observed set of conditions for this component. A component may be one or more of
+    /// Available, Progressing, or Degraded.
     pub conditions: Vec<Condition>,
 }
 

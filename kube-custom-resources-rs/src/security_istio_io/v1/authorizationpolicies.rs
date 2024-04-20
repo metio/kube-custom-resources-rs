@@ -26,9 +26,11 @@ pub struct AuthorizationPolicySpec {
     /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<AuthorizationPolicySelector>,
-    /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
     pub target_ref: Option<AuthorizationPolicyTargetRef>,
+    /// Optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefs")]
+    pub target_refs: Option<Vec<AuthorizationPolicyTargetRefs>>,
 }
 
 /// Configuration for access control on workloads. See more details at: https://istio.io/docs/reference/config/security/authorization-policy.html
@@ -163,9 +165,24 @@ pub struct AuthorizationPolicySelector {
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorizationPolicyTargetRef {
+    /// group is the group of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// kind is kind of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// name is the name of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace is the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AuthorizationPolicyTargetRefs {
     /// group is the group of the target resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,

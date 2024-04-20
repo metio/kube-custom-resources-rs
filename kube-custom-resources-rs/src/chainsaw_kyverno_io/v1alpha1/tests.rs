@@ -14,7 +14,8 @@ pub struct TestSpec {
     /// Bindings defines additional binding key/values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bindings: Option<Vec<TestBindings>>,
-    /// Catch defines what the steps will execute when an error happens. This will be combined with catch handlers defined at the step level.
+    /// Catch defines what the steps will execute when an error happens.
+    /// This will be combined with catch handlers defined at the step level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub catch: Option<Vec<TestCatch>>,
     /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
@@ -191,7 +192,8 @@ pub struct TestCatchDeleteBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestCatchDeleteExpect {
     /// Check defines the verification statement.
@@ -207,15 +209,18 @@ pub struct TestCatchDeleteRef {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -229,13 +234,16 @@ pub struct TestCatchDescribe {
     /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -261,10 +269,12 @@ pub struct TestCatchEvents {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Selector defines labels selector.
@@ -287,13 +297,16 @@ pub struct TestCatchGet {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -316,16 +329,20 @@ pub struct TestCatchPodLogs {
     /// Container in pod to get logs from else --all-containers is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Tail is the number of last lines to collect from pods. If omitted or zero, then the default is 10 if you use a selector, or -1 (all) if you use a pod name. This matches default behavior of `kubectl logs`.
+    /// Tail is the number of last lines to collect from pods. If omitted or zero,
+    /// then the default is 10 if you use a selector, or -1 (all) if you use a pod name.
+    /// This matches default behavior of `kubectl logs`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tail: Option<i64>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
@@ -414,13 +431,16 @@ pub struct TestCatchWait {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -443,6 +463,9 @@ pub struct TestCatchWaitFor {
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestCatchWaitForDeletion>,
+    /// JsonPath specifies the json path condition to wait for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<TestCatchWaitForJsonPath>,
 }
 
 /// Condition specifies the condition to wait for.
@@ -458,6 +481,15 @@ pub struct TestCatchWaitForCondition {
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestCatchWaitForDeletion {
+}
+
+/// JsonPath specifies the json path condition to wait for.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestCatchWaitForJsonPath {
+    /// Path defines the json path to wait for, e.g. '{.status.phase}'.
+    pub path: String,
+    /// Value defines the expected value to wait for, e.g., "Running".
+    pub value: String,
 }
 
 /// TestStep contains the test step definition used in a test spec.
@@ -632,7 +664,8 @@ pub struct TestStepsCatchDeleteBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsCatchDeleteExpect {
     /// Check defines the verification statement.
@@ -648,15 +681,18 @@ pub struct TestStepsCatchDeleteRef {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -670,13 +706,16 @@ pub struct TestStepsCatchDescribe {
     /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -702,10 +741,12 @@ pub struct TestStepsCatchEvents {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Selector defines labels selector.
@@ -728,13 +769,16 @@ pub struct TestStepsCatchGet {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -757,16 +801,20 @@ pub struct TestStepsCatchPodLogs {
     /// Container in pod to get logs from else --all-containers is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Tail is the number of last lines to collect from pods. If omitted or zero, then the default is 10 if you use a selector, or -1 (all) if you use a pod name. This matches default behavior of `kubectl logs`.
+    /// Tail is the number of last lines to collect from pods. If omitted or zero,
+    /// then the default is 10 if you use a selector, or -1 (all) if you use a pod name.
+    /// This matches default behavior of `kubectl logs`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tail: Option<i64>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
@@ -855,13 +903,16 @@ pub struct TestStepsCatchWait {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -884,6 +935,9 @@ pub struct TestStepsCatchWaitFor {
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestStepsCatchWaitForDeletion>,
+    /// JsonPath specifies the json path condition to wait for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<TestStepsCatchWaitForJsonPath>,
 }
 
 /// Condition specifies the condition to wait for.
@@ -899,6 +953,15 @@ pub struct TestStepsCatchWaitForCondition {
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsCatchWaitForDeletion {
+}
+
+/// JsonPath specifies the json path condition to wait for.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsCatchWaitForJsonPath {
+    /// Path defines the json path to wait for, e.g. '{.status.phase}'.
+    pub path: String,
+    /// Value defines the expected value to wait for, e.g., "Running".
+    pub value: String,
 }
 
 /// Finally defines actions to be executed at the end of a test.
@@ -1029,7 +1092,8 @@ pub struct TestStepsFinallyDeleteBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsFinallyDeleteExpect {
     /// Check defines the verification statement.
@@ -1045,15 +1109,18 @@ pub struct TestStepsFinallyDeleteRef {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -1067,13 +1134,16 @@ pub struct TestStepsFinallyDescribe {
     /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -1099,10 +1169,12 @@ pub struct TestStepsFinallyEvents {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Selector defines labels selector.
@@ -1125,13 +1197,16 @@ pub struct TestStepsFinallyGet {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -1154,16 +1229,20 @@ pub struct TestStepsFinallyPodLogs {
     /// Container in pod to get logs from else --all-containers is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Selector defines labels selector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Tail is the number of last lines to collect from pods. If omitted or zero, then the default is 10 if you use a selector, or -1 (all) if you use a pod name. This matches default behavior of `kubectl logs`.
+    /// Tail is the number of last lines to collect from pods. If omitted or zero,
+    /// then the default is 10 if you use a selector, or -1 (all) if you use a pod name.
+    /// This matches default behavior of `kubectl logs`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tail: Option<i64>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
@@ -1252,13 +1331,16 @@ pub struct TestStepsFinallyWait {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -1281,6 +1363,9 @@ pub struct TestStepsFinallyWaitFor {
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestStepsFinallyWaitForDeletion>,
+    /// JsonPath specifies the json path condition to wait for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<TestStepsFinallyWaitForJsonPath>,
 }
 
 /// Condition specifies the condition to wait for.
@@ -1296,6 +1381,15 @@ pub struct TestStepsFinallyWaitForCondition {
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsFinallyWaitForDeletion {
+}
+
+/// JsonPath specifies the json path condition to wait for.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsFinallyWaitForJsonPath {
+    /// Path defines the json path to wait for, e.g. '{.status.phase}'.
+    pub path: String,
+    /// Value defines the expected value to wait for, e.g., "Running".
+    pub value: String,
 }
 
 /// Timeouts for the test step. Overrides the global timeouts set in the Configuration and the timeouts eventually set in the Test.
@@ -1324,7 +1418,8 @@ pub struct TestStepsTimeouts {
 /// Operation defines a single operation, only one action is permitted for a given operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTry {
-    /// Apply represents resources that should be applied for this test step. This can include things like configuration settings or any other resources that need to be available during the test.
+    /// Apply represents resources that should be applied for this test step. This can include things
+    /// like configuration settings or any other resources that need to be available during the test.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub apply: Option<TestStepsTryApply>,
     /// Assert represents an assertion to be made. It checks whether the conditions specified in the assertion hold true.
@@ -1333,7 +1428,8 @@ pub struct TestStepsTry {
     /// Command defines a command to run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<TestStepsTryCommand>,
-    /// ContinueOnError determines whether a test should continue or not in case the operation was not successful. Even if the test continues executing, it will still be reported as failed.
+    /// ContinueOnError determines whether a test should continue or not in case the operation was not successful.
+    /// Even if the test continues executing, it will still be reported as failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "continueOnError")]
     pub continue_on_error: Option<bool>,
     /// Create represents a creation operation.
@@ -1345,7 +1441,8 @@ pub struct TestStepsTry {
     /// Description contains a description of the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Error represents the expected errors for this test step. If any of these errors occur, the test will consider them as expected; otherwise, they will be treated as test failures.
+    /// Error represents the expected errors for this test step. If any of these errors occur, the test
+    /// will consider them as expected; otherwise, they will be treated as test failures.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<TestStepsTryError>,
     /// Patch represents a patch operation.
@@ -1365,7 +1462,8 @@ pub struct TestStepsTry {
     pub wait: Option<TestStepsTryWait>,
 }
 
-/// Apply represents resources that should be applied for this test step. This can include things like configuration settings or any other resources that need to be available during the test.
+/// Apply represents resources that should be applied for this test step. This can include things
+/// like configuration settings or any other resources that need to be available during the test.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryApply {
     /// Bindings defines additional binding key/values.
@@ -1380,7 +1478,9 @@ pub struct TestStepsTryApply {
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expect: Option<Vec<TestStepsTryApplyExpect>>,
-    /// File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML files within the "manifest" directory.
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
     /// Outputs defines output bindings.
@@ -1406,7 +1506,8 @@ pub struct TestStepsTryApplyBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryApplyExpect {
     /// Check defines the verification statement.
@@ -1437,7 +1538,9 @@ pub struct TestStepsTryAssert {
     /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML files within the "manifest" directory.
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
     /// Check provides a check used in assertions.
@@ -1536,7 +1639,9 @@ pub struct TestStepsTryCreate {
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expect: Option<Vec<TestStepsTryCreateExpect>>,
-    /// File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML files within the "manifest" directory.
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
     /// Outputs defines output bindings.
@@ -1562,7 +1667,8 @@ pub struct TestStepsTryCreateBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryCreateExpect {
     /// Check defines the verification statement.
@@ -1616,7 +1722,8 @@ pub struct TestStepsTryDeleteBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryDeleteExpect {
     /// Check defines the verification statement.
@@ -1632,20 +1739,24 @@ pub struct TestStepsTryDeleteRef {
     /// API version of the referent.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// Error represents the expected errors for this test step. If any of these errors occur, the test will consider them as expected; otherwise, they will be treated as test failures.
+/// Error represents the expected errors for this test step. If any of these errors occur, the test
+/// will consider them as expected; otherwise, they will be treated as test failures.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryError {
     /// Bindings defines additional binding key/values.
@@ -1654,7 +1765,9 @@ pub struct TestStepsTryError {
     /// Cluster defines the target cluster (default cluster will be used if not specified and/or overridden).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<String>,
-    /// File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML files within the "manifest" directory.
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
     /// Check provides a check used in assertions.
@@ -1692,7 +1805,9 @@ pub struct TestStepsTryPatch {
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expect: Option<Vec<TestStepsTryPatchExpect>>,
-    /// File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML files within the "manifest" directory.
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
     /// Outputs defines output bindings.
@@ -1718,7 +1833,8 @@ pub struct TestStepsTryPatchBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryPatchExpect {
     /// Check defines the verification statement.
@@ -1821,7 +1937,9 @@ pub struct TestStepsTryUpdate {
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expect: Option<Vec<TestStepsTryUpdateExpect>>,
-    /// File is the path to the referenced file. This can be a direct path to a file or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML files within the "manifest" directory.
+    /// File is the path to the referenced file. This can be a direct path to a file
+    /// or an expression that matches multiple files, such as "manifest/*.yaml" for all YAML
+    /// files within the "manifest" directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
     /// Outputs defines output bindings.
@@ -1847,7 +1965,8 @@ pub struct TestStepsTryUpdateBindings {
     pub value: BTreeMap<String, serde_json::Value>,
 }
 
-/// Expectation represents a check to be applied on the result of an operation with a match filter to determine if the verification should be considered.
+/// Expectation represents a check to be applied on the result of an operation
+/// with a match filter to determine if the verification should be considered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryUpdateExpect {
     /// Check defines the verification statement.
@@ -1884,13 +2003,16 @@ pub struct TestStepsTryWait {
     /// Format determines the output format (json or yaml).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Resource name of the referent.
@@ -1913,6 +2035,9 @@ pub struct TestStepsTryWaitFor {
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestStepsTryWaitForDeletion>,
+    /// JsonPath specifies the json path condition to wait for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPath")]
+    pub json_path: Option<TestStepsTryWaitForJsonPath>,
 }
 
 /// Condition specifies the condition to wait for.
@@ -1928,6 +2053,15 @@ pub struct TestStepsTryWaitForCondition {
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryWaitForDeletion {
+}
+
+/// JsonPath specifies the json path condition to wait for.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsTryWaitForJsonPath {
+    /// Path defines the json path to wait for, e.g. '{.status.phase}'.
+    pub path: String,
+    /// Value defines the expected value to wait for, e.g., "Running".
+    pub value: String,
 }
 
 /// Timeouts for the test. Overrides the global timeouts set in the Configuration on a per operation basis.

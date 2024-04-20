@@ -12,10 +12,12 @@ use std::collections::BTreeMap;
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct DataUploadSpec {
-    /// BackupStorageLocation is the name of the backup storage location where the backup repository is stored.
+    /// BackupStorageLocation is the name of the backup storage location
+    /// where the backup repository is stored.
     #[serde(rename = "backupStorageLocation")]
     pub backup_storage_location: String,
-    /// Cancel indicates request to cancel the ongoing DataUpload. It can be set when the DataUpload is in InProgress phase
+    /// Cancel indicates request to cancel the ongoing DataUpload. It can be set
+    /// when the DataUpload is in InProgress phase
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel: Option<bool>,
     /// If SnapshotType is CSI, CSISnapshot provides the information of the CSI snapshot.
@@ -24,16 +26,19 @@ pub struct DataUploadSpec {
     /// DataMoverConfig is for data-mover-specific configuration fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataMoverConfig")]
     pub data_mover_config: Option<BTreeMap<String, String>>,
-    /// DataMover specifies the data mover to be used by the backup. If DataMover is "" or "velero", the built-in data mover will be used.
+    /// DataMover specifies the data mover to be used by the backup.
+    /// If DataMover is "" or "velero", the built-in data mover will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datamover: Option<String>,
-    /// OperationTimeout specifies the time used to wait internal operations, before returning error as timeout.
+    /// OperationTimeout specifies the time used to wait internal operations,
+    /// before returning error as timeout.
     #[serde(rename = "operationTimeout")]
     pub operation_timeout: String,
     /// SnapshotType is the type of the snapshot to be backed up.
     #[serde(rename = "snapshotType")]
     pub snapshot_type: String,
-    /// SourceNamespace is the original namespace where the volume is backed up from. It is the same namespace for SourcePVC and CSI namespaced objects.
+    /// SourceNamespace is the original namespace where the volume is backed up from.
+    /// It is the same namespace for SourcePVC and CSI namespaced objects.
     #[serde(rename = "sourceNamespace")]
     pub source_namespace: String,
     /// SourcePVC is the name of the PVC which the snapshot is taken for.
@@ -58,7 +63,10 @@ pub struct DataUploadCsiSnapshot {
 /// DataUploadStatus is the current status of a DataUpload.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataUploadStatus {
-    /// CompletionTimestamp records the time a backup was completed. Completion time is recorded even on failed backups. Completion time is recorded before uploading the backup object. The server's time is used for CompletionTimestamps
+    /// CompletionTimestamp records the time a backup was completed.
+    /// Completion time is recorded even on failed backups.
+    /// Completion time is recorded before uploading the backup object.
+    /// The server's time is used for CompletionTimestamps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
     /// DataMoverResult stores data-mover-specific information as a result of the DataUpload.
@@ -76,13 +84,18 @@ pub struct DataUploadStatus {
     /// Phase is the current state of the DataUpload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<DataUploadStatusPhase>,
-    /// Progress holds the total number of bytes of the volume and the current number of backed up bytes. This can be used to display progress information about the backup operation.
+    /// Progress holds the total number of bytes of the volume and the current
+    /// number of backed up bytes. This can be used to display progress information
+    /// about the backup operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub progress: Option<DataUploadStatusProgress>,
     /// SnapshotID is the identifier for the snapshot in the backup repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotID")]
     pub snapshot_id: Option<String>,
-    /// StartTimestamp records the time a backup was started. Separate from CreationTimestamp, since that value changes on restores. The server's time is used for StartTimestamps
+    /// StartTimestamp records the time a backup was started.
+    /// Separate from CreationTimestamp, since that value changes
+    /// on restores.
+    /// The server's time is used for StartTimestamps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
 }
@@ -100,7 +113,9 @@ pub enum DataUploadStatusPhase {
     Failed,
 }
 
-/// Progress holds the total number of bytes of the volume and the current number of backed up bytes. This can be used to display progress information about the backup operation.
+/// Progress holds the total number of bytes of the volume and the current
+/// number of backed up bytes. This can be used to display progress information
+/// about the backup operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataUploadStatusProgress {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bytesDone")]

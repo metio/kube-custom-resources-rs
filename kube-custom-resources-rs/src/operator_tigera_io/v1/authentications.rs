@@ -17,7 +17,9 @@ pub struct AuthenticationSpec {
     /// DexDeployment configures the Dex Deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dexDeployment")]
     pub dex_deployment: Option<AuthenticationDexDeployment>,
-    /// If specified, GroupsPrefix is prepended to each group obtained from the identity provider. Note that Kibana does not support a groups prefix, so this prefix is removed from Kubernetes Groups when translating log access ClusterRoleBindings into Elastic.
+    /// If specified, GroupsPrefix is prepended to each group obtained from the identity provider. Note that
+    /// Kibana does not support a groups prefix, so this prefix is removed from Kubernetes Groups when translating log access
+    /// ClusterRoleBindings into Elastic.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupsPrefix")]
     pub groups_prefix: Option<String>,
     /// LDAP contains the configuration needed to setup LDAP authentication.
@@ -32,7 +34,9 @@ pub struct AuthenticationSpec {
     /// Openshift contains the configuration needed to setup Openshift OAuth authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openshift: Option<AuthenticationOpenshift>,
-    /// If specified, UsernamePrefix is prepended to each user obtained from the identity provider. Note that Kibana does not support a user prefix, so this prefix is removed from Kubernetes User when translating log access ClusterRoleBindings into Elastic.
+    /// If specified, UsernamePrefix is prepended to each user obtained from the identity provider. Note that
+    /// Kibana does not support a user prefix, so this prefix is removed from Kubernetes User when translating log access
+    /// ClusterRoleBindings into Elastic.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernamePrefix")]
     pub username_prefix: Option<String>,
 }
@@ -64,10 +68,14 @@ pub struct AuthenticationDexDeploymentSpecTemplate {
 /// Spec is the Dex Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpec {
-    /// Containers is a list of Dex containers. If specified, this overrides the specified Dex Deployment containers. If omitted, the Dex Deployment will use its default values for its containers.
+    /// Containers is a list of Dex containers.
+    /// If specified, this overrides the specified Dex Deployment containers.
+    /// If omitted, the Dex Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of Dex init containers. If specified, this overrides the specified Dex Deployment init containers. If omitted, the Dex Deployment will use its default values for its init containers.
+    /// InitContainers is a list of Dex init containers.
+    /// If specified, this overrides the specified Dex Deployment init containers.
+    /// If omitted, the Dex Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -75,9 +83,12 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpec {
 /// DexDeploymentContainer is a Dex Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the Dex Deployment container by name. Supported values are: tigera-dex
+    /// Name is an enum which identifies the Dex Deployment container by name.
+    /// Supported values are: tigera-dex
     pub name: AuthenticationDexDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment container's resources. If omitted, the Dex Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named Dex Deployment container's resources.
+    /// If omitted, the Dex Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AuthenticationDexDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -89,18 +100,26 @@ pub enum AuthenticationDexDeploymentSpecTemplateSpecContainersName {
     TigeraDex,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment container's resources. If omitted, the Dex Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named Dex Deployment container's resources.
+/// If omitted, the Dex Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -108,16 +127,21 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpecContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// DexDeploymentInitContainer is a Dex Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the Dex Deployment init container by name. Supported values are: tigera-dex-tls-key-cert-provisioner
+    /// Name is an enum which identifies the Dex Deployment init container by name.
+    /// Supported values are: tigera-dex-tls-key-cert-provisioner
     pub name: AuthenticationDexDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment init container's resources. If omitted, the Dex Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named Dex Deployment init container's resources.
+    /// If omitted, the Dex Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AuthenticationDexDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -129,18 +153,26 @@ pub enum AuthenticationDexDeploymentSpecTemplateSpecInitContainersName {
     TigeraDexTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named Dex Deployment init container's resources. If omitted, the Dex Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named Dex Deployment init container's resources.
+/// If omitted, the Dex Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -148,7 +180,9 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainersResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -160,7 +194,9 @@ pub struct AuthenticationLdap {
     pub group_search: Option<AuthenticationLdapGroupSearch>,
     /// The host and port of the LDAP server. Example: ad.example.com:636
     pub host: String,
-    /// StartTLS whether to enable the startTLS feature for establishing TLS on an existing LDAP session. If true, the ldap:// protocol is used and then issues a StartTLS command, otherwise, connections will use the ldaps:// protocol.
+    /// StartTLS whether to enable the startTLS feature for establishing TLS on an existing LDAP session.
+    /// If true, the ldap:// protocol is used and then issues a StartTLS command, otherwise, connections will use
+    /// the ldaps:// protocol.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTLS")]
     pub start_tls: Option<bool>,
     /// User entry search configuration to match the credentials with a user.
@@ -174,13 +210,16 @@ pub struct AuthenticationLdapGroupSearch {
     /// BaseDN to start the search from. For example "cn=groups,dc=example,dc=com"
     #[serde(rename = "baseDN")]
     pub base_dn: String,
-    /// Optional filter to apply when searching the directory. For example "(objectClass=posixGroup)"
+    /// Optional filter to apply when searching the directory.
+    /// For example "(objectClass=posixGroup)"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
     /// The attribute of the group that represents its name. This attribute can be used to apply RBAC to a user group.
     #[serde(rename = "nameAttribute")]
     pub name_attribute: String,
-    /// Following list contains field pairs that are used to match a user to a group. It adds an additional requirement to the filter that an attribute in the group must match the user's attribute value.
+    /// Following list contains field pairs that are used to match a user to a group. It adds an additional
+    /// requirement to the filter that an attribute in the group must match the user's
+    /// attribute value.
     #[serde(rename = "userMatchers")]
     pub user_matchers: Vec<AuthenticationLdapGroupSearchUserMatchers>,
 }
@@ -205,7 +244,8 @@ pub struct AuthenticationLdapUserSearch {
     /// Optional filter to apply when searching the directory. For example "(objectClass=person)"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
-    /// A mapping of the attribute that is used as the username. This attribute can be used to apply RBAC to a user. Default: uid
+    /// A mapping of the attribute that is used as the username. This attribute can be used to apply RBAC to a user.
+    /// Default: uid
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameAttribute")]
     pub name_attribute: Option<String>,
 }
@@ -213,7 +253,10 @@ pub struct AuthenticationLdapUserSearch {
 /// OIDC contains the configuration needed to setup OIDC authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationOidc {
-    /// Some providers do not include the claim "email_verified" when there is no verification in the user enrollment process or if they are acting as a proxy for another identity provider. By default those tokens are deemed invalid. To skip this check, set the value to "InsecureSkip". Default: Verify
+    /// Some providers do not include the claim "email_verified" when there is no verification in the user enrollment
+    /// process or if they are acting as a proxy for another identity provider. By default those tokens are deemed invalid.
+    /// To skip this check, set the value to "InsecureSkip".
+    /// Default: Verify
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailVerification")]
     pub email_verification: Option<AuthenticationOidcEmailVerification>,
     /// GroupsClaim specifies which claim to use from the OIDC provider as the group.
@@ -225,10 +268,14 @@ pub struct AuthenticationOidc {
     /// IssuerURL is the URL to the OIDC provider.
     #[serde(rename = "issuerURL")]
     pub issuer_url: String,
-    /// PromptTypes is an optional list of string values that specifies whether the identity provider prompts the end user for re-authentication and consent. See the RFC for more information on prompt types: https://openid.net/specs/openid-connect-core-1_0.html. Default: "Consent"
+    /// PromptTypes is an optional list of string values that specifies whether the identity provider prompts the end user
+    /// for re-authentication and consent. See the RFC for more information on prompt types:
+    /// https://openid.net/specs/openid-connect-core-1_0.html.
+    /// Default: "Consent"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promptTypes")]
     pub prompt_types: Option<Vec<String>>,
-    /// RequestedScopes is a list of scopes to request from the OIDC provider. If not provided, the following scopes are requested: ["openid", "email", "profile", "groups", "offline_access"].
+    /// RequestedScopes is a list of scopes to request from the OIDC provider. If not provided, the following scopes are
+    /// requested: ["openid", "email", "profile", "groups", "offline_access"].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedScopes")]
     pub requested_scopes: Option<Vec<String>>,
     /// Default: "Dex"
@@ -267,7 +314,8 @@ pub struct AuthenticationOpenshift {
 /// AuthenticationStatus defines the observed state of Authentication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AuthenticationStatus {
-    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of Ready, Progressing, Degraded or other customer types.
+    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of
+    /// Ready, Progressing, Degraded or other customer types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// State provides user-readable status.

@@ -17,7 +17,8 @@ pub struct IntrusionDetectionSpec {
     /// AnomalyDetection is now deprecated, and configuring it has no effect.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "anomalyDetection")]
     pub anomaly_detection: Option<IntrusionDetectionAnomalyDetection>,
-    /// ComponentResources can be used to customize the resource requirements for each component. Only DeepPacketInspection is supported for this spec.
+    /// ComponentResources can be used to customize the resource requirements for each component.
+    /// Only DeepPacketInspection is supported for this spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentResources")]
     pub component_resources: Option<Vec<IntrusionDetectionComponentResources>>,
     /// IntrusionDetectionControllerDeployment configures the IntrusionDetection Controller Deployment.
@@ -53,15 +54,21 @@ pub enum IntrusionDetectionComponentResourcesComponentName {
 /// ResourceRequirements allows customization of limits and requests for compute resources such as cpu and memory.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionComponentResourcesResourceRequirements {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<IntrusionDetectionComponentResourcesResourceRequirementsClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -69,7 +76,9 @@ pub struct IntrusionDetectionComponentResourcesResourceRequirements {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionComponentResourcesResourceRequirementsClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -100,10 +109,14 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplate 
 /// Spec is the IntrusionDetectionController Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpec {
-    /// Containers is a list of IntrusionDetectionController containers. If specified, this overrides the specified IntrusionDetectionController Deployment containers. If omitted, the IntrusionDetectionController Deployment will use its default values for its containers.
+    /// Containers is a list of IntrusionDetectionController containers.
+    /// If specified, this overrides the specified IntrusionDetectionController Deployment containers.
+    /// If omitted, the IntrusionDetectionController Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of IntrusionDetectionController init containers. If specified, this overrides the specified IntrusionDetectionController Deployment init containers. If omitted, the IntrusionDetectionController Deployment will use its default values for its init containers.
+    /// InitContainers is a list of IntrusionDetectionController init containers.
+    /// If specified, this overrides the specified IntrusionDetectionController Deployment init containers.
+    /// If omitted, the IntrusionDetectionController Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -111,9 +124,12 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 /// IntrusionDetectionControllerDeploymentContainer is a IntrusionDetectionController Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the IntrusionDetectionController Deployment container by name. Supported values are: controller, webhooks-processor
+    /// Name is an enum which identifies the IntrusionDetectionController Deployment container by name.
+    /// Supported values are: controller, webhooks-processor
     pub name: IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named IntrusionDetectionController Deployment container's resources. If omitted, the IntrusionDetection Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named IntrusionDetectionController Deployment container's resources.
+    /// If omitted, the IntrusionDetection Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -127,18 +143,26 @@ pub enum IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpe
     WebhooksProcessor,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named IntrusionDetectionController Deployment container's resources. If omitted, the IntrusionDetection Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named IntrusionDetectionController Deployment container's resources.
+/// If omitted, the IntrusionDetection Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -146,16 +170,21 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// IntrusionDetectionControllerDeploymentInitContainer is a IntrusionDetectionController Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainers {
-    /// Name is an enum which identifies the IntrusionDetectionController Deployment init container by name. Supported values are: intrusion-detection-tls-key-cert-provisioner
+    /// Name is an enum which identifies the IntrusionDetectionController Deployment init container by name.
+    /// Supported values are: intrusion-detection-tls-key-cert-provisioner
     pub name: IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named IntrusionDetectionController Deployment init container's resources. If omitted, the IntrusionDetectionController Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named IntrusionDetectionController Deployment init container's resources.
+    /// If omitted, the IntrusionDetectionController Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersResources>,
 }
@@ -167,18 +196,26 @@ pub enum IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpe
     IntrusionDetectionTlsKeyCertProvisioner,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named IntrusionDetectionController Deployment init container's resources. If omitted, the IntrusionDetectionController Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named IntrusionDetectionController Deployment init container's resources.
+/// If omitted, the IntrusionDetectionController Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -186,14 +223,17 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// Most recently observed state for Tigera intrusion detection.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IntrusionDetectionStatus {
-    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of Ready, Progressing, Degraded or other customer types.
+    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of
+    /// Ready, Progressing, Degraded or other customer types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// State provides user-readable status.

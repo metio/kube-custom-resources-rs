@@ -5,7 +5,7 @@
 use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 
-/// HardwareDataSpec defines the desired state of HardwareData
+/// HardwareDataSpec defines the desired state of HardwareData.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "metal3.io", version = "v1alpha1", kind = "HardwareData", plural = "hardwaredata")]
 #[kube(namespaced)]
@@ -105,7 +105,7 @@ pub struct HardwareDataHardwareNics {
     pub vlans: Option<Vec<HardwareDataHardwareNicsVlans>>,
 }
 
-/// VLAN represents the name and ID of a VLAN
+/// VLAN represents the name and ID of a VLAN.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareDataHardwareNicsVlans {
     /// VLANID is a 12-bit 802.1Q VLAN identifier

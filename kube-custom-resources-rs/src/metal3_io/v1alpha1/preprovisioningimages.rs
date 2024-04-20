@@ -6,7 +6,7 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 
-/// PreprovisioningImageSpec defines the desired state of PreprovisioningImage
+/// PreprovisioningImageSpec defines the desired state of PreprovisioningImage.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "metal3.io", version = "v1alpha1", kind = "PreprovisioningImage", plural = "preprovisioningimages")]
 #[kube(namespaced)]
@@ -24,7 +24,7 @@ pub struct PreprovisioningImageSpec {
     pub network_data_name: Option<String>,
 }
 
-/// PreprovisioningImageStatus defines the observed state of PreprovisioningImage
+/// PreprovisioningImageStatus defines the observed state of PreprovisioningImage.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PreprovisioningImageStatus {
     /// architecture is the processor architecture for which the image is built
@@ -50,7 +50,7 @@ pub struct PreprovisioningImageStatus {
     pub network_data: Option<PreprovisioningImageStatusNetworkData>,
 }
 
-/// PreprovisioningImageStatus defines the observed state of PreprovisioningImage
+/// PreprovisioningImageStatus defines the observed state of PreprovisioningImage.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PreprovisioningImageStatusFormat {
     #[serde(rename = "iso")]

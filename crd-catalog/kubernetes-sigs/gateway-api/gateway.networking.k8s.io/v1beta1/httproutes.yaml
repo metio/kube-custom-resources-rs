@@ -983,6 +983,43 @@ spec:
                           type: "object"
                         maxItems: 8
                         type: "array"
+                      sessionPersistence:
+                        description: "SessionPersistence defines and configures session persistence\nfor the route rule.\n\n\nSupport: Extended\n\n\n"
+                        properties:
+                          absoluteTimeout:
+                            description: "AbsoluteTimeout defines the absolute timeout of the persistent\nsession. Once the AbsoluteTimeout duration has elapsed, the\nsession becomes invalid.\n\n\nSupport: Extended"
+                            pattern: "^([0-9]{1,5}(h|m|s|ms)){1,4}$"
+                            type: "string"
+                          cookieConfig:
+                            description: "CookieConfig provides configuration settings that are specific\nto cookie-based session persistence.\n\n\nSupport: Core"
+                            properties:
+                              lifetimeType:
+                                default: "Session"
+                                description: "LifetimeType specifies whether the cookie has a permanent or\nsession-based lifetime. A permanent cookie persists until its\nspecified expiry time, defined by the Expires or Max-Age cookie\nattributes, while a session cookie is deleted when the current\nsession ends.\n\n\nWhen set to \"Permanent\", AbsoluteTimeout indicates the\ncookie's lifetime via the Expires or Max-Age cookie attributes\nand is required.\n\n\nWhen set to \"Session\", AbsoluteTimeout indicates the\nabsolute lifetime of the cookie tracked by the gateway and\nis optional.\n\n\nSupport: Core for \"Session\" type\n\n\nSupport: Extended for \"Permanent\" type"
+                                enum:
+                                  - "Permanent"
+                                  - "Session"
+                                type: "string"
+                            type: "object"
+                          idleTimeout:
+                            description: "IdleTimeout defines the idle timeout of the persistent session.\nOnce the session has been idle for more than the specified\nIdleTimeout duration, the session becomes invalid.\n\n\nSupport: Extended"
+                            pattern: "^([0-9]{1,5}(h|m|s|ms)){1,4}$"
+                            type: "string"
+                          sessionName:
+                            description: "SessionName defines the name of the persistent session token\nwhich may be reflected in the cookie or the header. Users\nshould avoid reusing session names to prevent unintended\nconsequences, such as rejection or unpredictable behavior.\n\n\nSupport: Implementation-specific"
+                            maxLength: 128
+                            type: "string"
+                          type:
+                            default: "Cookie"
+                            description: "Type defines the type of session persistence such as through\nthe use a header or cookie. Defaults to cookie based session\npersistence.\n\n\nSupport: Core for \"Cookie\" type\n\n\nSupport: Extended for \"Header\" type"
+                            enum:
+                              - "Cookie"
+                              - "Header"
+                            type: "string"
+                        type: "object"
+                        x-kubernetes-validations:
+                          - message: "AbsoluteTimeout must be specified when cookie lifetimeType is Permanent"
+                            rule: "!has(self.cookieConfig.lifetimeType) || self.cookieConfig.lifetimeType != 'Permanent' || has(self.absoluteTimeout)"
                       timeouts:
                         description: "Timeouts defines the timeouts that can be configured for an HTTP request.\n\n\nSupport: Extended\n\n\n"
                         properties:
@@ -1131,7 +1168,7 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}
 status:

@@ -14,32 +14,41 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 #[kube(status = "ConfigurationStatus")]
 #[kube(schema = "disabled")]
 pub struct ConfigurationSpec {
-    /// Specifies the name of the cluster that this configuration is associated with.
+    /// Specifies the name of the Cluster that this configuration is associated with.
     #[serde(rename = "clusterRef")]
     pub cluster_ref: String,
-    /// Represents the name of the cluster component that this configuration pertains to.
+    /// Represents the name of the Component that this configuration pertains to.
     #[serde(rename = "componentName")]
     pub component_name: String,
-    /// An array of ConfigurationItemDetail objects that describe user-defined configuration templates.
+    /// ConfigItemDetails is an array of ConfigurationItemDetail objects. 
+    ///  Each ConfigurationItemDetail corresponds to a configuration template, which is a ConfigMap that contains multiple configuration files. Each configuration file is stored as a key-value pair within the ConfigMap. 
+    ///  The ConfigurationItemDetail includes information such as: 
+    ///  - The configuration template (a ConfigMap) - The corresponding ConfigConstraint (constraints and validation rules for the configuration) - Volume mounts (for mounting the configuration files)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configItemDetails")]
     pub config_item_details: Option<Vec<ConfigurationConfigItemDetails>>,
 }
 
-/// ConfigurationItemDetail represents a specific configuration item within a configuration template.
+/// ConfigurationItemDetail corresponds to settings of a configuration template (a ConfigMap).
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigurationConfigItemDetails {
-    /// Used to set the parameters to be updated. It is optional.
+    /// Specifies the user-defined configuration parameters. 
+    ///  When provided, the parameter values in `configFileParams` override the default configuration parameters. This allows users to override the default configuration according to their specific needs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFileParams")]
     pub config_file_params: Option<BTreeMap<String, ConfigurationConfigItemDetailsConfigFileParams>>,
-    /// Used to set the configuration template. It is optional.
+    /// Specifies the name of the configuration template (a ConfigMap), ConfigConstraint, and other miscellaneous options. 
+    ///  The configuration template is a ConfigMap that contains multiple configuration files. Each configuration file is stored as a key-value pair within the ConfigMap. 
+    ///  ConfigConstraint allows defining constraints and validation rules for configuration parameters. It ensures that the configuration adheres to certain requirements and limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSpec")]
     pub config_spec: Option<ConfigurationConfigItemDetailsConfigSpec>,
-    /// Specifies the configuration template. It is optional.
+    /// Specifies the user-defined configuration template. 
+    ///  When provided, the `importTemplateRef` overrides the default configuration template specified in `configSpec.templateRef`. This allows users to customize the configuration template according to their specific requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "importTemplateRef")]
     pub import_template_ref: Option<ConfigurationConfigItemDetailsImportTemplateRef>,
-    /// Defines the unique identifier of the configuration template. It must be a string of maximum 63 characters, and can only include lowercase alphanumeric characters, hyphens, and periods. The name must start and end with an alphanumeric character.
+    /// Defines the unique identifier of the configuration template. 
+    ///  It must be a string of maximum 63 characters, and can only include lowercase alphanumeric characters, hyphens, and periods. The name must start and end with an alphanumeric character.
     pub name: String,
-    /// Holds the configuration-related rerender. Preserves unknown fields and is optional.
+    /// External controllers can trigger a configuration rerender by modifying this field. 
+    ///  Note: Currently, the `payload` field is opaque and its content is not interpreted by the system. Modifying this field will cause a rerender, regardless of the specific content of this field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payload: Option<BTreeMap<String, serde_json::Value>>,
     /// Deprecated: No longer used. Please use 'Payload' instead. Previously represented the version of the configuration template.
@@ -47,7 +56,8 @@ pub struct ConfigurationConfigItemDetails {
     pub version: Option<String>,
 }
 
-/// Used to set the parameters to be updated. It is optional.
+/// Specifies the user-defined configuration parameters. 
+///  When provided, the parameter values in `configFileParams` override the default configuration parameters. This allows users to override the default configuration according to their specific needs.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigurationConfigItemDetailsConfigFileParams {
     /// Holds the configuration keys and values. This field is a workaround for issues found in kubebuilder and code-generator. Refer to https://github.com/kubernetes-sigs/kubebuilder/issues/528 and https://github.com/kubernetes/code-generator/issues/50 for more details. 
@@ -59,24 +69,39 @@ pub struct ConfigurationConfigItemDetailsConfigFileParams {
     pub parameters: Option<BTreeMap<String, String>>,
 }
 
-/// Used to set the configuration template. It is optional.
+/// Specifies the name of the configuration template (a ConfigMap), ConfigConstraint, and other miscellaneous options. 
+///  The configuration template is a ConfigMap that contains multiple configuration files. Each configuration file is stored as a key-value pair within the ConfigMap. 
+///  ConfigConstraint allows defining constraints and validation rules for configuration parameters. It ensures that the configuration adheres to certain requirements and limitations.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigurationConfigItemDetailsConfigSpec {
-    /// An optional field where the list of containers will be injected into EnvFrom.
+    /// Deprecated: AsEnvFrom has been deprecated since 0.9.0 and will be removed in 0.10.0 Specifies the containers to inject the ConfigMap parameters as environment variables. 
+    ///  This is useful when application images accept parameters through environment variables and generate the final configuration file in the startup script based on these variables. 
+    ///  This field allows users to specify a list of container names, and KubeBlocks will inject the environment variables converted from the ConfigMap into these designated containers. This provides a flexible way to pass the configuration items from the ConfigMap to the container without modifying the image. 
+    ///  Note: The field name `asEnvFrom` may be changed to `injectEnvTo` in future versions for better clarity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asEnvFrom")]
     pub as_env_from: Option<Vec<String>>,
-    /// An optional field that defines the name of the referenced configuration constraints object.
+    /// Specifies the name of the referenced configuration constraints object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintRef")]
     pub constraint_ref: Option<String>,
-    /// Refers to the mode bits used to set permissions on created files by default. 
+    /// Deprecated: DefaultMode is deprecated since 0.9.0 and will be removed in 0.10.0 for scripts, auto set 0555 for configs, auto set 0444 Refers to the mode bits used to set permissions on created files by default. 
     ///  Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. 
     ///  Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Defines a list of keys. If left empty, ConfigConstraint applies to all keys in the configmap.
+    /// Specifies the containers to inject the ConfigMap parameters as environment variables. 
+    ///  This is useful when application images accept parameters through environment variables and generate the final configuration file in the startup script based on these variables. 
+    ///  This field allows users to specify a list of container names, and KubeBlocks will inject the environment variables converted from the ConfigMap into these designated containers. This provides a flexible way to pass the configuration items from the ConfigMap to the container without modifying the image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectEnvTo")]
+    pub inject_env_to: Option<Vec<String>>,
+    /// Specifies the configuration files within the ConfigMap that support dynamic updates. 
+    ///  A configuration template (provided in the form of a ConfigMap) may contain templates for multiple configuration files. Each configuration file corresponds to a key in the ConfigMap. Some of these configuration files may support dynamic modification and reloading without requiring a pod restart. 
+    ///  If empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates, and ConfigConstraint applies to all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
-    /// An optional field that defines the secondary rendered config spec.
+    /// Specifies the secondary rendered config spec for pod-specific customization. 
+    ///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
+    ///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
+    ///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacyRenderedConfigSpec")]
     pub legacy_rendered_config_spec: Option<ConfigurationConfigItemDetailsConfigSpecLegacyRenderedConfigSpec>,
     /// Specifies the name of the configuration template.
@@ -84,7 +109,9 @@ pub struct ConfigurationConfigItemDetailsConfigSpec {
     /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// An optional field defines which resources change trigger re-render config.
+    /// Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes. 
+    ///  In some scenarios, the configuration may need to be updated to reflect the changes in resource allocation or cluster topology. Examples: 
+    ///  - Redis: adjust maxmemory after v-scale operation. - MySQL: increase max connections after v-scale operation. - Zookeeper: update zoo.cfg with new node addresses after h-scale operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
     pub re_render_resource_types: Option<Vec<String>>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
@@ -95,7 +122,10 @@ pub struct ConfigurationConfigItemDetailsConfigSpec {
     pub volume_name: String,
 }
 
-/// An optional field that defines the secondary rendered config spec.
+/// Specifies the secondary rendered config spec for pod-specific customization. 
+///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
+///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
+///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigurationConfigItemDetailsConfigSpecLegacyRenderedConfigSpec {
     /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
@@ -109,7 +139,10 @@ pub struct ConfigurationConfigItemDetailsConfigSpecLegacyRenderedConfigSpec {
     pub template_ref: String,
 }
 
-/// An optional field that defines the secondary rendered config spec.
+/// Specifies the secondary rendered config spec for pod-specific customization. 
+///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
+///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
+///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ConfigurationConfigItemDetailsConfigSpecLegacyRenderedConfigSpecPolicy {
     #[serde(rename = "patch")]
@@ -120,7 +153,8 @@ pub enum ConfigurationConfigItemDetailsConfigSpecLegacyRenderedConfigSpecPolicy 
     None,
 }
 
-/// Specifies the configuration template. It is optional.
+/// Specifies the user-defined configuration template. 
+///  When provided, the `importTemplateRef` overrides the default configuration template specified in `configSpec.templateRef`. This allows users to customize the configuration template according to their specific requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigurationConfigItemDetailsImportTemplateRef {
     /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
@@ -134,7 +168,8 @@ pub struct ConfigurationConfigItemDetailsImportTemplateRef {
     pub template_ref: String,
 }
 
-/// Specifies the configuration template. It is optional.
+/// Specifies the user-defined configuration template. 
+///  When provided, the `importTemplateRef` overrides the default configuration template specified in `configSpec.templateRef`. This allows users to customize the configuration template according to their specific requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ConfigurationConfigItemDetailsImportTemplateRefPolicy {
     #[serde(rename = "patch")]
@@ -145,6 +180,7 @@ pub enum ConfigurationConfigItemDetailsImportTemplateRefPolicy {
     None,
 }
 
+/// ConfigurationStatus represents the observed state of a Configuration resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ConfigurationStatus {
     /// Provides detailed status information for opsRequest.

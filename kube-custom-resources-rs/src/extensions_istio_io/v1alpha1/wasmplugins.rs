@@ -48,9 +48,11 @@ pub struct WasmPluginSpec {
     /// SHA256 checksum that will be used to verify Wasm module or OCI container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha256: Option<String>,
-    /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
     pub target_ref: Option<WasmPluginTargetRef>,
+    /// Optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefs")]
+    pub target_refs: Option<Vec<WasmPluginTargetRefs>>,
     /// Specifies the type of Wasm Extension to be used.
     /// 
     /// Valid Options: HTTP, NETWORK
@@ -133,9 +135,24 @@ pub struct WasmPluginSelector {
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WasmPluginTargetRef {
+    /// group is the group of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// kind is kind of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// name is the name of the target resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace is the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WasmPluginTargetRefs {
     /// group is the group of the target resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,

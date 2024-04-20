@@ -7,1169 +7,650 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
-/// OpAMPBridgeSpec defines the desired state of OpAMPBridge.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "opentelemetry.io", version = "v1alpha1", kind = "OpAMPBridge", plural = "opampbridges")]
 #[kube(namespaced)]
 #[kube(status = "OpAMPBridgeStatus")]
 #[kube(schema = "disabled")]
 pub struct OpAMPBridgeSpec {
-    /// If specified, indicates the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<OpAMPBridgeAffinity>,
-    /// Capabilities supported by the OpAMP Bridge
     pub capabilities: BTreeMap<String, bool>,
-    /// ComponentsAllowed is a list of allowed OpenTelemetry components for each pipeline type (receiver, processor, etc.)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentsAllowed")]
     pub components_allowed: Option<BTreeMap<String, String>>,
-    /// OpAMP backend Server endpoint
     pub endpoint: String,
-    /// ENV vars to set on the OpAMPBridge Pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpAMPBridgeEnv>>,
-    /// List of sources to populate environment variables on the OpAMPBridge Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<OpAMPBridgeEnvFrom>>,
-    /// Headers is an optional map of headers to use when connecting to the OpAMP Server,
-    /// typically used to set access tokens or other authorization headers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
-    /// HostNetwork indicates if the pod should run in the host networking namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
-    /// Image indicates the container image to use for the OpAMPBridge.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// ImagePullPolicy indicates the pull policy to be used for retrieving the container image (Always, Never, IfNotPresent)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    /// NodeSelector to schedule OpAMPBridge pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// PodAnnotations is the set of annotations that will be attached to
-    /// OpAMPBridge pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotations")]
     pub pod_annotations: Option<BTreeMap<String, String>>,
-    /// PodSecurityContext will be set as the pod security context.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<OpAMPBridgePodSecurityContext>,
-    /// Ports allows a set of ports to be exposed by the underlying v1.Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<OpAMPBridgePorts>>,
-    /// If specified, indicates the pod's priority.
-    /// If not specified, the pod priority will be default or zero if there is no
-    /// default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// Replicas is the number of pod instances for the OpAMPBridge.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Resources to set on the OpAMPBridge pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpAMPBridgeResources>,
-    /// SecurityContext will be set as the container security context.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<OpAMPBridgeSecurityContext>,
-    /// ServiceAccount indicates the name of an existing service account to use with this instance. When set,
-    /// the operator will not automatically create a ServiceAccount for the OpAMPBridge.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    /// Toleration to schedule OpAMPBridge pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<OpAMPBridgeTolerations>>,
-    /// TopologySpreadConstraints embedded kubernetes pod configuration option,
-    /// controls how pods are spread across your cluster among failure-domains
-    /// such as regions, zones, nodes, and other user-defined top
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<OpAMPBridgeTopologySpreadConstraints>>,
-    /// UpgradeStrategy represents how the operator will handle upgrades to the CR when a newer version of the operator is deployed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeStrategy")]
     pub upgrade_strategy: Option<OpAMPBridgeUpgradeStrategy>,
-    /// VolumeMounts represents the mount points to use in the underlying OpAMPBridge deployment(s)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<OpAMPBridgeVolumeMounts>>,
-    /// Volumes represents which volumes to use in the underlying OpAMPBridge deployment(s).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<OpAMPBridgeVolumes>>,
 }
 
-/// If specified, indicates the pod's scheduling constraints
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinity {
-    /// Describes node affinity scheduling rules for the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<OpAMPBridgeAffinityNodeAffinity>,
-    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<OpAMPBridgeAffinityPodAffinity>,
-    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<OpAMPBridgeAffinityPodAntiAffinity>,
 }
 
-/// Describes node affinity scheduling rules for the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpAMPBridgeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<OpAMPBridgeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// An empty preferred scheduling term matches all objects with implicit weight 0
-/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// A node selector term, associated with the corresponding weight.
     pub preference: OpAMPBridgeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
-    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
 
-/// A node selector term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
-    /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<OpAMPBridgeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// If the affinity requirements specified by this field are not met at
-/// scheduling time, the pod will not be scheduled onto the node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<OpAMPBridgeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of
-/// them are ANDed.
-/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
-    /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<OpAMPBridgeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
-    /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm,
-    /// in the range 1-100.
     pub weight: i32,
 }
 
-/// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose 
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector
-/// relative to the given namespace(s)) that this pod should be
-/// co-located (affinity) or not co-located (anti-affinity) with,
-/// where co-locate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose 
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the anti-affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the anti-affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm,
-    /// in the range 1-100.
     pub weight: i32,
 }
 
-/// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose 
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector
-/// relative to the given namespace(s)) that this pod should be
-/// co-located (affinity) or not co-located (anti-affinity) with,
-/// where co-locate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose 
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
-    /// Variable references $(VAR_NAME) are expanded
-    /// using the previously defined environment variables in the container and
-    /// any service environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<OpAMPBridgeEnvValueFrom>,
 }
 
-/// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnvValueFrom {
-    /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<OpAMPBridgeEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<OpAMPBridgeEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<OpAMPBridgeEnvValueFromResourceFieldRef>,
-    /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<OpAMPBridgeEnvValueFromSecretKeyRef>,
 }
 
-/// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnvValueFromConfigMapKeyRef {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnvValueFromFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnvValueFromResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
-    /// Required: resource to select
     pub resource: String,
 }
 
-/// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnvValueFromSecretKeyRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnvFrom {
-    /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<OpAMPBridgeEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<OpAMPBridgeEnvFromSecretRef>,
 }
 
-/// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnvFromConfigMapRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeEnvFromSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// PodSecurityContext will be set as the pod security context.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgePodSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod.
-    /// Some volume types allow the Kubelet to change the ownership of that volume
-    /// to be owned by the pod:
-    /// 
-    /// 
-    /// 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
-    /// before being exposed inside Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in SecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in SecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to all containers.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in SecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<OpAMPBridgePodSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<OpAMPBridgePodSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for th
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
-    /// sysctls (by the container runtime) might fail to launch.
-    /// Note that this field cannot be set when spec.os.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<OpAMPBridgePodSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options within a container's SecurityContext will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<OpAMPBridgePodSecurityContextWindowsOptions>,
 }
 
-/// The SELinux context to be applied to all containers.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in SecurityContext.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgePodSecurityContextSeLinuxOptions {
-    /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
-    /// Role is a SELinux role label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
-    /// Type is a SELinux type label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    /// User is a SELinux user label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgePodSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used.
-    /// The profile must be preconfigured on the node to work.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied.
-    /// Valid options are:
-    /// 
-    /// 
-    /// Localhost - a profile defined in a file on the node should be used.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// Sysctl defines a kernel parameter to be set
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgePodSecurityContextSysctls {
-    /// Name of a property to set
     pub name: String,
-    /// Value of a property to set
     pub value: String,
 }
 
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options within a container's SecurityContext will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgePodSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
-/// ServicePort contains information on service's port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgePorts {
-    /// The application protocol for this port.
-    /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
-    /// This field follows standard Kubernetes label syntax.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
-    /// The name of this port within the service. This must be a DNS_LABEL.
-    /// All ports within a ServiceSpec must have unique names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The port on each node on which this service is exposed when type is
-    /// NodePort or LoadBalancer.  Usually assigned by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<i32>,
-    /// The port that will be exposed by this service.
     pub port: i32,
-    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP".
-    /// Default is TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// Number or name of the port to access on the pods targeted by the service.
-    /// Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
 
-/// Resources to set on the OpAMPBridge pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpAMPBridgeResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
     pub name: String,
 }
 
-/// SecurityContext will be set as the container security context.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more
-    /// privileges than its parent process. This bool directly controls if
-    /// the no_new_privs flag will be set on the container process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    /// The capabilities to add/drop when running containers.
-    /// Defaults to the default set of capabilities granted by the container runtime.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<OpAMPBridgeSecurityContextCapabilities>,
-    /// Run container in privileged mode.
-    /// Processes in privileged containers are essentially equivalent to root on the host.
-    /// Defaults to false.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
-    /// readonly paths and masked paths.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem.
-    /// Default is false.
-    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in PodSecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in PodSecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<OpAMPBridgeSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are
-    /// provided at both the pod & container level, the container options
-    /// override the pod options.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<OpAMPBridgeSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options from the PodSecurityContext will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<OpAMPBridgeSecurityContextWindowsOptions>,
 }
 
-/// The capabilities to add/drop when running containers.
-/// Defaults to the default set of capabilities granted by the container runtime.
-/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeSecurityContextCapabilities {
-    /// Added capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
-    /// Removed capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop: Option<Vec<String>>,
 }
 
-/// The SELinux context to be applied to the container.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in PodSecurityContext.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeSecurityContextSeLinuxOptions {
-    /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
-    /// Role is a SELinux role label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
-    /// Type is a SELinux type label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    /// User is a SELinux user label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// The seccomp options to use by this container. If seccomp options are
-/// provided at both the pod & container level, the container options
-/// override the pod options.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used.
-    /// The profile must be preconfigured on the node to work.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied.
-    /// Valid options are:
-    /// 
-    /// 
-    /// Localhost - a profile defined in a file on the node should be used.
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options from the PodSecurityContext will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches
-/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects.
-    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
-    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be
-    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to.
-    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeTopologySpreadConstraints {
-    /// LabelSelector is used to find matching pods.
-    /// Pods that match this label selector are counted to determine the number of pods
-    /// in their corresponding topology domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OpAMPBridgeTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which
-    /// spreading will be calculated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MaxSkew describes the degree to which pods may be unevenly distributed.
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    /// MinDomains indicates a minimum number of eligible domains.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
-    /// when calculating pod topology spread skew.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    /// NodeTaintsPolicy indicates how we will treat node taints when calculating
-    /// pod topology spread skew.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
-    /// TopologyKey is the key of node labels. Nodes that have a label with this key
-    /// and identical values are considered to be in the same topology.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
-    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy
-    /// the spread constraint.
-    /// - DoNotSchedule (default) tells the scheduler not to schedule it.
     #[serde(rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: String,
 }
 
-/// LabelSelector is used to find matching pods.
-/// Pods that match this label selector are counted to determine the number of pods
-/// in their corresponding topology domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeTopologySpreadConstraintsLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeTopologySpreadConstraintsLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// OpAMPBridgeSpec defines the desired state of OpAMPBridge.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum OpAMPBridgeUpgradeStrategy {
     #[serde(rename = "automatic")]
@@ -1178,462 +659,257 @@ pub enum OpAMPBridgeUpgradeStrategy {
     None,
 }
 
-/// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must
-    /// not contain ':'.
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host
-    /// to container and the other way around.
-    /// When not set, MountPropagationNone is used.
-    /// This field is beta in 1.10.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
-    /// This must match the Name of a Volume.
     pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified).
-    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted.
-    /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
-/// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumes {
-    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<OpAMPBridgeVolumesAwsElasticBlockStore>,
-    /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<OpAMPBridgeVolumesAzureDisk>,
-    /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<OpAMPBridgeVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<OpAMPBridgeVolumesCephfs>,
-    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<OpAMPBridgeVolumesCinder>,
-    /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<OpAMPBridgeVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<OpAMPBridgeVolumesCsi>,
-    /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<OpAMPBridgeVolumesDownwardApi>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<OpAMPBridgeVolumesEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<OpAMPBridgeVolumesEphemeral>,
-    /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<OpAMPBridgeVolumesFc>,
-    /// flexVolume represents a generic volume resource that is
-    /// provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<OpAMPBridgeVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<OpAMPBridgeVolumesFlocker>,
-    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<OpAMPBridgeVolumesGcePersistentDisk>,
-    /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<OpAMPBridgeVolumesGitRepo>,
-    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<OpAMPBridgeVolumesGlusterfs>,
-    /// hostPath represents a pre-existing file or directory on the host
-    /// machine that is directly exposed to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<OpAMPBridgeVolumesHostPath>,
-    /// iscsi represents an ISCSI Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<OpAMPBridgeVolumesIscsi>,
-    /// name of the volume.
-    /// Must be a DNS_LABEL and unique within the pod.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
-    /// nfs represents an NFS mount on the host that shares a pod's lifetime
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<OpAMPBridgeVolumesNfs>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a
-    /// PersistentVolumeClaim in the same namespace.
-    /// More info: https://kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<OpAMPBridgeVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<OpAMPBridgeVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<OpAMPBridgeVolumesPortworxVolume>,
-    /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<OpAMPBridgeVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<OpAMPBridgeVolumesQuobyte>,
-    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<OpAMPBridgeVolumesRbd>,
-    /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<OpAMPBridgeVolumesScaleIo>,
-    /// secret represents a secret that should populate this volume.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<OpAMPBridgeVolumesSecret>,
-    /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<OpAMPBridgeVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<OpAMPBridgeVolumesVsphereVolume>,
 }
 
-/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesAwsElasticBlockStore {
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount.
-    /// If omitted, the default is to mount by volume name.
-    /// Examples: For volume /dev/sda1, you specify the partition as "1".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// readOnly value true will force the readOnly setting in VolumeMounts.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesAzureDisk {
-    /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
-    /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
     pub disk_name: String,
-    /// diskURI is the URI of data disk in the blob storage
     #[serde(rename = "diskURI")]
     pub disk_uri: String,
-    /// fsType is Filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesAzureFile {
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretName is the  name of secret that contains Azure Storage Account Name and Key
     #[serde(rename = "secretName")]
     pub secret_name: String,
-    /// shareName is the azure share Name
     #[serde(rename = "shareName")]
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesCephfs {
-    /// monitors is Required: Monitors is a collection of Ceph monitors
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
-    /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
-    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<OpAMPBridgeVolumesCephfsSecretRef>,
-    /// user is optional: User is the rados user name, default is admin
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
-/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesCephfsSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// cinder represents a cinder volume attached and mounted on kubelets host machine.
-/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesCinder {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is optional: points to a secret object containing parameters used to connect
-    /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<OpAMPBridgeVolumesCinderSecretRef>,
-    /// volumeID used to identify the volume in cinder.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// secretRef is optional: points to a secret object containing parameters used to connect
-/// to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesCinderSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// ConfigMap will be projected into the volume as a file whose name is the
-    /// key and content is the value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<OpAMPBridgeVolumesConfigMapItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesCsi {
-    /// driver is the name of the CSI driver that handles this volume.
-    /// Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
-    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
-    /// If not provided, the empty value is passed to the associated CSI driver
-    /// which will determine the default filesystem to apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// nodePublishSecretRef is a reference to the secret object containing
-    /// sensitive information to pass to the CSI driver to complete the CSI
-    /// NodePublishVolume and NodeUnpublishVolume calls.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<OpAMPBridgeVolumesCsiNodePublishSecretRef>,
-    /// readOnly specifies a read-only configuration for the volume.
-    /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeAttributes stores driver-specific properties that are passed to the CSI
-    /// driver. Consult your driver's documentation for supported values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// nodePublishSecretRef is a reference to the secret object containing
-/// sensitive information to pass to the CSI driver to complete the CSI
-/// NodePublishVolume and NodeUnpublishVolume calls.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesCsiNodePublishSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesDownwardApi {
-    /// Optional: mode bits to use on created files by default. Must be a
-    /// Optional: mode bits used to set permissions on created files by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<OpAMPBridgeVolumesDownwardApiItems>>,
 }
 
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<OpAMPBridgeVolumesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value
-    /// between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<OpAMPBridgeVolumesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
-    /// Required: resource to select
     pub resource: String,
 }
 
-/// emptyDir represents a temporary directory that shares a pod's lifetime.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEmptyDir {
-    /// medium represents what type of storage medium should back this directory.
-    /// The default is "" which means to use the node's default medium.
-    /// Must be an empty string (default) or Memory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
-    /// The size limit is also applicable for memory medium.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
 }
 
-/// ephemeral represents a volume that is handled by a cluster storage driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume.
-    /// The pod in which this EphemeralVolumeSource is embedded will be the
-    /// owner of the PVC, i.e.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<OpAMPBridgeVolumesEphemeralVolumeClaimTemplate>,
 }
 
-/// Will be used to create a stand-alone PVC to provision the volume.
-/// The pod in which this EphemeralVolumeSource is embedded will be the
-/// owner of the PVC, i.e.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplate {
-    /// May contain labels and annotations that will be copied into the PVC
-    /// when creating it. No other fields are allowed and will be rejected during
-    /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<OpAMPBridgeVolumesEphemeralVolumeClaimTemplateMetadata>,
-    /// The specification for the PersistentVolumeClaim. The entire content is
-    /// copied unchanged into the PVC that gets created from this
-    /// template.
     pub spec: OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
-/// May contain labels and annotations that will be copied into the PVC
-/// when creating it. No other fields are allowed and will be rejected during
-/// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1648,845 +924,461 @@ pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplateMetadata {
     pub namespace: Option<String>,
 }
 
-/// The specification for the PersistentVolumeClaim. The entire content is
-/// copied unchanged into the PVC that gets created from this
-/// template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpec {
-    /// accessModes contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either:
-    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-    /// volume is desired.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecResources>,
-    /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
-    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim.
-    /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
-    /// volumeName is the binding reference to the PersistentVolume backing this claim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// dataSource field can be used to specify either:
-/// * An existing VolumeSnapshot object (snapshot.storage.k8s.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecDataSource {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
     pub kind: String,
-    /// Name is the name of resource being referenced
     pub name: String,
 }
 
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-/// volume is desired.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
     pub kind: String,
-    /// Name is the name of resource being referenced
     pub name: String,
-    /// Namespace is the namespace of resource being referenced
-    /// Note that when a namespace is specified, a gateway.networking.k8s.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// resources represents the minimum resources the volume should have.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// selector is a label query over volumes to consider for binding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesFc {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// lun is Optional: FC target lun number
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// targetWWNs is Optional: FC target worldwide names (WWNs)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
-    /// wwids Optional: FC volume world wide identifiers (wwids)
-    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
 }
 
-/// flexVolume represents a generic volume resource that is
-/// provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesFlexVolume {
-    /// driver is the name of the driver to use for this volume.
     pub driver: String,
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// options is Optional: this field holds extra command options if any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
-    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is Optional: secretRef is reference to the secret object containing
-    /// sensitive information to pass to the plugin scripts. This may be
-    /// empty if no secret object is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<OpAMPBridgeVolumesFlexVolumeSecretRef>,
 }
 
-/// secretRef is Optional: secretRef is reference to the secret object containing
-/// sensitive information to pass to the plugin scripts. This may be
-/// empty if no secret object is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesFlexVolumeSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesFlocker {
-    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
-    /// should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
-    /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
-/// gcePersistentDisk represents a GCE Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesGcePersistentDisk {
-    /// fsType is filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount.
-    /// If omitted, the default is to mount by volume name.
-    /// Examples: For volume /dev/sda1, you specify the partition as "1".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(rename = "pdName")]
     pub pd_name: String,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesGitRepo {
-    /// directory is the target directory name.
-    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
-    /// git repository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub directory: Option<String>,
-    /// repository is the URL
     pub repository: String,
-    /// revision is the commit hash for the specified revision.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,
 }
 
-/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
-/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesGlusterfs {
-    /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
-    /// path is the Glusterfs volume path.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub path: String,
-    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
-    /// Defaults to false.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// hostPath represents a pre-existing file or directory on the host
-/// machine that is directly exposed to the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesHostPath {
-    /// path of the directory on the host.
-    /// If the path is a symlink, it will follow the link to the real path.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     pub path: String,
-    /// type for HostPath Volume
-    /// Defaults to ""
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// iscsi represents an ISCSI Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesIscsi {
-    /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
-    /// chapAuthSession defines whether support iSCSI Session CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// initiatorName is the custom iSCSI Initiator Name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
-    /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
-    /// iscsiInterface is the interface Name that uses an iSCSI transport.
-    /// Defaults to 'default' (tcp).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
-    /// lun represents iSCSI Target Lun number.
     pub lun: i32,
-    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
-    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub portals: Option<Vec<String>>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<OpAMPBridgeVolumesIscsiSecretRef>,
-    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
-    /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
 }
 
-/// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesIscsiSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// nfs represents an NFS mount on the host that shares a pod's lifetime
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesNfs {
-    /// path that is exported by the NFS server.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
-    /// readOnly here will force the NFS export to be mounted with read-only permissions.
-    /// Defaults to false.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// server is the hostname or IP address of the NFS server.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub server: String,
 }
 
-/// persistentVolumeClaimVolumeSource represents a reference to a
-/// PersistentVolumeClaim in the same namespace.
-/// More info: https://kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesPersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
     pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts.
-    /// Default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesPhotonPersistentDisk {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// pdID is the ID that identifies Photon Controller persistent disk
     #[serde(rename = "pdID")]
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesPortworxVolume {
-    /// fSType represents the filesystem type to mount
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// volumeID uniquely identifies a Portworx volume
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
 
-/// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<OpAMPBridgeVolumesProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSources {
-    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
-    /// of ClusterTrustBundle objects in an auto-updating file.
-    /// 
-    /// 
-    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<OpAMPBridgeVolumesProjectedSourcesClusterTrustBundle>,
-    /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<OpAMPBridgeVolumesProjectedSourcesConfigMap>,
-    /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<OpAMPBridgeVolumesProjectedSourcesDownwardApi>,
-    /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<OpAMPBridgeVolumesProjectedSourcesSecret>,
-    /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<OpAMPBridgeVolumesProjectedSourcesServiceAccountToken>,
 }
 
-/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
-/// of ClusterTrustBundle objects in an auto-updating file.
-/// 
-/// 
-/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesClusterTrustBundle {
-    /// Select all ClusterTrustBundles that match this label selector.  Only has
-    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
-    /// interpreted as "match nothing".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OpAMPBridgeVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
-    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
-    /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
-    /// aren't available.  If using name, then the named ClusterTrustBundle is
-    /// allowed not to exist.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// Relative path from the volume root to write the bundle.
     pub path: String,
-    /// Select all ClusterTrustBundles that match this signer name.
-    /// Mutually-exclusive with name.  The contents of all selected
-    /// ClusterTrustBundles will be unified and deduplicated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
-/// Select all ClusterTrustBundles that match this label selector.  Only has
-/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
-/// interpreted as "match nothing".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesClusterTrustBundleLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OpAMPBridgeVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// ConfigMap will be projected into the volume as a file whose name is the
-    /// key and content is the value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<OpAMPBridgeVolumesProjectedSourcesConfigMapItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesConfigMapItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
     pub path: String,
 }
 
-/// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesDownwardApi {
-    /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<OpAMPBridgeVolumesProjectedSourcesDownwardApiItems>>,
 }
 
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<OpAMPBridgeVolumesProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value
-    /// between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<OpAMPBridgeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
-    /// Required: resource to select
     pub resource: String,
 }
 
-/// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// Secret will be projected into the volume as a file whose name is the
-    /// key and content is the value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<OpAMPBridgeVolumesProjectedSourcesSecretItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// optional field specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
     pub path: String,
 }
 
-/// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token. A recipient of a token
-    /// must identify itself with an identifier specified in the audience of the
-    /// token, and otherwise should reject the token.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service
-    /// account token. As the token approaches expiration, the kubelet volume
-    /// plugin will proactively rotate the service account token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the
-    /// token into.
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesQuobyte {
-    /// group to map volume access to
-    /// Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
-    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// registry represents a single or multiple Quobyte Registry services
-    /// specified as a string as host:port pair (multiple entries are separated with commas)
-    /// which acts as the central registry for volumes
     pub registry: String,
-    /// tenant owning the given Quobyte volume in the Backend
-    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
-    /// user to map volume access to
-    /// Defaults to serivceaccount user
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
-    /// volume is a string that references an already created Quobyte volume by name.
     pub volume: String,
 }
 
-/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
-/// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesRbd {
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// image is the rados image name.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub image: String,
-    /// keyring is the path to key ring for RBDUser.
-    /// Default is /etc/ceph/keyring.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyring: Option<String>,
-    /// monitors is a collection of Ceph monitors.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     pub monitors: Vec<String>,
-    /// pool is the rados pool name.
-    /// Default is rbd.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pool: Option<String>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef is name of the authentication secret for RBDUser. If provided
-    /// overrides keyring.
-    /// Default is nil.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<OpAMPBridgeVolumesRbdSecretRef>,
-    /// user is the rados user name.
-    /// Default is admin.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// secretRef is name of the authentication secret for RBDUser. If provided
-/// overrides keyring.
-/// Default is nil.
-/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesRbdSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesScaleIo {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs".
-    /// Default is "xfs".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
-    /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef references to the secret for ScaleIO user and other
-    /// sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
     pub secret_ref: OpAMPBridgeVolumesScaleIoSecretRef,
-    /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
-    /// Default is ThinProvisioned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
-    /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
-    /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
-    /// volumeName is the name of a volume already created in the ScaleIO system
-    /// that is associated with this volume source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// secretRef references to the secret for ScaleIO user and other
-/// sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesScaleIoSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// secret represents a secret that should populate this volume.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced
-    /// Secret will be projected into the volume as a file whose name is the
-    /// key and content is the value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<OpAMPBridgeVolumesSecretItems>>,
-    /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
-/// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesSecretItems {
-    /// key is the key to project.
     pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
     pub path: String,
 }
 
-/// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesStorageos {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    /// secretRef specifies the secret to use for obtaining the StorageOS API
-    /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<OpAMPBridgeVolumesStorageosSecretRef>,
-    /// volumeName is the human-readable name of the StorageOS volume.  Volume
-    /// names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
-    /// namespace is specified then the Pod's namespace will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
-/// secretRef specifies the secret to use for obtaining the StorageOS API
-/// credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesStorageosSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeVolumesVsphereVolume {
-    /// fsType is filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
-    /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
-    /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
     pub volume_path: String,
 }
 
-/// OpAMPBridgeStatus defines the observed state of OpAMPBridge.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpAMPBridgeStatus {
-    /// Version of the managed OpAMP Bridge (operand)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

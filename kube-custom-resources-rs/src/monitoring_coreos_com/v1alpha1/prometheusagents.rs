@@ -65,6 +65,14 @@ pub struct PrometheusAgentSpec {
     /// `spec.bearerTokenSecret` field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "arbitraryFSAccessThroughSMs")]
     pub arbitrary_fs_access_through_s_ms: Option<PrometheusAgentArbitraryFsAccessThroughSMs>,
+    /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted in the pod.
+    /// If the field isn't set, the operator mounts the service account token by default.
+    /// 
+    /// 
+    /// **Warning:** be aware that by default, Prometheus requires the service account token for Kubernetes service discovery.
+    /// It is possible to use strategic merge patch to project the service account token into the 'prometheus' container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
+    pub automount_service_account_token: Option<bool>,
     /// BodySizeLimit defines per-scrape on response body size.
     /// Only valid in Prometheus versions 2.45.0 and newer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
@@ -165,7 +173,7 @@ pub struct PrometheusAgentSpec {
     /// It requires Prometheus >= v2.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedLabelValueLengthLimit")]
     pub enforced_label_value_length_limit: Option<i64>,
-    /// When not empty, a label will be added to
+    /// When not empty, a label will be added to:
     /// 
     /// 
     /// 1. All metrics scraped from `ServiceMonitor`, `PodMonitor`, `Probe` and `ScrapeConfig` objects.
@@ -179,7 +187,7 @@ pub struct PrometheusAgentSpec {
     /// 
     /// The label's name is this field's value.
     /// The label's value is the namespace of the `ServiceMonitor`,
-    /// `PodMonitor`, `Probe` or `PrometheusRule` object.
+    /// `PodMonitor`, `Probe`, `PrometheusRule` or `ScrapeConfig` object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedNamespaceLabel")]
     pub enforced_namespace_label: Option<String>,
     /// When defined, enforcedSampleLimit specifies a global limit on the number

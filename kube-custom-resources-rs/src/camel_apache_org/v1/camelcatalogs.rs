@@ -278,8 +278,26 @@ pub struct CamelCatalogRuntime {
 /// features offered by this runtime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CamelCatalogRuntimeCapabilities {
+    /// Set of required Camel build time properties
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildTimeProperties")]
+    pub build_time_properties: Option<Vec<CamelCatalogRuntimeCapabilitiesBuildTimeProperties>>,
+    /// List of required Maven dependencies
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dependencies: Option<Vec<CamelCatalogRuntimeCapabilitiesDependencies>>,
+    /// Set of generic metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// Set of required Camel runtime properties
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProperties")]
+    pub runtime_properties: Option<Vec<CamelCatalogRuntimeCapabilitiesRuntimeProperties>>,
+}
+
+/// CamelProperty represents a Camel property that may end up in an application.properties file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CamelCatalogRuntimeCapabilitiesBuildTimeProperties {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
@@ -300,6 +318,14 @@ pub struct CamelCatalogRuntimeCapabilitiesDependencies {
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// CamelProperty represents a Camel property that may end up in an application.properties file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CamelCatalogRuntimeCapabilitiesRuntimeProperties {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.

@@ -55,6 +55,9 @@ pub struct BuildConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
@@ -92,7 +95,7 @@ pub enum BuildConfigurationStrategy {
 /// Task represents the abstract task. Only one of the task should be configured to represent the specific task chosen.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasks {
-    /// a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead
+    /// a BuildahTask, for Buildah strategy Deprecated: use jib, s2i or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buildah: Option<BuildTasksBuildah>,
     /// a BuilderTask, used to generate and build the project
@@ -104,7 +107,7 @@ pub struct BuildTasks {
     /// a JibTask, for Jib strategy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jib: Option<BuildTasksJib>,
-    /// a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead
+    /// a KanikoTask, for Kaniko strategy Deprecated: use jib, s2i or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kaniko: Option<BuildTasksKaniko>,
     /// Application pre publishing a PackageTask, used to package the project
@@ -113,12 +116,12 @@ pub struct BuildTasks {
     /// a S2iTask, for S2I strategy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s2i: Option<BuildTasksS2i>,
-    /// a SpectrumTask, for Spectrum strategy
+    /// a SpectrumTask, for Spectrum strategy Deprecated: use jib, s2i or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spectrum: Option<BuildTasksSpectrum>,
 }
 
-/// a BuildahTask, for Buildah strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead
+/// a BuildahTask, for Buildah strategy Deprecated: use jib, s2i or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuildah {
     /// base image layer
@@ -171,6 +174,9 @@ pub struct BuildTasksBuildahConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksBuildahConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
@@ -278,6 +284,9 @@ pub struct BuildTasksBuilderConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksBuilderConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
@@ -572,8 +581,26 @@ pub struct BuildTasksBuilderRuntime {
 /// features offered by this runtime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderRuntimeCapabilities {
+    /// Set of required Camel build time properties
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildTimeProperties")]
+    pub build_time_properties: Option<Vec<BuildTasksBuilderRuntimeCapabilitiesBuildTimeProperties>>,
+    /// List of required Maven dependencies
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dependencies: Option<Vec<BuildTasksBuilderRuntimeCapabilitiesDependencies>>,
+    /// Set of generic metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// Set of required Camel runtime properties
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProperties")]
+    pub runtime_properties: Option<Vec<BuildTasksBuilderRuntimeCapabilitiesRuntimeProperties>>,
+}
+
+/// CamelProperty represents a Camel property that may end up in an application.properties file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BuildTasksBuilderRuntimeCapabilitiesBuildTimeProperties {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
@@ -594,6 +621,14 @@ pub struct BuildTasksBuilderRuntimeCapabilitiesDependencies {
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// CamelProperty represents a Camel property that may end up in an application.properties file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BuildTasksBuilderRuntimeCapabilitiesRuntimeProperties {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
@@ -710,6 +745,9 @@ pub struct BuildTasksCustomConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksCustomConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
@@ -788,6 +826,9 @@ pub struct BuildTasksJibConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksJibConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
@@ -842,7 +883,7 @@ pub struct BuildTasksJibRegistry {
     pub secret: Option<String>,
 }
 
-/// a KanikoTask, for Kaniko strategy Deprecated: use spectrum, jib, s2i or a custom publishing strategy instead
+/// a KanikoTask, for Kaniko strategy Deprecated: use jib, s2i or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksKaniko {
     /// base image layer
@@ -906,6 +947,9 @@ pub struct BuildTasksKanikoConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksKanikoConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
@@ -1013,6 +1057,9 @@ pub struct BuildTasksPackageConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksPackageConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
@@ -1307,8 +1354,26 @@ pub struct BuildTasksPackageRuntime {
 /// features offered by this runtime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageRuntimeCapabilities {
+    /// Set of required Camel build time properties
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildTimeProperties")]
+    pub build_time_properties: Option<Vec<BuildTasksPackageRuntimeCapabilitiesBuildTimeProperties>>,
+    /// List of required Maven dependencies
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dependencies: Option<Vec<BuildTasksPackageRuntimeCapabilitiesDependencies>>,
+    /// Set of generic metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// Set of required Camel runtime properties
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProperties")]
+    pub runtime_properties: Option<Vec<BuildTasksPackageRuntimeCapabilitiesRuntimeProperties>>,
+}
+
+/// CamelProperty represents a Camel property that may end up in an application.properties file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BuildTasksPackageRuntimeCapabilitiesBuildTimeProperties {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
@@ -1329,6 +1394,14 @@ pub struct BuildTasksPackageRuntimeCapabilitiesDependencies {
     /// Maven Version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// CamelProperty represents a Camel property that may end up in an application.properties file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BuildTasksPackageRuntimeCapabilitiesRuntimeProperties {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact.
@@ -1436,6 +1509,9 @@ pub struct BuildTasksS2iConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksS2iConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
@@ -1470,7 +1546,7 @@ pub enum BuildTasksS2iConfigurationStrategy {
     Pod,
 }
 
-/// a SpectrumTask, for Spectrum strategy
+/// a SpectrumTask, for Spectrum strategy Deprecated: use jib, s2i or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksSpectrum {
     /// base image layer
@@ -1514,6 +1590,9 @@ pub struct BuildTasksSpectrumConfiguration {
     /// the build order strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksSpectrumConfigurationOrderStrategy>,
+    /// The list of platforms used in order to build a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,

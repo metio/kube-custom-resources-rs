@@ -64,8 +64,8 @@ spec:
                       type: "string"
                     upgradeMode:
                       enum:
-                        - "savepoint"
                         - "last-state"
+                        - "savepoint"
                         - "stateless"
                       type: "string"
                   type: "object"
@@ -102,8 +102,8 @@ spec:
                               enum:
                                 - "MANUAL"
                                 - "PERIODIC"
-                                - "UPGRADE"
                                 - "UNKNOWN"
+                                - "UPGRADE"
                               type: "string"
                           type: "object"
                         lastPeriodicCheckpointTimestamp:
@@ -116,8 +116,8 @@ spec:
                           enum:
                             - "MANUAL"
                             - "PERIODIC"
-                            - "UPGRADE"
                             - "UNKNOWN"
+                            - "UPGRADE"
                           type: "string"
                       type: "object"
                     jobId:
@@ -152,8 +152,8 @@ spec:
                               enum:
                                 - "MANUAL"
                                 - "PERIODIC"
-                                - "UPGRADE"
                                 - "UNKNOWN"
+                                - "UPGRADE"
                               type: "string"
                           type: "object"
                         savepointHistory:
@@ -175,8 +175,8 @@ spec:
                                 enum:
                                   - "MANUAL"
                                   - "PERIODIC"
-                                  - "UPGRADE"
                                   - "UNKNOWN"
+                                  - "UPGRADE"
                                 type: "string"
                             type: "object"
                           type: "array"
@@ -188,8 +188,8 @@ spec:
                           enum:
                             - "MANUAL"
                             - "PERIODIC"
-                            - "UPGRADE"
                             - "UNKNOWN"
+                            - "UPGRADE"
                           type: "string"
                       type: "object"
                     startTime:
@@ -202,13 +202,13 @@ spec:
                 lifecycleState:
                   enum:
                     - "CREATED"
+                    - "DEPLOYED"
+                    - "FAILED"
+                    - "ROLLED_BACK"
+                    - "ROLLING_BACK"
+                    - "STABLE"
                     - "SUSPENDED"
                     - "UPGRADING"
-                    - "DEPLOYED"
-                    - "STABLE"
-                    - "ROLLING_BACK"
-                    - "ROLLED_BACK"
-                    - "FAILED"
                   type: "string"
                 observedGeneration:
                   type: "integer"
@@ -223,9 +223,9 @@ spec:
                     state:
                       enum:
                         - "DEPLOYED"
-                        - "UPGRADING"
-                        - "ROLLING_BACK"
                         - "ROLLED_BACK"
+                        - "ROLLING_BACK"
+                        - "UPGRADING"
                       type: "string"
                   type: "object"
               type: "object"

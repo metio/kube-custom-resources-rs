@@ -20,9 +20,13 @@ pub struct SonataFlowPlatformSpec {
     /// DevMode Attributes for running workflows in devmode (immutable, no build required)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "devMode")]
     pub dev_mode: Option<SonataFlowPlatformDevMode>,
-    /// Persistence defines the platform persistence configuration. When this field is set, the configuration is used as the persistence for platform services and sonataflow instances that don't provide one of their own.
+    /// Persistence defines the platform persistence configuration. When this field is set, the configuration is used as the persistence for platform services and SonataFlow instances that don't provide one of their own.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistence: Option<SonataFlowPlatformPersistence>,
+    /// Properties defines the property set for a given actor in the current context. For example, the workflow managed properties. One can define here a set of properties for SonataFlow deployments that will be reused across every workflow deployment. 
+    ///  These properties MAY NOT be propagated to a SonataFlowClusterPlatform since PropertyVarSource can only refer local context sources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub properties: Option<SonataFlowPlatformProperties>,
     /// Services attributes for deploying supporting applications like Data Index & Job Service. Only workflows without the `sonataflow.org/profile: dev` annotation will be configured to use these service(s). Setting this will override the use of any cluster-scoped services that might be defined via `SonataFlowClusterPlatform`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<SonataFlowPlatformServices>,
@@ -290,7 +294,7 @@ pub struct SonataFlowPlatformDevMode {
     pub base_image: Option<String>,
 }
 
-/// Persistence defines the platform persistence configuration. When this field is set, the configuration is used as the persistence for platform services and sonataflow instances that don't provide one of their own.
+/// Persistence defines the platform persistence configuration. When this field is set, the configuration is used as the persistence for platform services and SonataFlow instances that don't provide one of their own.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformPersistence {
     /// Connect configured services to a postgresql database.
@@ -339,6 +343,65 @@ pub struct SonataFlowPlatformPersistencePostgresqlServiceRef {
     /// Port to use when connecting to the postgresql k8s service. Defaults to 5432.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
+}
+
+/// Properties defines the property set for a given actor in the current context. For example, the workflow managed properties. One can define here a set of properties for SonataFlow deployments that will be reused across every workflow deployment. 
+///  These properties MAY NOT be propagated to a SonataFlowClusterPlatform since PropertyVarSource can only refer local context sources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformProperties {
+    /// Properties that will be added to the SonataFlow managed configMaps in the current context.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flow: Option<Vec<SonataFlowPlatformPropertiesFlow>>,
+}
+
+/// PropertyVar is the entry for a property set derived from the Kubernetes API EnvVar. Note that the name doesn't have to match C_IDENTIFIER.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformPropertiesFlow {
+    /// The property name
+    pub name: String,
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the property's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<SonataFlowPlatformPropertiesFlowValueFrom>,
+}
+
+/// Source for the property's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformPropertiesFlowValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SonataFlowPlatformPropertiesFlowValueFromConfigMapKeyRef>,
+    /// Selects a key of a secret in the flow's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SonataFlowPlatformPropertiesFlowValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformPropertiesFlowValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a key of a secret in the flow's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SonataFlowPlatformPropertiesFlowValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Services attributes for deploying supporting applications like Data Index & Job Service. Only workflows without the `sonataflow.org/profile: dev` annotation will be configured to use these service(s). Setting this will override the use of any cluster-scoped services that might be defined via `SonataFlowClusterPlatform`.

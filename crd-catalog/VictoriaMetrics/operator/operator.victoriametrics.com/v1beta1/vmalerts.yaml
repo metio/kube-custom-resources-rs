@@ -43,6 +43,11 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                configReloaderExtraArgs:
+                  additionalProperties:
+                    type: "string"
+                  description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
+                  type: "object"
                 containers:
                   description: "Containers property allows to inject additions sidecars or to patch existing containers.\nIt can be useful for proxies, backup, etc."
                   items:
@@ -812,9 +817,6 @@ spec:
                       description: "Name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names"
                       type: "string"
                   type: "object"
-                podSecurityPolicyName:
-                  description: "PodSecurityPolicyName - defines name for podSecurityPolicy\nin case of empty value, prefixedName will be used."
-                  type: "string"
                 port:
                   description: "Port for listen"
                   type: "string"

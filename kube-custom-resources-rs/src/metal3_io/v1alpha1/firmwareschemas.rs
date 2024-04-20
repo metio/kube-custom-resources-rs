@@ -6,7 +6,7 @@ use kube::CustomResource;
 use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 
-/// FirmwareSchemaSpec defines the desired state of FirmwareSchema
+/// FirmwareSchemaSpec defines the desired state of FirmwareSchema.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "metal3.io", version = "v1alpha1", kind = "FirmwareSchema", plural = "firmwareschemas")]
 #[kube(namespaced)]

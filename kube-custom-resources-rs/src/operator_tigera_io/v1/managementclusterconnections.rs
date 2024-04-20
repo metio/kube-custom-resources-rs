@@ -17,7 +17,8 @@ pub struct ManagementClusterConnectionSpec {
     /// GuardianDeployment configures the guardian Deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "guardianDeployment")]
     pub guardian_deployment: Option<ManagementClusterConnectionGuardianDeployment>,
-    /// Specify where the managed cluster can reach the management cluster. Ex.: "10.128.0.10:30449". A managed cluster should be able to access this address. This field is used by managed clusters only.
+    /// Specify where the managed cluster can reach the management cluster. Ex.: "10.128.0.10:30449". A managed cluster
+    /// should be able to access this address. This field is used by managed clusters only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementClusterAddr")]
     pub management_cluster_addr: Option<String>,
     /// TLS provides options for configuring how Managed Clusters can establish an mTLS connection with the Management Cluster.
@@ -52,10 +53,14 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplate {
 /// Spec is the guardian Deployment's PodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpec {
-    /// Containers is a list of guardian containers. If specified, this overrides the specified guardian Deployment containers. If omitted, the guardian Deployment will use its default values for its containers.
+    /// Containers is a list of guardian containers.
+    /// If specified, this overrides the specified guardian Deployment containers.
+    /// If omitted, the guardian Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainers>>,
-    /// InitContainers is a list of guardian init containers. If specified, this overrides the specified guardian Deployment init containers. If omitted, the guardian Deployment will use its default values for its init containers.
+    /// InitContainers is a list of guardian init containers.
+    /// If specified, this overrides the specified guardian Deployment init containers.
+    /// If omitted, the guardian Deployment will use its default values for its init containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainers>>,
 }
@@ -63,9 +68,12 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpec {
 /// GuardianDeploymentContainer is a guardian Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainers {
-    /// Name is an enum which identifies the guardian Deployment container by name. Supported values are: tigera-guardian
+    /// Name is an enum which identifies the guardian Deployment container by name.
+    /// Supported values are: tigera-guardian
     pub name: ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersName,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named guardian Deployment container's resources. If omitted, the guardian Deployment will use its default value for this container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named guardian Deployment container's resources.
+    /// If omitted, the guardian Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersResources>,
 }
@@ -77,18 +85,26 @@ pub enum ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainers
     TigeraGuardian,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named guardian Deployment container's resources. If omitted, the guardian Deployment will use its default value for this container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named guardian Deployment container's resources.
+/// If omitted, the guardian Deployment will use its default value for this container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -96,7 +112,9 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContaine
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
@@ -105,23 +123,33 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContaine
 pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the guardian Deployment init container by name.
     pub name: String,
-    /// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named guardian Deployment init container's resources. If omitted, the guardian Deployment will use its default value for this init container's resources.
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named guardian Deployment init container's resources.
+    /// If omitted, the guardian Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
-/// Resources allows customization of limits and requests for compute resources such as cpu and memory. If specified, this overrides the named guardian Deployment init container's resources. If omitted, the guardian Deployment will use its default value for this init container's resources.
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named guardian Deployment init container's resources.
+/// If omitted, the guardian Deployment will use its default value for this init container's resources.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -129,17 +157,20 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitCont
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
 /// TLS provides options for configuring how Managed Clusters can establish an mTLS connection with the Management Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionTls {
-    /// CA indicates which verification method the tunnel client should use to verify the tunnel server's identity. 
-    ///  When left blank or set to 'Tigera', the tunnel client will expect a self-signed cert to be included in the certificate bundle and will expect the cert to have a Common Name (CN) of 'voltron'. 
-    ///  When set to 'Public', the tunnel client will use its installed system certs and will use the managementClusterAddr to verify the tunnel server's identity. 
-    ///  Default: Tigera
+    /// CA indicates which verification method the tunnel client should use to verify the tunnel server's identity.
+    /// When left blank or set to 'Tigera', the tunnel client will expect a self-signed cert to be included in the certificate bundle
+    /// and will expect the cert to have a Common Name (CN) of 'voltron'.
+    /// When set to 'Public', the tunnel client will use its installed system certs and will use the managementClusterAddr to verify the tunnel server's identity.
+    /// Default: Tigera
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<ManagementClusterConnectionTlsCa>,
 }
@@ -154,7 +185,8 @@ pub enum ManagementClusterConnectionTlsCa {
 /// ManagementClusterConnectionStatus defines the observed state of ManagementClusterConnection
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagementClusterConnectionStatus {
-    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of Ready, Progressing, Degraded or other customer types.
+    /// Conditions represents the latest observed set of conditions for the component. A component may be one or more of
+    /// Ready, Progressing, Degraded or other customer types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

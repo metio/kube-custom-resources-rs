@@ -16,7 +16,12 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 pub struct HelmReleaseSpec {
     /// Chart defines the template of the v1beta2.HelmChart that should be created
     /// for this HelmRelease.
-    pub chart: HelmReleaseChart,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chart: Option<HelmReleaseChart>,
+    /// ChartRef holds a reference to a source controller resource containing the
+    /// Helm chart artifact.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartRef")]
+    pub chart_ref: Option<HelmReleaseChartRef>,
     /// DependsOn may contain a meta.NamespacedObjectReference slice with
     /// references to HelmRelease resources that must be ready before this HelmRelease
     /// can be reconciled.
@@ -247,6 +252,31 @@ pub enum HelmReleaseChartSpecVerifyProvider {
 pub struct HelmReleaseChartSpecVerifySecretRef {
     /// Name of the referent.
     pub name: String,
+}
+
+/// ChartRef holds a reference to a source controller resource containing the
+/// Helm chart artifact.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HelmReleaseChartRef {
+    /// APIVersion of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Kind of the referent.
+    pub kind: HelmReleaseChartRefKind,
+    /// Name of the referent.
+    pub name: String,
+    /// Namespace of the referent, defaults to the namespace of the Kubernetes
+    /// resource object that contains the reference.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// ChartRef holds a reference to a source controller resource containing the
+/// Helm chart artifact.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HelmReleaseChartRefKind {
+    #[serde(rename = "OCIRepository")]
+    OciRepository,
 }
 
 /// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any
@@ -932,9 +962,14 @@ pub struct HelmReleaseStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedReleaseAction")]
     pub last_attempted_release_action: Option<HelmReleaseStatusLastAttemptedReleaseAction>,
     /// LastAttemptedRevision is the Source revision of the last reconciliation
-    /// attempt.
+    /// attempt. For OCIRepository  sources, the 12 first characters of the digest are
+    /// appended to the chart version e.g. "1.2.3+1234567890ab".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedRevision")]
     pub last_attempted_revision: Option<String>,
+    /// LastAttemptedRevisionDigest is the digest of the last reconciliation attempt.
+    /// This is only set for OCIRepository sources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedRevisionDigest")]
+    pub last_attempted_revision_digest: Option<String>,
     /// LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last
     /// reconciliation attempt.
     /// Deprecated: Use LastAttemptedConfigDigest instead.
@@ -1007,6 +1042,9 @@ pub struct HelmReleaseStatusHistory {
     pub name: String,
     /// Namespace is the namespace the release is deployed to.
     pub namespace: String,
+    /// OCIDigest is the digest of the OCI artifact associated with the release.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ociDigest")]
+    pub oci_digest: Option<String>,
     /// Status is the current state of the release.
     pub status: String,
     /// TestHooks is the list of test hooks for the release as observed to be

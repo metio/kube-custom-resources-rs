@@ -469,6 +469,16 @@ pub struct HTTPRouteRules {
     /// parent a request is coming from, a HTTP 404 status code MUST be returned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matches: Option<Vec<HTTPRouteRulesMatches>>,
+    /// SessionPersistence defines and configures session persistence
+    /// for the route rule.
+    /// 
+    /// 
+    /// Support: Extended
+    /// 
+    /// 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionPersistence")]
+    pub session_persistence: Option<HTTPRouteRulesSessionPersistence>,
     /// Timeouts defines the timeouts that can be configured for an HTTP request.
     /// 
     /// 
@@ -2312,6 +2322,118 @@ pub struct HTTPRouteRulesMatchesQueryParams {
 pub enum HTTPRouteRulesMatchesQueryParamsType {
     Exact,
     RegularExpression,
+}
+
+/// SessionPersistence defines and configures session persistence
+/// for the route rule.
+/// 
+/// 
+/// Support: Extended
+/// 
+/// 
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HTTPRouteRulesSessionPersistence {
+    /// AbsoluteTimeout defines the absolute timeout of the persistent
+    /// session. Once the AbsoluteTimeout duration has elapsed, the
+    /// session becomes invalid.
+    /// 
+    /// 
+    /// Support: Extended
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "absoluteTimeout")]
+    pub absolute_timeout: Option<String>,
+    /// CookieConfig provides configuration settings that are specific
+    /// to cookie-based session persistence.
+    /// 
+    /// 
+    /// Support: Core
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cookieConfig")]
+    pub cookie_config: Option<HTTPRouteRulesSessionPersistenceCookieConfig>,
+    /// IdleTimeout defines the idle timeout of the persistent session.
+    /// Once the session has been idle for more than the specified
+    /// IdleTimeout duration, the session becomes invalid.
+    /// 
+    /// 
+    /// Support: Extended
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
+    pub idle_timeout: Option<String>,
+    /// SessionName defines the name of the persistent session token
+    /// which may be reflected in the cookie or the header. Users
+    /// should avoid reusing session names to prevent unintended
+    /// consequences, such as rejection or unpredictable behavior.
+    /// 
+    /// 
+    /// Support: Implementation-specific
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionName")]
+    pub session_name: Option<String>,
+    /// Type defines the type of session persistence such as through
+    /// the use a header or cookie. Defaults to cookie based session
+    /// persistence.
+    /// 
+    /// 
+    /// Support: Core for "Cookie" type
+    /// 
+    /// 
+    /// Support: Extended for "Header" type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<HTTPRouteRulesSessionPersistenceType>,
+}
+
+/// CookieConfig provides configuration settings that are specific
+/// to cookie-based session persistence.
+/// 
+/// 
+/// Support: Core
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HTTPRouteRulesSessionPersistenceCookieConfig {
+    /// LifetimeType specifies whether the cookie has a permanent or
+    /// session-based lifetime. A permanent cookie persists until its
+    /// specified expiry time, defined by the Expires or Max-Age cookie
+    /// attributes, while a session cookie is deleted when the current
+    /// session ends.
+    /// 
+    /// 
+    /// When set to "Permanent", AbsoluteTimeout indicates the
+    /// cookie's lifetime via the Expires or Max-Age cookie attributes
+    /// and is required.
+    /// 
+    /// 
+    /// When set to "Session", AbsoluteTimeout indicates the
+    /// absolute lifetime of the cookie tracked by the gateway and
+    /// is optional.
+    /// 
+    /// 
+    /// Support: Core for "Session" type
+    /// 
+    /// 
+    /// Support: Extended for "Permanent" type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifetimeType")]
+    pub lifetime_type: Option<HTTPRouteRulesSessionPersistenceCookieConfigLifetimeType>,
+}
+
+/// CookieConfig provides configuration settings that are specific
+/// to cookie-based session persistence.
+/// 
+/// 
+/// Support: Core
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HTTPRouteRulesSessionPersistenceCookieConfigLifetimeType {
+    Permanent,
+    Session,
+}
+
+/// SessionPersistence defines and configures session persistence
+/// for the route rule.
+/// 
+/// 
+/// Support: Extended
+/// 
+/// 
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HTTPRouteRulesSessionPersistenceType {
+    Cookie,
+    Header,
 }
 
 /// Timeouts defines the timeouts that can be configured for an HTTP request.

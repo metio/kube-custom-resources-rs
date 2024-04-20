@@ -133,6 +133,14 @@ pub struct DatabaseClusterEngine {
     /// Config is the engine configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
+    /// CRVersion is the desired version of the CR to use with the
+    /// underlying operator.
+    /// If unspecified, everest-operator will use the same version as the operator.
+    /// 
+    /// 
+    /// NOTE: Updating this property post installation may lead to a restart of the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
+    pub cr_version: Option<String>,
     /// Replicas is the number of engine replicas
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -311,6 +319,9 @@ pub struct DatabaseClusterStatus {
     /// ActiveStorage is the storage used in cluster (psmdb only)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeStorage")]
     pub active_storage: Option<String>,
+    /// CRVersion is the observed version of the CR used with the underlying operator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
+    pub cr_version: Option<String>,
     /// Hostname is the hostname where the cluster can be reached
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
@@ -323,6 +334,11 @@ pub struct DatabaseClusterStatus {
     /// Ready is the number of ready pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<i32>,
+    /// RecommendedCRVersion is the recommended version of the CR to use.
+    /// If set, the CR needs to be updated to this version before upgrading the operator.
+    /// If unset, the CR is already at the recommended version.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recommendedCRVersion")]
+    pub recommended_cr_version: Option<String>,
     /// Size is the total number of pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i32>,

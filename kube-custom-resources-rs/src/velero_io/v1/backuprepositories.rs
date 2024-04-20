@@ -11,7 +11,8 @@ use serde::{Serialize, Deserialize};
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
 pub struct BackupRepositorySpec {
-    /// BackupStorageLocation is the name of the BackupStorageLocation that should contain this repository.
+    /// BackupStorageLocation is the name of the BackupStorageLocation
+    /// that should contain this repository.
     #[serde(rename = "backupStorageLocation")]
     pub backup_storage_location: String,
     /// MaintenanceFrequency is how often maintenance should be run.
@@ -20,10 +21,12 @@ pub struct BackupRepositorySpec {
     /// RepositoryType indicates the type of the backend repository
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryType")]
     pub repository_type: Option<BackupRepositoryRepositoryType>,
-    /// ResticIdentifier is the full restic-compatible string for identifying this repository.
+    /// ResticIdentifier is the full restic-compatible string for identifying
+    /// this repository.
     #[serde(rename = "resticIdentifier")]
     pub restic_identifier: String,
-    /// VolumeNamespace is the namespace this backup repository contains pod volume backups for.
+    /// VolumeNamespace is the namespace this backup repository contains
+    /// pod volume backups for.
     #[serde(rename = "volumeNamespace")]
     pub volume_namespace: String,
 }

@@ -144,6 +144,31 @@ spec:
                   required:
                     - "spec"
                   type: "object"
+                chartRef:
+                  description: "ChartRef holds a reference to a source controller resource containing the\nHelm chart artifact."
+                  properties:
+                    apiVersion:
+                      description: "APIVersion of the referent."
+                      type: "string"
+                    kind:
+                      description: "Kind of the referent."
+                      enum:
+                        - "OCIRepository"
+                      type: "string"
+                    name:
+                      description: "Name of the referent."
+                      maxLength: 253
+                      minLength: 1
+                      type: "string"
+                    namespace:
+                      description: "Namespace of the referent, defaults to the namespace of the Kubernetes\nresource object that contains the reference."
+                      maxLength: 63
+                      minLength: 1
+                      type: "string"
+                  required:
+                    - "kind"
+                    - "name"
+                  type: "object"
                 dependsOn:
                   description: "DependsOn may contain a meta.NamespacedObjectReference slice with\nreferences to HelmRelease resources that must be ready before this HelmRelease\ncan be reconciled."
                   items:
@@ -626,9 +651,11 @@ spec:
                     type: "object"
                   type: "array"
               required:
-                - "chart"
                 - "interval"
               type: "object"
+              x-kubernetes-validations:
+                - message: "either chart or chartRef must be set"
+                  rule: "(has(self.chart) && !has(self.chartRef)) || (!has(self.chart) && has(self.chartRef))"
             status:
               default:
                 observedGeneration: -1
@@ -723,6 +750,9 @@ spec:
                       namespace:
                         description: "Namespace is the namespace the release is deployed to."
                         type: "string"
+                      ociDigest:
+                        description: "OCIDigest is the digest of the OCI artifact associated with the release."
+                        type: "string"
                       status:
                         description: "Status is the current state of the release."
                         type: "string"
@@ -781,7 +811,10 @@ spec:
                     - "upgrade"
                   type: "string"
                 lastAttemptedRevision:
-                  description: "LastAttemptedRevision is the Source revision of the last reconciliation\nattempt."
+                  description: "LastAttemptedRevision is the Source revision of the last reconciliation\nattempt. For OCIRepository  sources, the 12 first characters of the digest are\nappended to the chart version e.g. \"1.2.3+1234567890ab\"."
+                  type: "string"
+                lastAttemptedRevisionDigest:
+                  description: "LastAttemptedRevisionDigest is the digest of the last reconciliation attempt.\nThis is only set for OCIRepository sources."
                   type: "string"
                 lastAttemptedValuesChecksum:
                   description: "LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last\nreconciliation attempt.\nDeprecated: Use LastAttemptedConfigDigest instead."

@@ -7,7 +7,8 @@ use serde::{Serialize, Deserialize};
 use std::collections::BTreeMap;
 use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 
-/// ClusterVersionSpec defines the desired state of ClusterVersion
+/// ClusterVersionSpec defines the desired state of ClusterVersion. 
+///  Deprecated since v0.9. This struct is maintained for backward compatibility and its use is discouraged.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "ClusterVersion", plural = "clusterversions")]
 #[kube(status = "ClusterVersionStatus")]
@@ -21,7 +22,8 @@ pub struct ClusterVersionSpec {
     pub component_versions: Vec<ClusterVersionComponentVersions>,
 }
 
-/// ClusterComponentVersion is an application version component spec.
+/// ClusterComponentVersion is an application version component spec. 
+///  Deprecated since v0.9. This struct is maintained for backward compatibility and its use is discouraged.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersions {
     /// Specifies a reference to one of the cluster component definition names in the ClusterDefinition API (spec.componentDefs.name).
@@ -43,21 +45,34 @@ pub struct ClusterVersionComponentVersions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsConfigSpecs {
-    /// An optional field where the list of containers will be injected into EnvFrom.
+    /// Deprecated: AsEnvFrom has been deprecated since 0.9.0 and will be removed in 0.10.0 Specifies the containers to inject the ConfigMap parameters as environment variables. 
+    ///  This is useful when application images accept parameters through environment variables and generate the final configuration file in the startup script based on these variables. 
+    ///  This field allows users to specify a list of container names, and KubeBlocks will inject the environment variables converted from the ConfigMap into these designated containers. This provides a flexible way to pass the configuration items from the ConfigMap to the container without modifying the image. 
+    ///  Note: The field name `asEnvFrom` may be changed to `injectEnvTo` in future versions for better clarity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asEnvFrom")]
     pub as_env_from: Option<Vec<String>>,
-    /// An optional field that defines the name of the referenced configuration constraints object.
+    /// Specifies the name of the referenced configuration constraints object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintRef")]
     pub constraint_ref: Option<String>,
-    /// Refers to the mode bits used to set permissions on created files by default. 
+    /// Deprecated: DefaultMode is deprecated since 0.9.0 and will be removed in 0.10.0 for scripts, auto set 0555 for configs, auto set 0444 Refers to the mode bits used to set permissions on created files by default. 
     ///  Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. 
     ///  Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Defines a list of keys. If left empty, ConfigConstraint applies to all keys in the configmap.
+    /// Specifies the containers to inject the ConfigMap parameters as environment variables. 
+    ///  This is useful when application images accept parameters through environment variables and generate the final configuration file in the startup script based on these variables. 
+    ///  This field allows users to specify a list of container names, and KubeBlocks will inject the environment variables converted from the ConfigMap into these designated containers. This provides a flexible way to pass the configuration items from the ConfigMap to the container without modifying the image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectEnvTo")]
+    pub inject_env_to: Option<Vec<String>>,
+    /// Specifies the configuration files within the ConfigMap that support dynamic updates. 
+    ///  A configuration template (provided in the form of a ConfigMap) may contain templates for multiple configuration files. Each configuration file corresponds to a key in the ConfigMap. Some of these configuration files may support dynamic modification and reloading without requiring a pod restart. 
+    ///  If empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates, and ConfigConstraint applies to all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
-    /// An optional field that defines the secondary rendered config spec.
+    /// Specifies the secondary rendered config spec for pod-specific customization. 
+    ///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
+    ///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
+    ///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacyRenderedConfigSpec")]
     pub legacy_rendered_config_spec: Option<ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpec>,
     /// Specifies the name of the configuration template.
@@ -65,7 +80,9 @@ pub struct ClusterVersionComponentVersionsConfigSpecs {
     /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// An optional field defines which resources change trigger re-render config.
+    /// Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes. 
+    ///  In some scenarios, the configuration may need to be updated to reflect the changes in resource allocation or cluster topology. Examples: 
+    ///  - Redis: adjust maxmemory after v-scale operation. - MySQL: increase max connections after v-scale operation. - Zookeeper: update zoo.cfg with new node addresses after h-scale operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
     pub re_render_resource_types: Option<Vec<String>>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
@@ -76,7 +93,10 @@ pub struct ClusterVersionComponentVersionsConfigSpecs {
     pub volume_name: String,
 }
 
-/// An optional field that defines the secondary rendered config spec.
+/// Specifies the secondary rendered config spec for pod-specific customization. 
+///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
+///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
+///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpec {
     /// Specifies the namespace of the referenced configuration template ConfigMap object. An empty namespace is equivalent to the "default" namespace.
@@ -90,7 +110,10 @@ pub struct ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpec {
     pub template_ref: String,
 }
 
-/// An optional field that defines the secondary rendered config spec.
+/// Specifies the secondary rendered config spec for pod-specific customization. 
+///  The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main template's render result to generate the final configuration file. 
+///  This field is intended to handle scenarios where different pods within the same Component have varying configurations. It allows for pod-specific customization of the configuration. 
+///  Note: This field will be deprecated in future versions, and the functionality will be moved to `cluster.spec.componentSpecs[*].instances[*]`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterVersionComponentVersionsConfigSpecsLegacyRenderedConfigSpecPolicy {
     #[serde(rename = "patch")]
@@ -1868,7 +1891,8 @@ pub struct ClusterVersionComponentVersionsVersionsContextInitContainersVolumeMou
     pub sub_path_expr: Option<String>,
 }
 
-/// ClusterVersionStatus defines the observed state of ClusterVersion
+/// ClusterVersionStatus defines the observed state of ClusterVersion. 
+///  Deprecated since v0.9. This struct is maintained for backward compatibility and its use is discouraged.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterVersionStatus {
     /// The generation number of the ClusterDefinition that is currently being referenced.
@@ -1885,7 +1909,8 @@ pub struct ClusterVersionStatus {
     pub phase: Option<ClusterVersionStatusPhase>,
 }
 
-/// ClusterVersionStatus defines the observed state of ClusterVersion
+/// ClusterVersionStatus defines the observed state of ClusterVersion. 
+///  Deprecated since v0.9. This struct is maintained for backward compatibility and its use is discouraged.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterVersionStatusPhase {
     Available,

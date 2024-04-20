@@ -299,6 +299,11 @@ spec:
                 configRawYaml:
                   description: "ConfigRawYaml - raw configuration for alertmanager,\nit helps it to start without secret.\npriority -> hardcoded ConfigRaw -> ConfigRaw, provided by user -> ConfigSecret."
                   type: "string"
+                configReloaderExtraArgs:
+                  additionalProperties:
+                    type: "string"
+                  description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
+                  type: "object"
                 configSecret:
                   description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAlertmanager object, which contains configuration for this VMAlertmanager,\nconfiguration must be inside secret key: alertmanager.yaml.\nIt must be created by user.\ninstance. Defaults to 'vmalertmanager-<alertmanager-name>'\nThe secret is mounted into /etc/alertmanager/config."
                   type: "string"
@@ -502,9 +507,6 @@ spec:
                       description: "Name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names"
                       type: "string"
                   type: "object"
-                podSecurityPolicyName:
-                  description: "PodSecurityPolicyName - defines name for podSecurityPolicy\nin case of empty value, prefixedName will be used."
-                  type: "string"
                 portName:
                   description: "PortName used for the pods and governing service.\nThis defaults to web"
                   type: "string"

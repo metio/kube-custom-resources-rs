@@ -100,6 +100,9 @@ pub struct FlowCollectorAgentEbpf {
     /// - `FlowRTT` [unsupported (*)]: enable flow latency (RTT) calculations in the eBPF agent during TCP handshakes. This feature better works with `sampling` set to 1.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
+    /// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowFilter")]
+    pub flow_filter: Option<FlowCollectorAgentEbpfFlowFilter>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorAgentEbpfImagePullPolicy>,
@@ -145,6 +148,81 @@ pub struct FlowCollectorAgentEbpfDebug {
     /// in edge debug or support scenarios.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+}
+
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorAgentEbpfFlowFilter {
+    /// Action defines the action to perform on the flows that match the filter.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<FlowCollectorAgentEbpfFlowFilterAction>,
+    /// CIDR defines the IP CIDR to filter flows by.
+    /// Example: 10.10.10.0/24 or 100:100:100:100::/64
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    /// DestPorts defines the destination ports to filter flows by.
+    /// To filter a single port, set a single port as an integer value. For example destPorts: 80.
+    /// To filter a range of ports, use a "start-end" range, string format. For example destPorts: "80-100".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destPorts")]
+    pub dest_ports: Option<IntOrString>,
+    /// Direction defines the direction to filter flows by.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub direction: Option<FlowCollectorAgentEbpfFlowFilterDirection>,
+    /// Set `enable` to `true` to enable eBPF flow filtering feature.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// ICMPCode defines the ICMP code to filter flows by.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpCode")]
+    pub icmp_code: Option<i64>,
+    /// ICMPType defines the ICMP type to filter flows by.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpType")]
+    pub icmp_type: Option<i64>,
+    /// PeerIP defines the IP address to filter flows by.
+    /// Example: 10.10.10.10
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerIP")]
+    pub peer_ip: Option<String>,
+    /// Ports defines the ports to filter flows by. it can be user for either source or destination ports.
+    /// To filter a single port, set a single port as an integer value. For example ports: 80.
+    /// To filter a range of ports, use a "start-end" range, string format. For example ports: "80-10
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<IntOrString>,
+    /// Protocol defines the protocol to filter flows by.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<FlowCollectorAgentEbpfFlowFilterProtocol>,
+    /// SourcePorts defines the source ports to filter flows by.
+    /// To filter a single port, set a single port as an integer value. For example sourcePorts: 80.
+    /// To filter a range of ports, use a "start-end" range, string format. For example sourcePorts: "80-100".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourcePorts")]
+    pub source_ports: Option<IntOrString>,
+}
+
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorAgentEbpfFlowFilterAction {
+    Accept,
+    Reject,
+}
+
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorAgentEbpfFlowFilterDirection {
+    Ingress,
+    Egress,
+}
+
+/// `flowFilter` defines the eBPF agent configuration regarding flow filtering
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorAgentEbpfFlowFilterProtocol {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "UDP")]
+    Udp,
+    #[serde(rename = "ICMP")]
+    Icmp,
+    #[serde(rename = "ICMPv6")]
+    IcmPv6,
+    #[serde(rename = "SCTP")]
+    Sctp,
 }
 
 /// `ebpf` describes the settings related to the eBPF-based flow reporter when `spec.agent.type`
@@ -1451,6 +1529,7 @@ pub struct FlowCollectorProcessor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorProcessorResources>,
     /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift.
+    /// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetLabels")]
     pub subnet_labels: Option<FlowCollectorProcessorSubnetLabels>,
 }
@@ -1898,6 +1977,7 @@ pub struct FlowCollectorProcessorResourcesClaims {
 }
 
 /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift.
+/// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorSubnetLabels {
     /// `customLabels` allows to customize subnets and IPs labelling, such as to identify cluster-external workloads or web services.
@@ -1905,7 +1985,8 @@ pub struct FlowCollectorProcessorSubnetLabels {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabels")]
     pub custom_labels: Option<Vec<FlowCollectorProcessorSubnetLabelsCustomLabels>>,
     /// `openShiftAutoDetect` allows, when set to `true`, to detect automatically the machines, pods and services subnets based on the
-    /// OpenShift install configuration and the Cluster Network Operator configuration.
+    /// OpenShift install configuration and the Cluster Network Operator configuration. Indirectly, this is a way to accurately detect
+    /// external traffic: flows that are not labeled for those subnets are external to the cluster. Enabled by default on OpenShift.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openShiftAutoDetect")]
     pub open_shift_auto_detect: Option<bool>,
 }
